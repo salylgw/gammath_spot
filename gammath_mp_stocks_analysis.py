@@ -10,7 +10,11 @@ import multiprocessing as mp
 from multiprocessing import Process
 import gammath_stocks_analysis as gsa
 import sys
-        
+import os
+from pathlib import Path
+import re
+
+
 cores_to_use = ((mp.cpu_count() >> 1) + 1)
 
 if __name__ == '__main__':
@@ -50,5 +54,29 @@ if __name__ == '__main__':
                 end_index += cores_to_use
             else:
                 end_index += max_tickers
+
+    Tickers_dir = Path('tickers')
+
+    pattern_for_overall_buy_score = re.compile(r'(overall_buy_score):([-]*[0-9]+[/][0-9]+)')
+    pattern_for_overall_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]+[/][0-9]+)')
+
+    subdirs = os.listdir(Tickers_dir)
+
+    print('\nNum of subdirs: ', len(subdirs))
+
+    for subdir in subdirs:
+        path = Tickers_dir / f'{subdir}'
+        if not path.exists():
+            print('\nError. ', path, ' not found')
+        else:
+            f = open(path / 'signal.txt', 'r')
+            content = f.read()
+            matched_string = pattern_for_overall_buy_score.search(content)
+            if (matched_string):
+                kw, val = matched_string.groups()
+                print(f'\n{kw} for {subdir}: {val}')
+            else:
+                print(f'\n{kw} NOT found for {subdir}')
+            f.close()
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
