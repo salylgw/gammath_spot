@@ -25,9 +25,11 @@ def get_price_signals(df):
     if ((lp < lpm1) and (lpm1 < lpm2)):
         price_dir = 'falling'
         price_sell_score += 1
+        price_buy_score -= 1
     elif ((lp > lpm1) and (lpm1 > lpm2)):
         price_dir = 'rising'
         price_buy_score += 1
+        price_sell_score -= 1
     else:
         price_dir = 'direction_unclear'
         price_buy_score = 0
@@ -56,7 +58,7 @@ def get_price_signals(df):
             last_falling_days_count = 0
             last_rising_days_count = 0
 
-    #Limit to 2 digits after decimal point
+    #Limit to 3 digits after decimal point
     curr_price = f'curr_price: %5.3f' % lp
 
     if (last_falling_days_count >= (max_falling_days_count/2)):
