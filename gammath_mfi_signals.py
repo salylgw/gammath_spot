@@ -33,17 +33,6 @@ def get_mfi_signals(df):
         lm1_mfi = mfi[mfi_len-2]
         lm2_mfi = mfi[mfi_len-3]
 
-        if (curr_mfi < mfi_mean):
-            mfi_avg = 'below average'
-            mfi_buy_score += 1
-        elif (curr_mfi > mfi_mean):
-            mfi_avg = 'above average'
-            mfi_sell_score += 1
-        else:
-            mfi_avg = 'average'
-
-        mfi_max_score += 1
-
         if ((curr_mfi < lm1_mfi) and (lm1_mfi < lm2_mfi)):
             mfi_dir = 'falling'
 
@@ -65,13 +54,26 @@ def get_mfi_signals(df):
 
         mfi_max_score += 1
 
+        if (curr_mfi < mfi_mean):
+            mfi_avg = 'below average'
+            mfi_buy_score += 1
+        elif (curr_mfi > mfi_mean):
+            mfi_avg = 'above average'
+            mfi_sell_score += 1
+        else:
+            mfi_avg = 'average'
+
+        mfi_max_score += 1
+
         if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
             mfi_lvl = 'overbought'
             mfi_sell_score += 1
+            mfi_buy_score -= 1
             
         elif (curr_mfi <= MFI_OVERSOLD_LEVEL):
             mfi_lvl = 'oversold'
             mfi_buy_score += 1
+            mfi_sell_score -= 1
         else:
             mfi_lvl = ''
 
