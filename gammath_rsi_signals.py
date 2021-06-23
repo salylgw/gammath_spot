@@ -25,7 +25,7 @@ def get_rsi_signals(tsymbol, df, path):
     curr_rsi = rsi[rsi_len-1]
     print('Current RSI for ', tsymbol, ' is: ', curr_rsi, '\n')
     f = open(path / f'{tsymbol}_RSI_summary.csv', 'a')
-    f.write(f'curr_rsi,{curr_rsi}')
+    f.write(f'curr_rsi:{curr_rsi}')
     f.close()
     prev_rsi = rsi[rsi_len-2]
     preprev_rsi = rsi[rsi_len-3]
