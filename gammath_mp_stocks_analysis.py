@@ -58,8 +58,11 @@ if __name__ == '__main__':
 
     Tickers_dir = Path('tickers')
 
-    pattern_for_overall_buy_score = re.compile(r'(overall_buy_score):([-]*[0-9]+[/][0-9]+)')
-    pattern_for_overall_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]+[/][0-9]+)')
+#    pattern_for_overall_buy_score = re.compile(r'(overall_buy_score):([-]*[0-9]+[/][0-9]+)')
+#    pattern_for_overall_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]+[/][0-9]+)')
+
+    pattern_for_overall_buy_score = re.compile(r'(overall_buy_score):([-]*[0-9]+)')
+    pattern_for_overall_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]+)')
 
     subdirs = os.listdir(Tickers_dir)
 
@@ -84,7 +87,7 @@ if __name__ == '__main__':
                 kw, val = matched_string.groups()
                 print(f'\n{kw} for {subdir}: {val}')
                 df_b['Ticker'][i] = f'{subdir}'
-                df_b['overall_buy_score'][i] = val
+                df_b['overall_buy_score'][i] = int(val)
                 i += 1
             else:
                 print(f'\n{kw} NOT found for {subdir}')
@@ -94,14 +97,14 @@ if __name__ == '__main__':
                 kw, val = matched_string.groups()
                 print(f'\n{kw} for {subdir}: {val}')
                 df_s['Ticker'][j] = f'{subdir}'
-                df_s['overall_sell_score'][j] = val
+                df_s['overall_sell_score'][j] = int(val)
                 j += 1
             else:
                 print(f'\n{kw} NOT found for {subdir}')
 
             f.close()
 
-    df_b.sort_values('overall_buy_score').to_csv(Tickers_dir / 'overall_buy_scores.csv')
-    df_s.sort_values('overall_sell_score').to_csv(Tickers_dir / 'overall_sell_scores.csv')
+    df_b.sort_values('overall_buy_score').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
+    df_s.sort_values('overall_sell_score').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
