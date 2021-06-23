@@ -25,11 +25,13 @@ def get_price_signals(df):
     if ((lp < lpm1) and (lpm1 < lpm2)):
         price_dir = 'falling'
         price_sell_score += 1
-        price_buy_score -= 1
+        if (price_buy_score > 0):
+            price_buy_score -= 1
     elif ((lp > lpm1) and (lpm1 > lpm2)):
         price_dir = 'rising'
         price_buy_score += 1
-        price_sell_score -= 1
+        if (price_sell_score > 0):
+            price_sell_score -= 1
     else:
         price_dir = 'direction_unclear'
         price_buy_score = 0

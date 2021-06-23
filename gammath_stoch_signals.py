@@ -42,11 +42,13 @@ def get_stochastics_slow_signals(df):
     if (stoch_d_curr_val <= STOCH_OVERSOLD_LEVEL):
         stoch_lvl = 'oversold'
         stoch_buy_score += 1
-        stoch_sell_score -= 1
+        if (stoch_sell_score > 0):
+            stoch_sell_score -= 1
     elif (stoch_d_curr_val >= STOCH_OVERBOUGHT_LEVEL):
         stoch_lvl = 'overbought'
         stoch_sell_score += 1
-        stoch_buy_score -= 1
+        if (stoch_buy_score > 0):
+            stoch_buy_score -= 1
 
     stoch_max_score += 1
 

@@ -125,16 +125,23 @@ def get_macd_signals(df):
 
     if (buy_sig_price > current_price):
         macd_buy_score += 1
-        macd_sell_score -= 1
+
+        if (macd_sell_score > 0):
+            macd_sell_score -= 1
     else:
-        macd_buy_score -= 1
+        if (macd_buy_score > 0):
+            macd_buy_score -= 1
+
         macd_sell_score += 1
     
     if (sell_sig_price < current_price):
         macd_sell_score += 1
-        macd_buy_score -= 1
+        if (macd_buy_score > 0):
+            macd_buy_score -= 1
     else:
-        macd_sell_score -= 1
+        if (macd_sell_score > 0):
+             macd_sell_score -= 1
+
         macd_buy_score += 1
 
     macd_max_score += 1
