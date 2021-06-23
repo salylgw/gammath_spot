@@ -10,7 +10,6 @@ import multiprocessing as mp
 from multiprocessing import Process
 import gammath_stocks_analysis as gsa
 import sys
-import os
 from pathlib import Path
 import re
 import pandas as pd
@@ -58,15 +57,17 @@ if __name__ == '__main__':
 
     Tickers_dir = Path('tickers')
 
-#    pattern_for_overall_buy_score = re.compile(r'(overall_buy_score):([-]*[0-9]+[/][0-9]+)')
-#    pattern_for_overall_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]+[/][0-9]+)')
+    #Get all the subdirs. Need to check for is_dir
+    p = Path('tickers')
+    
+    #Somehow looks like os.is_dir isn't supported
+    #Using pathlib/Path instead since is_dir is supported there
+    subdirs = [x for x in p.iterdir() if x.is_dir()]
+
+    print('\nNum of subdirs: ', len(subdirs))
 
     pattern_for_overall_buy_score = re.compile(r'(overall_buy_score):([-]*[0-9]+)')
     pattern_for_overall_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]+)')
-
-    subdirs = os.listdir(Tickers_dir)
-
-    print('\nNum of subdirs: ', len(subdirs))
 
     df_b = pd.DataFrame(columns=['Ticker', 'overall_buy_score'], index=range(len(subdirs)))
 
@@ -76,17 +77,16 @@ if __name__ == '__main__':
     j = 0
 
     for subdir in subdirs:
-        path = Tickers_dir / f'{subdir}'
-        if not path.exists():
-            print('\nError. ', path, ' not found')
+        if not subdir.exists():
+            print('\nError. ', subdir, ' not found')
         else:
-            f = open(path / 'signal.txt', 'r')
+            f = open(subdir / 'signal.txt', 'r')
             content = f.read()
             matched_string = pattern_for_overall_buy_score.search(content)
             if (matched_string):
                 kw, val = matched_string.groups()
-                print(f'\n{kw} for {subdir}: {val}')
-                df_b['Ticker'][i] = f'{subdir}'
+                print(f'\n{kw} for {subdir.name}: {val}')
+                df_b['Ticker'][i] = f'{subdir.name}'
                 df_b['overall_buy_score'][i] = int(val)
                 i += 1
             else:
@@ -96,7 +96,7 @@ if __name__ == '__main__':
             if (matched_string):
                 kw, val = matched_string.groups()
                 print(f'\n{kw} for {subdir}: {val}')
-                df_s['Ticker'][j] = f'{subdir}'
+                df_s['Ticker'][j] = f'{subdir.name}'
                 df_s['overall_sell_score'][j] = int(val)
                 j += 1
             else:
