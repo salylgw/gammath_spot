@@ -92,6 +92,9 @@ def get_macd_combined_data(tsymbol):
     df_buy_sell_signals_data = pd.DataFrame(columns=['bsig', 'ssig', 'price', 'diff', 'pct_change', 'rsi_avg',  'bb_avg', 'bb_vicinity', 'mfi_avg', 'stoch_lvl', 'exception'],index=range(macd_len))
     df_buy_sell_sig_data_index = 0
 
+    df_exeptions_data = df_buy_sell_signals_data
+    rule_exception_index = 0
+
     for i in range(macd_len-1):
         if ((macd_histogram[i] <= 0) and (macd_histogram[i+1] > 0)):
             #Buy signal
@@ -177,7 +180,16 @@ def get_macd_combined_data(tsymbol):
             if ((sell_sig == 1) and (df_buy_sell_sig_data_index > 0)):
                 if (df_buy_sell_signals_data['diff'][df_buy_sell_sig_data_index] < 0):
                     if ((df_buy_sell_signals_data['rsi_avg'][df_buy_sell_sig_data_index-1] == 'b_aver') and (df_buy_sell_signals_data['bb_avg'][df_buy_sell_sig_data_index-1] == 'b_aver') and (df_buy_sell_signals_data['bb_vicinity'][df_buy_sell_sig_data_index-1] == 'n_lb') and (df_buy_sell_signals_data['mfi_avg'][df_buy_sell_sig_data_index-1] == 'b_aver') and (( df_buy_sell_signals_data['stoch_lvl'][df_buy_sell_sig_data_index-1]  == 'below average') or (df_buy_sell_signals_data['stoch_lvl'][df_buy_sell_sig_data_index-1] == 'oversold'))):
+                        df_buy_sell_signals_data['exception'][df_buy_sell_sig_data_index-1] = '*'
                         df_buy_sell_signals_data['exception'][df_buy_sell_sig_data_index] = '*'
+
+                        df_exeptions_data.iloc[rule_exception_index] = df_buy_sell_signals_data.iloc[df_buy_sell_sig_data_index-1]
+
+                        rule_exception_index += 1
+
+                        df_exeptions_data.iloc[rule_exception_index] = df_buy_sell_signals_data.iloc[df_buy_sell_sig_data_index]
+
+                        rule_exception_index += 1
 
 
             df_buy_sell_sig_data_index += 1
@@ -185,5 +197,7 @@ def get_macd_combined_data(tsymbol):
     #Save the buy/sell signals data
     df_buy_sell_signals_data.to_csv(path / f'{tsymbol}_combined_buy_sell_sig_data.csv', index=False)
 
+    #Save the exceptions data separately
+    df_exeptions_data.to_csv(path / f'{tsymbol}_exception_sig_data.csv', index=False)
     return
 
