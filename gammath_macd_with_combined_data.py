@@ -5,7 +5,6 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
-import yfinance as yf
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
@@ -35,8 +34,6 @@ MACD_SIGNAL_PERIOD = 9
 #Get summary of past 5 years history
 end_date = datetime.today()
 start_date = datetime(end_date.year-5, end_date.month, end_date.day)
-
-Tickers_dir = Path('macd_comb')
 
 def get_macd_combined_data(tsymbol):
 
@@ -92,7 +89,7 @@ def get_macd_combined_data(tsymbol):
     last_buy_signal_index = 0
     last_sell_signal_index = 0
 
-    df_buy_sell_signals_data = pd.DataFrame(columns=['bsig', 'ssig', 'price', 'diff', 'pct_change', 'rsi_avg',  'bb_avg', 'bb_vicinity', 'mfi_avg', 'stoch_lvl'],index=range(macd_len))
+    df_buy_sell_signals_data = pd.DataFrame(columns=['bsig', 'ssig', 'price', 'diff', 'pct_change', 'rsi_avg',  'bb_avg', 'bb_vicinity', 'mfi_avg', 'stoch_lvl', 'exception'],index=range(macd_len))
     df_buy_sell_sig_data_index = 0
 
     for i in range(macd_len-1):
@@ -158,22 +155,31 @@ def get_macd_combined_data(tsymbol):
 
             ins_stoch_lvl = ''
             slowd_inst_mean = slowd[0:i+1].mean()
-            if (slowd[i+1] <= STOCH_OVERSOLD_LEVEL):
-                ins_stoch_lvl = 'oversold'
-            elif (slowd[i+1] >= STOCH_OVERBOUGHT_LEVEL):
-                ins_stoch_lvl = 'overbought'
-            elif (slowd[i+1] < slowd_inst_mean):
+
+            if (slowd[i+1] < slowd_inst_mean):
                 ins_stoch_lvl = 'below average'
             elif (slowd[i+1] > slowd_inst_mean):
                 ins_stoch_lvl = 'above average'
             else:
                 ins_stoch_lvl = 'average'
 
+            if (slowd[i+1] <= STOCH_OVERSOLD_LEVEL):
+                ins_stoch_lvl = 'oversold'
+            elif (slowd[i+1] >= STOCH_OVERBOUGHT_LEVEL):
+                ins_stoch_lvl = 'overbought'
+
             df_buy_sell_signals_data['rsi_avg'][df_buy_sell_sig_data_index] = ins_rsi_avg
             df_buy_sell_signals_data['bb_avg'][df_buy_sell_sig_data_index] = ins_bb_avg
             df_buy_sell_signals_data['bb_vicinity'][df_buy_sell_sig_data_index] = ins_bb_vicinity
             df_buy_sell_signals_data['mfi_avg'][df_buy_sell_sig_data_index] = ins_mfi_avg
             df_buy_sell_signals_data['stoch_lvl'][df_buy_sell_sig_data_index] = ins_stoch_lvl
+
+            if ((sell_sig == 1) and (df_buy_sell_sig_data_index > 0)):
+                if (df_buy_sell_signals_data['diff'][df_buy_sell_sig_data_index] < 0):
+                    if ((df_buy_sell_signals_data['rsi_avg'][df_buy_sell_sig_data_index-1] == 'b_aver') and (df_buy_sell_signals_data['bb_avg'][df_buy_sell_sig_data_index-1] == 'b_aver') and (df_buy_sell_signals_data['bb_vicinity'][df_buy_sell_sig_data_index-1] == 'n_lb') and (df_buy_sell_signals_data['mfi_avg'][df_buy_sell_sig_data_index-1] == 'b_aver') and (( df_buy_sell_signals_data['stoch_lvl'][df_buy_sell_sig_data_index-1]  == 'below average') or (df_buy_sell_signals_data['stoch_lvl'][df_buy_sell_sig_data_index-1] == 'oversold'))):
+                        df_buy_sell_signals_data['exception'][df_buy_sell_sig_data_index] = '*'
+
+
             df_buy_sell_sig_data_index += 1
 
     #Save the buy/sell signals data
