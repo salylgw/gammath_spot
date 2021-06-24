@@ -92,7 +92,7 @@ def get_macd_combined_data(tsymbol):
     df_buy_sell_signals_data = pd.DataFrame(columns=['bsig', 'ssig', 'price', 'diff', 'pct_change', 'rsi_avg',  'bb_avg', 'bb_vicinity', 'mfi_avg', 'stoch_lvl', 'exception'],index=range(macd_len))
     df_buy_sell_sig_data_index = 0
 
-    df_exeptions_data = df_buy_sell_signals_data
+    df_exeptions_data = pd.DataFrame(columns=df_buy_sell_signals_data.columns, index=df_buy_sell_signals_data.index)
     rule_exception_index = 0
 
     for i in range(macd_len-1):
