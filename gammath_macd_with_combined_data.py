@@ -89,7 +89,7 @@ def get_macd_combined_data(tsymbol):
     last_buy_signal_index = 0
     last_sell_signal_index = 0
 
-    df_buy_sell_signals_data = pd.DataFrame(columns=['bsig', 'ssig', 'price', 'diff', 'pct_change', 'rsi_avg',  'bb_avg', 'bb_vicinity', 'mfi_avg', 'stoch_lvl', 'exception'],index=range(macd_len))
+    df_buy_sell_signals_data = pd.DataFrame(columns=['ticker', 'bsig', 'ssig', 'price', 'diff', 'pct_change', 'rsi_avg',  'bb_avg', 'bb_vicinity', 'mfi_avg', 'stoch_lvl', 'exception'],index=range(macd_len))
     df_buy_sell_sig_data_index = 0
 
     df_exeptions_data = pd.DataFrame(columns=df_buy_sell_signals_data.columns, index=df_buy_sell_signals_data.index)
@@ -101,6 +101,7 @@ def get_macd_combined_data(tsymbol):
             buy_sig = 1
             sell_sig = 0
             last_buy_signal_index = i+1
+            df_buy_sell_signals_data['ticker'][df_buy_sell_sig_data_index] = f'{tsymbol}'
             df_buy_sell_signals_data['bsig'][df_buy_sell_sig_data_index] = df['Date'][last_buy_signal_index]
             df_buy_sell_signals_data['ssig'][df_buy_sell_sig_data_index] = '-'
             df_buy_sell_signals_data['price'][df_buy_sell_sig_data_index] = round(df['Close'][last_buy_signal_index], 3)
@@ -109,6 +110,7 @@ def get_macd_combined_data(tsymbol):
             buy_sig = 0
             sell_sig = 1
             last_sell_signal_index = i+1
+            df_buy_sell_signals_data['ticker'][df_buy_sell_sig_data_index] = f'{tsymbol}'
             df_buy_sell_signals_data['ssig'][df_buy_sell_sig_data_index] = df['Date'][last_sell_signal_index]
             df_buy_sell_signals_data['bsig'][df_buy_sell_sig_data_index] = '-'
             df_buy_sell_signals_data['price'][df_buy_sell_sig_data_index] = round(df['Close'][last_sell_signal_index], 3)
@@ -183,6 +185,7 @@ def get_macd_combined_data(tsymbol):
                         df_buy_sell_signals_data['exception'][df_buy_sell_sig_data_index-1] = '*'
                         df_buy_sell_signals_data['exception'][df_buy_sell_sig_data_index] = '*'
 
+                        #Segregate exceptional cases
                         df_exeptions_data.iloc[rule_exception_index] = df_buy_sell_signals_data.iloc[df_buy_sell_sig_data_index-1]
 
                         rule_exception_index += 1
