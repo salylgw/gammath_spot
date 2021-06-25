@@ -197,10 +197,11 @@ def get_macd_combined_data(tsymbol):
 
             df_buy_sell_sig_data_index += 1
 
-    #Save the buy/sell signals data
-    df_buy_sell_signals_data.to_csv(path / f'{tsymbol}_combined_buy_sell_sig_data.csv', index=False)
+    #Save the buy/sell signals data and drop the rows with all NaNs
+    df_buy_sell_signals_data.dropna(how='all').to_csv(path / f'{tsymbol}_combined_buy_sell_sig_data.csv', index=False)
 
-    #Save the exceptions data separately
-    df_exeptions_data.to_csv(path / f'{tsymbol}_exception_sig_data.csv', index=False)
+    #Save the exceptions data separately and drop the rows with all NaNs
+    df_exeptions_data.dropna(how='all').to_csv(path / f'{tsymbol}_exception_sig_data.csv', index=False)
+
     return
 
