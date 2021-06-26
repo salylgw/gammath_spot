@@ -10,6 +10,8 @@ import multiprocessing as mp
 from multiprocessing import Process
 import gammath_macd_with_combined_data as gmwcd
 import sys
+from pathlib import Path
+import pandas as pd
         
 cores_to_use = ((mp.cpu_count() >> 1) + 1)
 
@@ -50,5 +52,33 @@ if __name__ == '__main__':
                 end_index += cores_to_use
             else:
                 end_index += max_tickers
+
+
+    #Collect exception data for all tickers in one file for easy reference
+    Tickers_dir = Path('tickers')
+
+    #Get all the subdirs. Need to check for is_dir
+    p = Path('tickers')
+
+    #Somehow looks like os.is_dir isn't supported
+    #Using pathlib/Path instead since is_dir is supported there
+    subdirs = [x for x in p.iterdir() if x.is_dir()]
+
+    print('\nNum of subdirs: ', len(subdirs))
+
+    #Collector dataframe
+    collected_df = pd.DataFrame()
+
+    for subdir in subdirs:
+        if not subdir.exists():
+            print('\nError. ', subdir, ' not found')
+        else:
+            new_df = pd.read_csv(subdir / f'{subdir.name}_exception_sig_data.csv')
+            if (len(new_df)):
+                collected_df = collected_df.append(new_df)
+                print(f'Collected exception data for {subdir.name}')
+
+    #Save the collected data in CSV file
+    collected_df.to_csv(Tickers_dir / 'all_exception_sig_data.csv', index=False)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
