@@ -19,6 +19,7 @@ import gammath_mfi_signals as gms
 import gammath_stoch_signals as gss
 import gammath_macd_signals as gmacd
 import gammath_stcktwts as gstw
+import gammath_kf_signals as gkf
 
 RSI_OVERSOLD_LEVEL = 30
 RSI_OVERBOUGHT_LEVEL = 70
@@ -67,6 +68,9 @@ def get_ticker_hist_n_analysis(tsymbol):
     #MACD signals
     macd, macd_signal, macd_buy_score, macd_sell_score, macd_max_score, macd_signals = gmacd.get_macd_signals(df)
 
+    #Kalman Filter. For now just plot the state means against price
+    state_means, state_covariance = gkf.get_kf_means_covariance(df)
+
     #StockTwits signals
     st_buy_score, st_sell_score, st_max_score, st_signals = gstw.get_stocktwits_ticker_info(tsymbol, path)
 
@@ -82,7 +86,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     f.close()
 
     #Draw the charts to view all at once as subplots
-    figure, axes = plt.subplots(nrows=5, figsize=(21, 15))
+    figure, axes = plt.subplots(nrows=6, figsize=(21, 17))
 
     sym_str = f'{tsymbol}'
 
@@ -92,6 +96,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     plot_data3 = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
     plot_data4 = pd.DataFrame({'MFI': mfi})
     plot_data5 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
+    plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
 
     plot_data1.plot(ax=axes[0],lw=1,title='Bollinger Bands')
     plot_data2.plot(ax=axes[1],lw=1,title='Relative Strength Index')
@@ -104,5 +109,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     plot_data5.plot(ax=axes[4],lw=1,title='Stochastic Slow')
     axes[4].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
     axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
+    plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
 
     plt.savefig(path / f'{tsymbol}_charts.png')
