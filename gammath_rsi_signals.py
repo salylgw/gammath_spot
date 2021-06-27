@@ -50,16 +50,16 @@ def get_rsi_signals(tsymbol, df, path):
 
     if (curr_rsi <= RSI_OVERSOLD_LEVEL):
         rsi_lvl = 'oversold'
-        rsi_buy_score += 1
+        rsi_buy_score += 2
         rsi_sell_score -= 1
     elif (curr_rsi >= RSI_OVERBOUGHT_LEVEL):
         rsi_lvl = 'overbought'
-        rsi_sell_score += 1
+        rsi_sell_score += 2
         rsi_buy_score -= 1
     else:
         rsi_lvl = ''
 
-    rsi_max_score += 1
+    rsi_max_score += 2
 
     if ((curr_rsi < prev_rsi) and (prev_rsi < preprev_rsi)):
         rsi_direction = 'falling'

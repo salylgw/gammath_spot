@@ -29,12 +29,8 @@ def get_macd_signals(df):
     macd_trend = ''
     if (macd_histogram[macd_len-1] > 0):
         macd_trend = 'positive'
-        macd_buy_score += 1
     else:
         macd_trend = 'negative'
-        macd_sell_score += 1
-
-    macd_max_score += 1
 
     buy_sig = 0
     curr_days_in_positive = 0
@@ -90,11 +86,11 @@ def get_macd_signals(df):
             max_macd_ndiff = round(curr_macd_ndiff, 3)
 
     if (buy_sig == 1):
-        macd_buy_score += 1
+        macd_buy_score += 2
     elif (sell_sig == 1):
-        macd_sell_score += 1
+        macd_sell_score += 2
 
-    macd_max_score += 1
+    macd_max_score += 2
 
     #Save the last buy and sell signal dates
     macd_buy_signal_date = df['Date'][last_buy_signal_index]
@@ -105,20 +101,20 @@ def get_macd_signals(df):
     sell_sig_price_str = f'sig_price:%5.3f' % df['Close'][last_sell_signal_index]
 
     if ((curr_macd_ndiff > 0) and (curr_macd_ndiff >= (max_macd_ndiff/2))):
-        macd_buy_score += 1
+        macd_buy_score += 2
 
     if ((curr_macd_pdiff > 0) and (curr_macd_pdiff >= (max_macd_pdiff/2))):
-        macd_sell_score += 1
+        macd_sell_score += 2
 
-    macd_max_score += 1
+    macd_max_score += 2
 
     if (curr_days_in_negative >= max_days_in_negative/2):
-        macd_buy_score += 1
+        macd_buy_score += 2
 
     if (curr_days_in_positive >= max_days_in_positive/2):
-        macd_sell_score += 1
+        macd_sell_score += 2
 
-    macd_max_score += 1
+    macd_max_score += 2
 
     #Get current stock price
     current_price = df['Close'][len(df)-1]
