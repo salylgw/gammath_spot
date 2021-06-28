@@ -31,5 +31,5 @@ def get_ticker_history(tsymbol):
         path.mkdir(parents=True, exist_ok=True)
 
     #Save the history for reference and processing
-    stock_history.to_csv(path / f'{tsymbol}_history.csv')
+    stock_history.dropna().to_csv(path / f'{tsymbol}_history.csv')
     return path
