@@ -86,7 +86,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     f.close()
 
     #Draw the charts to view all at once as subplots
-    figure, axes = plt.subplots(nrows=6, figsize=(21, 17))
+    figure, axes = plt.subplots(nrows=6, figsize=(21, 19))
 
     sym_str = f'{tsymbol}'
 
