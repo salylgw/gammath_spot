@@ -5,6 +5,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
+import yfinance as yf
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
@@ -37,12 +38,12 @@ start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
 def get_macd_combined_data(tsymbol):
 
-    result = gsh.get_ticker_info(tsymbol, False)
+    result = gsh.get_ticker_info(tsymbol)
 
     if (result is None):
         return
     else:
-        path = result
+        path, ticker = result
 
     #Read CSV into DataFrame. Stock_history dataframe seems to filter out dates
     df = pd.read_csv(path / f'{tsymbol}_history.csv')

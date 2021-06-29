@@ -8,8 +8,6 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 import yfinance as yf
 from datetime import datetime
 from pathlib import Path
-import gammath_options_chain as goc
-
 
 #Get summary of past 5 years history
 end_date = datetime.today()
@@ -17,7 +15,7 @@ start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
 Tickers_dir = Path('tickers')
 
-def get_ticker_info(tsymbol, all):
+def get_ticker_info(tsymbol):
     if (len(tsymbol) == 0):
         return None
 
@@ -34,8 +32,4 @@ def get_ticker_info(tsymbol, all):
     #Save the history for reference and processing
     stock_history.dropna().to_csv(path / f'{tsymbol}_history.csv')
 
-    #Experimental: WIP
-    if (all == True):
-        goc.get_ticker_options(ticker, path)
-
-    return path
+    return path, ticker
