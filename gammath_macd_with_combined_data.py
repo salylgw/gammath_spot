@@ -37,7 +37,7 @@ start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
 def get_macd_combined_data(tsymbol):
 
-    result = gsh.get_ticker_history(tsymbol)
+    result = gsh.get_ticker_info(tsymbol, False)
 
     if (result is None):
         return

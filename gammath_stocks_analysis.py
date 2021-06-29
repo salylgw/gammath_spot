@@ -39,7 +39,7 @@ Tickers_dir = Path('tickers')
 
 def get_ticker_hist_n_analysis(tsymbol):
 
-    result = gsh.get_ticker_history(tsymbol)
+    result = gsh.get_ticker_info(tsymbol, True)
 
     if (result is None):
         return
@@ -113,6 +113,3 @@ def get_ticker_hist_n_analysis(tsymbol):
     plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
 
     plt.savefig(path / f'{tsymbol}_charts.png')
-
-    #Experimental
-#    goc.get_ticker_options(tsymbol)
