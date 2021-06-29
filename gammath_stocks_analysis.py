@@ -20,6 +20,7 @@ import gammath_stoch_signals as gss
 import gammath_macd_signals as gmacd
 import gammath_stcktwts as gstw
 import gammath_kf_signals as gkf
+import gammath_options_chain as goc
 
 RSI_OVERSOLD_LEVEL = 30
 RSI_OVERBOUGHT_LEVEL = 70
@@ -112,3 +113,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
 
     plt.savefig(path / f'{tsymbol}_charts.png')
+
+    #Experimental
+#    goc.get_ticker_options(tsymbol)
