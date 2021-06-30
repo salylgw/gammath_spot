@@ -17,7 +17,21 @@ def get_options_signals(ticker, path, curr_price):
     try:
         option_dates = ticker.options
         if (len(option_dates)):
+            #ticker.calendar seems to be too slow. Need to REVISIT
+#            events_cal = ticker.calendar
+
+#            print('\nEvents call info for ', ticker.ticker)
+#            events_cal.info()
+#            if (events_cal is not None):
+#                next_earnings_date = ticker.calendar[0]['Earnings Date']
+#                print('\nNext earnings date for ', ticker.ticker, 'is ', next_earnings_date, 'type is ', type(next_earnings_date))
+ #           else:
+ #               print('\nEarnings date not found for ', ticker.ticker)
+
             option_date = option_dates[0]
+
+            print('\nNext options expiry ', ticker.ticker, 'is ', option_date, 'type is ', type(option_date))
+
             options = ticker.option_chain(option_date)
             options.calls.info()
             options.puts.info()
