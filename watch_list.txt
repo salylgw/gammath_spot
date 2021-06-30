@@ -16,6 +16,8 @@ GM
 F
 KR
 SJM
+CAG
+K
 WMT
 MCD
 GIS
