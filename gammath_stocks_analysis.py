@@ -78,6 +78,8 @@ def get_ticker_hist_n_analysis(tsymbol):
     #Options signals
     options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(ticker, path, df.Close[len(df)-1])
 
+#    0, 0, 0, ''
+
     overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + st_buy_score + options_buy_score
     overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + st_sell_score + options_sell_score
     overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + st_max_score + options_max_score

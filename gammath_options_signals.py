@@ -9,6 +9,7 @@ import yfinance as yf
 from pathlib import Path
 import bisect
 from datetime import datetime
+import pandas as pd
 
 def get_options_signals(ticker, path, curr_price):
 
@@ -26,7 +27,7 @@ def get_options_signals(ticker, path, curr_price):
             option_date = option_dates[0]
 
             #We only need to read options data once a day
-            if ((current_dt.hour < 7) or not (path / f'{ticker.ticker}_call_{option_date}.csv').exists()):
+            if not (path / f'{ticker.ticker}_call_{option_date}.csv').exists():
                 print('\nGetting option chain for ', ticker.ticker)
                 #ticker.calendar seems to be too slow. Need to REVISIT
 #               events_cal = ticker.calendar
@@ -45,27 +46,38 @@ def get_options_signals(ticker, path, curr_price):
                 options.calls.info()
                 options.puts.info()
                 print('\nGot option chain for ', ticker.ticker, 'Current price: ', curr_price)
+
+                print('\nSorting calls based on strike price')
                 df_calls = options.calls.sort_values('strike')
 
                 #Save the calls sorted by strike price
                 df_calls.to_csv(path / f'{ticker.ticker}_call_{option_date}.csv')
 
+                print('\nSorting puts based on strike price')
                 df_puts = options.puts.sort_values('strike')
 
                 #Save the puts sorted by strike price
                 df_puts.to_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
+
+                print('\nSaved call and put data')
             else:
                 print('\nOption chain for ', ticker.ticker, ' exists. Reading from files')
                 #Get the data from existing file
                 df_calls = pd.read_csv(path / f'{ticker.ticker}_call_{option_date}.csv')
                 df_puts = pd.read_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
+                print('\nRead call and put data')
 
 
             call_opts_size = len(df_calls)
             put_opts_size = len(df_puts)
 
+            print('\nCalls size: ', call_opts_size)
+            print('\nPuts size: ', put_opts_size)
+
+            print('\nFind index of call strike price closest to current price')
+
             #Get index for current price call options
-            i = bisect.bisect_right(df_calls['strike', curr_price])
+            i = bisect.bisect_right(df_calls['strike'], curr_price)
 
             if (i < (call_opts_size-1)):
                 print('\nFound the strike for current price of ', curr_price, 'in call option chain')
@@ -74,6 +86,8 @@ def get_options_signals(ticker, path, curr_price):
                 bullish_start_index = 0
 
             print('\nbullish start index: ', bullish_start_index)
+
+            print('\nFind index of put strike price closest to current price')
 
             #Get index for current price put options
             i = bisect.bisect_right(df_puts['strike'], curr_price)

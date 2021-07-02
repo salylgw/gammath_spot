@@ -36,14 +36,22 @@ MACD_SIGNAL_PERIOD = 9
 end_date = datetime.today()
 start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
+Tickers_dir = Path('tickers')
+
 def get_macd_combined_data(tsymbol):
 
-    result = gsh.get_ticker_info(tsymbol)
+    path = Tickers_dir / f'{tsymbol}'
 
-    if (result is None):
-        return
+    if not (path / f'{tsymbol}_history.csv').exists():
+        print('\nTicker history for ', tsymbol, ' does not exist. Getting from yfinance')
+        result = gsh.get_ticker_info(tsymbol)
+
+        if (result is None):
+            return
+        else:
+            path, ticker = result
     else:
-        path, ticker = result
+        print('\nTicker history for ', tsymbol, ' already exists. Reading from the file')
 
     #Read CSV into DataFrame. Stock_history dataframe seems to filter out dates
     df = pd.read_csv(path / f'{tsymbol}_history.csv')
