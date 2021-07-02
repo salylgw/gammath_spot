@@ -8,6 +8,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 import yfinance as yf
 from pathlib import Path
 import bisect
+from datetime import datetime
 
 def get_options_signals(ticker, path, curr_price):
 
@@ -15,37 +16,50 @@ def get_options_signals(ticker, path, curr_price):
     options_sell_score = 0
     options_max_score = 0
 
+    #Get current date and time
+    current_dt = datetime.now()
+
     try:
         option_dates = ticker.options
+
         if (len(option_dates)):
-            #ticker.calendar seems to be too slow. Need to REVISIT
-#            events_cal = ticker.calendar
-
-#            print('\nEvents call info for ', ticker.ticker)
-#            events_cal.info()
-#            if (events_cal is not None):
-#                next_earnings_date = ticker.calendar[0]['Earnings Date']
-#                print('\nNext earnings date for ', ticker.ticker, 'is ', next_earnings_date, 'type is ', type(next_earnings_date))
- #           else:
- #               print('\nEarnings date not found for ', ticker.ticker)
-
             option_date = option_dates[0]
 
-            print('\nNext options expiry ', ticker.ticker, 'is ', option_date, 'type is ', type(option_date))
+            #We only need to read options data once a day
+            if ((current_dt.hour < 7) or not (path / f'{ticker.ticker}_call_{option_date}.csv').exists()):
+                print('\nGetting option chain for ', ticker.ticker)
+                #ticker.calendar seems to be too slow. Need to REVISIT
+#               events_cal = ticker.calendar
 
-            options = ticker.option_chain(option_date)
-            options.calls.info()
-            options.puts.info()
-            print('\nGot option chain for ', ticker.ticker, 'Current price: ', curr_price)
-            df_calls = options.calls.sort_values('strike')
+#               print('\nEvents call info for ', ticker.ticker)
+#               events_cal.info()
+#               if (events_cal is not None):
+#                   next_earnings_date = ticker.calendar[0]['Earnings Date']
+#                    print('\nNext earnings date for ', ticker.ticker, 'is ', next_earnings_date, 'type is ', type(next_earnings_date))
+ #               else:
+ #                   print('\nEarnings date not found for ', ticker.ticker)
 
-            #Save the calls sorted by strike price
-            df_calls.to_csv(path / f'{ticker.ticker}_call_{option_date}.csv')
+                print('\nNext options expiry ', ticker.ticker, 'is ', option_date, 'type is ', type(option_date))
 
-            df_puts = options.puts.sort_values('strike')
+                options = ticker.option_chain(option_date)
+                options.calls.info()
+                options.puts.info()
+                print('\nGot option chain for ', ticker.ticker, 'Current price: ', curr_price)
+                df_calls = options.calls.sort_values('strike')
 
-            #Save the puts sorted by strike price
-            df_puts.to_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
+                #Save the calls sorted by strike price
+                df_calls.to_csv(path / f'{ticker.ticker}_call_{option_date}.csv')
+
+                df_puts = options.puts.sort_values('strike')
+
+                #Save the puts sorted by strike price
+                df_puts.to_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
+            else:
+                print('\nOption chain for ', ticker.ticker, ' exists. Reading from files')
+                #Get the data from existing file
+                df_calls = pd.read_csv(path / f'{ticker.ticker}_call_{option_date}.csv')
+                df_puts = pd.read_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
+
 
             call_opts_size = len(df_calls)
             put_opts_size = len(df_puts)
