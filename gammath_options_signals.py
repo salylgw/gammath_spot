@@ -7,6 +7,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
 import yfinance as yf
 from pathlib import Path
+import bisect
 
 def get_options_signals(ticker, path, curr_price):
 
@@ -50,24 +51,25 @@ def get_options_signals(ticker, path, curr_price):
             put_opts_size = len(df_puts)
 
             #Get index for current price call options
-            #This is a small array so just do worst case O(n) for now
-            for i in range(call_opts_size-1):
-                if (df_calls['strike'][i] >= curr_price):
-                    print('\nFound the strike for current price of ', curr_price, 'in call option chain')
-                    break
+            i = bisect.bisect_right(df_calls['strike', curr_price])
 
-            bullish_start_index = i
+            if (i < (call_opts_size-1)):
+                print('\nFound the strike for current price of ', curr_price, 'in call option chain')
+                bullish_start_index = i
+            else:
+                bullish_start_index = 0
 
             print('\nbullish start index: ', bullish_start_index)
 
             #Get index for current price put options
-            #This is a small array so just do worst case O(n) for now
-            for i in range(put_opts_size-1):
-                if (df_puts['strike'][i] >= curr_price):
-                    print('\nFound the strike for current price of ', curr_price, 'in put option chain')
-                    break
+            i = bisect.bisect_right(df_puts['strike'], curr_price)
 
-            bearish_end_index = i
+            if (i < (put_opts_size-1)):
+                print('\nFound the strike for current price of ', curr_price, 'in put option chain')
+                bearish_end_index = i
+            else:
+                bearish_end_index = 0
+
             print('\nbearish end index: ', bearish_end_index)
 
             #Get total call open interest for curr price and higher
