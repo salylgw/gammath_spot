@@ -46,13 +46,26 @@ def get_ticker_hist_n_analysis(tsymbol):
     else:
         path, ticker = result
 
-    #Read CSV into DataFrame. Stock_history dataframe seems to filter out dates
-    df = pd.read_csv(path / f'{tsymbol}_history.csv')
-    print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
-    df.info()
+    try:
+        #Read CSV into DataFrame. Stock_history dataframe seems to filter out dates
+        df = pd.read_csv(path / f'{tsymbol}_history.csv')
+        print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
+        df.info()
+    except:
+        print('\nStock history file not found for ', tsymbol)
+        df = pd.DataFrame()
+
+    try:
+        #Read Stock summary info into DataFrame.
+        df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
+        print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
+        df_summ.info()
+    except:
+        print('\nStock summary file not found for symbol ', tsymbol)
+        df_summ = pd.DataFrame()
 
     #Price signals
-    price_buy_score, price_sell_score, price_max_score, price_signals = gps.get_price_signals(df)
+    price_buy_score, price_sell_score, price_max_score, price_signals = gps.get_price_signals(df, df_summ)
 
     #Relative Strenght Index signals
     rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)

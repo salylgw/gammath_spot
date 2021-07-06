@@ -31,14 +31,70 @@ def get_ticker_summary(tsymbol):
     #heldPercentInsiders
 
     try:
-#        df = pd.DataFrame({'trailingPE': stock_summary['trailingPE'], 'forwardPE': stock_summary['forwardPE'], 'fiftyTwoWeekHigh': stock_summary['fiftyTwoWeekHigh'], 'fiftyTwoWeekLow': stock_summary['fiftyTwoWeekLow'], 'fiftyDayAverage': stock_summary['fiftyDayAverage'], 'shortRatio': stock_summary['shortRatio'], 'pegRatio': stock_summary['pegRatio'], 'heldPercentInstitutions': stock_summary['heldPercentInstitutions'], 'heldPercentInsiders': stock_summary['heldPercentInsiders']}, index=range(1))
-#        df = pd.DataFrame({'fiftyTwoWeekHigh': stock_summary['fiftyTwoWeekHigh'], 'fiftyTwoWeekLow': stock_summary['fiftyTwoWeekLow'], 'fiftyDayAverage': stock_summary['fiftyDayAverage'], 'shortRatio': stock_summary['shortRatio']}, index=range(1))
-
-        df = pd.DataFrame({'fiftyTwoWeekHigh': stock_summary['fiftyTwoWeekHigh'], 'fiftyTwoWeekLow': stock_summary['fiftyTwoWeekLow'], 'fiftyDayAverage': stock_summary['fiftyDayAverage']}, index=range(1))
+        trailingPE = stock_summary['trailingPE']
     except:
-        #REVISIT missing items
-        df = pd.DataFrame(list(stock_summary.items()))
+        trailingPE = 0
+        print('\ntrailingPE not found for ', tsymbol)
         print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        forwardPE = stock_summary['forwardPE']
+    except:
+        forwardPE = 0
+        print('\forwardPE not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        fiftyTwoWeekHigh = stock_summary['fiftyTwoWeekHigh']
+    except:
+        fiftyTwoWeekHigh = 0
+        print('\fiftyTwoWeekHigh not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        fiftyTwoWeekLow = stock_summary['fiftyTwoWeekLow']
+    except:
+        fiftyTwoWeekLow = 0
+        print('\fiftyTwoWeekLow not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        fiftyDayAverage = stock_summary['fiftyDayAverage']
+    except:
+        fiftyDayAverage = 0
+        print('\fiftyDayAverage not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        shortRatio = stock_summary['shortRatio']
+    except:
+        shortRatio = 0
+        print('\shortRatio not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        pegRatio = stock_summary['pegRatio']
+    except:
+        pegRatio = 0
+        print('\pegRatio not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        heldPercentInstitutions = stock_summary['heldPercentInstitutions']
+    except:
+        heldPercentInstitutions = 0
+        print('\heldPercentInstitutions not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
+        heldPercentInsiders = stock_summary['heldPercentInsiders']
+    except:
+        heldPercentInsiders = 0
+        print('\heldPercentInsiders not found for ', tsymbol)
+        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders}, index=range(1))
+
 
     path = Tickers_dir / f'{tsymbol}'
     if not path.exists():

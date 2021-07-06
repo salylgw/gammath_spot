@@ -7,7 +7,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 
-def get_price_signals(df):
+def get_price_signals(df, df_summ):
 
     prices = df.Close
     prices_len = len(prices)
@@ -69,9 +69,44 @@ def get_price_signals(df):
 
     price_max_score += 1
 
+    yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
+
+    if (yearly_lowest_val > 0):
+        if (lp <= yearly_lowest_val):
+            price_buy_score += 1
+            price_sell_score -= 1
+        else:
+            pct_val = yearly_lowest_val*100/lp
+
+            if (pct_val >= 85):
+                price_buy_score += 1
+                price_sell_score -= 1
+    else:
+        print('\n52-week low value not found')
+
+    yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
+
+    if (yearly_highest_val > 0):
+        if (lp >= yearly_highest_val):
+            price_sell_score += 1
+            price_buy_score -= 1
+        else:
+            pct_val = lp*100/yearly_highest_val
+
+            if (pct_val >= 85):
+                price_sell_score += 1
+                price_buy_score -= 1
+    else:
+        print('\n52-week high value not found')
+
+    price_max_score += 1
+
     price_buy_rec = f'price_buy_score:{price_buy_score}/{price_max_score}'
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
 
-    price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, mfdc:{max_falling_days_count},{curr_price},{price_buy_rec},{price_sell_rec}'
+    if (yearly_lowest_val > 0):
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},{price_buy_rec},{price_sell_rec}'
+    else:
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, mfdc:{max_falling_days_count},{curr_price},{price_buy_rec},{price_sell_rec}'
     
     return price_buy_score, price_sell_score, price_max_score, price_signals
