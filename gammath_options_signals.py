@@ -11,11 +11,12 @@ import bisect
 from datetime import datetime
 import pandas as pd
 
-def get_options_signals(ticker, path, curr_price):
+def get_options_signals(ticker, path, curr_price, df_summ):
 
     options_buy_score = 0
     options_sell_score = 0
     options_max_score = 0
+    shortRatio = 0
 
     #Get current date and time
     current_dt = datetime.now()
@@ -124,13 +125,24 @@ def get_options_signals(ticker, path, curr_price):
 
             options_max_score += 1
 
+            shortRatio = df_summ['shortRatio'][0]
+            if (shortRatio > 0):
+                if (shortRatio < 3):
+                    options_buy_score += 1
+
+                if (shortRatio > 5):
+                    options_buy_score -= 1
+                    options_sell_score += 1
+
+                options_max_score += 1
+
     except:
         print('\nOptions not supported for ticker: ', ticker.ticker)
 
 
     options_buy_rec = f'options_buy_score:{options_buy_score}/{options_max_score}'
     options_sell_rec = f'options_sell_score:{options_sell_score}/{options_max_score}'
-    options_signals = f'options: {options_buy_rec},{options_sell_rec}'
+    options_signals = f'options: {options_buy_rec},{options_sell_rec},short_ratio:{shortRatio}'
     
     return options_buy_score, options_sell_score, options_max_score, options_signals
 

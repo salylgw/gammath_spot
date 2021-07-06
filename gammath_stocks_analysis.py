@@ -89,7 +89,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     st_buy_score, st_sell_score, st_max_score, st_signals = gstw.get_stocktwits_ticker_info(tsymbol, path)
     
     #Options signals
-    options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(ticker, path, df.Close[len(df)-1])
+    options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(ticker, path, df.Close[len(df)-1], df_summ)
 
 #    0, 0, 0, ''
 
