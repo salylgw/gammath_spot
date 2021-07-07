@@ -134,6 +134,15 @@ def get_options_signals(ticker, path, curr_price, df_summ):
                     options_buy_score -= 1
                     options_sell_score += 1
 
+                if (shortRatio > 10):
+                    options_buy_score -= 2
+                    options_sell_score += 2
+
+                #Setting it disproportionately high to have a screaming signal
+                if (shortRatio > 15):
+                    options_buy_score -= 100
+                    options_sell_score += 100
+
                 options_max_score += 1
 
     except:
