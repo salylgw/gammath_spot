@@ -7,6 +7,8 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 
+PRICE_PERCENT_CUTOFF = 85
+
 def get_price_signals(df, df_summ):
 
     prices = df.Close
@@ -78,9 +80,11 @@ def get_price_signals(df, df_summ):
         else:
             pct_val = yearly_lowest_val*100/lp
 
-            if (pct_val >= 85):
+            if (pct_val >= PRICE_PERCENT_CUTOFF):
                 price_buy_score += 1
                 price_sell_score -= 1
+
+        price_max_score += 1
     else:
         print('\n52-week low value not found')
 
@@ -93,13 +97,23 @@ def get_price_signals(df, df_summ):
         else:
             pct_val = lp*100/yearly_highest_val
 
-            if (pct_val >= 85):
+            if (pct_val >= PRICE_PERCENT_CUTOFF):
                 price_sell_score += 1
                 price_buy_score -= 1
+
+        price_max_score += 1
     else:
         print('\n52-week high value not found')
 
-    price_max_score += 1
+    fiftyDayAverage = df_summ['fiftyDayAverage'][0]
+
+    if (fiftyDayAverage > 0):
+        if (lp <= fiftyDayAverage):
+            price_buy_score += 1
+        else:
+            price_buy_score -= 1
+
+        price_max_score += 1
 
     price_buy_rec = f'price_buy_score:{price_buy_score}/{price_max_score}'
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
