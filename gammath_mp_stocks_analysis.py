@@ -27,10 +27,10 @@ if __name__ == '__main__':
     sf_name = sys.argv[1]
     print(sf_name)
 
-    sym_file = open(sf_name, 'r')
-    tickers = sym_file.readlines()
+    watch_list = pd.read_csv(sf_name)
 
-    max_tickers = len(tickers)
+    max_tickers = len(watch_list)
+
     start_index = 0
     if (max_tickers > cores_to_use):
         end_index = cores_to_use
@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     while (max_tickers):
         for i in range(start_index, end_index):
-            sym = tickers[i].strip()
+            sym = watch_list['Symbol'][i].strip()
             proc_handles.append(Process(target=gsa.get_ticker_hist_n_analysis, args=(f'{sym}',)))
             proc_handles[i].start()
 
