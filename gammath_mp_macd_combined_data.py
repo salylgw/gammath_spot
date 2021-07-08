@@ -46,6 +46,10 @@ if __name__ == '__main__':
         for i in range(start_index, end_index):
             proc_handles[i].join()
 
+        #Running out of resources so need to close handles and release resources
+        for i in range(start_index, end_index):
+            proc_handles[i].close()
+
         if (max_tickers):
             start_index = end_index
             if (max_tickers > cores_to_use):
@@ -70,13 +74,16 @@ if __name__ == '__main__':
     collected_df = pd.DataFrame()
 
     for subdir in subdirs:
-        if not subdir.exists():
-            print('\nError. ', subdir, ' not found')
-        else:
-            new_df = pd.read_csv(subdir / f'{subdir.name}_exception_sig_data.csv')
-            if (len(new_df)):
-                collected_df = collected_df.append(new_df)
-                print(f'Collected exception data for {subdir.name}')
+        try:
+            if not subdir.exists():
+                print('\nError. ', subdir, ' not found')
+            else:
+                new_df = pd.read_csv(subdir / f'{subdir.name}_exception_sig_data.csv')
+                if (len(new_df)):
+                    collected_df = collected_df.append(new_df)
+                    print(f'Collected exception data for {subdir.name}')
+        except:
+            print('\nError while getting exception signal data for ', subdir.name, ': ', sys.exc_info()[0])
 
     #Save the collected data in CSV file
     collected_df.to_csv(Tickers_dir / 'all_exception_sig_data.csv', index=False)

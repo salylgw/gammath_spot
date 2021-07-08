@@ -48,6 +48,10 @@ if __name__ == '__main__':
         for i in range(start_index, end_index):
             proc_handles[i].join()
 
+        #Running out of resources so need to close handles and release resources
+        for i in range(start_index, end_index):
+            proc_handles[i].close()
+
         if (max_tickers):
             start_index = end_index
             if (max_tickers > cores_to_use):

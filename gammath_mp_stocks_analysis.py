@@ -48,6 +48,10 @@ if __name__ == '__main__':
         for i in range(start_index, end_index):
             proc_handles[i].join()
 
+        #Running out of resources so need to close handles and release resources
+        for i in range(start_index, end_index):
+            proc_handles[i].close()
+
         if (max_tickers):
             start_index = end_index
             if (max_tickers > cores_to_use):
@@ -80,29 +84,32 @@ if __name__ == '__main__':
         if not subdir.exists():
             print('\nError. ', subdir, ' not found')
         else:
-            f = open(subdir / 'signal.txt', 'r')
-            content = f.read()
-            matched_string = pattern_for_overall_buy_score.search(content)
-            if (matched_string):
-                kw, val = matched_string.groups()
-                print(f'\n{kw} for {subdir.name}: {val}')
-                df_b['Ticker'][i] = f'{subdir.name}'
-                df_b['overall_buy_score'][i] = int(val)
-                i += 1
-            else:
-                print(f'\n{kw} NOT found for {subdir}')
+            try:
+                f = open(subdir / 'signal.txt', 'r')
+                content = f.read()
+                matched_string = pattern_for_overall_buy_score.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir.name}: {val}')
+                    df_b['Ticker'][i] = f'{subdir.name}'
+                    df_b['overall_buy_score'][i] = int(val)
+                    i += 1
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
 
-            matched_string = pattern_for_overall_sell_score.search(content)
-            if (matched_string):
-                kw, val = matched_string.groups()
-                print(f'\n{kw} for {subdir}: {val}')
-                df_s['Ticker'][j] = f'{subdir.name}'
-                df_s['overall_sell_score'][j] = int(val)
-                j += 1
-            else:
-                print(f'\n{kw} NOT found for {subdir}')
+                matched_string = pattern_for_overall_sell_score.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir}: {val}')
+                    df_s['Ticker'][j] = f'{subdir.name}'
+                    df_s['overall_sell_score'][j] = int(val)
+                    j += 1
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
 
-            f.close()
+                f.close()
+            except:
+                print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
     df_b.sort_values('overall_buy_score').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
     df_s.sort_values('overall_sell_score').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
