@@ -115,6 +115,14 @@ def get_price_signals(df, df_summ):
 
         price_max_score += 1
 
+    twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
+
+    if (twoHundredDayAverage > 0):
+        if (lp <= twoHundredDayAverage):
+            price_buy_score += 2
+
+        price_max_score += 2
+
     price_buy_rec = f'price_buy_score:{price_buy_score}/{price_max_score}'
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
 
