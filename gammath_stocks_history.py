@@ -8,6 +8,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 import yfinance as yf
 from datetime import datetime
 from pathlib import Path
+import sys
 
 #Get summary of past 5 years history
 end_date = datetime.today()
@@ -19,17 +20,21 @@ def get_ticker_info(tsymbol):
     if (len(tsymbol) == 0):
         return None
 
-    ticker = yf.Ticker(tsymbol)
-    stock_history = ticker.history(interval='1d', start=start_date, end=end_date, actions=True,auto_adjust=True)
+    try:
+        ticker = yf.Ticker(tsymbol)
+        stock_history = ticker.history(interval='1d', start=start_date, end=end_date, actions=True,auto_adjust=True)
 
-    print('Stock history dataframe info for ', tsymbol, ':\n')
-    stock_history.info()
+        print('Stock history dataframe info for ', tsymbol, ':\n')
+        stock_history.info()
 
-    path = Tickers_dir / f'{tsymbol}'
-    if not path.exists():
-        path.mkdir(parents=True, exist_ok=True)
+        path = Tickers_dir / f'{tsymbol}'
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
 
-    #Save the history for reference and processing
-    stock_history.dropna().to_csv(path / f'{tsymbol}_history.csv')
+        #Save the history for reference and processing
+        stock_history.dropna().to_csv(path / f'{tsymbol}_history.csv')
+    except:
+        print('\nError getting stock history ', tsymbol, ': ', sys.exc_info()[0])
+        return None
 
     return path, ticker
