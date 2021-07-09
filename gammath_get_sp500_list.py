@@ -10,7 +10,7 @@ from pathlib import Path
 
 sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
 
-Tickers_dir = Path('tickers')
+Tickers_dir = Path('.')
 
 def get_sp500_list():
 
