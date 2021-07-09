@@ -28,7 +28,7 @@ def get_sp500_list():
     #Save the history for reference and processing
     sp500.to_csv(path / f'SP500_list.csv')
 
-    return
+    return sp500
 
 if __name__ == "__main__":
     get_sp500_list()
