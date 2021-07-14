@@ -28,6 +28,7 @@ def get_ticker_summary(tsymbol):
     #twoHundredDayAverage
     #shortRatio
     #pegRatio
+    #beta
     #heldPercentInstitutions
     #heldPercentInsiders
     #state
@@ -90,6 +91,13 @@ def get_ticker_summary(tsymbol):
         print('\nError while getting pegRatio info for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
+        beta = stock_summary['beta']
+    except:
+        beta = 0
+        print('\beta not found for ', tsymbol)
+        print('\nError while getting pegRatio info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
         heldPercentInstitutions = stock_summary['heldPercentInstitutions']
     except:
         heldPercentInstitutions = 0
@@ -117,7 +125,7 @@ def get_ticker_summary(tsymbol):
         print('\ncountry not found for ', tsymbol)
         print('\nError while getting country info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'state': state, 'country': country}, index=range(1))
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'state': state, 'country': country}, index=range(1))
 
 
     path = Tickers_dir / f'{tsymbol}'
