@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     df_sp = df_sp.sort_values('Symbol')
 #    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
-    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
+#    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
 
     p = Path('.')
 #    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
