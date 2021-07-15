@@ -13,7 +13,8 @@ if __name__ == '__main__':
 
     p = Path('.')
 
-    df = pd.read_csv(p / 'SP500_US_ONLY.csv')
+#    df = pd.read_csv(p / 'SP500_US_ONLY.csv')
+    df = pd.read_csv(p / 'SP500_list.csv')
     df_sp = df.sort_values('GICS Sector')
 
     df_sp_len = len(df_sp)
@@ -45,10 +46,12 @@ if __name__ == '__main__':
 
         i += 1
 
-    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
 
     #Extract the sectors
-    df_sp = pd.read_csv(p / 'SP500_US_ONLY_SEC_PES.csv')
+#    df_sp = pd.read_csv(p / 'SP500_US_ONLY_SEC_PES.csv')
+    df_sp = pd.read_csv(p / 'SP500_SEC_PES.csv')
     print('DataFrame length: ', len(df_sp))
     sectors = df_sp['GICS Sector'].drop_duplicates()
     print('\nSectors: ', sectors)
@@ -107,7 +110,9 @@ if __name__ == '__main__':
     print(f'\nSector list: {sector_list}')
 
     df_sp = df_sp.sort_values('Symbol')
-    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
 
     p = Path('.')
-    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
