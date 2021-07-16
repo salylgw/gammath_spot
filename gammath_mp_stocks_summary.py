@@ -15,9 +15,6 @@ import re
 import pandas as pd
 import random
 
-MIN_DELAY_BETWEEN_BATCHES = 1
-MAX_DELAY_BETWEEN_BATCHES = 3
-
 cores_to_use = ((mp.cpu_count() >> 1) + 1)
 
 if __name__ == '__main__':
@@ -62,6 +59,4 @@ if __name__ == '__main__':
             else:
                 end_index += max_tickers
 
-            #Play nice
-            time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
 

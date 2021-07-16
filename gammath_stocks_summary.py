@@ -9,6 +9,12 @@ import yfinance as yf
 from pathlib import Path
 import pandas as pd
 import sys
+import time
+import os
+import random
+
+MIN_DELAY_BETWEEN_BATCHES = 1
+MAX_DELAY_BETWEEN_BATCHES = 3
 
 Tickers_dir = Path('tickers')
 
@@ -16,8 +22,33 @@ def get_ticker_summary(tsymbol):
     if (len(tsymbol) == 0):
         return None
 
-    ticker = yf.Ticker(tsymbol)
-    stock_summary = ticker.info
+    path = Tickers_dir / f'{tsymbol}'
+
+    file_exists = (path / f'{tsymbol}_summary.csv').exists()
+
+    #Check if file exists and is it from another day
+    if file_exists:
+        fstat = os.stat(path / f'{tsymbol}_summary.csv')
+        fct_time = time.ctime(fstat.st_ctime).split(' ')
+        dt = time.strftime('%x').split('/')
+        if (fct_time[2] == dt[1]):
+            print('No need to get new file')
+            dont_need_fetch = True
+        else:
+            print('Date mismatch. Need to fetch new file')
+            dont_need_fetch = False
+    else:
+        dont_need_fetch = False
+
+    #Check if we need to get new summary info
+    if (dont_need_fetch):
+        stock_summary = pd.read_csv(path / f'{tsymbol}_summary.csv')
+        print(f'\nFile for {tsymbol} exists. Reading it now')
+        return
+    else:
+        print(f'\nFile for {tsymbol} does not exist. Fetching it now')
+        ticker = yf.Ticker(tsymbol)
+        stock_summary = ticker.info
 
     #Extract the items of interest
     #trailingPE
@@ -125,8 +156,11 @@ def get_ticker_summary(tsymbol):
         print('\ncountry not found for ', tsymbol)
         print('\nError while getting country info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'state': state, 'country': country}, index=range(1))
+    #TBD: For now set these to 0. Need to compute these
+    heldPercentInstitutionsChange = 0
+    heldPercentInsidersChange = 0
 
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInstitutionsChange': heldPercentInstitutionsChange, 'heldPercentInsiders': heldPercentInsiders, 'heldPercentInsidersChange': heldPercentInsidersChange, 'state': state, 'country': country}, index=range(1))
 
     path = Tickers_dir / f'{tsymbol}'
     if not path.exists():
@@ -135,4 +169,6 @@ def get_ticker_summary(tsymbol):
     #Save the history for reference and processing
     df.to_csv(path / f'{tsymbol}_summary.csv')
 
+    #Play nice
+    time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
     return

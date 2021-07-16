@@ -85,7 +85,7 @@ def get_price_signals(df, df_summ):
                 price_buy_score += 1
                 price_sell_score -= 1
 
-        price_max_score += 1
+        price_max_score += 3
     else:
         print('\n52-week low value not found')
 
@@ -103,7 +103,7 @@ def get_price_signals(df, df_summ):
                 price_sell_score += 1
                 price_buy_score -= 1
 
-        price_max_score += 1
+        price_max_score += 3
     else:
         print('\n52-week high value not found')
 
@@ -121,9 +121,9 @@ def get_price_signals(df, df_summ):
 
     if (twoHundredDayAverage > 0):
         if (lp <= twoHundredDayAverage):
-            price_buy_score += 3
+            price_buy_score += 2
 
-        price_max_score += 3
+        price_max_score += 2
 
     price_buy_rec = f'price_buy_score:{price_buy_score}/{price_max_score}'
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
