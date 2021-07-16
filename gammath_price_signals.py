@@ -75,8 +75,9 @@ def get_price_signals(df, df_summ):
 
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):
-            price_buy_score += 1
-            price_sell_score -= 1
+            #Temporarily increase the score
+            price_buy_score += 3
+            price_sell_score -= 3
         else:
             pct_val = yearly_lowest_val*100/lp
 
@@ -92,8 +93,9 @@ def get_price_signals(df, df_summ):
 
     if (yearly_highest_val > 0):
         if (lp >= yearly_highest_val):
-            price_sell_score += 1
-            price_buy_score -= 1
+            #Temporarily increase the score
+            price_sell_score += 3
+            price_buy_score -= 3
         else:
             pct_val = lp*100/yearly_highest_val
 
