@@ -10,6 +10,8 @@ from pathlib import Path
 import bisect
 from datetime import datetime
 import pandas as pd
+import time
+import os
 
 def get_options_signals(ticker, path, curr_price, df_summ):
 
@@ -27,8 +29,30 @@ def get_options_signals(ticker, path, curr_price, df_summ):
         if (len(option_dates)):
             option_date = option_dates[0]
 
+            file_exists = (path / f'{ticker.ticker}_call_{option_date}.csv').exists()
+
+            #Check if file exists and is it from another day
+            if file_exists:
+                fstat = os.stat(path / f'{ticker.ticker}_call_{option_date}.csv')
+                fct_time = time.ctime(fstat.st_ctime).split(' ')
+                dt = time.strftime('%x').split('/')
+                if (fct_time[2] == dt[1]):
+                    print('No need to get new file')
+                    dont_need_fetch = True
+                else:
+                    print('Date mismatch. Need to fetch new file')
+                    dont_need_fetch = False
+            else:
+                dont_need_fetch = False
+
             #We only need to read options data once a day
-            if not (path / f'{ticker.ticker}_call_{option_date}.csv').exists():
+            if (dont_need_fetch):
+                print('\nOption chain for ', ticker.ticker, ' exists. Reading from files')
+                #Get the data from existing file
+                df_calls = pd.read_csv(path / f'{ticker.ticker}_call_{option_date}.csv')
+                df_puts = pd.read_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
+                print('\nRead call and put data')
+            else:
                 print('\nGetting option chain for ', ticker.ticker)
                 #ticker.calendar seems to be too slow. Need to REVISIT
 #               events_cal = ticker.calendar
@@ -61,13 +85,6 @@ def get_options_signals(ticker, path, curr_price, df_summ):
                 df_puts.to_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
 
                 print('\nSaved call and put data')
-            else:
-                print('\nOption chain for ', ticker.ticker, ' exists. Reading from files')
-                #Get the data from existing file
-                df_calls = pd.read_csv(path / f'{ticker.ticker}_call_{option_date}.csv')
-                df_puts = pd.read_csv(path / f'{ticker.ticker}_put_{option_date}.csv')
-                print('\nRead call and put data')
-
 
             call_opts_size = len(df_calls)
             put_opts_size = len(df_puts)
