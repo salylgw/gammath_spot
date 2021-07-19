@@ -22,6 +22,15 @@ def get_ticker_summary(tsymbol):
     if (len(tsymbol) == 0):
         return None
 
+    heldPercentInstitutionsChange = 0
+    new_heldPercentInstitutions = 0
+    heldPercentInstitutionsChangeDir = ''
+    heldPercentInsidersChange = 0
+    new_heldPercentInsiders = 0
+    heldPercentInsidersChangeDir = ''
+    heldPercentInstitutions = 0
+    heldPercentInsiders = 0
+
     path = Tickers_dir / f'{tsymbol}'
 
     file_exists = (path / f'{tsymbol}_summary.csv').exists()
@@ -37,18 +46,32 @@ def get_ticker_summary(tsymbol):
         else:
             print('Date mismatch. Need to fetch new file')
             dont_need_fetch = False
+
+            #Get the values for institution and insider holding pct and pct_change from previous file
+            stock_summary = pd.read_csv(path / f'{tsymbol}_summary.csv')
+
+            #Get current pct change
+            heldPercentInstitutionsChange = stock_summary['heldPercentInstitutionsChange'][0]
+            heldPercentInsidersChange = stock_summary['heldPercentInsidersChange'][0]
+
+            #Get current values
+            heldPercentInstitutions = stock_summary['heldPercentInstitutions'][0]
+            heldPercentInsiders = stock_summary['heldPercentInsiders'][0]
     else:
         dont_need_fetch = False
 
     #Check if we need to get new summary info
     if (dont_need_fetch):
-        stock_summary = pd.read_csv(path / f'{tsymbol}_summary.csv')
-        print(f'\nFile for {tsymbol} exists. Reading it now')
+        print(f'\nFile for {tsymbol} exists.')
         return
     else:
         print(f'\nFile for {tsymbol} does not exist. Fetching it now')
-        ticker = yf.Ticker(tsymbol)
-        stock_summary = ticker.info
+        try:
+            ticker = yf.Ticker(tsymbol)
+            stock_summary = ticker.info
+        except:
+            print(f'\nStock summary for ticker {tsymbol} not found')
+            return
 
     #Extract the items of interest
     #trailingPE
@@ -129,16 +152,37 @@ def get_ticker_summary(tsymbol):
         print('\nError while getting pegRatio info for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
-        heldPercentInstitutions = stock_summary['heldPercentInstitutions']
+        new_heldPercentInstitutions = stock_summary['heldPercentInstitutions']
+        #Compute pct change for institutional holdings
+        new_heldPercentInstitutionsChange = new_heldPercentInstitutions - heldPercentInstitutions
+
+        new_heldPercentInstitutionsChange += heldPercentInstitutionsChange
+        if (new_heldPercentInstitutionsChange > heldPercentInstitutionsChange):
+            heldPercentInstitutionsChangeDir = 'up'
+        elif (new_heldPercentInstitutionsChange < heldPercentInstitutionsChange):
+            heldPercentInstitutionsChangeDir = 'down'
+        else:
+            heldPercentInstitutionsChangeDir = 'flat'
     except:
-        heldPercentInstitutions = 0
+        new_heldPercentInstitutions = 0
+        stock_summary['heldPercentInstitutions'] = 0
         print('\nheldPercentInstitutions not found for ', tsymbol)
         print('\nError while getting heldPercentInstitutions info for ', tsymbol, ': ', sys.exc_info()[0])
-
     try:
-        heldPercentInsiders = stock_summary['heldPercentInsiders']
+        new_heldPercentInsiders = stock_summary['heldPercentInsiders']
+        #Compute pct change for insiders holdings
+        new_heldPercentInsidersChange = new_heldPercentInsiders - heldPercentInsiders
+
+        new_heldPercentInsidersChange += heldPercentInsidersChange
+        if (new_heldPercentInsidersChange > heldPercentInsidersChange):
+            heldPercentInsidersChangeDir = 'up'
+        elif (new_heldPercentInsidersChange < heldPercentInsidersChange):
+            heldPercentInsidersChangeDir = 'down'
+        else:
+            heldPercentInsidersChangeDir = 'flat'
     except:
-        heldPercentInsiders = 0
+        new_heldPercentInsiders = 0
+        stock_summary['heldPercentInsiders'] = 0
         print('\nheldPercentInsiders not found for ', tsymbol)
         print('\nError while getting heldPercentInsiders info for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -156,11 +200,8 @@ def get_ticker_summary(tsymbol):
         print('\ncountry not found for ', tsymbol)
         print('\nError while getting country info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    #TBD: For now set these to 0. Need to compute these
-    heldPercentInstitutionsChange = 0
-    heldPercentInsidersChange = 0
 
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInstitutionsChange': heldPercentInstitutionsChange, 'heldPercentInsiders': heldPercentInsiders, 'heldPercentInsidersChange': heldPercentInsidersChange, 'state': state, 'country': country}, index=range(1))
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': new_heldPercentInstitutions, 'heldPercentInstitutionsChange': new_heldPercentInstitutionsChange, 'heldPercentInstitutionsChangeDir': heldPercentInstitutionsChangeDir , 'heldPercentInsiders': new_heldPercentInsiders, 'heldPercentInsidersChange': new_heldPercentInsidersChange, 'heldPercentInsidersChangeDir': heldPercentInsidersChangeDir, 'state': state, 'country': country}, index=range(1))
 
     path = Tickers_dir / f'{tsymbol}'
     if not path.exists():

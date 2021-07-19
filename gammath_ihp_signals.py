@@ -16,6 +16,8 @@ def get_ihp_signals(tsymbol, df_summ):
     ihp_max_score = 0
 
     ihp = df_summ['heldPercentInstitutions'][0]
+    ihp_change = df_summ['heldPercentInstitutionsChange'][0]
+    ihp_change_dir = df_summ['heldPercentInstitutionsChangeDir'][0]
 
     print('ihp for ', tsymbol, ': ', ihp)
 
@@ -27,9 +29,27 @@ def get_ihp_signals(tsymbol, df_summ):
 
     ihp_max_score += 1
 
+    if (ihp_change_dir == 'up'):
+        ihp_buy_score += 1
+        ihp_sell_score -= 1
+    elif (ihp_change_dir == 'down'):
+        ihp_buy_score -= 1
+        ihp_sell_score += 1
+
+    ihp_max_score += 1
+
+    if (ihp_change > 0):
+        ihp_buy_score += 1
+        ihp_sell_score -= 1
+    elif (ihp_change < 0):
+        ihp_buy_score -= 1
+        ihp_sell_score += 1
+
+    ihp_max_score += 1
+
     ihp_buy_rec = f'ihp_buy_score:{ihp_buy_score}/{ihp_max_score}'
     ihp_sell_rec = f'ihp_sell_score:{ihp_sell_score}/{ihp_max_score}'
 
-    ihp_signals = f'IHP:{ihp},{ihp_buy_rec},{ihp_sell_rec}'
+    ihp_signals = f'IHP:{ihp},{ihp_buy_rec},{ihp_sell_rec},ihp_change:{ihp_change},dir:{ihp_change_dir}'
 
     return ihp_buy_score, ihp_sell_score, ihp_max_score, ihp_signals
