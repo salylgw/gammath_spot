@@ -22,10 +22,9 @@ def get_inshp_signals(tsymbol, df_summ):
     print('inshp for ', tsymbol, ': ', inshp)
 
     if (inshp > 0):
-        if (inshp < 0.1):
-            inshp_buy_score += 1
-        else:
-            inshp_sell_score += 1
+        inshp_buy_score += 1
+    else:
+        inshp_sell_score += 1
 
     inshp_max_score += 1
 

@@ -27,7 +27,12 @@ def get_ihp_signals(tsymbol, df_summ):
         else:
             ihp_sell_score += 1
 
-    ihp_max_score += 1
+        if (ihp > 0.7):
+            ihp_buy_score += 1
+        else:
+            ihp_sell_score += 1
+
+    ihp_max_score += 2
 
     if (ihp_change_dir == 'up'):
         ihp_buy_score += 1

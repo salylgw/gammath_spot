@@ -22,11 +22,13 @@ def get_ticker_summary(tsymbol):
     if (len(tsymbol) == 0):
         return None
 
-    heldPercentInstitutionsChange = 0
     new_heldPercentInstitutions = 0
-    heldPercentInstitutionsChangeDir = ''
+    heldPercentInstitutionsChange = 0
+    new_heldPercentInstitutionsChange = 0
     heldPercentInsidersChange = 0
     new_heldPercentInsiders = 0
+    new_heldPercentInsidersChange = 0
+    heldPercentInstitutionsChangeDir = ''
     heldPercentInsidersChangeDir = ''
     heldPercentInstitutions = 0
     heldPercentInsiders = 0
@@ -51,12 +53,12 @@ def get_ticker_summary(tsymbol):
             stock_summary = pd.read_csv(path / f'{tsymbol}_summary.csv')
 
             #Get current pct change
-            heldPercentInstitutionsChange = stock_summary['heldPercentInstitutionsChange'][0]
-            heldPercentInsidersChange = stock_summary['heldPercentInsidersChange'][0]
+            heldPercentInstitutionsChange = round(stock_summary['heldPercentInstitutionsChange'][0], 5)
+            heldPercentInsidersChange = round(stock_summary['heldPercentInsidersChange'][0], 5)
 
             #Get current values
-            heldPercentInstitutions = stock_summary['heldPercentInstitutions'][0]
-            heldPercentInsiders = stock_summary['heldPercentInsiders'][0]
+            heldPercentInstitutions = round(stock_summary['heldPercentInstitutions'][0], 5)
+            heldPercentInsiders = round(stock_summary['heldPercentInsiders'][0], 5)
     else:
         dont_need_fetch = False
 
@@ -152,9 +154,9 @@ def get_ticker_summary(tsymbol):
         print('\nError while getting pegRatio info for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
-        new_heldPercentInstitutions = stock_summary['heldPercentInstitutions']
+        new_heldPercentInstitutions = round(stock_summary['heldPercentInstitutions'], 5)
         #Compute pct change for institutional holdings
-        new_heldPercentInstitutionsChange = new_heldPercentInstitutions - heldPercentInstitutions
+        new_heldPercentInstitutionsChange = round((new_heldPercentInstitutions - heldPercentInstitutions), 5)
 
         print(f'\nInst holdings pct change for {tsymbol}: {new_heldPercentInstitutionsChange}. Was: {heldPercentInstitutionsChange}')
 
@@ -171,9 +173,9 @@ def get_ticker_summary(tsymbol):
         print('\nheldPercentInstitutions not found for ', tsymbol)
         print('\nError while getting heldPercentInstitutions info for ', tsymbol, ': ', sys.exc_info()[0])
     try:
-        new_heldPercentInsiders = stock_summary['heldPercentInsiders']
+        new_heldPercentInsiders = round(stock_summary['heldPercentInsiders'], 5)
         #Compute pct change for insiders holdings
-        new_heldPercentInsidersChange = new_heldPercentInsiders - heldPercentInsiders
+        new_heldPercentInsidersChange = round((new_heldPercentInsiders - heldPercentInsiders), 5)
         val_type = type(new_heldPercentInsidersChange)
         print(f'\nInsiders holdings pct change for {tsymbol}: {new_heldPercentInsidersChange}. Was: {heldPercentInsidersChange}. Type:{val_type}')
 
