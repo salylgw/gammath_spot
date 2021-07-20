@@ -156,6 +156,8 @@ def get_ticker_summary(tsymbol):
         #Compute pct change for institutional holdings
         new_heldPercentInstitutionsChange = new_heldPercentInstitutions - heldPercentInstitutions
 
+        print(f'\nInst holdings pct change for {tsymbol}: {new_heldPercentInstitutionsChange}. Was: {heldPercentInstitutionsChange}')
+
         new_heldPercentInstitutionsChange += heldPercentInstitutionsChange
         if (new_heldPercentInstitutionsChange > heldPercentInstitutionsChange):
             heldPercentInstitutionsChangeDir = 'up'
@@ -172,6 +174,8 @@ def get_ticker_summary(tsymbol):
         new_heldPercentInsiders = stock_summary['heldPercentInsiders']
         #Compute pct change for insiders holdings
         new_heldPercentInsidersChange = new_heldPercentInsiders - heldPercentInsiders
+        val_type = type(new_heldPercentInsidersChange)
+        print(f'\nInsiders holdings pct change for {tsymbol}: {new_heldPercentInsidersChange}. Was: {heldPercentInsidersChange}. Type:{val_type}')
 
         new_heldPercentInsidersChange += heldPercentInsidersChange
         if (new_heldPercentInsidersChange > heldPercentInsidersChange):
