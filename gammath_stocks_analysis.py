@@ -27,6 +27,8 @@ import gammath_beta_signals as gbeta
 import gammath_ihp_signals as gihp
 import gammath_inshp_signals as ginshp
 import sys
+import time
+import os
 
 RSI_OVERSOLD_LEVEL = 30
 RSI_OVERBOUGHT_LEVEL = 70
@@ -124,34 +126,44 @@ def get_ticker_hist_n_analysis(tsymbol):
         f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}')
         f.close()
 
-        if not (path / f'{tsymbol}_charts.png').exists():
-            #Draw the charts to view all at once as subplots
-            figure, axes = plt.subplots(nrows=6, figsize=(21, 19))
+        file_exists = (path / f'{tsymbol}_charts.png').exists()
 
-            sym_str = f'{tsymbol}'
+        #Check if file exists and is it from another day
+        if file_exists:
+            fstat = os.stat(path / f'{tsymbol}_charts.png')
+            fct_time = time.ctime(fstat.st_ctime).split(' ')
+            dt = time.strftime('%x').split('/')
+            if (fct_time[2] == dt[1]):
+                print('No need to draw charts again for today')
+                return
 
-            plot_data1 = pd.DataFrame({sym_str: df.Close, 'Upper Band': ub, 'Middle Band': mb, 'Lower Band': lb})
-            plot_data2 = pd.DataFrame({'RSI': rsi})
-            #Don't need to draw the MACD histogram
-            plot_data3 = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
-            plot_data4 = pd.DataFrame({'MFI': mfi})
-            plot_data5 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
-            plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
+        #Draw the charts to view all at once as subplots
+        figure, axes = plt.subplots(nrows=6, figsize=(21, 19))
 
-            plot_data1.plot(ax=axes[0],lw=1,title='Bollinger Bands')
-            plot_data2.plot(ax=axes[1],lw=1,title='Relative Strength Index')
-            axes[1].axhline(RSI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
-            axes[1].axhline(RSI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-            plot_data3.plot(ax=axes[2],lw=1,title='Moving Average Convergence Divergence')
-            plot_data4.plot(ax=axes[3],lw=1,title='Money Flow Index')
-            axes[3].axhline(MFI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
-            axes[3].axhline(MFI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-            plot_data5.plot(ax=axes[4],lw=1,title='Stochastic Slow')
-            axes[4].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
-            axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-            plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
+        sym_str = f'{tsymbol}'
 
-            plt.savefig(path / f'{tsymbol}_charts.png')
+        plot_data1 = pd.DataFrame({sym_str: df.Close, 'Upper Band': ub, 'Middle Band': mb, 'Lower Band': lb})
+        plot_data2 = pd.DataFrame({'RSI': rsi})
+        #Don't need to draw the MACD histogram
+        plot_data3 = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
+        plot_data4 = pd.DataFrame({'MFI': mfi})
+        plot_data5 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
+        plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
+
+        plot_data1.plot(ax=axes[0],lw=1,title='Bollinger Bands')
+        plot_data2.plot(ax=axes[1],lw=1,title='Relative Strength Index')
+        axes[1].axhline(RSI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
+        axes[1].axhline(RSI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
+        plot_data3.plot(ax=axes[2],lw=1,title='Moving Average Convergence Divergence')
+        plot_data4.plot(ax=axes[3],lw=1,title='Money Flow Index')
+        axes[3].axhline(MFI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
+        axes[3].axhline(MFI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
+        plot_data5.plot(ax=axes[4],lw=1,title='Stochastic Slow')
+        axes[4].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
+        axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
+        plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
+
+        plt.savefig(path / f'{tsymbol}_charts.png')
     except:
         print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
 
