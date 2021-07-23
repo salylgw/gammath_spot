@@ -116,6 +116,10 @@ def get_macd_signals(df):
 
     macd_max_score += 2
 
+
+    if (curr_days_in_negative <= (max_days_in_negative/5)):
+        macd_buy_score -= 3
+
     #Get current stock price
     current_price = df['Close'][len(df)-1]
 
