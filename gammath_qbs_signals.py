@@ -13,6 +13,7 @@ MIN_CASH_BALANCE = 100000000
 def get_qbs_signals(tsymbol, path):
 
     cash = 0
+    cash_burnt_last_one_year = -1
     sequity = -1
     dtcr = -1
     print('\nGetting Quarterly balance sheet signals')
@@ -30,6 +31,19 @@ def get_qbs_signals(tsymbol, path):
         try:
             #Cash position at the end of last reported quarter
             cash = df[mrqd]['Cash']
+            earnings_file_exists = (path / f'{tsymbol}_qe.csv').exists()
+            if (earnings_file_exists):
+                dfe = pd.read_csv(path / f'{tsymbol}_qe.csv', index_col='Unnamed: 0')
+                try:
+                    cash_burnt_last_one_year = dfe.Earnings.sum()
+                    print('\nNumber of earnings is ', len(dfe))
+                    if (len(dfe) > 4):
+                        print(f'\nNumber Quaterly Earnings are more than one year duration for {tsymbol}')
+                except:
+                    print(f'\nQuarterly earnings not found for {tsymbol}')
+                    cash_burnt_last_one_year = 0
+            else:
+                print(f'\nEarnings file not found for {tsymbol}')
         except:
             print(f'\nCash item not found in quarterly balance sheet for {tsymbol}')
             cash = 0
@@ -58,13 +72,19 @@ def get_qbs_signals(tsymbol, path):
     qbs_sell_score = 0
     qbs_max_score = 0
 
-    #TBD: Build on this later
-    if (cash >= MIN_CASH_BALANCE):
-        qbs_buy_score += 1
+    if (cash_burnt_last_one_year > 0):
+        possible_next_yearly_cash_burn = cash_burnt_last_one_year + cash
     else:
-        qbs_sell_score += 1
+        possible_next_yearly_cash_burn = 0
 
-    qbs_max_score += 1
+    if (possible_next_yearly_cash_burn > 0):
+        qbs_buy_score += 2
+        qbs_sell_score -= 2
+    else:
+        qbs_sell_score += 2
+        qbs_buy_score -= 2
+
+    qbs_max_score += 2
 
     if (sequity > 0):
         qbs_buy_score += 1
