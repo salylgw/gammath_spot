@@ -1,3 +1,4 @@
+Symbol
 A
 AAL
 AAP
@@ -334,6 +335,7 @@ MOS
 MPC
 MPWR
 MRK
+MRNA
 MRO
 MRVL
 MS
