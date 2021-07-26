@@ -27,14 +27,25 @@ def get_qbs_signals(tsymbol, path):
         #Get the most recent quarter date
         mrqd = df.columns[0]
 
-        #Cash position at the end of last reported quarter
-        cash = df[mrqd]['Cash']
+        try:
+            #Cash position at the end of last reported quarter
+            cash = df[mrqd]['Cash']
+        except:
+            print(f'\nCash item not found in quarterly balance sheet for {tsymbol}')
+            cash = 0
 
-        #Total shareholder equity
-        sequity = df[mrqd]['Total Stockholder Equity']
+        try:
+            #Total shareholder equity
+            sequity = df[mrqd]['Total Stockholder Equity']
+        except:
+            print(f'\nTotal shareholder equity item not found in quarterly balance sheet for {tsymbol}')
 
-        #Long term debt
-        ldebt = df[mrqd]['Long Term Debt']
+        try:
+            #Long term debt
+            ldebt = df[mrqd]['Long Term Debt']
+        except:
+            print(f'\nLong Term Debt item not found in quarterly balance sheet for {tsymbol}')
+            ldebt = 0
 
         #Debt to capital ratio. TBD: Need to revisit the formula for accuracy
         if ((ldebt > 0) and (sequity > 0)):
