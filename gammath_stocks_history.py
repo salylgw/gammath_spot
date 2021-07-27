@@ -27,12 +27,18 @@ def get_ticker_info(tsymbol):
         print('Stock history dataframe info for ', tsymbol, ':\n')
         stock_history.info()
 
-        path = Tickers_dir / f'{tsymbol}'
-        if not path.exists():
-            path.mkdir(parents=True, exist_ok=True)
+        stock_history_len = len(stock_history)
+        print(f'\nLength of stock history for {tsymbol} is {stock_history_len}')
+        if (stock_history_len > 0):
+            path = Tickers_dir / f'{tsymbol}'
+            if not path.exists():
+                path.mkdir(parents=True, exist_ok=True)
 
-        #Save the history for reference and processing
-        stock_history.dropna().to_csv(path / f'{tsymbol}_history.csv')
+            #Save the history for reference and processing
+            stock_history.dropna().to_csv(path / f'{tsymbol}_history.csv')
+        else:
+            print(f'\nZero length stock history for {tsymbol}. Aborting for this ticker')
+            return None
     except:
         print('\nError getting stock history ', tsymbol, ': ', sys.exc_info()[0])
         return None

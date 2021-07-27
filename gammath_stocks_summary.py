@@ -87,6 +87,7 @@ def get_ticker_summary(tsymbol):
     #beta
     #heldPercentInstitutions
     #heldPercentInsiders
+    #priceToBook
     #state
     #country
 
@@ -193,6 +194,13 @@ def get_ticker_summary(tsymbol):
         print('\nError while getting heldPercentInsiders info for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
+        pbr = stock_summary['priceToBook']
+    except:
+        pbr = 0
+        print('\nPrice to Book ratio not found for ', tsymbol)
+        print('\nError while getting PBR info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
         state = stock_summary['state']
     except:
         state = ''
@@ -207,7 +215,7 @@ def get_ticker_summary(tsymbol):
         print('\nError while getting country info for ', tsymbol, ': ', sys.exc_info()[0])
 
 
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': new_heldPercentInstitutions, 'heldPercentInstitutionsChange': new_heldPercentInstitutionsChange, 'heldPercentInstitutionsChangeDir': heldPercentInstitutionsChangeDir , 'heldPercentInsiders': new_heldPercentInsiders, 'heldPercentInsidersChange': new_heldPercentInsidersChange, 'heldPercentInsidersChangeDir': heldPercentInsidersChangeDir, 'state': state, 'country': country}, index=range(1))
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': new_heldPercentInstitutions, 'heldPercentInstitutionsChange': new_heldPercentInstitutionsChange, 'heldPercentInstitutionsChangeDir': heldPercentInstitutionsChangeDir , 'heldPercentInsiders': new_heldPercentInsiders, 'heldPercentInsidersChange': new_heldPercentInsidersChange, 'heldPercentInsidersChangeDir': heldPercentInsidersChangeDir, 'priceToBook': pbr, 'state': state, 'country': country}, index=range(1))
 
     path = Tickers_dir / f'{tsymbol}'
     if not path.exists():
