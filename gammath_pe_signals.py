@@ -23,8 +23,8 @@ def get_pe_signals(tsymbol, df_summ):
         print('\nSP500_US_ONLY_SEC_PES file found')
         df_sp = pd.read_csv(p / 'SP500_US_ONLY_SEC_PES.csv')
 
-    tpe = df_summ['trailingPE'][0]
-    fpe = df_summ['forwardPE'][0]
+    tpe = round(df_summ['trailingPE'][0], 3)
+    fpe = round(df_summ['forwardPE'][0], 3)
 
     print('TPE: ', tpe)
     print('FPE: ', fpe)

@@ -16,7 +16,7 @@ def get_inshp_signals(tsymbol, df_summ):
     inshp_max_score = 0
 
     inshp = df_summ['heldPercentInsiders'][0]
-    inshp_change = df_summ['heldPercentInsidersChange'][0]
+    inshp_change = round(df_summ['heldPercentInsidersChange'][0], 3)
     inshp_change_dir = df_summ['heldPercentInsidersChangeDir'][0]
 
     print('inshp for ', tsymbol, ': ', inshp)

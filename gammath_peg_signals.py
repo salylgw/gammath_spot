@@ -17,7 +17,7 @@ def get_peg_signals(tsymbol, df_summ):
 
     p = Path('.')
 
-    peg = df_summ['pegRatio'][0]
+    peg = round(df_summ['pegRatio'][0], 3)
 
     print('PEG ratio for ', tsymbol, ': ', peg)
 
