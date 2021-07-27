@@ -8,11 +8,11 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 
-MIN_CASH_BALANCE = 100000000
-
 def get_qbs_signals(tsymbol, path):
 
     cash = 0
+    lti = 0
+    sti = 0
     cash_burnt_last_one_year = -1
     sequity = -1
     dtcr = -1
@@ -49,6 +49,18 @@ def get_qbs_signals(tsymbol, path):
             cash = 0
 
         try:
+            sti = df[mrqd]['Short Term Investments']
+        except:
+            print(f'\nShort term investments item not found for {tsymbol}')
+            sti = 0
+
+        try:
+            lti = df[mrqd]['Long Term Investments']
+        except:
+            print(f'\nLong term investments item not found for {tsymbol}')
+            lti = 0
+
+        try:
             #Total shareholder equity
             sequity = df[mrqd]['Total Stockholder Equity']
         except:
@@ -73,11 +85,11 @@ def get_qbs_signals(tsymbol, path):
     qbs_max_score = 0
 
     if (cash_burnt_last_one_year > 0):
-        possible_next_yearly_cash_burn = cash_burnt_last_one_year + cash
+        possible_next_year_remaining_cash = cash_burnt_last_one_year + cash + sti + lti
     else:
-        possible_next_yearly_cash_burn = 0
+        possible_next_year_remaining_cash = 0
 
-    if (possible_next_yearly_cash_burn > 0):
+    if (possible_next_year_remaining_cash > 0):
         qbs_buy_score += 2
         qbs_sell_score -= 2
     else:
