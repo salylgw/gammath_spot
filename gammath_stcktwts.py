@@ -14,6 +14,9 @@ STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
 def get_stocktwits_ticker_info(tsymbol, path):
 
+    st_buy_score = 0
+    st_sell_score = 0
+    st_max_score = 0
     sentiment_change = None
     volume_change = None
     
@@ -72,10 +75,10 @@ def get_stocktwits_ticker_info(tsymbol, path):
 
         st_max_score += 1
 
-        st_buy_rec = f'st_sv_buy_score:{st_buy_score}/{st_max_score}'
-        st_sell_rec = f'st_sv_sell_score:{st_sell_score}/{st_max_score}'
+    st_buy_rec = f'st_sv_buy_score:{st_buy_score}/{st_max_score}'
+    st_sell_rec = f'st_sv_sell_score:{st_sell_score}/{st_max_score}'
 
-        st_signals = f'{st_buy_rec},{st_sell_rec}'
+    st_signals = f'{st_buy_rec},{st_sell_rec}'
 
     return st_buy_score, st_sell_score, st_max_score, st_signals
 

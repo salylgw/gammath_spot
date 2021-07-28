@@ -96,7 +96,7 @@ def get_ticker_summary(tsymbol):
     except:
         trailingPE = 0
         print('\ntrailingPE not found for ', tsymbol)
-        print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
+        print('\nError while getting trailingPE info for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
         forwardPE = stock_summary['forwardPE']
