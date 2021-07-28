@@ -5,7 +5,6 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
-from pathlib import Path
 import pandas as pd
 
 def get_peg_signals(tsymbol, df_summ):
@@ -14,8 +13,6 @@ def get_peg_signals(tsymbol, df_summ):
     peg_buy_score = 0
     peg_sell_score = 0
     peg_max_score = 0
-
-    p = Path('.')
 
     peg = round(df_summ['pegRatio'][0], 3)
 

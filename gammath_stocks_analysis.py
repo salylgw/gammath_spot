@@ -27,6 +27,7 @@ import gammath_beta_signals as gbeta
 import gammath_ihp_signals as gihp
 import gammath_inshp_signals as ginshp
 import gammath_qbs_signals as gqbs
+import gammath_pbr_signals as gpbrs
 import sys
 import time
 import os
@@ -114,18 +115,21 @@ def get_ticker_hist_n_analysis(tsymbol):
         #Quarterly Balance sheet signals
         qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
 
+        #PBR signals
+        pbr_buy_score, pbr_sell_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
+
         #StockTwits signals
         st_buy_score, st_sell_score, st_max_score, st_signals = gstw.get_stocktwits_ticker_info(tsymbol, path)
 
-        overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + st_buy_score
-        overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + st_sell_score
-        overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + st_max_score
+        overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + st_buy_score
+        overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + st_sell_score
+        overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + st_max_score
 
         overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
         overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'
 
         f = open(path / 'signal.txt', 'w')
-        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}')
+        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}')
         f.close()
 
         file_exists = (path / f'{tsymbol}_charts.png').exists()

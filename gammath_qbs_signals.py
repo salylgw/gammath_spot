@@ -23,11 +23,12 @@ def get_qbs_signals(tsymbol, path):
     #Check if file exists and is it from another day
     if file_exists:
         print(f'\nQuarterly balance sheet for {tsymbol} exists')
-        df = pd.read_csv(path / f'{tsymbol}_qbs.csv', index_col='Unnamed: 0')
+        df = pd.read_csv(path / f'{tsymbol}_qbs.csv')
 
         if (len(df) == 0):
             print(f'\nERROR: QBS balansheet dataframe is empty for {tsymbol}')
         else:
+            df = pd.read_csv(path / f'{tsymbol}_qbs.csv', index_col='Unnamed: 0')
 
             #Get the most recent quarter date
             mrqd = df.columns[0]
@@ -141,4 +142,5 @@ def get_qbs_signals(tsymbol, path):
 
     qbs_signals = f'qbs:{qbs_buy_rec},{qbs_sell_rec},dtcr:{dtcr}'
 
+    print(f'\nQBS signals extracted for {tsymbol}')
     return qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals

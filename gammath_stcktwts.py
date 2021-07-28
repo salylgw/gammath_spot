@@ -19,7 +19,8 @@ def get_stocktwits_ticker_info(tsymbol, path):
     st_max_score = 0
     sentiment_change = None
     volume_change = None
-    
+
+    print(f'\nGetting stocktwits signals for {tsymbol}')
     url = f'{STOCKTWITS_TICKER_ADDR}/symbol/{tsymbol}'
     print(url)
 
@@ -80,5 +81,6 @@ def get_stocktwits_ticker_info(tsymbol, path):
 
     st_signals = f'{st_buy_rec},{st_sell_rec}'
 
+    print(f'\nStocktwits signals extracted for {tsymbol}')
     return st_buy_score, st_sell_score, st_max_score, st_signals
 
