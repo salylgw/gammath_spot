@@ -8,6 +8,8 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 
+buy_recos = ('Accumulate', 'Buy', 'Long-Term Buy', 'Long-term Buy', 'Market Outperform', 'Outperform', 'Overweight', 'Positive', 'Sector Outperform', 'Strong Buy', 'Top Pick')
+
 def get_reco_signals(tsymbol, path):
 
     print('\nGetting recommendations signals')
@@ -26,6 +28,7 @@ def get_reco_signals(tsymbol, path):
         if (len_df == 0):
             print(f'\nERROR: Recommendations dataframe is empty for {tsymbol}')
         else:
+            print(f'\nRead recommendations into dataframe for {tsymbol}')
             #Get shorter of last 10% of recommendations or entire list
             df_10p = len_df - int(len_df * 10 / 100)
             if (df_10p < len_df):
@@ -39,7 +42,7 @@ def get_reco_signals(tsymbol, path):
             sell_coumt = 0
 
             for grade in shorter_df['To Grade']:
-                if (grade == 'Buy' or grade == 'Outperform' or grade == 'Overweight' or grade == 'Accumulate' or grade == 'Positive' or grade == 'Top Pick'):
+                if (grade in buy_recos):
                     buy_count += 1
                 else:
                     sell_coumt += 1
@@ -53,17 +56,37 @@ def get_reco_signals(tsymbol, path):
                 reco_sell_score -= 1
             else:
                 #Negative scoring to affect overall score
-                reco_buy_score -= 10
-                reco_sell_score += 10
+                reco_buy_score -= 6
+                reco_sell_score += 6
 
             reco_max_score += 1
 
             if (buy_percentage > 75):
+                reco_buy_score += 2
+                reco_sell_score -= 2
+
+            reco_max_score += 2
+
+            print(f'\nRecommendations score based on current grade done for {tsymbol}')
+
+            up_count = 0
+            down_count = 0
+            for action in shorter_df['Action']:
+                if (action == 'up'):
+                    up_count += 1
+                elif (action == 'down'):
+                    down_count += 1
+
+            print(f'\nUpgrades: {up_count}, Downgrades: {down_count} for {tsymbol}')
+
+            if (up_count > down_count):
                 reco_buy_score += 1
                 reco_sell_score -= 1
+            else:
+                reco_buy_score -= 1
+                reco_sell_score += 1
 
             reco_max_score += 1
-
     else:
         print(f'\nERROR: Quarterly recommendation sheet for {tsymbol} does NOT exist. Need to fetch it')
 
