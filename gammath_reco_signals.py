@@ -39,7 +39,7 @@ def get_reco_signals(tsymbol, path):
             sell_coumt = 0
 
             for grade in shorter_df['To Grade']:
-                if (grade == 'Buy' or grade == 'Outperform' or grade == 'Overweight'):
+                if (grade == 'Buy' or grade == 'Outperform' or grade == 'Overweight' or grade == 'Accumulate' or grade == 'Positive' or grade == 'Top Pick'):
                     buy_count += 1
                 else:
                     sell_coumt += 1
