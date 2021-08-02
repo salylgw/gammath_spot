@@ -8,7 +8,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 
-buy_recos = ('Accumulate', 'Buy', 'Long-Term Buy', 'Long-term Buy', 'Market Outperform', 'Outperform', 'Overweight', 'Positive', 'Sector Outperform', 'Strong Buy', 'Top Pick')
+buy_recos = ('Above Average', 'Accumulate', 'Add', 'Buy', 'Conviction Buy', 'Gradually Accumulate', 'Long-Term Buy', 'Long-term Buy', 'Market Outperform', 'Outperform', 'Outperformer', 'Overweight', 'Positive', 'Sector Outperform', 'Strong Buy', 'Top Pick')
 
 def get_reco_signals(tsymbol, path):
 
