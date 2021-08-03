@@ -143,7 +143,15 @@ def get_ticker_hist_n_analysis(tsymbol):
             fstat = os.stat(path / f'{tsymbol}_charts.png')
             fct_time = time.ctime(fstat.st_ctime).split(' ')
             dt = time.strftime('%x').split('/')
-            if (fct_time[2] == dt[1]):
+            if (fct_time[2] == ''):
+                fct_date_index = 3
+            else:
+                fct_date_index = 2
+
+            fct_date = int(fct_time[fct_date_index])
+            dt_date = int(dt[1])
+
+            if (fct_date == dt_date):
                 print('No need to draw charts again for today')
                 return
 

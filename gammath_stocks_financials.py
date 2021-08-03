@@ -40,7 +40,15 @@ def get_ticker_financials(tsymbol):
             fstat = os.stat(path / f'{tsymbol}_qbs.csv')
             fct_time = time.ctime(fstat.st_ctime).split(' ')
             dt = time.strftime('%x').split('/')
-            if (fct_time[2] == dt[1]):
+            if (fct_time[2] == ''):
+                fct_date_index = 3
+            else:
+                fct_date_index = 2
+
+            fct_date = int(fct_time[fct_date_index])
+            dt_date = int(dt[1])
+
+            if (fct_date == dt_date):
                 print('No need to get new file')
                 qbs_dont_need_fetch = True
             else:
@@ -59,7 +67,15 @@ def get_ticker_financials(tsymbol):
             fstat = os.stat(path / f'{tsymbol}_qcf.csv')
             fct_time = time.ctime(fstat.st_ctime).split(' ')
             dt = time.strftime('%x').split('/')
-            if (fct_time[2] == dt[1]):
+            if (fct_time[2] == ''):
+                fct_date_index = 3
+            else:
+                fct_date_index = 2
+
+            fct_date = int(fct_time[fct_date_index])
+            dt_date = int(dt[1])
+
+            if (fct_date == dt_date):
                 print('No need to get new file')
                 qcf_dont_need_fetch = True
             else:
@@ -78,7 +94,15 @@ def get_ticker_financials(tsymbol):
             fstat = os.stat(path / f'{tsymbol}_qe.csv')
             fct_time = time.ctime(fstat.st_ctime).split(' ')
             dt = time.strftime('%x').split('/')
-            if (fct_time[2] == dt[1]):
+            if (fct_time[2] == ''):
+                fct_date_index = 3
+            else:
+                fct_date_index = 2
+
+            fct_date = int(fct_time[fct_date_index])
+            dt_date = int(dt[1])
+
+            if (fct_date == dt_date):
                 print('No need to get new file')
                 qe_dont_need_fetch = True
             else:
@@ -97,7 +121,15 @@ def get_ticker_financials(tsymbol):
             fstat = os.stat(path / f'{tsymbol}_qf.csv')
             fct_time = time.ctime(fstat.st_ctime).split(' ')
             dt = time.strftime('%x').split('/')
-            if (fct_time[2] == dt[1]):
+            if (fct_time[2] == ''):
+                fct_date_index = 3
+            else:
+                fct_date_index = 2
+
+            fct_date = int(fct_time[fct_date_index])
+            dt_date = int(dt[1])
+
+            if (fct_date == dt_date):
                 print('No need to get new file')
                 qf_dont_need_fetch = True
             else:
@@ -117,7 +149,15 @@ def get_ticker_financials(tsymbol):
             fstat = os.stat(path / f'{tsymbol}_reco.csv')
             fct_time = time.ctime(fstat.st_ctime).split(' ')
             dt = time.strftime('%x').split('/')
-            if (fct_time[2] == dt[1]):
+            if (fct_time[2] == ''):
+                fct_date_index = 3
+            else:
+                fct_date_index = 2
+
+            fct_date = int(fct_time[fct_date_index])
+            dt_date = int(dt[1])
+
+            if (fct_date == dt_date):
                 print('No need to get new file')
                 reco_dont_need_fetch = True
             else:
