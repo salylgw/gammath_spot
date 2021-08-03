@@ -15,15 +15,13 @@ if __name__ == '__main__':
 
 #    df = pd.read_csv(p / 'SP500_US_ONLY.csv')
     df = pd.read_csv(p / 'SP500_list.csv')
+
+    #Need to calculate sector-average so rearrange
     df_sp = df.sort_values('GICS Sector')
 
     df_sp_len = len(df_sp)
 
     df_pe = pd.DataFrame(columns=['TPE', 'FPE', 'LS_AVG_TPE', 'LS_AVG_FPE'], index=range(df_sp_len))
-
-    #New data frame with columns from PE dataframe appended
-    df_sp = df_sp.append(df_pe)
-    df_sp = df_sp.dropna(0, how='all')
 
     p = Path('tickers')
 
@@ -32,27 +30,27 @@ if __name__ == '__main__':
 
     for symbol in symbols:
         try:
-            df_pe = pd.read_csv(p / f'{symbol}/{symbol}_summary.csv')
-            tpe = df_pe['trailingPE'][0]
-            fpe = df_pe['forwardPE'][0]
+            df_summ = pd.read_csv(p / f'{symbol}/{symbol}_summary.csv')
+            tpe = df_summ['trailingPE'][0]
+            fpe = df_summ['forwardPE'][0]
 
-            df_sp['TPE'][i] = tpe
-            df_sp['FPE'][i] = fpe
+            #df_sp Symbols are arranged based on sectors so same order will be in df_pe
+            df_pe['TPE'][i] = tpe
+            df_pe['FPE'][i] = fpe
                 
         except:
             print('\nError while getting stock PE values for ', symbol, ': ', sys.exc_info()[0])
-            df_sp['TPE'][i] = 0
-            df_sp['FPE'][i] = 0
+            df_pe['TPE'][i] = 0
+            df_pe['FPE'][i] = 0
 
         i += 1
 
-#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
-    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
-
     #Extract the sectors
 #    df_sp = pd.read_csv(p / 'SP500_US_ONLY_SEC_PES.csv')
-    df_sp = pd.read_csv(p / 'SP500_SEC_PES.csv')
-    print('DataFrame length: ', len(df_sp))
+#    df_sp = pd.read_csv(p / 'SP500_SEC_PES.csv')
+    print('DataFrame length: ', df_sp_len)
+
+    #Extract unique sectors
     sectors = df_sp['GICS Sector'].drop_duplicates()
     print('\nSectors: ', sectors)
     sector_list = []
@@ -65,8 +63,8 @@ if __name__ == '__main__':
     sector_fields = list(df_sp['GICS Sector'])
     len_sector_fields = len(sector_fields)
     print('\nSector fields list size: ', len_sector_fields)
-    tpes = list(df_sp['TPE'])
-    fpes = list(df_sp['FPE'])
+    tpes = list(df_pe['TPE'])
+    fpes = list(df_pe['FPE'])
 
     for sector in sectors:
         sector_list.append(sector)
@@ -104,15 +102,29 @@ if __name__ == '__main__':
             curr_sector_fpe_avg = curr_sector_fpe / curr_sector_fpe_count
             print('FPE AVG: ', curr_sector_fpe_avg, 'start_index: ', start_index, 'end_index: ', end_index)
 
-        df_sp['LS_AVG_TPE'][start_index:end_index] = curr_sector_tpe_avg
-        df_sp['LS_AVG_FPE'][start_index:end_index] = curr_sector_fpe_avg
+        print(f'start index: {start_index}, end index: {end_index}')
 
+        #Save average values at all indices for this sector
+        df_pe['LS_AVG_TPE'][start_index:end_index] = curr_sector_tpe_avg
+        df_pe['LS_AVG_FPE'][start_index:end_index] = curr_sector_fpe_avg
+
+    print(df_pe)
     print(f'\nSector list: {sector_list}')
 
+    #New data frame with columns from PE dataframe joined
+    df_sp = df_sp.join(df_pe)
+    #Drop unwanted fields
+    df_sp = df_sp.dropna(0, how='all').drop('Unnamed: 0', axis=1)
+
+#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+
+    #Rearrange based on ticker symbol
     df_sp = df_sp.sort_values('Symbol')
 #    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
 #    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
 
     p = Path('.')
 #    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+
+    #Save for later reference and processing
     df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
