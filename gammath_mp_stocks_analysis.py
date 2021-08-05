@@ -76,12 +76,12 @@ if __name__ == '__main__':
 
     print('\nNum of subdirs: ', len(subdirs))
 
-    pattern_for_overall_buy_score = re.compile(r'(overall_buy_score):([-]*[0-9]+)')
-    pattern_for_overall_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]+)')
+    pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
+    pattern_for_final_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]*[.]*[0-9]+)')
 
-    df_b = pd.DataFrame(columns=['Ticker', 'overall_buy_score'], index=range(len(subdirs)))
+    df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
 
-    df_s = pd.DataFrame(columns=['Ticker', 'overall_sell_score'], index=range(len(subdirs)))
+    df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
 
     i = 0
     j = 0
@@ -93,22 +93,22 @@ if __name__ == '__main__':
             try:
                 f = open(subdir / 'signal.txt', 'r')
                 content = f.read()
-                matched_string = pattern_for_overall_buy_score.search(content)
+                matched_string = pattern_for_final_buy_score.search(content)
                 if (matched_string):
                     kw, val = matched_string.groups()
                     print(f'\n{kw} for {subdir.name}: {val}')
                     df_b['Ticker'][i] = f'{subdir.name}'
-                    df_b['overall_buy_score'][i] = int(val)
+                    df_b['final_buy_score'][i] = float(val)
                     i += 1
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 
-                matched_string = pattern_for_overall_sell_score.search(content)
+                matched_string = pattern_for_final_sell_score.search(content)
                 if (matched_string):
                     kw, val = matched_string.groups()
                     print(f'\n{kw} for {subdir}: {val}')
                     df_s['Ticker'][j] = f'{subdir.name}'
-                    df_s['overall_sell_score'][j] = int(val)
+                    df_s['final_sell_score'][j] = float(val)
                     j += 1
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
@@ -117,7 +117,7 @@ if __name__ == '__main__':
             except:
                 print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
-    df_b.sort_values('overall_buy_score').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
-    df_s.sort_values('overall_sell_score').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
+    df_b.sort_values('final_buy_score').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
+    df_s.sort_values('final_sell_score').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')

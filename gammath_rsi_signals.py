@@ -25,7 +25,7 @@ def get_rsi_signals(tsymbol, df, path):
     curr_rsi = rsi[rsi_len-1]
     print('Current RSI for ', tsymbol, ' is: ', curr_rsi, '\n')
     f = open(path / f'{tsymbol}_RSI_summary.csv', 'a')
-    f.write(f'curr_rsi:{curr_rsi}')
+    f.write(f'curr_rsi,{curr_rsi}')
     f.close()
     prev_rsi = rsi[rsi_len-2]
     preprev_rsi = rsi[rsi_len-3]
@@ -50,8 +50,8 @@ def get_rsi_signals(tsymbol, df, path):
 
     if (curr_rsi <= RSI_OVERSOLD_LEVEL):
         rsi_lvl = 'oversold'
-        rsi_buy_score += 4
-        rsi_sell_score -= 4
+        rsi_buy_score += 6
+        rsi_sell_score -= 6
     elif (curr_rsi >= RSI_OVERBOUGHT_LEVEL):
         rsi_lvl = 'overbought'
         rsi_sell_score += 4
@@ -59,7 +59,7 @@ def get_rsi_signals(tsymbol, df, path):
     else:
         rsi_lvl = ''
 
-    rsi_max_score += 4
+    rsi_max_score += 6
 
     if ((curr_rsi < prev_rsi) and (prev_rsi < preprev_rsi)):
         rsi_direction = 'falling'
@@ -78,8 +78,55 @@ def get_rsi_signals(tsymbol, df, path):
 
     rsi_max_score += 1
 
+    curr_oversold_count = 0
+    min_oversold_days = 0
+    max_oversold_days = 0
+    avg_oversold_days = 0
+
+    #Get oversold days stats
+    for i in range(rsi_len):
+        if (rsi[i] <= RSI_OVERSOLD_LEVEL):
+            curr_oversold_count += 1
+        else:
+            if ((min_oversold_days > 0) and (curr_oversold_count > 0)):
+                if (min_oversold_days > curr_oversold_count):
+                    min_oversold_days = curr_oversold_count
+            elif (min_oversold_days == 0):
+                min_oversold_days = curr_oversold_count
+
+            if ((max_oversold_days > 0) and (curr_oversold_count > 0)):
+                if (max_oversold_days < curr_oversold_count):
+                    max_oversold_days = curr_oversold_count
+            elif (max_oversold_days == 0):
+                max_oversold_days = curr_oversold_count
+
+            curr_oversold_count = 0
+
+    if (curr_oversold_count > max_oversold_days):
+        max_oversold_days = curr_oversold_count
+
+    avg_oversold_days = (min_oversold_days + max_oversold_days)/2
+
+    if (curr_oversold_count >= min_oversold_days):
+        rsi_buy_score += 1
+        rsi_sell_score -= 1
+
+    rsi_max_score += 1
+
+    if (curr_oversold_count >= avg_oversold_days):
+        rsi_buy_score += 1
+        rsi_sell_score -= 1
+
+    rsi_max_score += 1
+
+    if (curr_oversold_count >= max_oversold_days):
+        rsi_buy_score += 1
+        rsi_sell_score -= 1
+
+    rsi_max_score += 1
+
     rsi_buy_rec = f'rsi_buy_score:{rsi_buy_score}/{rsi_max_score}'
     rsi_sell_rec = f'rsi_sell_score:{rsi_sell_score}/{rsi_max_score}'
-    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{rsi_buy_rec},{rsi_sell_rec}'
+    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{rsi_buy_rec},{rsi_sell_rec},miosd:{min_oversold_days},maxosd:{max_oversold_days},avosd:{avg_oversold_days},cosd:{curr_oversold_count}'
     
     return rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals

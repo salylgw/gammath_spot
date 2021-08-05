@@ -131,9 +131,14 @@ def get_ticker_hist_n_analysis(tsymbol):
 
         overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
         overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'
+        final_buy_score = round((int(overall_buy_score)/int(overall_max_score)), 5)
+        final_buy_score_rec = f'final_buy_score:{final_buy_score}'
+
+        final_sell_score = round((int(overall_sell_score)/int(overall_max_score)), 5)
+        final_sell_score_rec = f'final_sell_score:{final_sell_score}'
 
         f = open(path / 'signal.txt', 'w')
-        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}')
+        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}')
         f.close()
 
         file_exists = (path / f'{tsymbol}_charts.png').exists()
