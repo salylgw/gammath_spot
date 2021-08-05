@@ -16,7 +16,7 @@ def get_ihp_signals(tsymbol, df_summ):
     ihp_max_score = 0
 
     ihp = df_summ['heldPercentInstitutions'][0]
-    ihp_change = round(df_summ['heldPercentInstitutionsChange'][0], 3)
+    ihp_change = round(df_summ['heldPercentInstitutionsChange'][0], 5)
     ihp_change_dir = df_summ['heldPercentInstitutionsChangeDir'][0]
 
     print('ihp for ', tsymbol, ': ', ihp)

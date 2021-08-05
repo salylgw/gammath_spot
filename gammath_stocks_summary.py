@@ -170,6 +170,7 @@ def get_ticker_summary(tsymbol):
         print(f'\nInst holdings pct change for {tsymbol}: {new_heldPercentInstitutionsChange}. Was: {heldPercentInstitutionsChange}')
 
         new_heldPercentInstitutionsChange += heldPercentInstitutionsChange
+        new_heldPercentInstitutionsChange = round(new_heldPercentInstitutionsChange, 5)
         if (new_heldPercentInstitutionsChange > heldPercentInstitutionsChange):
             heldPercentInstitutionsChangeDir = 'up'
         elif (new_heldPercentInstitutionsChange < heldPercentInstitutionsChange):
@@ -189,6 +190,7 @@ def get_ticker_summary(tsymbol):
         print(f'\nInsiders holdings pct change for {tsymbol}: {new_heldPercentInsidersChange}. Was: {heldPercentInsidersChange}. Type:{val_type}')
 
         new_heldPercentInsidersChange += heldPercentInsidersChange
+        new_heldPercentInsidersChange = round(new_heldPercentInsidersChange, 5)
         if (new_heldPercentInsidersChange > heldPercentInsidersChange):
             heldPercentInsidersChangeDir = 'up'
         elif (new_heldPercentInsidersChange < heldPercentInsidersChange):
