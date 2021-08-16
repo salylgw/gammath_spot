@@ -75,10 +75,57 @@ def get_mfi_signals(df):
 
         mfi_max_score += 1
 
+    curr_oversold_count = 0
+    min_oversold_days = 0
+    max_oversold_days = 0
+    avg_oversold_days = 0
+
+    #Get oversold days stats
+    for i in range(mfi_len):
+        if (mfi[i] <= MFI_OVERSOLD_LEVEL):
+            curr_oversold_count += 1
+        else:
+            if ((min_oversold_days > 0) and (curr_oversold_count > 0)):
+                if (min_oversold_days > curr_oversold_count):
+                    min_oversold_days = curr_oversold_count
+            elif (min_oversold_days == 0):
+                min_oversold_days = curr_oversold_count
+
+            if ((max_oversold_days > 0) and (curr_oversold_count > 0)):
+                if (max_oversold_days < curr_oversold_count):
+                    max_oversold_days = curr_oversold_count
+            elif (max_oversold_days == 0):
+                max_oversold_days = curr_oversold_count
+
+            curr_oversold_count = 0
+
+    if (curr_oversold_count > max_oversold_days):
+        max_oversold_days = curr_oversold_count
+
+    avg_oversold_days = (min_oversold_days + max_oversold_days)/2
+
+    if (curr_oversold_count >= min_oversold_days):
+        mfi_buy_score += 1
+        mfi_sell_score -= 1
+
+    mfi_max_score += 1
+
+    if (curr_oversold_count >= avg_oversold_days):
+        mfi_buy_score += 1
+        mfi_sell_score -= 1
+
+    mfi_max_score += 1
+
+    if (curr_oversold_count >= max_oversold_days):
+        mfi_buy_score += 1
+        mfi_sell_score -= 1
+
+    mfi_max_score += 1
+
     mfi_buy_rec = f'mfi_buy_score:{mfi_buy_score}/{mfi_max_score}'
     mfi_sell_rec = f'mfi_sell_score:{mfi_sell_score}/{mfi_max_score}'
 
-    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_buy_rec},{mfi_sell_rec}'
+    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_buy_rec},{mfi_sell_rec},miosd:{min_oversold_days},maxosd:{max_oversold_days},avosd:{avg_oversold_days},cosd:{curr_oversold_count}'
     
     return mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals
     
