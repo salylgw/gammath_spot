@@ -84,7 +84,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         mb, ub, lb, bb_buy_score, bb_sell_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(df, path)
 
         #MFI signals
-        mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(df)
+        mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
 
         #Stochastic slow signals
         slowk, slowd, stoch_buy_score, stoch_sell_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(df)

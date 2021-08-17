@@ -8,6 +8,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 import pandas as pd
 from pathlib import Path
 from talib import RSI
+import numpy as np
 
 RSI_TIME_PERIOD = 14
 RSI_OVERSOLD_LEVEL = 30
@@ -83,11 +84,18 @@ def get_rsi_signals(tsymbol, df, path):
     max_oversold_days = 0
     avg_oversold_days = 0
 
+    rsi_os_count_series = pd.Series(np.nan, pd.RangeIndex(rsi_len))
+    rsi_os_count_index = 0
+
     #Get oversold days stats
     for i in range(rsi_len):
         if (rsi[i] <= RSI_OVERSOLD_LEVEL):
             curr_oversold_count += 1
+            rsi_os_count_series[rsi_os_count_index] = curr_oversold_count
         else:
+            if (curr_oversold_count > 0):
+                rsi_os_count_index += 1
+
             if ((min_oversold_days > 0) and (curr_oversold_count > 0)):
                 if (min_oversold_days > curr_oversold_count):
                     min_oversold_days = curr_oversold_count
@@ -102,10 +110,21 @@ def get_rsi_signals(tsymbol, df, path):
 
             curr_oversold_count = 0
 
+    rsi_os_count_series = rsi_os_count_series.dropna()
+    rsi_os_count_series = rsi_os_count_series.sort_values()
+
+    #Get top percentile value
+    top_percentile = round(rsi_os_count_series.quantile(0.75), 3)
+    print(f'\n RSI oversold top percentile is {top_percentile}')
+
+    #Get results description
+    os_count_descr = rsi_os_count_series.describe()
+
+    #Save it for later reference
+    os_count_descr.to_csv(path / f'{tsymbol}_RSI_OSC_summary.csv')
+
     if (curr_oversold_count > max_oversold_days):
         max_oversold_days = curr_oversold_count
-
-    avg_oversold_days = (min_oversold_days + max_oversold_days)/2
 
     if (curr_oversold_count >= min_oversold_days):
         rsi_buy_score += 1
@@ -113,7 +132,15 @@ def get_rsi_signals(tsymbol, df, path):
 
     rsi_max_score += 1
 
+    avg_oversold_days = round(rsi_os_count_series.mean(), 3)
+
     if (curr_oversold_count >= avg_oversold_days):
+        rsi_buy_score += 1
+        rsi_sell_score -= 1
+
+    rsi_max_score += 1
+
+    if (curr_oversold_count >= top_percentile):
         rsi_buy_score += 1
         rsi_sell_score -= 1
 
