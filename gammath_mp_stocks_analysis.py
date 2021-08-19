@@ -117,7 +117,7 @@ if __name__ == '__main__':
             except:
                 print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
-    df_b.sort_values('final_buy_score').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
-    df_s.sort_values('final_sell_score').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
+    df_b.sort_values('final_buy_score').dropna().to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
+    df_s.sort_values('final_sell_score').dropna().to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')

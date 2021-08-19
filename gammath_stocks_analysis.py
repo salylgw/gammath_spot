@@ -90,7 +90,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         slowk, slowd, stoch_buy_score, stoch_sell_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(df)
 
         #MACD signals
-        macd, macd_signal, macd_buy_score, macd_sell_score, macd_max_score, macd_signals = gmacd.get_macd_signals(df)
+        macd, macd_signal, macd_buy_score, macd_sell_score, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
 
         #Kalman Filter. For now just plot the state means against price
         state_means, state_covariance = gkf.get_kf_means_covariance(df)

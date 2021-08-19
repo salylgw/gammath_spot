@@ -235,6 +235,6 @@ def get_ticker_financials(tsymbol):
                 print(f'\nRecommendations sheet for ticker {tsymbol} not found')
 
         #Play nice
-        time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
+#        time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
 
     return

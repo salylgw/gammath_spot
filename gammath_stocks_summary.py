@@ -235,5 +235,5 @@ def get_ticker_summary(tsymbol):
     df.to_csv(path / f'{tsymbol}_summary.csv')
 
     #Play nice
-    time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
+#    time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
     return
