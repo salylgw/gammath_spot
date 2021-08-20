@@ -6,7 +6,9 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
+import numpy as np
 
+AVG_TRADING_DAYS_PER_YEAR = 252
 PRICE_PERCENT_CUTOFF = 85
 
 def get_price_signals(df, df_summ):
@@ -45,15 +47,35 @@ def get_price_signals(df, df_summ):
     last_rising_days_count = 0
     max_rising_days_count = 0
 
+    price_consec_falling_days_count_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
+    price_consec_falling_days_count_index = 0
+
+    price_consec_rising_days_count_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
+    price_consec_rising_days_count_index = 0
+
     for i in range(prices_len-1):
         if (prices[i] > prices[i+1]):
             last_falling_days_count += 1
-            max_rising_days_count = 0
+
+            if (last_rising_days_count > 0):
+                price_consec_rising_days_count_index += 1
+
+            last_rising_days_count = 0
+
+            price_consec_falling_days_count_series[price_consec_falling_days_count_index] = last_falling_days_count
+
             if (last_falling_days_count > max_falling_days_count):
                 max_falling_days_count = last_falling_days_count
         elif (prices[i] < prices[i+1]):
             last_rising_days_count += 1
+
+            if (last_falling_days_count > 0):
+                price_consec_falling_days_count_index += 1
+
             last_falling_days_count = 0
+
+            price_consec_rising_days_count_series[price_consec_rising_days_count_index] = last_rising_days_count
+
             if (last_rising_days_count > max_rising_days_count):
                 max_rising_days_count = last_rising_days_count
         else:
@@ -63,10 +85,49 @@ def get_price_signals(df, df_summ):
     #Limit to 3 digits after decimal point
     curr_price = f'curr_price: %5.3f' % lp
 
-    if (last_falling_days_count >= (max_falling_days_count/2)):
+    price_consec_falling_days_count_series = price_consec_falling_days_count_series.dropna()
+    #Lower counts will be too many so drop them to get approx percentile past lower numbers
+    price_consec_falling_days_count_series = price_consec_falling_days_count_series.drop_duplicates()
+    price_consec_falling_days_count_series = price_consec_falling_days_count_series.sort_values()
+
+    price_consec_rising_days_count_series = price_consec_rising_days_count_series.dropna()
+    #Lower counts will be too many so drop them to get approx percentile past lower numbers
+    price_consec_rising_days_count_series = price_consec_rising_days_count_series.drop_duplicates()
+    price_consec_rising_days_count_series = price_consec_rising_days_count_series.sort_values()
+
+    #Get percentile values
+    fp_bp, fp_mp, fp_tp = price_consec_falling_days_count_series.quantile([0.25, 0.5, 0.75])
+
+    fp_bp = round(fp_bp, 3)
+    fp_mp = round(fp_mp, 3)
+    fp_tp = round(fp_tp, 3)
+
+    rp_bp, rp_mp, rp_tp = price_consec_rising_days_count_series.quantile([0.25, 0.5, 0.75])
+
+    rp_bp = round(rp_bp, 3)
+    rp_mp = round(rp_mp, 3)
+    rp_tp = round(rp_tp, 3)
+
+    if (last_falling_days_count > fp_bp):
         price_buy_score += 1
 
-    if (last_rising_days_count >= (max_rising_days_count/2)):
+    if (last_rising_days_count > rp_bp):
+        price_sell_score += 1
+
+    price_max_score += 1
+
+    if (last_falling_days_count > fp_mp):
+        price_buy_score += 1
+
+    if (last_rising_days_count > rp_mp):
+        price_sell_score += 1
+
+    price_max_score += 1
+
+    if (last_falling_days_count > fp_tp):
+        price_buy_score += 1
+
+    if (last_rising_days_count > rp_tp):
         price_sell_score += 1
 
     price_max_score += 1
@@ -125,12 +186,37 @@ def get_price_signals(df, df_summ):
 
         price_max_score += 2
 
+    one_year_prices = df['Close'][(prices_len-AVG_TRADING_DAYS_PER_YEAR):]
+    bp, mp, tp = one_year_prices.quantile([0.25, 0.5, 0.75])
+
+    bp = round(bp, 3)
+    mp = round(mp, 3)
+    tp = round(tp, 3)
+
+    if ((lp <= bp) or (lp >= tp)):
+        if (lp <= bp):
+            price_buy_score += 3
+            price_sell_score -= 3
+        elif (lp >= tp):
+            price_buy_score -= 3
+            price_sell_score += 3
+    else:
+        if ((lp > bp) and (lp < mp)):
+            price_buy_score += 2
+            price_sell_score -= 2
+
+        if ((lp > mp) and (lp < tp)):
+            price_buy_score += 1
+            price_sell_score -= 1
+
+    price_max_score += 3
+
     price_buy_rec = f'price_buy_score:{price_buy_score}/{price_max_score}'
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
 
     if (yearly_lowest_val > 0):
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},{price_buy_rec},{price_sell_rec}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec}'
     else:
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, mfdc:{max_falling_days_count},{curr_price},{price_buy_rec},{price_sell_rec}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec}'
     
     return price_buy_score, price_sell_score, price_max_score, price_signals

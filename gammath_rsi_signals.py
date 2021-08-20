@@ -55,8 +55,8 @@ def get_rsi_signals(tsymbol, df, path):
         rsi_sell_score -= 6
     elif (curr_rsi >= RSI_OVERBOUGHT_LEVEL):
         rsi_lvl = 'overbought'
-        rsi_sell_score += 4
-        rsi_buy_score -= 4
+        rsi_sell_score += 6
+        rsi_buy_score -= 6
     else:
         rsi_lvl = ''
 
@@ -113,8 +113,10 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_os_count_series = rsi_os_count_series.dropna()
     rsi_os_count_series = rsi_os_count_series.sort_values()
 
-    #Get top percentile value
-    top_percentile = round(rsi_os_count_series.quantile(0.75), 3)
+    #Get percentile values
+    bp, mp, tp = rsi_os_count_series.quantile([0.25, 0.5, 0.75])
+
+    top_percentile = round(tp, 3)
     print(f'\n RSI oversold top percentile is {top_percentile}')
 
     #Get results description
@@ -126,13 +128,14 @@ def get_rsi_signals(tsymbol, df, path):
     if (curr_oversold_count > max_oversold_days):
         max_oversold_days = curr_oversold_count
 
-    if (curr_oversold_count >= min_oversold_days):
+    lowest_percentile_oversold_count = round(bp, 3)
+    if (curr_oversold_count >= lowest_percentile_oversold_count):
         rsi_buy_score += 1
         rsi_sell_score -= 1
 
     rsi_max_score += 1
 
-    avg_oversold_days = round(rsi_os_count_series.mean(), 3)
+    avg_oversold_days = round(mp, 3)
 
     if (curr_oversold_count >= avg_oversold_days):
         rsi_buy_score += 1
@@ -147,13 +150,13 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_max_score += 1
 
     if (curr_oversold_count >= max_oversold_days):
-        rsi_buy_score += 1
-        rsi_sell_score -= 1
+        rsi_buy_score += 3
+        rsi_sell_score -= 3
 
-    rsi_max_score += 1
+    rsi_max_score += 3
 
     rsi_buy_rec = f'rsi_buy_score:{rsi_buy_score}/{rsi_max_score}'
     rsi_sell_rec = f'rsi_sell_score:{rsi_sell_score}/{rsi_max_score}'
-    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{rsi_buy_rec},{rsi_sell_rec},miosd:{min_oversold_days},maxosd:{max_oversold_days},avosd:{avg_oversold_days},cosd:{curr_oversold_count}'
+    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{rsi_buy_rec},{rsi_sell_rec},losdp:{lowest_percentile_oversold_count},tosdp:{top_percentile},mosdp:{avg_oversold_days},cosd:{curr_oversold_count}'
     
     return rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals

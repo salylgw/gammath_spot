@@ -64,17 +64,17 @@ def get_mfi_signals(tsymbol, df, path):
 
         if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
             mfi_lvl = 'overbought'
-            mfi_sell_score += 1
-            mfi_buy_score -= 1
+            mfi_sell_score += 2
+            mfi_buy_score -= 2
             
         elif (curr_mfi <= MFI_OVERSOLD_LEVEL):
             mfi_lvl = 'oversold'
-            mfi_buy_score += 1
-            mfi_sell_score -= 1
+            mfi_buy_score += 2
+            mfi_sell_score -= 2
         else:
             mfi_lvl = ''
 
-        mfi_max_score += 1
+        mfi_max_score += 2
 
     curr_oversold_count = 0
     min_oversold_days = 0
@@ -110,8 +110,9 @@ def get_mfi_signals(tsymbol, df, path):
     mfi_os_count_series = mfi_os_count_series.dropna()
     mfi_os_count_series = mfi_os_count_series.sort_values()
 
-    #Get top percentile value
-    top_percentile = round(mfi_os_count_series.quantile(0.75), 3)
+    #Get percentile values
+    bp, mp, tp = mfi_os_count_series.quantile([0.25, 0.5, 0.75])
+    top_percentile = round(tp, 3)
     print(f'\n MFI oversold top percentile is {top_percentile}')
 
     #Get results description
@@ -123,13 +124,14 @@ def get_mfi_signals(tsymbol, df, path):
     if (curr_oversold_count > max_oversold_days):
         max_oversold_days = curr_oversold_count
 
-    if (curr_oversold_count >= min_oversold_days):
+    lowest_percentile_oversold_count = round(bp, 3)
+    if (curr_oversold_count >= lowest_percentile_oversold_count):
         mfi_buy_score += 1
         mfi_sell_score -= 1
 
     mfi_max_score += 1
 
-    avg_oversold_days = round(mfi_os_count_series.mean(), 3)
+    avg_oversold_days = round(mp, 3)
 
     if (curr_oversold_count >= avg_oversold_days):
         mfi_buy_score += 1
@@ -144,15 +146,15 @@ def get_mfi_signals(tsymbol, df, path):
     mfi_max_score += 1
 
     if (curr_oversold_count >= max_oversold_days):
-        mfi_buy_score += 1
-        mfi_sell_score -= 1
+        mfi_buy_score += 2
+        mfi_sell_score -= 2
 
-    mfi_max_score += 1
+    mfi_max_score += 2
 
     mfi_buy_rec = f'mfi_buy_score:{mfi_buy_score}/{mfi_max_score}'
     mfi_sell_rec = f'mfi_sell_score:{mfi_sell_score}/{mfi_max_score}'
 
-    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_buy_rec},{mfi_sell_rec},miosd:{min_oversold_days},maxosd:{max_oversold_days},avosd:{avg_oversold_days},cosd:{curr_oversold_count}'
+    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_buy_rec},{mfi_sell_rec},losdp:{lowest_percentile_oversold_count},tosdp:{top_percentile},mosdp:{avg_oversold_days},cosd:{curr_oversold_count}'
     
     return mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals
     

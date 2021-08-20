@@ -16,6 +16,11 @@ def get_qbs_signals(tsymbol, path):
     cash_burnt_last_one_year = -1
     sequity = -1
     dtcr = -1
+
+    qbs_buy_score = 0
+    qbs_sell_score = 0
+    qbs_max_score = 0
+
     print('\nGetting Quarterly balance sheet signals')
 
     file_exists = (path / f'{tsymbol}_qbs.csv').exists()
@@ -82,60 +87,57 @@ def get_qbs_signals(tsymbol, path):
             if ((ldebt > 0) and (sequity > 0)):
                 dtcr = round(ldebt / (ldebt + sequity), 3)
 
+            if (cash_burnt_last_one_year > 0):
+                possible_next_year_remaining_cash = cash_burnt_last_one_year + cash + sti + lti
+            else:
+                possible_next_year_remaining_cash = 0
+
+            if (possible_next_year_remaining_cash > 0):
+                qbs_buy_score += 2
+                qbs_sell_score -= 2
+            else:
+                qbs_sell_score += 2
+                qbs_buy_score -= 2
+
+            qbs_max_score += 2
+
+            if (sequity > 0):
+                qbs_buy_score += 2
+                qbs_sell_score -= 2
+            else:
+                qbs_sell_score += 2
+                qbs_buy_score -= 2
+
+            qbs_max_score += 2
+
+            if (ldebt == 0):
+                qbs_buy_score += 3
+                qbs_sell_score -= 3
+            elif (ldebt > 0):
+
+                if (dtcr > 0):
+                    if (dtcr >= 0.7):
+                        qbs_buy_score -= 3
+                        qbs_sell_score += 3
+                    else:
+                        if (dtcr < 0.4):
+                            qbs_buy_score += 1
+                            qbs_sell_score -= 1
+                        else:
+                            qbs_buy_score -= 1
+                            qbs_sell_score += 1
+
+                        if (dtcr < 0.2):
+                            qbs_buy_score += 1
+                            qbs_sell_score -= 1
+                        else:
+                            qbs_buy_score -= 1
+                            qbs_sell_score += 1
+
+            qbs_max_score += 3
     else:
         print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist. Need to fetch it')
 
-    qbs_buy_score = 0
-    qbs_sell_score = 0
-    qbs_max_score = 0
-
-    if (cash_burnt_last_one_year > 0):
-        possible_next_year_remaining_cash = cash_burnt_last_one_year + cash + sti + lti
-    else:
-        possible_next_year_remaining_cash = 0
-
-    if (possible_next_year_remaining_cash > 0):
-        qbs_buy_score += 2
-        qbs_sell_score -= 2
-    else:
-        qbs_sell_score += 2
-        qbs_buy_score -= 2
-
-    qbs_max_score += 2
-
-    if (sequity > 0):
-        qbs_buy_score += 1
-        qbs_sell_score -= 1
-    else:
-        qbs_sell_score += 1
-        qbs_buy_score -= 1
-
-    qbs_max_score += 1
-
-    if (ldebt == 0):
-        qbs_buy_score += 1
-        qbs_sell_score -= 1
-    elif (ldebt > 0):
-        qbs_sell_score += 1
-        qbs_buy_score -= 1
-
-    qbs_max_score += 1
-
-    if (dtcr > 0):
-        if (dtcr >= 0.7):
-            qbs_buy_score -= 3
-            qbs_sell_score += 3
-        else:
-            qbs_buy_score += 1
-
-            if (dtcr < 0.4):
-                qbs_buy_score += 1
-
-            if (dtcr < 0.2):
-                qbs_buy_score += 1
-                qbs_sell_score -= 1
-
-    qbs_max_score += 3
 
     qbs_buy_rec = f'qbs_buy_score:{qbs_buy_score}/{qbs_max_score}'
     qbs_sell_rec = f'qbs_sell_score:{qbs_sell_score}/{qbs_max_score}'

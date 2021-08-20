@@ -29,7 +29,7 @@ def get_reco_signals(tsymbol, path):
             print(f'\nERROR: Recommendations dataframe is empty for {tsymbol}')
         else:
             print(f'\nRead recommendations into dataframe for {tsymbol}')
-            #Get shorter of last 10% of recommendations or entire list
+            #Get shorter of last 10% of recommendations from entire list
             df_10p = len_df - int(len_df * 10 / 100)
             if (df_10p < len_df):
                 start_index = df_10p
@@ -52,20 +52,20 @@ def get_reco_signals(tsymbol, path):
             buy_percentage = buy_count*100/total_recos
 
             if (buy_percentage > 50):
-                reco_buy_score += 1
-                reco_sell_score -= 1
+                reco_buy_score += 2
+                reco_sell_score -= 2
             else:
-                #Negative scoring to affect overall score
+                #Disproportionate negative scoring to affect overall score
                 reco_buy_score -= 6
                 reco_sell_score += 6
 
-            reco_max_score += 1
+            reco_max_score += 2
 
             if (buy_percentage > 75):
-                reco_buy_score += 2
-                reco_sell_score -= 2
+                reco_buy_score += 3
+                reco_sell_score -= 3
 
-            reco_max_score += 2
+            reco_max_score += 3
 
             print(f'\nRecommendations score based on current grade done for {tsymbol}')
 
@@ -80,13 +80,14 @@ def get_reco_signals(tsymbol, path):
             print(f'\nUpgrades: {up_count}, Downgrades: {down_count} for {tsymbol}')
 
             if (up_count > down_count):
-                reco_buy_score += 1
-                reco_sell_score -= 1
+                reco_buy_score += 3
+                reco_sell_score -= 3
             else:
-                reco_buy_score -= 1
-                reco_sell_score += 1
+                #Disproportionate negative scoring for downgrades
+                reco_buy_score -= 6
+                reco_sell_score += 6
 
-            reco_max_score += 1
+            reco_max_score += 3
     else:
         print(f'\nERROR: Quarterly recommendation sheet for {tsymbol} does NOT exist. Need to fetch it')
 
