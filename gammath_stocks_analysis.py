@@ -77,7 +77,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         #Price signals
         price_buy_score, price_sell_score, price_max_score, price_signals = gps.get_price_signals(df, df_summ)
 
-        #Relative Strenght Index signals
+        #Relative Strength Index signals
         rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
 
         #Bollinger bands signals
@@ -92,8 +92,8 @@ def get_ticker_hist_n_analysis(tsymbol):
         #MACD signals
         macd, macd_signal, macd_buy_score, macd_sell_score, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
 
-        #Kalman Filter. For now just plot the state means against price
-        state_means, state_covariance = gkf.get_kf_means_covariance(df)
+        #Kalman Filter signals
+        state_means, state_covariance, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_means_covariance(df)
 
         #Options signals
         options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(ticker, path, df.Close[len(df)-1], df_summ)
@@ -125,9 +125,9 @@ def get_ticker_hist_n_analysis(tsymbol):
         #StockTwits signals
         st_buy_score, st_sell_score, st_max_score, st_signals = gstw.get_stocktwits_ticker_info(tsymbol, path)
 
-        overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
-        overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
-        overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
+        overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
+        overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
+        overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
 
         overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
         overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'
@@ -138,7 +138,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         final_sell_score_rec = f'final_sell_score:{final_sell_score}'
 
         f = open(path / 'signal.txt', 'w')
-        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}')
+        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}')
         f.close()
 
         file_exists = (path / f'{tsymbol}_charts.png').exists()
