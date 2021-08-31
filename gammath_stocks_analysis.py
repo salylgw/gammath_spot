@@ -46,9 +46,22 @@ STOCH_OVERBOUGHT_LEVEL = 80
 end_date = datetime.today()
 start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
+Tickers_dir = Path('tickers')
+
 def get_ticker_hist_n_analysis(tsymbol):
 
-    result = gsh.get_ticker_info(tsymbol)
+    path = Tickers_dir / f'{tsymbol}'
+
+    try:
+        #Read Stock summary info into DataFrame.
+        df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
+        print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
+        df_summ.info()
+    except:
+        print('\nStock summary file not found for symbol ', tsymbol)
+        df_summ = pd.DataFrame()
+
+    result = gsh.get_ticker_info(tsymbol, df_summ)
 
     if (result is None):
         return
@@ -64,14 +77,6 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('\nStock history file not found for ', tsymbol)
         df = pd.DataFrame()
 
-    try:
-        #Read Stock summary info into DataFrame.
-        df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
-        print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
-        df_summ.info()
-    except:
-        print('\nStock summary file not found for symbol ', tsymbol)
-        df_summ = pd.DataFrame()
 
     try:
         #Price signals

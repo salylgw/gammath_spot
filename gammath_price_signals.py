@@ -18,7 +18,22 @@ def get_price_signals(df, df_summ):
     if (prices_len <=0):
         return
 
+    #Get current price from summary
+    one_off_curr_price = df_summ['currentPrice'][0]
+    val_type = type(one_off_curr_price)
+    print(f'\nOne off curr price: {one_off_curr_price}, type:{val_type}')
+
+    #Looks like price history is stale so get current price from summary
+#    if (one_off_curr_price > 0):
+#        lp = one_off_curr_price
+#    else:
+#        lp = prices[prices_len-1]
+
     lp = prices[prices_len-1]
+
+    #Limit to 3 digits after decimal point
+    curr_price = f'curr_price: %5.3f' % lp
+
     lpm1 = prices[prices_len-2]
     lpm2 = prices[prices_len-3]
 
@@ -81,9 +96,6 @@ def get_price_signals(df, df_summ):
         else:
             last_falling_days_count = 0
             last_rising_days_count = 0
-
-    #Limit to 3 digits after decimal point
-    curr_price = f'curr_price: %5.3f' % lp
 
     price_consec_falling_days_count_series = price_consec_falling_days_count_series.dropna()
     #Lower counts will be too many so drop them to get approx percentile past lower numbers

@@ -43,16 +43,7 @@ def get_macd_combined_data(tsymbol):
     path = Tickers_dir / f'{tsymbol}'
 
     try:
-        if not (path / f'{tsymbol}_history.csv').exists():
-            print('\nTicker history for ', tsymbol, ' does not exist. Getting from yfinance')
-            result = gsh.get_ticker_info(tsymbol)
-
-            if (result is None):
-                return
-            else:
-                path, ticker = result
-        else:
-            print('\nTicker history for ', tsymbol, ' already exists. Reading from the file')
+        print('\nReading ticker history for ', tsymbol, ' from the file')
 
         #Read CSV into DataFrame. Stock_history dataframe seems to filter out dates
         df = pd.read_csv(path / f'{tsymbol}_history.csv')
@@ -102,7 +93,7 @@ def get_macd_combined_data(tsymbol):
         df_buy_sell_signals_data = pd.DataFrame(columns=['ticker', 'bsig', 'ssig', 'price', 'diff', 'pct_change', 'rsi_avg',  'bb_avg', 'bb_vicinity', 'mfi_avg', 'stoch_lvl', 'exception'],index=range(macd_len))
         df_buy_sell_sig_data_index = 0
 
-        df_exeptions_data = pd.DataFrame(columns=df_buy_sell_signals_data.columns, index=df_buy_sell_signals_data.index)
+        df_exceptions_data = pd.DataFrame(columns=df_buy_sell_signals_data.columns, index=df_buy_sell_signals_data.index)
         rule_exception_index = 0
 
         for i in range(macd_len-1):
@@ -196,11 +187,11 @@ def get_macd_combined_data(tsymbol):
                             df_buy_sell_signals_data['exception'][df_buy_sell_sig_data_index] = '*'
 
                             #Segregate exceptional cases
-                            df_exeptions_data.iloc[rule_exception_index] = df_buy_sell_signals_data.iloc[df_buy_sell_sig_data_index-1]
+                            df_exceptions_data.iloc[rule_exception_index] = df_buy_sell_signals_data.iloc[df_buy_sell_sig_data_index-1]
 
                             rule_exception_index += 1
 
-                            df_exeptions_data.iloc[rule_exception_index] = df_buy_sell_signals_data.iloc[df_buy_sell_sig_data_index]
+                            df_exceptions_data.iloc[rule_exception_index] = df_buy_sell_signals_data.iloc[df_buy_sell_sig_data_index]
 
                             rule_exception_index += 1
 
@@ -211,7 +202,7 @@ def get_macd_combined_data(tsymbol):
         df_buy_sell_signals_data.dropna(how='all').to_csv(path / f'{tsymbol}_combined_buy_sell_sig_data.csv', index=False)
 
         #Save the exceptions data separately and drop the rows with all NaNs
-        df_exeptions_data.dropna(how='all').to_csv(path / f'{tsymbol}_exception_sig_data.csv', index=False)
+        df_exceptions_data.dropna(how='all').to_csv(path / f'{tsymbol}_exception_sig_data.csv', index=False)
     except:
         print('\nError while getting stock info for ', tsymbol, ': ', sys.exc_info()[0])
 
