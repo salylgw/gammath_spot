@@ -61,22 +61,14 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('\nStock summary file not found for symbol ', tsymbol)
         df_summ = pd.DataFrame()
 
-    result = gsh.get_ticker_info(tsymbol, df_summ)
-
-    if (result is None):
-        return
-    else:
-        path, ticker = result
-
     try:
-        #Read CSV into DataFrame. Stock_history dataframe seems to filter out dates
+        #Read CSV into DataFrame.
         df = pd.read_csv(path / f'{tsymbol}_history.csv')
         print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
         df.info()
     except:
         print('\nStock history file not found for ', tsymbol)
         df = pd.DataFrame()
-
 
     try:
         #Price signals
@@ -101,7 +93,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         state_means, state_covariance, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_means_covariance(df)
 
         #Options signals
-        options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(ticker, path, df.Close[len(df)-1], df_summ)
+        options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
 
         #PE signals
         pe_buy_score, pe_sell_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)

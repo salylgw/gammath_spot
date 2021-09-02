@@ -15,14 +15,11 @@ import sys
 end_date = datetime.today()
 start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
-Tickers_dir = Path('tickers')
-
-def get_ticker_info(tsymbol, df_summ):
+def get_ticker_history(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
         return None
 
     try:
-        ticker = yf.Ticker(tsymbol)
         stock_history = ticker.history(interval='1d', start=start_date, end=end_date, actions=True,auto_adjust=True)
 
         print('Stock history dataframe info for ', tsymbol, ':\n')
@@ -31,7 +28,6 @@ def get_ticker_info(tsymbol, df_summ):
         stock_history_len = len(stock_history)
         print(f'\nLength of stock history for {tsymbol} is {stock_history_len}')
         if (stock_history_len > 0):
-            path = Tickers_dir / f'{tsymbol}'
             if not path.exists():
                 path.mkdir(parents=True, exist_ok=True)
 
@@ -50,7 +46,16 @@ def get_ticker_info(tsymbol, df_summ):
                 last_date_array = last_date_string.split('-')
                 if (end_date.day != int(last_date_array[2])):
                     print('Stock history is stale for ', tsymbol)
-                    #Stale prices. Fetch market price from info and save it
+                    try:
+                        #Read Stock summary info into DataFrame.
+                        df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
+                        print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
+                        df_summ.info()
+                    except:
+                        print('\nStock summary file not found for symbol ', tsymbol)
+                        df_summ = pd.DataFrame()
+
+                    #Stale prices. Fetch market price from info and save it in history
                     curr_price = df_summ['currentPrice'][0]
                     if (curr_price > 0):
                         #REVISIT: Temp workaround for stale data issue

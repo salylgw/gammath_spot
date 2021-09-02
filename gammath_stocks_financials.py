@@ -18,7 +18,7 @@ MAX_DELAY_BETWEEN_BATCHES = 3
 
 Tickers_dir = Path('tickers')
 
-def get_ticker_financials(tsymbol):
+def get_ticker_financials(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
         return None
 
@@ -28,7 +28,6 @@ def get_ticker_financials(tsymbol):
     qf_dont_need_fetch = True
     reco_dont_need_fetch = True
 
-    path = Tickers_dir / f'{tsymbol}'
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
 
@@ -172,7 +171,6 @@ def get_ticker_financials(tsymbol):
     if (qbs_dont_need_fetch and qcf_dont_need_fetch and qe_dont_need_fetch and qf_dont_need_fetch and reco_dont_need_fetch):
         return
     else:
-        ticker = yf.Ticker(tsymbol)
 
         if not qbs_dont_need_fetch:
             print(f'\nFetching quarterly balance sheet for {tsymbol}')
@@ -233,8 +231,5 @@ def get_ticker_financials(tsymbol):
                     print(f'\nRecommendations sheet for {tsymbol} is empty')
             except:
                 print(f'\nRecommendations sheet for ticker {tsymbol} not found')
-
-        #Play nice
-#        time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
 
     return

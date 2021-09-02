@@ -62,8 +62,9 @@ if __name__ == '__main__':
             else:
                 end_index += max_tickers
 
+            #Following delay is no longer needed as we are not fetching data over the internet
             #Play nice
-            time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
+#            time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
 
     Tickers_dir = Path('tickers')
 

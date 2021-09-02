@@ -18,7 +18,7 @@ MAX_DELAY_BETWEEN_BATCHES = 3
 
 Tickers_dir = Path('tickers')
 
-def get_ticker_summary(tsymbol):
+def get_ticker_summary(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
         return None
 
@@ -32,8 +32,6 @@ def get_ticker_summary(tsymbol):
     heldPercentInsidersChangeDir = ''
     heldPercentInstitutions = 0
     heldPercentInsiders = 0
-
-    path = Tickers_dir / f'{tsymbol}'
 
     file_exists = (path / f'{tsymbol}_summary.csv').exists()
 
@@ -77,7 +75,6 @@ def get_ticker_summary(tsymbol):
     else:
         print(f'\nFile for {tsymbol} does not exist. Fetching it now')
         try:
-            ticker = yf.Ticker(tsymbol)
             stock_summary = ticker.info
         except:
             print(f'\nStock summary for ticker {tsymbol} not found')
@@ -234,13 +231,10 @@ def get_ticker_summary(tsymbol):
 
     df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': new_heldPercentInstitutions, 'heldPercentInstitutionsChange': new_heldPercentInstitutionsChange, 'heldPercentInstitutionsChangeDir': heldPercentInstitutionsChangeDir , 'heldPercentInsiders': new_heldPercentInsiders, 'heldPercentInsidersChange': new_heldPercentInsidersChange, 'heldPercentInsidersChangeDir': heldPercentInsidersChangeDir, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price}, index=range(1))
 
-    path = Tickers_dir / f'{tsymbol}'
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
 
     #Save the history for reference and processing
     df.to_csv(path / f'{tsymbol}_summary.csv')
 
-    #Play nice
-#    time.sleep(random.randrange(MIN_DELAY_BETWEEN_BATCHES, MAX_DELAY_BETWEEN_BATCHES))
     return
