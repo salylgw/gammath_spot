@@ -52,20 +52,17 @@ def get_reco_signals(tsymbol, path):
             buy_percentage = buy_count*100/total_recos
 
             if (buy_percentage > 50):
-                reco_buy_score += 2
-                reco_sell_score -= 2
+                reco_buy_score += 3
+                reco_sell_score -= 3
             else:
-                #Disproportionate negative scoring to affect overall score
                 reco_buy_score -= 6
                 reco_sell_score += 6
-
-            reco_max_score += 2
 
             if (buy_percentage > 75):
                 reco_buy_score += 3
                 reco_sell_score -= 3
 
-            reco_max_score += 3
+            reco_max_score += 6
 
             print(f'\nRecommendations score based on current grade done for {tsymbol}')
 
@@ -80,14 +77,13 @@ def get_reco_signals(tsymbol, path):
             print(f'\nUpgrades: {up_count}, Downgrades: {down_count} for {tsymbol}')
 
             if (up_count > down_count):
-                reco_buy_score += 3
-                reco_sell_score -= 3
+                reco_buy_score += 6
+                reco_sell_score -= 6
             else:
-                #Disproportionate negative scoring for downgrades
                 reco_buy_score -= 6
                 reco_sell_score += 6
 
-            reco_max_score += 3
+            reco_max_score += 6
     else:
         print(f'\nERROR: Quarterly recommendation sheet for {tsymbol} does NOT exist. Need to fetch it')
 

@@ -85,35 +85,38 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
                     bc_ratio = 0
 
                 if (bc_ratio > 1):
-                    print('\nbullish')
+                    print(f'\nbullish signal for {tsymbol}')
                     options_buy_score += 3
                     options_sell_score -= 3
                 else:
-                    print('\nbearish')
+                    print(f'\nbearish signal for {tsymbol}')
                     options_buy_score -= 3
                     options_sell_score += 3
 
                 options_max_score += 3
 
+                #Use short ratio to read the bullish/bearishß trend
                 shortRatio = df_summ['shortRatio'][0]
                 if (shortRatio > 0):
                     if (shortRatio < 3):
-                        options_buy_score += 3
-                        options_sell_score -= 3
+                        options_buy_score += 6
+                        options_sell_score -= 6
+                    elif (shortRatio < 6):
+                        options_buy_score += 2
+                        options_sell_score -= 2
+                    elif (shortRatio < 10):
+                        options_buy_score += 1
+                        options_sell_score -= 1
                     else:
-                        options_buy_score -= 3
-                        options_sell_score += 3
+                        if (shortRatio > 10):
+                            options_buy_score -= 3
+                            options_sell_score += 3
 
-                    if (shortRatio > 10):
-                        options_buy_score -= 6
-                        options_sell_score += 6
+                        if (shortRatio > 15):
+                            options_buy_score -= 3
+                            options_sell_score += 3
 
-                    #Setting it disproportionately high to have a screaming signal
-                    if (shortRatio > 15):
-                        options_buy_score -= 100
-                        options_sell_score += 100
-
-                    options_max_score += 3
+                    options_max_score += 6
 
             else:
                 print('\nOptions not supported for ', tsymbol)
