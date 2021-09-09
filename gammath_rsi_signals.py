@@ -157,6 +157,6 @@ def get_rsi_signals(tsymbol, df, path):
 
     rsi_buy_rec = f'rsi_buy_score:{rsi_buy_score}/{rsi_max_score}'
     rsi_sell_rec = f'rsi_sell_score:{rsi_sell_score}/{rsi_max_score}'
-    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{rsi_buy_rec},{rsi_sell_rec},losdp:{lowest_percentile_oversold_count},tosdp:{top_percentile},mosdp:{avg_oversold_days},cosd:{curr_oversold_count}'
+    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{rsi_buy_rec},{rsi_sell_rec},cosd:{curr_oversold_count},losdp:{lowest_percentile_oversold_count},mosdp:{avg_oversold_days},tosdp:{top_percentile}'
     
     return rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals
