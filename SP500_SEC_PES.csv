@@ -1,506 +1,506 @@
 Symbol,Security,SEC filings,GICS Sector,GICS Sub-Industry,Headquarters Location,Date first added,CIK,Founded,TPE,FPE,LS_AVG_TPE,LS_AVG_FPE
-A,Agilent Technologies,reports,Health Care,Health Care Equipment,"Santa Clara, California",2000-06-05,1090872,1999,72.8785,46.465664,29.051502647058822,27.181346927272724
-AAL,American Airlines Group,reports,Industrials,Airlines,"Fort Worth, Texas",2015-03-23,6201,1934,17.817947,16.252966,69.99590155714287,31.070739906451625
-AAP,Advance Auto Parts,reports,Consumer Discretionary,Automotive Retail,"Raleigh, North Carolina",2015-07-09,1158449,1932,0,58.22222,29.051502647058822,27.181346927272724
-AAPL,Apple,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Cupertino, California",1982-11-30,320193,1977,0,15.466215,69.99590155714287,31.070739906451625
-ABBV,AbbVie,reports,Health Care,Pharmaceuticals,"North Chicago, Illinois",2012-12-31,1551152,2013 (1888),0,34.96875,29.051502647058822,27.181346927272724
-ABC,AmerisourceBergen,reports,Health Care,Health Care Distributors,"Chesterbrook, Pennsylvania",2001-08-30,1140859,1985,42.473015,35.050903,69.99590155714287,31.070739906451625
-ABMD,Abiomed,reports,Health Care,Health Care Equipment,"Danvers, Massachusetts",2018-05-31,815094,1981,11.98926,10.579304,29.051502647058822,27.181346927272724
-ABT,Abbott Laboratories,reports,Health Care,Health Care Equipment,"North Chicago, Illinois",1964-03-31,1800,1888,0,,29.051502647058822,27.181346927272724
-ACN,Accenture,reports,Information Technology,IT Consulting & Other Services,"Dublin, Ireland",2011-07-06,1467373,1989,23.267681,7.9480124,29.051502647058822,27.181346927272724
-ADBE,Adobe,reports,Information Technology,Application Software,"San Jose, California",1997-05-05,796343,1982,10.756108,13.17427,29.051502647058822,27.181346927272724
-ADI,Analog Devices,reports,Information Technology,Semiconductors,"Wilmington, Massachusetts",1999-10-12,6281,1965,29.617256,20.852024,69.99590155714287,31.070739906451625
-ADM,ADM,reports,Consumer Staples,Agricultural Products,"Chicago, Illinois",1981-07-29,7084,1902,35.01814,25.215256,69.99590155714287,31.070739906451625
-ADP,Automatic Data Processing,reports,Information Technology,Data Processing & Outsourced Services,"Roseland, New Jersey",1981-03-31,8670,1949,20.481041,13.868824,69.99590155714287,31.070739906451625
-ADSK,Autodesk,reports,Information Technology,Application Software,"San Rafael, California",1989-12-01,769397,1982,20.470903,19.900135,69.99590155714287,31.070739906451625
-AEE,Ameren Corp,reports,Utilities,Multi-Utilities,"St. Louis, Missouri",1991-09-19,1002910,1902,0,238.94443,69.99590155714287,31.070739906451625
-AEP,American Electric Power,reports,Utilities,Electric Utilities,"Columbus, Ohio",1957-03-04,4904,1906,134.93553,59.38329,69.99590155714287,31.070739906451625
-AES,AES Corp,reports,Utilities,Independent Power Producers & Energy Traders,"Arlington, Virginia",1998-10-02,874761,1981,0,111.25001,29.051502647058822,27.181346927272724
-AFL,Aflac,reports,Financials,Life & Health Insurance,"Columbus, Georgia",1999-05-28,4977,1955,32.482224,24.94079,29.051502647058822,27.181346927272724
-AIG,American International Group,reports,Financials,Property & Casualty Insurance,"New York City, New York",1980-03-31,5272,1919,21.806124,8.530938,69.99590155714287,31.070739906451625
-AIZ,Assurant,reports,Financials,Multi-line Insurance,"New York City, New York",2007-04-10,1267238,1892,47.476444,21.948862,69.99590155714287,31.070739906451625
-AJG,Arthur J. Gallagher & Co.,reports,Financials,Insurance Brokers,"Rolling Meadows, Illinois",2016-05-31,354190,1927,130.3345,13.188242,69.99590155714287,31.070739906451625
-AKAM,Akamai Technologies,reports,Information Technology,Internet Services & Infrastructure,"Cambridge, Massachusetts",2007-07-12,1086222,1998,50.355114,39.669643,29.051502647058822,27.181346927272724
-ALB,Albemarle Corporation,reports,Materials,Specialty Chemicals,"Charlotte, North Carolina",2016-07-01,915913,1994,35.20643,23.193811,29.051502647058822,27.181346927272724
-ALGN,Align Technology,reports,Health Care,Health Care Supplies,"San Jose, California",2017-06-19,1097149,1997,38.4161,30.315956,29.051502647058822,27.181346927272724
-ALK,Alaska Air Group,reports,Industrials,Airlines,"Seattle, Washington",2016-05-13,766421,1985,0,8.853301,29.051502647058822,27.181346927272724
-ALL,Allstate Corp,reports,Financials,Property & Casualty Insurance,"Northfield Township, Illinois",1995-07-13,899051,1931,16.190685,11.391576,29.051502647058822,27.181346927272724
-ALLE,Allegion,reports,Industrials,Building Products,"New York City, New York",2013-12-02,1579241,1908,24.234556,8.303681,29.051502647058822,27.181346927272724
-AMAT,Applied Materials,reports,Information Technology,Semiconductor Equipment,"Santa Clara, California",1995-03-16,6951,1967,0,47.32301,69.99590155714287,31.070739906451625
-AMCR,Amcor,reports,Materials,Paper Packaging,"Zurich, Switzerland",2019-06-07,1748790,2019 (1860),44.904198,28.5685,29.051502647058822,27.181346927272724
-AMD,Advanced Micro Devices,reports,Information Technology,Semiconductors,"Santa Clara, California",,2488,1969,11.568222,16.48897,29.051502647058822,27.181346927272724
-AME,Ametek,reports,Industrials,Electrical Components & Equipment,"Berwyn, Pennsylvania",2013-09-23,1037868,1930,137.03584,25.30177,69.99590155714287,31.070739906451625
-AMGN,Amgen,reports,Health Care,Biotechnology,"Thousand Oaks, California",1992-01-02,318154,1980,22.302683,21.84761,69.99590155714287,31.070739906451625
-AMP,Ameriprise Financial,reports,Financials,Asset Management & Custody Banks,"Minneapolis, Minnesota",2005-10-03,820027,1894,395.5024,28.503448,69.99590155714287,31.070739906451625
-AMT,American Tower,reports,Real Estate,Specialized REITs,"Boston, Massachusetts",2007-11-19,1053507,1995,3.8464513,13.100342,69.99590155714287,31.070739906451625
-AMZN,Amazon,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Seattle, Washington",2005-11-18,1018724,1994,23.60079,16.181572,29.051502647058822,27.181346927272724
-ANET,Arista Networks,reports,Information Technology,Communications Equipment,"Santa Clara, California",2018-08-28,1596532,2004,10.572686,7.8082185,69.99590155714287,31.070739906451625
-ANSS,Ansys,reports,Information Technology,Application Software,"Canonsburg, Pennsylvania",2017-06-19,1013462,1969,14.766505,13.426062,69.99590155714287,31.070739906451625
-ANTM,Anthem,reports,Health Care,Managed Health Care,"Indianapolis, Indiana",2002-07-25,1156039,2014 (1946),77.367935,42.00254,69.99590155714287,31.070739906451625
-AON,Aon,reports,Financials,Insurance Brokers,"London, UK",1996-04-23,315293,1982 (1919),0,97.38209,69.99590155714287,31.070739906451625
-AOS,A. O. Smith,reports,Industrials,Building Products,"Milwaukee, Wisconsin",2017-07-26,91142,1916,0,68.081085,69.99590155714287,31.070739906451625
-APA,APA Corporation,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1997-07-28,6769,1954,0,20.608185,69.99590155714287,31.070739906451625
-APD,Air Products & Chemicals,reports,Materials,Industrial Gases,"Allentown, Pennsylvania",1985-04-30,2969,1940,0,,29.051502647058822,27.181346927272724
-APH,Amphenol Corp,reports,Information Technology,Electronic Components,"Wallingford, Connecticut",2008-09-30,820313,1932,13.201642,13.279482,69.99590155714287,31.070739906451625
-APTV,Aptiv,reports,Consumer Discretionary,Auto Parts & Equipment,"Dublin, Ireland",2012-12-24,1521332,1994,140.92462,33.234722,69.99590155714287,31.070739906451625
-ARE,Alexandria Real Estate Equities,reports,Real Estate,Office REITs,"Pasadena, California",2017-03-20,1035443,1994,0,0,29.051502647058822,27.181346927272724
-ATO,Atmos Energy,reports,Utilities,Gas Utilities,"Dallas, Texas",2019-02-15,731802,1906,0,41.69543,69.99590155714287,31.070739906451625
-ATVI,Activision Blizzard,reports,Communication Services,Interactive Home Entertainment,"Santa Monica, California",2015-08-31,718877,2008,9.976162,14.246809,29.051502647058822,27.181346927272724
-AVB,AvalonBay Communities,reports,Real Estate,Residential REITs,"Arlington, Virginia[3]",2007-01-10,915912,1978,20.115717,20.277967,69.99590155714287,31.070739906451625
-AVGO,Broadcom,reports,Information Technology,Semiconductors,"San Jose, California",2014-05-08,1730168,1961,122.49197,31.509512,69.99590155714287,31.070739906451625
-AVY,Avery Dennison,reports,Materials,Paper Packaging,"Glendale, California",1987-12-31,8818,1990,17.10423,17.043774,69.99590155714287,31.070739906451625
-AWK,American Water Works,reports,Utilities,Water Utilities,"Camden, New Jersey",2016-03-04,1410636,1886,0,0,69.99590155714287,31.070739906451625
-AXP,American Express,reports,Financials,Consumer Finance,"New York City, New York",1976-06-30,4962,1850,46.076664,37.3811,69.99590155714287,31.070739906451625
-AZO,AutoZone,reports,Consumer Discretionary,Specialty Stores,"Memphis, Tennessee",1997-01-02,866787,1979,18.421053,13.631578,69.99590155714287,31.070739906451625
-BA,Boeing Company,reports,Industrials,Aerospace & Defense,"Chicago, Illinois",1957-03-04,12927,1916,24.246973,22.32349,69.99590155714287,31.070739906451625
-BAC,Bank of America,reports,Financials,Diversified Banks,"Charlotte, North Carolina",1976-06-30,70858,1998 (1923 / 1874),21.466492,11.262557,69.99590155714287,31.070739906451625
-BAX,Baxter International,reports,Health Care,Health Care Equipment,"Deerfield, Illinois",1972-09-30,10456,1931,61.56991,52.719753,69.99590155714287,31.070739906451625
-BBWI,"Bath & Body Works, Inc.",reports,Consumer Discretionary,Specialty Stores,"Columbus, Ohio",1983-09-30,701985,1963,33.826447,12.871069,69.99590155714287,31.070739906451625
-BBY,Best Buy,reports,Consumer Discretionary,Computer & Electronics Retail,"Richfield, Minnesota",1999-06-29,764478,1966,77.7907,43.630432,69.99590155714287,31.070739906451625
-BDX,Becton Dickinson,reports,Health Care,Health Care Equipment,"Franklin Lakes, New Jersey",1972-09-30,10795,1897,69.26316,19.668478,69.99590155714287,31.070739906451625
-BEN,Franklin Resources,reports,Financials,Asset Management & Custody Banks,"San Mateo, California",,38777,1947,26.969688,21.693937,20.505412698387087,16.418739280952384
-BF.B,Brown–Forman,reports,Consumer Staples,Distillers & Vintners,"Louisville, Kentucky",1982-10-31,14693,1870,61.14456,57.56417,69.99590155714287,31.070739906451625
-BIIB,Biogen,reports,Health Care,Biotechnology,"Cambridge, Massachusetts",2003-11-13,875045,1978,21.78606,15.92441,69.99590155714287,31.070739906451625
-BIO,Bio-Rad Laboratories,reports,Health Care,Life Sciences Tools & Services,"Hercules, California",2020-06-22,12208,1952,330.8904,18.753881,69.99590155714287,31.070739906451625
-BK,BNY Mellon,reports,Financials,Asset Management & Custody Banks,"New York City, New York",1995-03-31,1390777,1784,0,31.05528,69.99590155714287,31.070739906451625
-BKNG,Booking Holdings,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Norwalk, Connecticut",2009-11-06,1075531,1996,0,71.189186,69.99590155714287,31.070739906451625
-BKR,Baker Hughes,reports,Energy,Oil & Gas Equipment & Services,"Houston, Texas",2017-07-07,1701605,2017,12.942354,7.309489,69.99590155714287,31.070739906451625
-BLK,BlackRock,reports,Financials,Asset Management & Custody Banks,"New York City, New York",2011-04-04,1364742,1988,10.225788,9.464594,69.99590155714287,31.070739906451625
-BLL,Ball Corp,reports,Materials,Metal & Glass Containers,"Broomfield, Colorado",1984-10-31,9389,1880,0,18.225595,69.99590155714287,31.070739906451625
-BMY,Bristol-Myers Squibb,reports,Health Care,Health Care Distributors,"New York City, New York",1957-03-04,14272,1989,31.804132,29.276936,69.99590155714287,31.070739906451625
-BR,Broadridge Financial Solutions,reports,Information Technology,Data Processing & Outsourced Services,"Lake Success, New York",2018-06-18,1383312,1962,759.0255,121.785774,69.99590155714287,31.070739906451625
-BRK.B,Berkshire Hathaway,reports,Financials,Multi-Sector Holdings,"Omaha, Nebraska",2010-02-16,1067983,1839,7.81598,7.0480347,69.99590155714287,31.070739906451625
-BSX,Boston Scientific,reports,Health Care,Health Care Equipment,"Marlborough, Massachusetts[4]",1995-02-24,885725,1979,89.379845,45.215687,69.99590155714287,31.070739906451625
-BWA,BorgWarner,reports,Consumer Discretionary,Auto Parts & Equipment,"Auburn Hills, Michigan",2011-12-19,908255,1880,35.08157,27.908512,69.99590155714287,31.070739906451625
-BXP,Boston Properties,reports,Real Estate,Office REITs,"Boston, Massachusetts",2006-04-03,1037540,1970,0,11.220239,69.99590155714287,31.070739906451625
-C,Citigroup,reports,Financials,Diversified Banks,"New York City, New York",1988-05-31,831001,1998,34.046295,23.495207,28.845717357142856,20.34346298387097
-CAG,Conagra Brands,reports,Consumer Staples,Packaged Foods & Meats,"Chicago, Illinois",1983-08-31,23217,1919,0,11.724137,1578.4423924999999,16.19823399
-CAH,Cardinal Health,reports,Health Care,Health Care Distributors,"Dublin, Ohio",1997-05-27,721371,1971,27.696676,25.80258,69.99590155714287,31.070739906451625
-CARR,Carrier Global,reports,Industrials,Building Products,"Palm Beach Gardens, Florida",2020-04-03,1783180,2020 (1915),33.667664,23.824154,28.845717357142856,20.34346298387097
-CAT,Caterpillar,reports,Industrials,Construction Machinery & Heavy Trucks,"Deerfield, Illinois",1957-03-04,18230,1925,13.773663,12.726235,28.845717357142856,20.34346298387097
-CB,Chubb,reports,Financials,Property & Casualty Insurance,"Zurich, Switzerland",2010-07-15,896159,1985,14.42826,16.018867,28.845717357142856,20.34346298387097
-CBOE,Cboe Global Markets,reports,Financials,Financial Exchanges & Data,"Chicago, Illinois",2017-03-01,1374310,1973,30.937124,27.79446,28.845717357142856,20.34346298387097
-CBRE,CBRE,reports,Real Estate,Real Estate Services,"Dallas, Texas",2006-11-10,1138118,1906,20.876514,18.360308,28.845717357142856,20.34346298387097
-CCI,Crown Castle,reports,Real Estate,Specialized REITs,"Houston, Texas",2012-03-14,1051470,1994,27.330881,12.642857,1578.4423924999999,16.19823399
-CCL,Carnival Corporation,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Miami, Florida",1998-12-22,815097,1972,9.374187,7.387736,69.99590155714287,31.070739906451625
-CDNS,Cadence Design Systems,reports,Information Technology,Application Software,"San Jose, California",2017-09-18,813672,1988,40.28875,27.541899,69.99590155714287,31.070739906451625
-CDW,CDW,reports,Information Technology,Technology Distributors,"Lincolnshire, Illinois",2019-09-23,1402057,1984,23.455606,21.951885,28.845717357142856,20.34346298387097
-CE,Celanese,reports,Materials,Specialty Chemicals,"Irving, Texas",2018-12-24,1306830,1918,28.844501,23.716589,28.845717357142856,20.34346298387097
-CERN,Cerner,reports,Health Care,Health Care Technology,"North Kansas City, Missouri",2010-04-30,804753,1979,82.94118,13.781955,28.845717357142856,20.34346298387097
-CF,CF Industries,reports,Materials,Fertilizers & Agricultural Chemicals,"Deerfield, Illinois",2008-08-27,1324404,1946,36.122807,19.798079,28.845717357142856,20.34346298387097
-CFG,Citizens Financial Group,reports,Financials,Regional Banks,"Providence, Rhode Island",2016-01-29,759944,1828,26.510387,24.233614,28.845717357142856,20.34346298387097
-CHD,Church & Dwight,reports,Consumer Staples,Household Products,"Ewing, New Jersey",2015-12-29,313927,1847,22.97159,19.4375,28.845717357142856,20.34346298387097
-CHRW,C. H. Robinson,reports,Industrials,Air Freight & Logistics,"Eden Prairie, Minnesota",2007-03-02,1043277,1905,0,28.843884,69.99590155714287,31.070739906451625
-CHTR,Charter Communications,reports,Communication Services,Cable & Satellite,"Stamford, Connecticut",2016-09-08,1091667,1993,23.768791,15.082236,28.845717357142856,20.34346298387097
-CI,Cigna,reports,Health Care,Managed Health Care,"Bloomfield, Connecticut",1976-06-30,1739940,1982,20.866076,17.545397,28.845717357142856,20.34346298387097
-CINF,Cincinnati Financial,reports,Financials,Property & Casualty Insurance,"Fairfield, Ohio",1997-12-18,20286,1950,35.70428,32.169437,28.845717357142856,20.34346298387097
-CL,Colgate-Palmolive,reports,Consumer Staples,Household Products,"New York City, New York",1957-03-04,21665,1806,0,0,28.845717357142856,20.34346298387097
-CLX,Clorox,reports,Consumer Staples,Household Products,"Oakland, California",1969-03-31,21076,1913,0,23.069277,28.845717357142856,20.34346298387097
-CMA,Comerica,reports,Financials,Diversified Banks,"Dallas, Texas",1995-12-01,28412,1849,0,61.61905,1578.4423924999999,16.19823399
-CMCSA,Comcast,reports,Communication Services,Cable & Satellite,"Philadelphia, Pennsylvania",2002-11-19,1166691,1963,16.162527,14.039216,28.845717357142856,20.34346298387097
-CME,CME Group,reports,Financials,Financial Exchanges & Data,"Chicago, Illinois",2006-08-11,1156375,1848,21.70742,10.497925,28.845717357142856,20.34346298387097
-CMG,Chipotle Mexican Grill,reports,Consumer Discretionary,Restaurants,"Newport Beach, California",2011-04-28,1058090,1993,0,10.716312,28.845717357142856,20.34346298387097
-CMI,Cummins,reports,Industrials,Industrial Machinery,"Columbus, Indiana",1965-03-31,26172,1919,0,9.32258,1578.4423924999999,16.19823399
-CMS,CMS Energy,reports,Utilities,Multi-Utilities,"Jackson, Michigan",1999-05-03,811156,1886,14.736713,13.227571,28.845717357142856,20.34346298387097
-CNC,Centene Corporation,reports,Health Care,Managed Health Care,"St. Louis, Missouri",2016-03-30,1071739,1984,89.4996,47.34454,28.845717357142856,20.34346298387097
-CNP,CenterPoint Energy,reports,Utilities,Multi-Utilities,"Houston, Texas",1985-07-31,1130310,1882,48.02945,42.737034,28.845717357142856,20.34346298387097
-COF,Capital One Financial,reports,Financials,Consumer Finance,"Tysons Corner, Virginia",1998-07-01,927628,1994,20.449257,15.17262,69.99590155714287,31.070739906451625
-COG,Cabot Oil & Gas,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",2008-06-23,858470,1989,22.260563,15.59704,69.99590155714287,31.070739906451625
-COO,The Cooper Companies,reports,Health Care,Health Care Supplies,"San Ramon, California",2016-09-23,711404,1958,10.226304,6.3803988,1578.4423924999999,16.19823399
-COP,ConocoPhillips,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1957-03-04,1163165,2002,0,7.505366,1578.4423924999999,16.19823399
-COST,Costco,reports,Consumer Staples,Hypermarkets & Super Centers,"Issaquah, Washington",1993-10-01,909832,1976,0,11.836521,1578.4423924999999,16.19823399
-CPB,Campbell Soup,reports,Consumer Staples,Packaged Foods & Meats,"Camden, New Jersey",1957-03-04,16732,1869,0,25.215254,69.99590155714287,31.070739906451625
-CPRT,Copart,reports,Industrials,Diversified Support Services,"Dallas, Texas",2018-07-02,900075,1982,0,12.230513,1578.4423924999999,16.19823399
-CRL,Charles River Laboratories,reports,Health Care,Life Sciences Tools & Services,"Wilmington, Massachusetts",2021-05-14,1100682,1947,26.146952,24.135645,28.845717357142856,20.34346298387097
-CRM,Salesforce,reports,Information Technology,Application Software,"San Francisco, California",2008-09-15,1108524,1999,0,,70.0758025140845,29.4787267
-CSCO,Cisco Systems,reports,Information Technology,Communications Equipment,"San Jose, California",1993-12-01,858877,1984,25.138264,22.273504,28.845717357142856,20.34346298387097
-CSX,CSX,reports,Industrials,Railroads,"Jacksonville, Florida",1967-09-30,277948,1980,0,17.03459,1578.4423924999999,16.19823399
-CTAS,Cintas Corporation,reports,Industrials,Diversified Support Services,"Mason, Ohio",2001-03-01,723254,1929,18.559307,15.29762,28.845717357142856,20.34346298387097
-CTLT,Catalent,reports,Health Care,Pharmaceuticals,"Somerset, New Jersey",2020-09-21,1596783,2007,26.179012,22.321053,28.845717357142856,20.34346298387097
-CTSH,Cognizant Technology Solutions,reports,Information Technology,IT Consulting & Other Services,"Teaneck, New Jersey",2006-11-17,1058290,1994,27.069805,25.496943,28.845717357142856,20.34346298387097
-CTVA,Corteva,reports,Materials,Fertilizers & Agricultural Chemicals,"Wilmington, Delaware",2019-06-03,1755672,2019,0,20.163193,1578.4423924999999,16.19823399
-CTXS,Citrix Systems,reports,Information Technology,Application Software,"Fort Lauderdale, Florida",1999-12-01,877890,1989,0,9.74807,28.845717357142856,20.34346298387097
-CVS,CVS Health,reports,Health Care,Health Care Services,"Woonsocket, Rhode Island",1957-03-04,64803,1996,0,9.96041,1578.4423924999999,16.19823399
-CVX,Chevron Corporation,reports,Energy,Integrated Oil & Gas,"San Ramon, California",1957-03-04,93410,1879,17.132792,15.0523815,28.845717357142856,20.34346298387097
-CZR,Caesars Entertainment,reports,Consumer Discretionary,Casinos & Gaming,"Reno, Nevada",2021-03-22,1590895,1973,56.84871,22.306349,69.99590155714287,31.070739906451625
-D,Dominion Energy,reports,Utilities,Electric Utilities,"Richmond, Virginia",,715957,1983,0,19.068964,20.505412698387087,16.418739280952384
-DAL,Delta Air Lines,reports,Industrials,Airlines,"Atlanta, Georgia",2013-09-11,27904,1929,0,9.195559,1578.4423924999999,16.19823399
-DD,DuPont,reports,Materials,Specialty Chemicals,"Wilmington, Delaware",2019-04-02,1666700,2017,10.528824,10.323939,20.505412698387087,16.418739280952384
-DE,Deere & Co.,reports,Industrials,Agricultural & Farm Machinery,"Moline, Illinois",1957-03-04,315189,1837,0,-57.954544,1578.4423924999999,16.19823399
-DFS,Discover Financial Services,reports,Financials,Consumer Finance,"Riverwoods, Illinois",2007-07-02,1393612,1985,32.673744,25.562063,20.505412698387087,16.418739280952384
-DG,Dollar General,reports,Consumer Discretionary,General Merchandise Stores,"Goodlettsville, Tennessee",2012-12-03,29534,1939,16.455198,8.5,20.505412698387087,16.418739280952384
-DGX,Quest Diagnostics,reports,Health Care,Health Care Services,"Secaucus, New Jersey",2002-12-12,1022079,1967,45.858997,14.9709,70.0758025140845,29.4787267
-DHI,D. R. Horton,reports,Consumer Discretionary,Homebuilding,"Arlington, Texas",2005-06-22,882184,1978,0,20.998505,1578.4423924999999,16.19823399
-DHR,Danaher Corporation,reports,Health Care,Health Care Equipment,"Washington, D.C.",,313616,1969,9366.667,14.559587,1578.4423924999999,16.19823399
-DIS,The Walt Disney Company,reports,Communication Services,Movies & Entertainment,"Burbank, California",1976-06-30,1744489,1923,80.70393,18.92233,29.47122256,19.158951607142857
-DISCA,Discovery (Series A),reports,Communication Services,Broadcasting,"New York City, New York",2010-03-01,1437107,1985,12.250741,11.6664915,20.505412698387087,16.418739280952384
-DISCK,Discovery (Series C),reports,Communication Services,Broadcasting,"New York City, New York",2014-08-07,1437107,1985,32.091347,22.842205,20.505412698387087,16.418739280952384
-DISH,Dish Network,reports,Communication Services,Cable & Satellite,"Meridian, Colorado",2017-03-13,1001082,1980,22.486588,14.258922,20.505412698387087,16.418739280952384
-DLR,Digital Realty Trust,reports,Real Estate,Specialized REITs,"Austin, Texas",2016-05-18,1297996,2004,56.54625,50.431435,20.505412698387087,16.418739280952384
-DLTR,Dollar Tree,reports,Consumer Discretionary,General Merchandise Stores,"Chesapeake, Virginia",2011-12-19,935703,1986,14.40969,12.980455,20.505412698387087,16.418739280952384
-DOV,Dover Corporation,reports,Industrials,Industrial Machinery,"Downers Grove, Illinois",1985-10-31,29905,1955,12.59703,8.78688,20.505412698387087,16.418739280952384
-DOW,Dow,reports,Materials,Commodity Chemicals,"Midland, Michigan",2019-04-01,1751788,2019,0,,20.505412698387087,16.418739280952384
-DPZ,Domino's Pizza,reports,Consumer Discretionary,Restaurants,"Ann Arbor, Michigan",2020-05-12,1286681,1960,32.12753,22.61619,20.505412698387087,16.418739280952384
-DRE,Duke Realty Corp,reports,Real Estate,Industrial REITs,"Indianapolis, Indiana",2017-07-26,783280,1972,11.368778,10.203046,20.505412698387087,16.418739280952384
-DRI,Darden Restaurants,reports,Consumer Discretionary,Restaurants,"Orlando, Florida",,940944,1938,25.75559,19.85065,1578.4423924999999,16.19823399
-DTE,DTE Energy,reports,Utilities,Multi-Utilities,"Detroit, Michigan",1957-03-04,936340,1995,18.38908,16.72707,20.505412698387087,16.418739280952384
-DUK,Duke Energy,reports,Utilities,Electric Utilities,"Charlotte, North Carolina",1976-06-30,1326160,1904,19.489386,6.233028,20.505412698387087,16.418739280952384
-DVA,DaVita,reports,Health Care,Health Care Facilities,"Denver, Colorado",2008-07-31,927066,1979,0,13.96454,1578.4423924999999,16.19823399
-DVN,Devon Energy,reports,Energy,Oil & Gas Exploration & Production,"Oklahoma City, Oklahoma",2000-08-30,1090012,1971,20.47159,15.21839,1578.4423924999999,16.19823399
-DXC,DXC Technology,reports,Information Technology,IT Consulting & Other Services,"Tysons Corner, Virginia",2017-04-04,1688568,2017,13.743778,12.335086,20.505412698387087,16.418739280952384
-DXCM,DexCom,reports,Health Care,Health Care Equipment,"San Diego, California",2020-05-12,1093557,1999,21.574955,17.316948,20.505412698387087,16.418739280952384
-EA,Electronic Arts,reports,Communication Services,Interactive Home Entertainment,"Redwood City, California",2002-07-22,712515,1982,11.575213,10.312267,20.505412698387087,16.418739280952384
-EBAY,eBay,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"San Jose, California",2002-07-22,1065088,1995,6.9108863,4.9259257,20.505412698387087,16.418739280952384
-ECL,Ecolab,reports,Materials,Specialty Chemicals,"Saint Paul, Minnesota",1989-01-31,31462,1923,36.85945,26.26386,20.505412698387087,16.418739280952384
-ED,Consolidated Edison,reports,Utilities,Electric Utilities,"New York City, New York",,1047862,1823,0,,1578.4423924999999,16.19823399
-EFX,Equifax,reports,Industrials,Research & Consulting Services,"Atlanta, Georgia",1997-06-19,33185,1899,6.6943045,10.713462,20.505412698387087,16.418739280952384
-EIX,Edison International,reports,Utilities,Electric Utilities,"Rosemead, California",1957-03-04,827052,1886,20.308086,9.646341,20.505412698387087,16.418739280952384
-EL,Estée Lauder Companies,reports,Consumer Staples,Personal Products,"New York City, New York",2006-01-05,1001250,1946,13.555254,10.978794,20.505412698387087,16.418739280952384
-EMN,Eastman Chemical,reports,Materials,Diversified Chemicals,"Kingsport, Tennessee",1994-01-01,915389,1920,12.731022,13.419732,20.505412698387087,16.418739280952384
-EMR,Emerson Electric Company,reports,Industrials,Electrical Components & Equipment,"Ferguson, Missouri",1965-03-31,32604,1890,14.957337,10.512744,20.505412698387087,16.418739280952384
-ENPH,Enphase Energy,reports,Information Technology,Electronic Components,"Fremont, California",2021-01-07,1463101,2006,31.419746,11.384728,20.505412698387087,16.418739280952384
-EOG,EOG Resources,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",2000-11-02,821189,1999,14.858802,12.883295,20.505412698387087,16.418739280952384
-EQIX,Equinix,reports,Real Estate,Specialized REITs,"Redwood City, California",2015-03-20,1101239,1998,14.36352,12.104489,20.505412698387087,16.418739280952384
-EQR,Equity Residential,reports,Real Estate,Residential REITs,"Chicago, Illinois",2001-12-03,906107,1969,31.116058,25.737082,20.505412698387087,16.418739280952384
-ES,Eversource Energy,reports,Utilities,Multi-Utilities,"Hartford, Connecticut",,72741,1966,13.581469,10.314261,20.505412698387087,16.418739280952384
-ESS,Essex Property Trust,reports,Real Estate,Residential REITs,"San Mateo, California",2014-04-02,920522,1971,9.698175,8.578884,20.505412698387087,16.418739280952384
-ETN,Eaton Corporation,reports,Industrials,Electrical Components & Equipment,"Dublin, Ireland",,1551182,1911,10.129663,11.340378,20.505412698387087,16.418739280952384
-ETR,Entergy,reports,Utilities,Electric Utilities,"New Orleans, Louisiana",1957-03-04,65984,1913,30.628435,12.491597,20.505412698387087,16.418739280952384
-ETSY,Etsy,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Brooklyn, New York",2020-09-21,1370637,2005,31.586073,12.371212,20.505412698387087,16.418739280952384
-EVRG,Evergy,reports,Utilities,Electric Utilities,"Kansas City, Missouri",2018-06-05,1711269,1909,44.442806,32.40847,20.505412698387087,16.418739280952384
-EW,Edwards Lifesciences,reports,Health Care,Health Care Equipment,"Irvine, California",2011-04-01,1099800,1958,26.439108,17.725822,20.505412698387087,16.418739280952384
-EXC,Exelon,reports,Utilities,Multi-Utilities,"Chicago, Illinois",1957-03-04,1109357,2000,13.037475,10.0659895,20.505412698387087,16.418739280952384
-EXPD,Expeditors,reports,Industrials,Air Freight & Logistics,"Seattle, Washington",2007-10-10,746515,1979,10.13226,14.230544,20.505412698387087,16.418739280952384
-EXPE,Expedia Group,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Seattle, Washington",2007-10-02,1324424,1996,20.640041,15.772479,20.505412698387087,16.418739280952384
-EXR,Extra Space Storage,reports,Real Estate,Specialized REITs,"Salt Lake City, Utah",2016-01-19,1289490,1977,18.5245,16.976225,20.505412698387087,16.418739280952384
-F,Ford,reports,Consumer Discretionary,Automobile Manufacturers,"Dearborn, Michigan",1957-03-04,37996,1903,6.437361,26.911308,20.505412698387087,16.418739280952384
-FANG,Diamondback Energy,reports,Energy,Oil & Gas Exploration & Production,"Midland, Texas",2018-12-03,1539838,2007,11.768652,13.338709,20.505412698387087,16.418739280952384
-FAST,Fastenal,reports,Industrials,Building Products,"Winona, Minnesota",2008-09-15,815556,1967,15.700699,8.126924,20.505412698387087,16.418739280952384
-FB,Facebook,reports,Communication Services,Interactive Media & Services,"Menlo Park, California",2013-12-23,1326801,2004,14.87293,14.321736,20.505412698387087,16.418739280952384
-FBHS,Fortune Brands Home & Security,reports,Industrials,Building Products,"Deerfield, Illinois",2016-06-22,1519751,2011 (1969),13.159078,8.654344,20.505412698387087,16.418739280952384
-FCX,Freeport-McMoRan,reports,Materials,Copper,"Phoenix, Arizona",,831259,1912,35.662094,31.453087,20.505412698387087,16.418739280952384
-FDX,FedEx,reports,Industrials,Air Freight & Logistics,"Memphis, Tennessee",1980-12-31,1048911,1971,11.234694,9.629737,20.505412698387087,16.418739280952384
-FE,FirstEnergy,reports,Utilities,Electric Utilities,"Akron, Ohio",,1031296,1997,14.686985,11.11596,20.505412698387087,16.418739280952384
-FFIV,F5 Networks,reports,Information Technology,Communications Equipment,"Seattle, Washington",2010-12-20,1048695,1996,27.422615,25.701647,20.505412698387087,16.418739280952384
-FIS,Fidelity National Information Services,reports,Information Technology,Data Processing & Outsourced Services,"Jacksonville, Florida",2006-11-10,1136893,1968,11.938111,13.856334,20.505412698387087,16.418739280952384
-FISV,Fiserv,reports,Information Technology,Data Processing & Outsourced Services,"Brookfield, Wisconsin",2001-04-02,798354,1984,10.8732395,8.822857,20.505412698387087,16.418739280952384
-FITB,Fifth Third Bancorp,reports,Financials,Regional Banks,"Cincinnati, Ohio",,35527,1858,14.26247,11.803532,20.505412698387087,16.418739280952384
-FLT,Fleetcor,reports,Information Technology,Data Processing & Outsourced Services,"Norcross, Georgia",2018-06-20,1175454,2000,17.712446,13.270097,20.505412698387087,16.418739280952384
-FMC,FMC Corporation,reports,Materials,Fertilizers & Agricultural Chemicals,"Philadelphia, Pennsylvania",2009-08-19,37785,1883,12.245929,10.191588,20.505412698387087,16.418739280952384
-FOX,Fox Corporation (Class B),reports,Communication Services,Movies & Entertainment,"New York City, New York",2015-09-18,1754301,2019,0,0,20.505412698387087,16.418739280952384
-FOXA,Fox Corporation (Class A),reports,Communication Services,Movies & Entertainment,"New York City, New York",2013-07-01,1754301,2019,19.57542,23.142412,20.505412698387087,16.418739280952384
-FRC,First Republic Bank,reports,Financials,Regional Banks,"San Francisco, California",2019-01-02,1132979,1985,84.56887,60.606384,20.505412698387087,16.418739280952384
-FRT,Federal Realty Investment Trust,reports,Real Estate,Retail REITs,"Rockville, Maryland",2016-02-01,34903,1962,8.54519,16.12007,20.505412698387087,16.418739280952384
-FTNT,Fortinet,reports,Information Technology,Systems Software,"Sunnyvale, California",2018-10-11,1262039,2000,36.11257,26.152172,20.505412698387087,16.418739280952384
-FTV,Fortive,reports,Industrials,Industrial Machinery,"Everett, Washington",2016-07-01,1659166,2016,32.21301,27.401106,20.505412698387087,16.418739280952384
-GD,General Dynamics,reports,Industrials,Aerospace & Defense,"Falls Church, Virginia",1957-03-04,40533,1899,0,15.807693,59.079724210169516,29.932384499999994
-GE,General Electric,reports,Industrials,Industrial Conglomerates,"Boston, Massachusetts",,40545,1892,84.398346,60.324776,59.079724210169516,29.932384499999994
-GILD,Gilead Sciences,reports,Health Care,Biotechnology,"Foster City, California",2004-07-01,882095,1987,33.917927,16.438889,59.079724210169516,29.932384499999994
-GIS,General Mills,reports,Consumer Staples,Packaged Foods & Meats,"Golden Valley, Minnesota",1969-03-31,40704,1856,111.18415,68.39936,59.079724210169516,29.932384499999994
-GL,Globe Life,reports,Financials,Life & Health Insurance,"McKinney, Texas",1989-04-30,320335,1900,19.790882,30.677471,59.079724210169516,29.932384499999994
-GLW,Corning,reports,Information Technology,Electronic Components,"Corning, New York",,24741,1851,0,16.608986,1578.4423924999999,16.19823399
-GM,General Motors,reports,Consumer Discretionary,Automobile Manufacturers,"Detroit, Michigan",2013-06-06,1467858,1908,43.145317,38.76797,59.079724210169516,29.932384499999994
-GNRC,Generac Holdings,reports,Industrials,Electrical Components & Equipment,"Waukesha, Wisconsin",2021-03-22,1474735,1959,125.461914,26.721096,59.079724210169516,29.932384499999994
-GOOG,Alphabet (Class C),reports,Communication Services,Interactive Media & Services,"Mountain View, California",2006-04-03,1652044,1998,0,37.21514,29.051502647058822,27.181346927272724
-GOOGL,Alphabet (Class A),reports,Communication Services,Interactive Media & Services,"Mountain View, California",2014-04-03,1652044,1998,23.401379,17.715908,29.051502647058822,27.181346927272724
-GPC,Genuine Parts,reports,Consumer Discretionary,Specialty Stores,"Atlanta, Georgia",1973-12-31,40987,1925,54.68452,16.997719,59.079724210169516,29.932384499999994
-GPN,Global Payments,reports,Information Technology,Data Processing & Outsourced Services,"Atlanta, Georgia",2016-04-25,1123360,2000,109.69859,65.209724,59.079724210169516,29.932384499999994
-GPS,Gap,reports,Consumer Discretionary,Apparel Retail,"San Francisco, California",1986-08-31,39911,1969,13.712231,14.975715,20.505412698387087,16.418739280952384
-GRMN,Garmin,reports,Consumer Discretionary,Consumer Electronics,"Schaffhausen, Switzerland",2012-12-12,1121788,1989,31.663069,21.273912,20.505412698387087,16.418739280952384
-GS,Goldman Sachs,reports,Financials,Investment Banking & Brokerage,"New York City, New York",2002-07-22,886982,1869,23.495441,13.404624,59.079724210169516,29.932384499999994
-GWW,W. W. Grainger,reports,Industrials,Industrial Machinery,"Lake Forest, Illinois",1981-06-30,277135,1927,67.12661,26.544296,59.079724210169516,29.932384499999994
-HAL,Halliburton,reports,Energy,Oil & Gas Equipment & Services,"Houston, Texas",1957-03-04,45012,1919,0,,59.079724210169516,29.932384499999994
-HAS,Hasbro,reports,Consumer Discretionary,Leisure Products,"Pawtucket, Rhode Island",1984-09-30,46080,1923,26.93933,11.166917,59.079724210169516,29.932384499999994
-HBAN,Huntington Bancshares,reports,Financials,Regional Banks,"Columbus, Ohio; Detroit, Michigan",,49196,1866,56.21833,41.138065,59.079724210169516,29.932384499999994
-HBI,Hanesbrands,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Winston-Salem, North Carolina",2015-03-20,1359841,2000,0,10.944297,59.079724210169516,29.932384499999994
-HCA,HCA Healthcare,reports,Health Care,Health Care Facilities,"Nashville, Tennessee",2015-01-27,860730,1968,28.697227,28.890577,59.079724210169516,29.932384499999994
-HD,Home Depot,reports,Consumer Discretionary,Home Improvement Retail,"Atlanta, Georgia",1988-03-31,354950,1978,11.461106,19.300875,59.079724210169516,29.932384499999994
-HES,Hess Corporation,reports,Energy,Integrated Oil & Gas,"New York City, New York",1984-05-31,4447,1919,30.155453,16.382917,59.079724210169516,29.932384499999994
-HIG,The Hartford,reports,Financials,Property & Casualty Insurance,"Hartford, Connecticut",1957-03-04,874766,1810,50.75752,21.465023,59.079724210169516,29.932384499999994
-HII,Huntington Ingalls Industries,reports,Industrials,Aerospace & Defense,"Newport News, Virginia",2018-01-03,1501585,2011,48.073147,41.508774,59.079724210169516,29.932384499999994
-HLT,Hilton Worldwide,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Tysons Corner, Virginia",2017-06-19,1585689,1919,23.80373,19.591015,59.079724210169516,29.932384499999994
-HOLX,Hologic,reports,Health Care,Health Care Equipment,"Marlborough, Massachusetts",2016-03-30,859737,1985,12.867877,12.386776,59.079724210169516,29.932384499999994
-HON,Honeywell,reports,Industrials,Industrial Conglomerates,"Charlotte, North Carolina",1964-03-31,773840,1906,95.48738,54.323635,59.079724210169516,29.932384499999994
-HPE,Hewlett Packard Enterprise,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Houston, Texas",2015-11-02,1645590,2015,37.100315,28.817451,59.079724210169516,29.932384499999994
-HPQ,HP,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Palo Alto, California",1974-12-31,47217,1939 (2015),46.820732,26.05529,59.079724210169516,29.932384499999994
-HRL,Hormel,reports,Consumer Staples,Packaged Foods & Meats,"Austin, Minnesota",2009-03-04,48465,1891,18.830849,16.50836,59.079724210169516,29.932384499999994
-HSIC,Henry Schein,reports,Health Care,Health Care Distributors,"Melville, New York",2015-03-17,1000228,1932,300.7775,24.204962,59.079724210169516,29.932384499999994
-HST,Host Hotels & Resorts,reports,Real Estate,Hotel & Resort REITs,"Bethesda, Maryland",2007-03-20,1070750,1993,12.116085,20.011278,59.079724210169516,29.932384499999994
-HSY,The Hershey Company,reports,Consumer Staples,Packaged Foods & Meats,"Hershey, Pennsylvania",1957-03-04,47111,1894,75.95935,27.107351,59.079724210169516,29.932384499999994
-HUM,Humana,reports,Health Care,Managed Health Care,"Louisville, Kentucky",,49071,1961,18.032124,15.219228,59.079724210169516,29.932384499999994
-HWM,Howmet Aerospace,reports,Industrials,Aerospace & Defense,"Pittsburgh, Pennsylvania",1964-03-31,4281,2016,0,,59.079724210169516,29.932384499999994
-IBM,IBM,reports,Information Technology,IT Consulting & Other Services,"Armonk, New York",1957-03-04,51143,1911,19.466448,17.1044,59.079724210169516,29.932384499999994
-ICE,Intercontinental Exchange,reports,Financials,Financial Exchanges & Data,"Atlanta, Georgia",2007-09-26,1571949,2000,0,8.06625,59.079724210169516,29.932384499999994
-IDXX,Idexx Laboratories,reports,Health Care,Health Care Equipment,"Westbrook, Maine",2017-01-05,874716,1983,46.863865,20.061022,59.079724210169516,29.932384499999994
-IEX,IDEX Corporation,reports,Industrials,Industrial Machinery,"Lake Forest, Illinois",2019-08-09,832101,1988,5.9718704,64.551315,59.079724210169516,29.932384499999994
-IFF,International Flavors & Fragrances,reports,Materials,Specialty Chemicals,"New York City, New York",1976-03-31,51253,1958 (1889),0,11.811553,59.079724210169516,29.932384499999994
-ILMN,Illumina,reports,Health Care,Life Sciences Tools & Services,"San Diego, California",2015-11-19,1110803,1998,325.2837,24.92663,59.079724210169516,29.932384499999994
-INCY,Incyte,reports,Health Care,Biotechnology,"Wilmington, Delaware",2017-02-28,879169,1991,9.553016,30.803125,59.079724210169516,29.932384499999994
-INFO,IHS Markit,reports,Industrials,Research & Consulting Services,"London, England",2017-06-02,1598014,1959,39.652176,20.417912,59.079724210169516,29.932384499999994
-INTC,Intel,reports,Information Technology,Semiconductors,"Santa Clara, California",1976-12-31,50863,1968,105.50624,164.9129,59.079724210169516,29.932384499999994
-INTU,Intuit,reports,Information Technology,Application Software,"Mountain View, California",2000-12-05,896878,1983,9.227232,9.285899,59.079724210169516,29.932384499999994
-IP,International Paper,reports,Materials,Paper Packaging,"Memphis, Tennessee",1957-03-04,51434,1898,22.184744,13.149772,59.079724210169516,29.932384499999994
-IPG,Interpublic Group,reports,Communication Services,Advertising,"New York City, New York",1992-10-01,51644,1961 (1930),22.079107,12.0877285,59.079724210169516,29.932384499999994
-IPGP,IPG Photonics,reports,Information Technology,Electronic Manufacturing Services,"Oxford, Massachusetts",2018-03-07,1111928,1990,52.053093,36.49449,59.079724210169516,29.932384499999994
-IQV,IQVIA,reports,Health Care,Life Sciences Tools & Services,"Durham, North Carolina",2017-08-29,1478242,1982,36.173237,27.556866,59.079724210169516,29.932384499999994
-IR,Ingersoll Rand,reports,Industrials,Industrial Machinery,"Milwaukee, Wisconsin",2020-03-03,1699150,1859,14.9129715,17.059324,59.079724210169516,29.932384499999994
-IRM,Iron Mountain,reports,Real Estate,Specialized REITs,"Boston, Massachusetts",2009-01-06,1020569,1951,29.350056,7.801434,59.079724210169516,29.932384499999994
-ISRG,Intuitive Surgical,reports,Health Care,Health Care Equipment,"Sunnyvale, California",2008-06-02,1035267,1995,110.81809,67.77463,59.079724210169516,29.932384499999994
-IT,Gartner,reports,Information Technology,IT Consulting & Other Services,"Stamford, Connecticut",2017-04-05,749251,1979,88.37344,75.46703,59.079724210169516,29.932384499999994
-ITW,Illinois Tool Works,reports,Industrials,Industrial Machinery,"Glenview, Illinois",1986-02-28,49826,1912,296.70834,10.724398,59.079724210169516,29.932384499999994
-IVZ,Invesco,reports,Financials,Asset Management & Custody Banks,"Atlanta, Georgia",2008-08-21,914208,1935,15.314337,10.372738,59.079724210169516,29.932384499999994
-J,Jacobs Engineering Group,reports,Industrials,Construction & Engineering,"Dallas, Texas",2007-10-26,52988,1947,109.73093,69.49625,59.079724210169516,29.932384499999994
-JBHT,J. B. Hunt,reports,Industrials,Trucking,"Lowell, Arkansas",2015-07-01,728535,1961,55.779305,37.356995,59.079724210169516,29.932384499999994
-JCI,Johnson Controls,reports,Industrials,Building Products,"Cork, Ireland",2010-08-27,833444,1885,15.0680685,11.049037,59.079724210169516,29.932384499999994
-JKHY,Jack Henry & Associates,reports,Information Technology,Data Processing & Outsourced Services,"Monett, Missouri",2018-11-13,779152,1976,13.705837,8.648626,59.079724210169516,29.932384499999994
-JNJ,Johnson & Johnson,reports,Health Care,Pharmaceuticals,"New Brunswick, New Jersey",1973-06-30,200406,1886,25.741283,18.119265,59.079724210169516,29.932384499999994
-JNPR,Juniper Networks,reports,Information Technology,Communications Equipment,"Sunnyvale, California",2006-06-02,1043604,1996,60.516705,38.886997,59.079724210169516,29.932384499999994
-JPM,JPMorgan Chase,reports,Financials,Diversified Banks,"New York City, New York",1975-06-30,19617,2000 (1799 / 1871),29.136679,20.965565,59.079724210169516,29.932384499999994
-K,Kellogg's,reports,Consumer Staples,Packaged Foods & Meats,"Battle Creek, Michigan",1989-09-11,55067,1906,90.70422,48.555557,59.079724210169516,29.932384499999994
-KEY,KeyCorp,reports,Financials,Regional Banks,"Cleveland, Ohio",1994-03-01,91576,1825,20.122122,13.559374,59.079724210169516,29.932384499999994
-KEYS,Keysight Technologies,reports,Information Technology,Electronic Equipment & Instruments,"Santa Rosa, California",2018-11-06,1601046,2014,83.43782,54.872562,59.079724210169516,29.932384499999994
-KHC,Kraft Heinz,reports,Consumer Staples,Packaged Foods & Meats,"Chicago, Illinois; Pittsburgh, Pennsylvania",2015-07-06,1637459,2015 (1869),31.20097,22.457441,36.43580779166666,25.664735830882353
-KIM,Kimco Realty,reports,Real Estate,Retail REITs,"New Hyde Park, New York",2006-04-04,879101,1958,33.577663,23.227365,36.43580779166666,25.664735830882353
-KLAC,KLA Corporation,reports,Information Technology,Semiconductor Equipment,"Milpitas, California",,319201,1975/1977 (1997),12.106786,13.80756,36.43580779166666,25.664735830882353
-KMB,Kimberly-Clark,reports,Consumer Staples,Household Products,"Irving, Texas",1957-03-04,55785,1872,15.568141,14.466522,59.079724210169516,29.932384499999994
-KMI,Kinder Morgan,reports,Energy,Oil & Gas Storage & Transportation,"Houston, Texas",2012-05-25,1506307,1997,43.754326,39.075222,36.43580779166666,25.664735830882353
-KMX,CarMax,reports,Consumer Discretionary,Specialty Stores,"Richmond, Virginia",2010-06-28,1170010,1993,22.26276,17.19503,69.99590155714287,31.070739906451625
-KO,Coca-Cola Company,reports,Consumer Staples,Soft Drinks,"Atlanta, Georgia",1957-03-04,21344,1886,12.856651,11.547141,28.845717357142856,20.34346298387097
-KR,Kroger,reports,Consumer Staples,Food Retail,"Cincinnati, Ohio",1957-03-04,56873,1883,24.379244,16.841114,36.43580779166666,25.664735830882353
-KSU,Kansas City Southern,reports,Industrials,Railroads,"Kansas City, Missouri",2013-05-24,54480,1887,11.079373,19.487923,59.079724210169516,29.932384499999994
-L,Loews Corporation,reports,Financials,Multi-line Insurance,"New York City, New York",,60086,1959,80.8054,41.14177,36.43580779166666,25.664735830882353
-LDOS,Leidos,reports,Industrials,Diversified Support Services,"Reston, Virginia",2019-08-09,1336920,1969,13.311729,14.120313,36.43580779166666,25.664735830882353
-LEG,Leggett & Platt,reports,Consumer Discretionary,Home Furnishings,"Carthage, Missouri",1999-10-14,58492,1883,25.190983,17.548992,36.43580779166666,25.664735830882353
-LEN,Lennar,reports,Consumer Discretionary,Homebuilding,"Miami, Florida",2005-10-04,920760,1954,0,10.051471,36.43580779166666,25.664735830882353
-LH,LabCorp,reports,Health Care,Health Care Services,"Burlington, North Carolina",2004-11-01,920148,1978,0,,36.43580779166666,25.664735830882353
-LHX,L3Harris Technologies,reports,Industrials,Aerospace & Defense,"Melbourne, Florida",2008-09-22,202058,2019 (1895),20.413692,11.70904,36.43580779166666,25.664735830882353
-LIN,Linde,reports,Materials,Industrial Gases,"Guildford, England",1992-07-01,1707925,1879,39.17921,35.10178,36.43580779166666,25.664735830882353
-LKQ,LKQ Corporation,reports,Consumer Discretionary,Distributors,"Chicago, Illinois",2016-05-23,1065696,1998,17.832998,15.80854,36.43580779166666,25.664735830882353
-LLY,Eli Lilly & Co,reports,Health Care,Pharmaceuticals,"Indianapolis, Indiana",1970-12-31,59478,1876,27.59079,19.095785,36.43580779166666,25.664735830882353
-LMT,Lockheed Martin,reports,Industrials,Aerospace & Defense,"Bethesda, Maryland",1984-07-31,936468,1995,0,,36.43580779166666,25.664735830882353
-LNC,Lincoln National,reports,Financials,Multi-line Insurance,"Radnor, Pennsylvania",1976-06-30,59558,1905,12.797289,12.075582,36.43580779166666,25.664735830882353
-LNT,Alliant Energy,reports,Utilities,Electric Utilities,"Madison, Wisconsin",2016-07-01,352541,1917,31.140472,22.482979,29.051502647058822,27.181346927272724
-LOW,Lowe's,reports,Consumer Discretionary,Home Improvement Retail,"Mooresville, North Carolina",1984-02-29,60667,1904/1946/1959,42.106556,28.277065,36.43580779166666,25.664735830882353
-LRCX,Lam Research,reports,Information Technology,Semiconductor Equipment,"Fremont, California",2012-06-29,707549,1980,33.15478,17.26478,36.43580779166666,25.664735830882353
-LUMN,Lumen Technologies,reports,Communication Services,Alternative Carriers,"Monroe, Louisiana",1999-03-25,18926,1983 (1877),0,10.484657,36.43580779166666,25.664735830882353
-LUV,Southwest Airlines,reports,Industrials,Airlines,"Dallas, Texas",1994-07-01,92380,1967,11.772575,11.909774,27.565072340000008,19.480271803571423
-LVS,Las Vegas Sands,reports,Consumer Discretionary,Casinos & Gaming,"Las Vegas, Nevada",2019-10-03,1300514,1988,18.558231,12.595927,36.43580779166666,25.664735830882353
-LW,Lamb Weston,reports,Consumer Staples,Packaged Foods & Meats,"Eagle, Idaho",2018-12-03,1679273,2016 (1950),46.064713,32.842045,36.43580779166666,25.664735830882353
-LYB,LyondellBasell,reports,Materials,Specialty Chemicals,"Rotterdam, Netherlands",2012-09-05,1489393,2007,41.182404,18.720833,36.43580779166666,25.664735830882353
-LYV,Live Nation Entertainment,reports,Communication Services,Movies & Entertainment,"Beverly Hills, California",2019-12-23,1335258,2010,8.9572115,6.372984,36.43580779166666,25.664735830882353
-MA,Mastercard,reports,Information Technology,Data Processing & Outsourced Services,"Harrison, New York",2008-07-18,1141391,1966,0,,36.43580779166666,25.664735830882353
-MAA,Mid-America Apartments,reports,Real Estate,Residential REITs,"Memphis, Tennessee",2016-12-02,912595,1977,35.924515,22.852423,36.43580779166666,25.664735830882353
-MAR,Marriott International,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Bethesda, Maryland",,1048286,1927,32.570923,16.699999,36.43580779166666,25.664735830882353
-MAS,Masco,reports,Industrials,Building Products,"Livonia, Michigan",1981-06-30,62996,1929,35.21485,25.239542,36.43580779166666,25.664735830882353
-MCD,McDonald's,reports,Consumer Discretionary,Restaurants,"Chicago, Illinois",1970-06-30,63908,1940,0,,36.43580779166666,25.664735830882353
-MCHP,Microchip Technology,reports,Information Technology,Semiconductors,"Chandler, Arizona",2007-09-07,827054,1989,51.387978,30.101864,36.43580779166666,25.664735830882353
-MCK,McKesson Corporation,reports,Health Care,Health Care Distributors,"Irving, Texas",,927653,1833,38.323578,19.151596,36.43580779166666,25.664735830882353
-MCO,Moody's Corporation,reports,Financials,Financial Exchanges & Data,"New York City, New York",,1059556,1909,0,,36.43580779166666,25.664735830882353
-MDLZ,Mondelez International,reports,Consumer Staples,Packaged Foods & Meats,"Chicago, Illinois",2012-10-02,1103982,2012,19.197708,17.714825,36.43580779166666,25.664735830882353
-MDT,Medtronic,reports,Health Care,Health Care Equipment,"Dublin, Ireland",1986-10-31,1613103,1949,41.769527,28.79374,36.43580779166666,25.664735830882353
-MET,MetLife,reports,Financials,Life & Health Insurance,"New York City, New York",,1099219,1868,19.553535,15.868507,36.43580779166666,25.664735830882353
-MGM,MGM Resorts International,reports,Consumer Discretionary,Casinos & Gaming,"Paradise, Nevada",2017-07-26,789570,1986,19.981937,17.524752,36.43580779166666,25.664735830882353
-MHK,Mohawk Industries,reports,Consumer Discretionary,Home Furnishings,"Calhoun, Georgia",2013-12-23,851968,1878,220.23196,34.836926,36.43580779166666,25.664735830882353
-MKC,McCormick & Company,reports,Consumer Staples,Packaged Foods & Meats,"Hunt Valley, Maryland",2003-03-20,63754,1889,26.612547,22.397516,36.43580779166666,25.664735830882353
-MKTX,MarketAxess,reports,Financials,Financial Exchanges & Data,"New York City, New York",2019-07-01,1278021,2000,27.23654,14.4642105,36.43580779166666,25.664735830882353
-MLM,Martin Marietta Materials,reports,Materials,Construction Materials,"Raleigh, North Carolina",2014-07-02,916076,1993,27.587679,19.59283,36.43580779166666,25.664735830882353
-MMC,Marsh & McLennan,reports,Financials,Insurance Brokers,"New York City, New York",1987-08-31,62709,1905,0,19.92827,36.43580779166666,25.664735830882353
-MMM,3M,reports,Industrials,Industrial Conglomerates,"Saint Paul, Minnesota",1976-08-09,66740,1902,33.507664,15.812766,29.051502647058822,27.181346927272724
-MNST,Monster Beverage,reports,Consumer Staples,Soft Drinks,"Corona, California",2012-06-28,865752,2012 (1935),55.71689,32.785202,36.43580779166666,25.664735830882353
-MO,Altria Group,reports,Consumer Staples,Tobacco,"Richmond, Virginia",1957-03-04,764180,1985,0,,29.051502647058822,27.181346927272724
-MOS,The Mosaic Company,reports,Materials,Fertilizers & Agricultural Chemicals,"Tampa, Florida",2011-09-26,1285785,2004 (1865 / 1909),31.557611,17.547655,36.43580779166666,25.664735830882353
-MPC,Marathon Petroleum,reports,Energy,Oil & Gas Refining & Marketing,"Findlay, Ohio",2011-07-01,1510295,2009 (1887),0,20.94177,36.43580779166666,25.664735830882353
-MPWR,Monolithic Power Systems,reports,Information Technology,Semiconductors,"Kirkland, Washington",2021-02-12,1280452,1997,23.11438,12.887089,36.43580779166666,25.664735830882353
-MRK,Merck & Co.,reports,Health Care,Pharmaceuticals,"Kenilworth, New Jersey",1957-03-04,310158,1891,0,41.29885,36.43580779166666,25.664735830882353
-MRNA,Moderna,reports,Health Care,Biotechnology,"Cambridge, Massachusetts",2021-07-21,1682852,2010,39.125786,29.483414,36.43580779166666,25.664735830882353
-MRO,Marathon Oil,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1991-05-01,101778,1887,47.525578,34.7551,36.43580779166666,25.664735830882353
-MS,Morgan Stanley,reports,Financials,Investment Banking & Brokerage,"New York City, New York",,895421,1935,18.736364,16.783388,36.43580779166666,25.664735830882353
-MSCI,MSCI,reports,Financials,Financial Exchanges & Data,"New York City, New York",2018-04-04,1408198,1969,21.838898,15.841244,36.43580779166666,25.664735830882353
-MSFT,Microsoft,reports,Information Technology,Systems Software,"Redmond, Washington",1994-06-01,789019,1975,23.491304,32.391262,36.43580779166666,25.664735830882353
-MSI,Motorola Solutions,reports,Information Technology,Communications Equipment,"Chicago, Illinois",,68505,1928 (2011),28.922424,23.408674,36.43580779166666,25.664735830882353
-MTB,M&T Bank,reports,Financials,Regional Banks,"Buffalo, New York",2004-02-23,36270,1856,28.501472,24.235785,36.43580779166666,25.664735830882353
-MTD,Mettler Toledo,reports,Health Care,Life Sciences Tools & Services,"Columbus, Ohio",2016-09-06,1037646,1945,0,16.035484,36.43580779166666,25.664735830882353
-MU,Micron Technology,reports,Information Technology,Semiconductors,"Boise, Idaho",1994-09-27,723125,1978,61.853172,56.474636,36.43580779166666,25.664735830882353
-NCLH,Norwegian Cruise Line Holdings,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Miami, Florida",2017-10-13,1513761,2011 (1966),89.97751,34.002834,36.43580779166666,25.664735830882353
-NDAQ,Nasdaq,reports,Financials,Financial Exchanges & Data,"New York City, New York",2008-10-22,1120193,1971,43.419666,27.514315,36.43580779166666,25.664735830882353
-NEE,NextEra Energy,reports,Utilities,Multi-Utilities,"Juno Beach, Florida",1976-06-30,753308,1984 (1925),53.041664,24.48077,36.43580779166666,25.664735830882353
-NEM,Newmont,reports,Materials,Gold,"Denver, Colorado",1969-06-30,1164727,1921,35.76821,31.584793,36.43580779166666,25.664735830882353
-NFLX,Netflix,reports,Communication Services,Movies & Entertainment,"Los Gatos, California",2010-12-20,1065280,1997,34.398346,24.718372,36.43580779166666,25.664735830882353
-NI,NiSource,reports,Utilities,Multi-Utilities,"Merrillville, Indiana",,1111711,1912,19.963223,15.078282,36.43580779166666,25.664735830882353
-NKE,Nike,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Washington County, Oregon",1988-11-30,320187,1964,14.175442,12.591757,36.43580779166666,25.664735830882353
-NLOK,NortonLifeLock,reports,Information Technology,Application Software,"Tempe, Arizona",2003-03-25,849399,1982,0,201.1154,36.43580779166666,25.664735830882353
-NLSN,Nielsen Holdings,reports,Industrials,Research & Consulting Services,"New York City, New York",2013-07-09,1492633,1923,0,,36.43580779166666,25.664735830882353
-NOC,Northrop Grumman,reports,Industrials,Aerospace & Defense,"West Falls Church, Virginia",1985-06-30,1133421,"1994 (Northrop 1939, Grumman 1930)",31.872578,23.832619,36.43580779166666,25.664735830882353
-NOV,Nov,reports,Energy,Oil & Gas Equipment & Services,"Houston, Texas",2005-03-14,1021860,1841,43.094303,31.928677,36.43580779166666,25.664735830882353
-NOW,ServiceNow,reports,Information Technology,Systems Software,"Santa Clara, California",2019-11-21,1373715,2003,42.710255,25.157436,70.0758025140845,29.4787267
-NRG,NRG Energy,reports,Utilities,Independent Power Producers & Energy Traders,"Houston, Texas",2010-01-29,1013871,1992,45.990154,23.694927,36.43580779166666,25.664735830882353
-NSC,Norfolk Southern,reports,Industrials,Railroads,"Norfolk, Virginia",1957-03-04,702165,1881/1894 (1980),16.174711,26.571932,36.43580779166666,25.664735830882353
-NTAP,NetApp,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Sunnyvale, California",1999-06-25,1002047,1992,34.30715,23.070772,36.43580779166666,25.664735830882353
-NTRS,Northern Trust,reports,Financials,Asset Management & Custody Banks,"Chicago, Illinois",,73124,1889,22.677752,13.828671,36.43580779166666,25.664735830882353
-NUE,Nucor,reports,Materials,Steel,"Charlotte, North Carolina",1985-04-30,73309,1940,63.805614,40.195843,36.43580779166666,25.664735830882353
-NVDA,Nvidia,reports,Information Technology,Semiconductors,"Santa Clara, California",2001-11-30,1045810,1993,65.231606,45.476257,70.0758025140845,29.4787267
-NVR,NVR,reports,Consumer Discretionary,Homebuilding,"Reston, Virginia",2019-09-26,906163,1980,45.26909,27.995358,70.0758025140845,29.4787267
-NWL,Newell Brands,reports,Consumer Discretionary,Housewares & Specialties,"Atlanta, Georgia",1989-04-30,814453,1903,29.81797,18.533966,36.43580779166666,25.664735830882353
-NWS,News Corp (Class B),reports,Communication Services,Publishing,"New York City, New York",2015-09-18,1564708,2013 (1980),24.96821,24.353683,36.43580779166666,25.664735830882353
-NWSA,News Corp (Class A),reports,Communication Services,Publishing,"New York City, New York",2013-08-01,1564708,2013 (1980),0,26.264708,36.43580779166666,25.664735830882353
-NXPI,NXP,reports,Information Technology,Semiconductors,"Eindhoven, Netherlands",2021-03-22,1413447,1953,33.77018,28.080137,70.0758025140845,29.4787267
-O,Realty Income Corporation,reports,Real Estate,Retail REITs,"San Diego, California",2015-04-07,726728,1969,24.146343,17.17941,70.0758025140845,29.4787267
-ODFL,Old Dominion Freight Line,reports,Industrials,Trucking,"Thomasville, North Carolina",2019-12-09,878927,1934,79.337456,50.455055,70.0758025140845,29.4787267
-OGN,Organon & Co.,reports,Health Care,Pharmaceuticals,"Jersey City, New Jersey",2021-06-03,1821825,2021,59.87899,63.197586,70.0758025140845,29.4787267
-OKE,Oneok,reports,Energy,Oil & Gas Storage & Transportation,"Tulsa, Oklahoma",2010-03-15,1039684,1906,0,10.299418,70.0758025140845,29.4787267
-OMC,Omnicom Group,reports,Communication Services,Advertising,"New York City, New York",,29989,1986,861.75,92.504234,70.0758025140845,29.4787267
-ORCL,Oracle,reports,Information Technology,Application Software,"Austin, Texas",1989-08-31,1341439,1977,24.572128,17.92659,70.0758025140845,29.4787267
-ORLY,O'Reilly Automotive,reports,Consumer Discretionary,Specialty Stores,"Springfield, Missouri",2009-03-27,898173,1957,45.50324,21.802513,70.0758025140845,29.4787267
-OTIS,Otis Worldwide,reports,Industrials,Industrial Machinery,"Farmington, Connecticut",2020-04-03,1781335,2020 (1853),36.830063,16.14921,70.0758025140845,29.4787267
-OXY,Occidental Petroleum,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1982-12-31,797468,1920,24.837486,16.536957,70.0758025140845,29.4787267
-PAYC,Paycom,reports,Information Technology,Application Software,"Oklahoma City, Oklahoma",2020-01-28,1590955,1998,91.418495,18.169783,70.0758025140845,29.4787267
-PAYX,Paychex,reports,Information Technology,Data Processing & Outsourced Services,"Penfield, New York",,723531,1971,70.959404,49.565674,70.0758025140845,29.4787267
-PBCT,People's United Financial,reports,Financials,Thrifts & Mortgage Finance,"Bridgeport, Connecticut",2008-11-13,1378946,1842,28.693018,24.165817,70.0758025140845,29.4787267
-PCAR,Paccar,reports,Industrials,Construction Machinery & Heavy Trucks,"Bellevue, Washington",1980-12-31,75362,1905,38.996815,27.384981,70.0758025140845,29.4787267
-PEAK,Healthpeak Properties,reports,Real Estate,Health Care REITs,"Long Beach, California",2008-03-31,765880,1985,58.91178,45.98767,59.079724210169516,29.932384499999994
-PEG,Public Service Enterprise Group,reports,Utilities,Electric Utilities,"Newark, New Jersey",1957-03-04,788784,1903,36.459515,22.950413,70.0758025140845,29.4787267
-PENN,Penn National Gaming,reports,Consumer Discretionary,Casinos & Gaming,"Wyomissing, Pennsylvania",2021-03-22,921738,1972,49.04782,41.76475,70.0758025140845,29.4787267
-PEP,PepsiCo,reports,Consumer Staples,Soft Drinks,"Purchase, New York",1957-03-04,77476,1898,49.01769,31.78424,70.0758025140845,29.4787267
-PFE,Pfizer,reports,Health Care,Pharmaceuticals,"New York City, New York",1957-03-04,78003,1849,38.18862,34.625126,70.0758025140845,29.4787267
-PFG,Principal Financial Group,reports,Financials,Life & Health Insurance,"Des Moines, Iowa",2002-07-22,1126328,1879,27.019102,20.594454,70.0758025140845,29.4787267
-PG,Procter & Gamble,reports,Consumer Staples,Personal Products,"Cincinnati, Ohio",1957-03-04,80424,1837,40.48434,36.29789,70.0758025140845,29.4787267
-PGR,Progressive Corporation,reports,Financials,Property & Casualty Insurance,"Mayfield Village, Ohio",1997-08-04,80661,1937,29.84787,7.5461535,70.0758025140845,29.4787267
-PH,Parker-Hannifin,reports,Industrials,Industrial Machinery,"Cleveland, Ohio",1985-11-30,76334,1917,32.762314,18.196306,70.0758025140845,29.4787267
-PHM,PulteGroup,reports,Consumer Discretionary,Homebuilding,"Atlanta, Georgia",1984-04-30,822416,1956,72.022606,47.880333,70.0758025140845,29.4787267
-PKG,Packaging Corporation of America,reports,Materials,Paper Packaging,"Lake Forest, Illinois",2017-07-26,75677,1959,105.4956,71.68851,70.0758025140845,29.4787267
-PKI,PerkinElmer,reports,Health Care,Health Care Equipment,"Waltham, Massachusetts",1985-05-31,31791,1937,10.208334,7.9385476,70.0758025140845,29.4787267
-PLD,Prologis,reports,Real Estate,Industrial REITs,"San Francisco, California",2003-07-17,1045609,1983,59.057236,26.140089,70.0758025140845,29.4787267
-PM,Philip Morris International,reports,Consumer Staples,Tobacco,"New York City, New York",2008-03-31,1413329,2008 (1847),57.648846,47.37963,70.0758025140845,29.4787267
-PNC,PNC Financial Services,reports,Financials,Regional Banks,"Pittsburgh, Pennsylvania",1988-04-30,713676,1845,32.35043,18.493486,70.0758025140845,29.4787267
-PNR,Pentair,reports,Industrials,Industrial Machinery,"Worsley, England",2012-10-01,77360,1966,133.33514,63.541454,70.0758025140845,29.4787267
-PNW,Pinnacle West Capital,reports,Utilities,Multi-Utilities,"Phoenix, Arizona",,764622,1985,11.8895035,9.39738,70.0758025140845,29.4787267
-POOL,Pool Corporation,reports,Consumer Discretionary,Distributors,"Covington, Louisiana",2020-10-07,945841,1993,12.054534,11.753829,70.0758025140845,29.4787267
-PPG,PPG Industries,reports,Materials,Specialty Chemicals,"Pittsburgh, Pennsylvania",1957-03-04,79879,1883,47.37495,32.510635,70.0758025140845,29.4787267
-PPL,PPL,reports,Utilities,Electric Utilities,"Allentown, Pennsylvania",,922224,1920,23.235193,11.52697,70.0758025140845,29.4787267
-PRGO,Perrigo,reports,Health Care,Pharmaceuticals,"Dublin, Ireland",2011-12-19,1585364,2013 (1887),58.938934,40.31854,70.0758025140845,29.4787267
-PRU,Prudential Financial,reports,Financials,Life & Health Insurance,"Newark, New Jersey",2002-07-22,1137774,1875,44.79371,38.262115,70.0758025140845,29.4787267
-PSA,Public Storage,reports,Real Estate,Specialized REITs,"Glendale, California",2005-08-19,1393311,1972,110.04083,61.47782,70.0758025140845,29.4787267
-PSX,Phillips 66,reports,Energy,Oil & Gas Refining & Marketing,"Houston, Texas",2012-05-01,1534701,2012 (1917),37.67008,35.27063,70.0758025140845,29.4787267
-PTC,PTC,reports,Information Technology,Application Software,"Boston, Massachusetts",2021-04-20,857005,1985,33.61542,28.738636,70.0758025140845,29.4787267
-PVH,PVH,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","New York City, New York",2013-02-15,78239,1881,53.75714,33.718636,70.0758025140845,29.4787267
-PWR,Quanta Services,reports,Industrials,Construction & Engineering,"Houston, Texas",2009-07-01,1050915,1997,23.219055,16.715395,70.0758025140845,29.4787267
-PXD,Pioneer Natural Resources,reports,Energy,Oil & Gas Exploration & Production,"Irving, Texas",2008-09-24,1038357,1997,50.971127,6.5313897,70.0758025140845,29.4787267
-PYPL,PayPal,reports,Information Technology,Data Processing & Outsourced Services,"San Jose, California",2015-07-20,1633917,1998,28.42388,19.923485,70.0758025140845,29.4787267
-QCOM,Qualcomm,reports,Information Technology,Semiconductors,"San Diego, California",,804328,1985,39.426983,30.380993,70.0758025140845,29.4787267
-QRVO,Qorvo,reports,Information Technology,Semiconductors,"Greensboro, North Carolina",2015-06-11,1604778,2015,30.465565,27.253609,70.0758025140845,29.4787267
-RCL,Royal Caribbean Group,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Miami, Florida",2014-12-05,884887,1997,32.604324,15.55814,70.0758025140845,29.4787267
-RE,Everest Re,reports,Financials,Reinsurance,"Hamilton, Bermuda",2017-06-19,1095073,1973,10.297751,9.688499,20.505412698387087,16.418739280952384
-REG,Regency Centers,reports,Real Estate,Retail REITs,"Jacksonville, Florida",2017-03-02,910606,1963,54.10325,33.810642,70.0758025140845,29.4787267
-REGN,Regeneron Pharmaceuticals,reports,Health Care,Biotechnology,"Tarrytown, New York",2013-05-01,872589,1988,38.44178,34.968845,70.0758025140845,29.4787267
-RF,Regions Financial Corporation,reports,Financials,Regional Banks,"Birmingham, Alabama",1998-08-28,1281761,1971,195.43976,88.642075,70.0758025140845,29.4787267
-RHI,Robert Half International,reports,Industrials,Human Resource & Employment Services,"Menlo Park, California",2000-12-05,315213,1948,27.748228,16.439075,70.0758025140845,29.4787267
-RJF,Raymond James Financial,reports,Financials,Investment Banking & Brokerage,"St. Petersburg, Florida",2017-03-20,720005,1962,81.597,18.500532,70.0758025140845,29.4787267
-RL,Ralph Lauren Corporation,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","New York City, New York",2007-02-02,1037038,1967,72.232506,52.805378,70.0758025140845,29.4787267
-RMD,ResMed,reports,Health Care,Health Care Equipment,"San Diego, California",2017-07-26,943819,1989,120.43411,18.192038,70.0758025140845,29.4787267
-ROK,Rockwell Automation,reports,Industrials,Electrical Components & Equipment,"Milwaukee, Wisconsin",,1024478,1903,25.835705,6.8537736,70.0758025140845,29.4787267
-ROL,Rollins,reports,Industrials,Environmental & Facilities Services,"Atlanta, Georgia",2018-10-01,84839,1948,40.97302,35.964115,70.0758025140845,29.4787267
-ROP,Roper Technologies,reports,Industrials,Industrial Conglomerates,"Sarasota, Florida",2009-12-23,882835,1981,519.24,17.637228,70.0758025140845,29.4787267
-ROST,Ross Stores,reports,Consumer Discretionary,Apparel Retail,"Dublin, California",2009-12-21,745732,1982,27.073086,17.551254,70.0758025140845,29.4787267
-RSG,Republic Services,reports,Industrials,Environmental & Facilities Services,"Phoenix, Arizona",2008-12-05,1060391,1998 (1981),65.43407,48.913918,70.0758025140845,29.4787267
-RTX,Raytheon Technologies,reports,Industrials,Aerospace & Defense,"Waltham, Massachusetts",,101829,1922,21.772808,12.801634,70.0758025140845,29.4787267
-SBAC,SBA Communications,reports,Real Estate,Specialized REITs,"Boca Raton, Florida",2017-09-01,1034054,1989,45.35635,17.525818,70.0758025140845,29.4787267
-SBUX,Starbucks,reports,Consumer Discretionary,Restaurants,"Seattle, Washington",,829224,1971,32.15598,28.478895,27.565072340000008,19.480271803571423
-SCHW,Charles Schwab Corporation,reports,Financials,Investment Banking & Brokerage,"Westlake, Texas",1997-06-02,316709,1971,15.546855,13.207197,28.845717357142856,20.34346298387097
-SEE,Sealed Air,reports,Materials,Paper Packaging,"Charlotte, North Carolina",1957-03-04,1012100,1960,34.033455,25.019876,70.0758025140845,29.4787267
-SHW,Sherwin-Williams,reports,Materials,Specialty Chemicals,"Cleveland, Ohio",1964-06-30,89800,1866,28.142416,17.82353,70.0758025140845,29.4787267
-SIVB,SVB Financial,reports,Financials,Regional Banks,"Santa Clara, California",2018-03-19,719739,1983,24.30411,12.116049,27.565072340000008,19.480271803571423
-SJM,JM Smucker,reports,Consumer Staples,Packaged Foods & Meats,"Orrville, Ohio",2008-11-06,91419,1897,79.70775,19.542055,59.079724210169516,29.932384499999994
-SLB,Schlumberger,reports,Energy,Oil & Gas Equipment & Services,"Curaçao, Kingdom of the Netherlands",1965-03-31,87347,1926,19.86923,17.657227,70.0758025140845,29.4787267
-SNA,Snap-on,reports,Industrials,Industrial Machinery,"Kenosha, Wisconsin",1982-09-30,91440,1920,69.06433,33.83073,70.0758025140845,29.4787267
-SNPS,Synopsys,reports,Information Technology,Application Software,"Mountain View, California",2017-03-16,883241,1986,25.876501,23.6705,27.565072340000008,19.480271803571423
-SO,Southern Company,reports,Utilities,Electric Utilities,"Atlanta, Georgia",1957-03-04,92122,1945,57.31798,28.472422,27.565072340000008,19.480271803571423
-SPG,Simon Property Group,reports,Real Estate,Retail REITs,"Indianapolis, Indiana",2002-06-26,1063761,2003,26.5,13.004061,70.0758025140845,29.4787267
-SPGI,S&P Global,reports,Financials,Financial Exchanges & Data,"New York City, New York",,64040,1917,139.71371,19.741299,70.0758025140845,29.4787267
-SRE,Sempra Energy,reports,Utilities,Multi-Utilities,"San Diego, California",,1032208,1998,28.621834,14.646963,70.0758025140845,29.4787267
-STE,Steris,reports,Health Care,Health Care Equipment,"Dublin, Ireland",2019-12-23,1757898,1985,20.357143,14.589286,27.565072340000008,19.480271803571423
-STT,State Street Corporation,reports,Financials,Asset Management & Custody Banks,"Boston, Massachusetts",,93751,1792,23.972267,10.945996,27.565072340000008,19.480271803571423
-STX,Seagate Technology,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Dublin, Ireland",2012-07-02,1137789,1979,20.462553,16.615116,70.0758025140845,29.4787267
-STZ,Constellation Brands,reports,Consumer Staples,Distillers & Vintners,"Victor, New York",2005-07-01,16918,1945,20.20299,17.633696,1578.4423924999999,16.19823399
-SWK,Stanley Black & Decker,reports,Industrials,Industrial Machinery,"New Britain, Connecticut",1982-09-30,93556,1843,41.56837,23.551981,27.565072340000008,19.480271803571423
-SWKS,Skyworks Solutions,reports,Information Technology,Semiconductors,"Woburn, Massachusetts",2015-03-12,4127,2002,242.10252,60.346294,70.0758025140845,29.4787267
-SYF,Synchrony Financial,reports,Financials,Consumer Finance,"Stamford, Connecticut",2015-11-18,1601712,2003,16.297405,16.079367,27.565072340000008,19.480271803571423
-SYK,Stryker Corporation,reports,Health Care,Health Care Equipment,"Kalamazoo, Michigan",2000-12-12,310764,1941,29.723583,18.114695,27.565072340000008,19.480271803571423
-SYY,Sysco,reports,Consumer Staples,Food Distributors,"Houston, Texas",1986-12-31,96021,1969,0,11.176724,27.565072340000008,19.480271803571423
-T,AT&T,reports,Communication Services,Integrated Telecommunication Services,"Dallas, Texas",1983-11-30 (1957-03-04),732717,1983 (1885),8.839046,5.616875,69.99590155714287,31.070739906451625
-TAP,Molson Coors Beverage Company,reports,Consumer Staples,Brewers,"Chicago, Illinois",1976-06-30,24545,"2005 (Molson 1786, Coors 1873)",34.553833,23.182896,36.43580779166666,25.664735830882353
-TDG,TransDigm Group,reports,Industrials,Aerospace & Defense,"Cleveland, Ohio",2016-06-03,1260221,1993,28.513842,9.780726,27.565072340000008,19.480271803571423
-TDY,Teledyne Technologies,reports,Industrials,Aerospace & Defense,"Thousand Oaks, California",2020-06-22,1094285,1960,24.387754,14.986799,27.565072340000008,19.480271803571423
-TECH,Bio-Techne,reports,Health Care,Life Sciences Tools & Services,"Minneapolis, Minnesota",2021-08-30,842023,1976,33.35806,19.24903,69.99590155714287,31.070739906451625
-TEL,TE Connectivity,reports,Information Technology,Electronic Manufacturing Services,"Schaffhausen, Switzerland",2011-10-17,1385157,2007,38.302094,28.192673,27.565072340000008,19.480271803571423
-TER,Teradyne,reports,Information Technology,Semiconductor Equipment,"North Reading, Massachusetts",2020-09-21,97210,1960,8.6374855,11.9743595,27.565072340000008,19.480271803571423
-TFC,Truist Financial,reports,Financials,Regional Banks,"Charlotte, North Carolina",1997-12-04,92230,1872,0,86.29591,77.78927679999998,104.0262137142857
-TFX,Teleflex,reports,Health Care,Health Care Equipment,"Wayne, Pennsylvania",2019-01-18,96943,1943,30.209972,25.174034,27.565072340000008,19.480271803571423
-TGT,Target Corporation,reports,Consumer Discretionary,General Merchandise Stores,"Minneapolis, Minnesota",1976-12-31,27419,1902,30.737047,12.070729,27.565072340000008,19.480271803571423
-TJX,TJX Companies,reports,Consumer Discretionary,Apparel Retail,"Framingham, Massachusetts",1985-09-30,109198,1987,21.014853,16.332756,27.565072340000008,19.480271803571423
-TMO,Thermo Fisher Scientific,reports,Health Care,Life Sciences Tools & Services,"Waltham, Massachusetts",2004-08-03,97745,2006 (1902),38.5834,47.021194,27.565072340000008,19.480271803571423
-TMUS,T-Mobile US,reports,Communication Services,Wireless Telecommunication Services,"Bellevue, Washington",2019-07-15,1283699,1994,34.616283,29.326733,27.565072340000008,19.480271803571423
-TPR,Tapestry,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","New York City, New York",,1116132,2017,17.914967,14.86849,27.565072340000008,19.480271803571423
-TRMB,Trimble,reports,Information Technology,Electronic Equipment & Instruments,"Sunnyvale, California",2021-01-21,864749,1978,84.94751,74.68847,77.78927679999998,104.0262137142857
-TROW,T. Rowe Price,reports,Financials,Asset Management & Custody Banks,"Baltimore, Maryland",,1113169,1937,23.084623,11.150547,27.565072340000008,19.480271803571423
-TRV,The Travelers Companies,reports,Financials,Property & Casualty Insurance,"New York City, New York",2002-08-21,86312,1853,60.706223,54.492893,77.78927679999998,104.0262137142857
-TSCO,Tractor Supply Company,reports,Consumer Discretionary,Specialty Stores,"Brentwood, Tennessee",2014-01-24,916365,1938,47.263237,23.022001,27.565072340000008,19.480271803571423
-TSLA,Tesla,reports,Consumer Discretionary,Automobile Manufacturers,"Palo Alto, California",2020-12-21,1318605,2003,30.93239,17.387331,27.565072340000008,19.480271803571423
-TSN,Tyson Foods,reports,Consumer Staples,Packaged Foods & Meats,"Springdale, Arkansas",2005-08-10,100493,1935,101.96543,95.945786,77.78927679999998,104.0262137142857
-TT,Trane Technologies,reports,Industrials,Building Products,"Dublin, Ireland",2010-11-17,1466258,1871,0,24.764046,27.565072340000008,19.480271803571423
-TTWO,Take-Two Interactive,reports,Communication Services,Interactive Home Entertainment,"New York City, New York",2018-03-19,946581,1993,18.256752,15.850404,27.565072340000008,19.480271803571423
-TWTR,Twitter,reports,Communication Services,Interactive Media & Services,"San Francisco, California",2018-06-07,1418091,2006,30.978508,62.64438,77.78927679999998,104.0262137142857
-TXN,Texas Instruments,reports,Information Technology,Semiconductors,"Dallas, Texas",,97476,1930,13.326195,6.894387,27.565072340000008,19.480271803571423
-TXT,Textron,reports,Industrials,Aerospace & Defense,"Providence, Rhode Island",1978-12-31,217346,1923,0,37.544712,27.565072340000008,19.480271803571423
-TYL,Tyler Technologies,reports,Information Technology,Application Software,"Plano, Texas",2020-06-22,860731,1966,0,89.3611,77.78927679999998,104.0262137142857
-UA,Under Armour (Class C),reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Baltimore, Maryland",2016-04-08,1336917,1996,0,,77.78927679999998,104.0262137142857
-UAA,Under Armour (Class A),reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Baltimore, Maryland",2014-05-01,1336917,1996,0,940.8334,77.78927679999998,104.0262137142857
-UAL,United Airlines,reports,Industrials,Airlines,"Chicago, Illinois",2015-09-03,100517,1967,47.027634,93.685394,77.78927679999998,104.0262137142857
-UDR,UDR,reports,Real Estate,Residential REITs,"Highlands Ranch, Colorado",2016-03-07,74208,1972,49.77169,89.896904,77.78927679999998,104.0262137142857
-UHS,Universal Health Services,reports,Health Care,Health Care Facilities,"King of Prussia, Pennsylvania",2014-09-20,352915,1979,9.123624,42.2549,77.78927679999998,104.0262137142857
-ULTA,Ulta Beauty,reports,Consumer Discretionary,Specialty Stores,"Bolingbrook, Illinois",2016-04-18,1403568,1990,19.84243,20.148571,77.78927679999998,104.0262137142857
-UNH,UnitedHealth Group,reports,Health Care,Managed Health Care,"Minnetonka, Minnesota",1994-07-01,731766,1977,38.45917,37.274834,77.78927679999998,104.0262137142857
-UNM,Unum Group,reports,Financials,Life & Health Insurance,"Chattanooga, Tennessee",1994-03-01,5513,1999,29.73817,67.08479,77.78927679999998,104.0262137142857
-UNP,Union Pacific,reports,Industrials,Railroads,"Omaha, Nebraska",1957-03-04,100885,1862,73.43685,42.479046,77.78927679999998,104.0262137142857
-UPS,United Parcel Service,reports,Industrials,Air Freight & Logistics,"Sandy Springs, Georgia",2002-07-22,1090727,1907,40.336414,33.538464,77.78927679999998,104.0262137142857
-URI,United Rentals,reports,Industrials,Trading Companies & Distributors,"Stamford, Connecticut",2014-09-20,1067701,1997,43.30242,42.54222,77.78927679999998,104.0262137142857
-USB,U.S. Bancorp,reports,Financials,Diversified Banks,"Minneapolis, Minnesota",,36104,1968,54.698856,70.23333,77.78927679999998,104.0262137142857
-V,Visa,reports,Information Technology,Data Processing & Outsourced Services,"San Francisco, California",2009-12-21,1403161,1958,74.77778,71.68047,77.78927679999998,104.0262137142857
-VFC,VF Corporation,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Denver, Colorado",1979-06-30,103379,1899,39.759132,22.820276,77.78927679999998,104.0262137142857
-VIAC,ViacomCBS,reports,Communication Services,Movies & Entertainment,"New York City, New York",,813828,2019 (1952),275.4592,359.93332,77.78927679999998,104.0262137142857
-VLO,Valero Energy,reports,Energy,Oil & Gas Refining & Marketing,"San Antonio, Texas",,1035002,1980,75.50964,64.04205,77.78927679999998,104.0262137142857
-VMC,Vulcan Materials,reports,Materials,Construction Materials,"Birmingham, Alabama",1999-06-30,1396009,1909,23.797861,21.763405,29.47122256,19.158951607142857
-VNO,Vornado Realty Trust,reports,Real Estate,Office REITs,"New York City, New York",,899689,1982,37.07935,26.784552,77.78927679999998,104.0262137142857
-VRSK,Verisk Analytics,reports,Industrials,Research & Consulting Services,"Jersey City, New Jersey",2015-10-08,1442145,1971,49.035625,40.715347,77.78927679999998,104.0262137142857
-VRSN,Verisign,reports,Information Technology,Internet Services & Infrastructure,"Dulles, Virginia",2006-02-01,1014473,1995,51.069004,77.11539,77.78927679999998,104.0262137142857
-VRTX,Vertex Pharmaceuticals,reports,Health Care,Biotechnology,"Cambridge, Massachusetts",2013-09-23,875320,1989,189.80464,95.236786,77.78927679999998,104.0262137142857
-VTR,Ventas,reports,Real Estate,Health Care REITs,"Chicago, Illinois",2009-03-04,740260,1998,296.72064,103.22536,77.78927679999998,104.0262137142857
-VTRS,Viatris,reports,Health Care,Pharmaceuticals,"Pittsburgh, Pennsylvania",2004-04-23,1792044,1961,77.93615,45.566666,77.78927679999998,104.0262137142857
-VZ,Verizon Communications,reports,Communication Services,Integrated Telecommunication Services,"New York City, New York",1983-11-30,732712,1983 (1877),93.24583,62.213375,77.78927679999998,104.0262137142857
-WAB,Wabtec,reports,Industrials,Construction Machinery & Heavy Trucks,"Pittsburgh, Pennsylvania",2019-02-27,943452,1999 (1869),0,14.502994,29.47122256,19.158951607142857
-WAT,Waters Corporation,reports,Health Care,Health Care Distributors,"Milford, Massachusetts",,1000697,1958,10.192499,15.741481,29.47122256,19.158951607142857
-WBA,Walgreens Boots Alliance,reports,Consumer Staples,Drug Retail,"Deerfield, Illinois",1979-12-31,1618921,2014,0,18.334482,29.47122256,19.158951607142857
-WDC,Western Digital,reports,Information Technology,"Technology Hardware, Storage & Peripherals","San Jose, California",2009-07-01,106040,1970,27.141878,12.42661,29.47122256,19.158951607142857
-WEC,WEC Energy Group,reports,Utilities,Electric Utilities,"Milwaukee, Wisconsin",2008-10-31,783325,1896,15.688818,14.892308,29.47122256,19.158951607142857
-WELL,Welltower,reports,Real Estate,Health Care REITs,"Toledo, Ohio",2009-01-30,766704,1970,24.142101,22.335665,29.47122256,19.158951607142857
-WFC,Wells Fargo,reports,Financials,Diversified Banks,"San Francisco, California",1976-06-30,72971,1852,36.168,7.741438,29.47122256,19.158951607142857
-WHR,Whirlpool Corporation,reports,Consumer Discretionary,Household Appliances,"Benton Harbor, Michigan",,106640,1911,24.163918,21.747524,29.47122256,19.158951607142857
-WLTW,Willis Towers Watson,reports,Financials,Insurance Brokers,"London, England",2016-01-05,1140536,2016,24.816477,22.208029,29.47122256,19.158951607142857
-WM,Waste Management,reports,Industrials,Environmental & Facilities Services,"Houston, Texas",,823768,1968,61.004364,19.24156,29.47122256,19.158951607142857
-WMB,Williams Companies,reports,Energy,Oil & Gas Storage & Transportation,"Tulsa, Oklahoma",1975-03-31,107263,1908,21.061602,19.557201,29.47122256,19.158951607142857
-WMT,Walmart,reports,Consumer Staples,Hypermarkets & Super Centers,"Bentonville, Arkansas",1982-08-31,104169,1962,16.93218,18.19,29.47122256,19.158951607142857
-WRB,W. R. Berkley Corporation,reports,Financials,Property & Casualty Insurance,"Greenwich, Connecticut",2019-12-05,11544,1967,16.461475,16.68595,29.47122256,19.158951607142857
-WRK,WestRock,reports,Materials,Paper Packaging,"Atlanta, Georgia",,1732845,2015,19.303839,18.2163,29.47122256,19.158951607142857
-WST,West Pharmaceutical Services,reports,Health Care,Health Care Supplies,"Exton, Pennsylvania",2020-05-22,105770,1923,45.31735,40.579178,29.47122256,19.158951607142857
-WU,Western Union,reports,Information Technology,Data Processing & Outsourced Services,"Englewood, Colorado",2006-09-29,1365135,1851,14.420881,18.241268,29.47122256,19.158951607142857
-WY,Weyerhaeuser,reports,Real Estate,Specialized REITs,"Federal Way, Washington",,106535,1900,18.151625,17.813997,29.47122256,19.158951607142857
-WYNN,Wynn Resorts,reports,Consumer Discretionary,Casinos & Gaming,"Paradise, Nevada",2008-11-14,1174922,2002,24.972252,22.004889,29.47122256,19.158951607142857
-XEL,Xcel Energy,reports,Utilities,Multi-Utilities,"Minneapolis, Minnesota",1957-03-04,72903,1909,22.584833,16.971174,29.47122256,19.158951607142857
-XLNX,Xilinx,reports,Information Technology,Semiconductors,"San Jose, California",1999-11-08,743988,1984,65.53525,17.801418,29.47122256,19.158951607142857
-XOM,ExxonMobil,reports,Energy,Integrated Oil & Gas,"Irving, Texas",1957-03-04,34088,1999,18.777882,15.117204,20.505412698387087,16.418739280952384
-XRAY,Dentsply Sirona,reports,Health Care,Health Care Supplies,"Charlotte, North Carolina",2008-11-14,818479,2016 (1969),0,15.515151,1578.4423924999999,16.19823399
-XYL,Xylem,reports,Industrials,Industrial Machinery,"White Plains, New York",2011-11-01,1524472,2011,21.500832,21.11438,29.47122256,19.158951607142857
-YUM,Yum! Brands,reports,Consumer Discretionary,Restaurants,"Louisville, Kentucky",1997-10-06,1041061,1997,45.292793,16.59241,29.47122256,19.158951607142857
-ZBH,Zimmer Biomet,reports,Health Care,Health Care Equipment,"Warsaw, Indiana",2001-08-07,1136869,1927,21.157232,18.952112,29.47122256,19.158951607142857
-ZBRA,Zebra Technologies,reports,Information Technology,Electronic Equipment & Instruments,"Lincolnshire, Illinois",2019-12-23,877212,1969,15.424969,14.816406,29.47122256,19.158951607142857
-ZION,Zions Bancorp,reports,Financials,Regional Banks,"Salt Lake City, Utah",2001-06-22,109380,1873,0,17.48837,29.47122256,19.158951607142857
-ZTS,Zoetis,reports,Health Care,Pharmaceuticals,"Parsippany, New Jersey",2013-06-21,1555280,1952,40.843605,31.567766,29.47122256,19.158951607142857
+A,Agilent Technologies,reports,Health Care,Health Care Equipment,"Santa Clara, California",2000-06-05,1090872,1999,70.82174,45.154324,28.965826470588233,26.892273936363633
+AAL,American Airlines Group,reports,Industrials,Airlines,"Fort Worth, Texas",2015-03-23,6201,1934,17.483627,15.948009,67.88723788367349,30.404815804838705
+AAP,Advance Auto Parts,reports,Consumer Discretionary,Automotive Retail,"Raleigh, North Carolina",2015-07-09,1158449,1932,0,54.611107,28.965826470588233,26.892273936363633
+AAPL,Apple,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Cupertino, California",1982-11-30,320193,1977,0,15.244594,67.88723788367349,30.404815804838705
+ABBV,AbbVie,reports,Health Care,Pharmaceuticals,"North Chicago, Illinois",2012-12-31,1551152,2013 (1888),0,34.29688,28.965826470588233,26.892273936363633
+ABC,AmerisourceBergen,reports,Health Care,Health Care Distributors,"Chesterbrook, Pennsylvania",2001-08-30,1140859,1985,41.26491,34.053917,67.88723788367349,30.404815804838705
+ABMD,Abiomed,reports,Health Care,Health Care Equipment,"Danvers, Massachusetts",2018-05-31,815094,1981,12.03858,10.622824,28.965826470588233,26.892273936363633
+ABT,Abbott Laboratories,reports,Health Care,Health Care Equipment,"North Chicago, Illinois",1964-03-31,1800,1888,0,,28.965826470588233,26.892273936363633
+ACN,Accenture,reports,Information Technology,IT Consulting & Other Services,"Dublin, Ireland",2011-07-06,1467373,1989,22.775291,7.7798166,28.965826470588233,26.892273936363633
+ADBE,Adobe,reports,Information Technology,Application Software,"San Jose, California",1997-05-05,796343,1982,10.804529,13.233576,28.965826470588233,26.892273936363633
+ADI,Analog Devices,reports,Information Technology,Semiconductors,"Wilmington, Massachusetts",1999-10-12,6281,1965,29.394913,20.695484,67.88723788367349,30.404815804838705
+ADM,ADM,reports,Consumer Staples,Agricultural Products,"Chicago, Illinois",1981-07-29,7084,1902,34.91801,25.143156,67.88723788367349,30.404815804838705
+ADP,Automatic Data Processing,reports,Information Technology,Data Processing & Outsourced Services,"Roseland, New Jersey",1981-03-31,8670,1949,20.493225,13.877073,67.88723788367349,30.404815804838705
+ADSK,Autodesk,reports,Information Technology,Application Software,"San Rafael, California",1989-12-01,769397,1982,20.267511,19.702414,67.88723788367349,30.404815804838705
+AEE,Ameren Corp,reports,Utilities,Multi-Utilities,"St. Louis, Missouri",1991-09-19,1002910,1902,0,236.27776,67.88723788367349,30.404815804838705
+AEP,American Electric Power,reports,Utilities,Electric Utilities,"Columbus, Ohio",1957-03-04,4904,1906,130.17447,57.288002,67.88723788367349,30.404815804838705
+AES,AES Corp,reports,Utilities,Independent Power Producers & Energy Traders,"Arlington, Virginia",1998-10-02,874761,1981,0,112.67949,28.965826470588233,26.892273936363633
+AFL,Aflac,reports,Financials,Life & Health Insurance,"Columbus, Georgia",1999-05-28,4977,1955,32.152344,24.6875,28.965826470588233,26.892273936363633
+AIG,American International Group,reports,Financials,Property & Casualty Insurance,"New York City, New York",1980-03-31,5272,1919,22.007652,8.609779,67.88723788367349,30.404815804838705
+AIZ,Assurant,reports,Financials,Multi-line Insurance,"New York City, New York",2007-04-10,1267238,1892,46.76772,21.621212,67.88723788367349,30.404815804838705
+AJG,Arthur J. Gallagher & Co.,reports,Financials,Insurance Brokers,"Rolling Meadows, Illinois",2016-05-31,354190,1927,129.70657,13.124703,67.88723788367349,30.404815804838705
+AKAM,Akamai Technologies,reports,Information Technology,Internet Services & Infrastructure,"Cambridge, Massachusetts",2007-07-12,1086222,1998,49.546654,39.032738,28.965826470588233,26.892273936363633
+ALB,Albemarle Corporation,reports,Materials,Specialty Chemicals,"Charlotte, North Carolina",2016-07-01,915913,1994,36.09518,23.779318,28.965826470588233,26.892273936363633
+ALGN,Align Technology,reports,Health Care,Health Care Supplies,"San Jose, California",2017-06-19,1097149,1997,37.712307,29.760561,28.965826470588233,26.892273936363633
+ALK,Alaska Air Group,reports,Industrials,Airlines,"Seattle, Washington",2016-05-13,766421,1985,0,8.874392,28.965826470588233,26.892273936363633
+ALL,Allstate Corp,reports,Financials,Property & Casualty Insurance,"Northfield Township, Illinois",1995-07-13,899051,1931,16.0898,11.320594,28.965826470588233,26.892273936363633
+ALLE,Allegion,reports,Industrials,Building Products,"New York City, New York",2013-12-02,1579241,1908,23.68845,8.116564,28.965826470588233,26.892273936363633
+AMAT,Applied Materials,reports,Information Technology,Semiconductor Equipment,"Santa Clara, California",1995-03-16,6951,1967,0,44.721237,67.88723788367349,30.404815804838705
+AMCR,Amcor,reports,Materials,Paper Packaging,"Zurich, Switzerland",2019-06-07,1748790,2019 (1860),45.234837,28.778858,28.965826470588233,26.892273936363633
+AMD,Advanced Micro Devices,reports,Information Technology,Semiconductors,"Santa Clara, California",,2488,1969,11.27676,16.07353,28.965826470588233,26.892273936363633
+AME,Ametek,reports,Industrials,Electrical Components & Equipment,"Berwyn, Pennsylvania",2013-09-23,1037868,1930,133.35478,24.62211,67.88723788367349,30.404815804838705
+AMGN,Amgen,reports,Health Care,Biotechnology,"Thousand Oaks, California",1992-01-02,318154,1980,22.285606,21.830881,67.88723788367349,30.404815804838705
+AMP,Ameriprise Financial,reports,Financials,Asset Management & Custody Banks,"Minneapolis, Minnesota",2005-10-03,820027,1894,369.95215,26.662067,67.88723788367349,30.404815804838705
+AMT,American Tower,reports,Real Estate,Specialized REITs,"Boston, Massachusetts",2007-11-19,1053507,1995,3.8258083,13.030034,67.88723788367349,30.404815804838705
+AMZN,Amazon,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Seattle, Washington",2005-11-18,1018724,1994,23.855732,16.356369,28.965826470588233,26.892273936363633
+ANET,Arista Networks,reports,Information Technology,Communications Equipment,"Santa Clara, California",2018-08-28,1596532,2004,10.250405,7.570205,67.88723788367349,30.404815804838705
+ANSS,Ansys,reports,Information Technology,Application Software,"Canonsburg, Pennsylvania",2017-06-19,1013462,1969,14.52335,13.204979,67.88723788367349,30.404815804838705
+ANTM,Anthem,reports,Health Care,Managed Health Care,"Indianapolis, Indiana",2002-07-25,1156039,2014 (1946),74.86209,40.64213,67.88723788367349,30.404815804838705
+AON,Aon,reports,Financials,Insurance Brokers,"London, UK",1996-04-23,315293,1982 (1919),0,92.83375,67.88723788367349,30.404815804838705
+AOS,A. O. Smith,reports,Industrials,Building Products,"Milwaukee, Wisconsin",2017-07-26,91142,1916,0,66.54054,67.88723788367349,30.404815804838705
+APA,APA Corporation,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1997-07-28,6769,1954,0,20.51179,67.88723788367349,30.404815804838705
+APD,Air Products & Chemicals,reports,Materials,Industrial Gases,"Allentown, Pennsylvania",1985-04-30,2969,1940,0,,28.965826470588233,26.892273936363633
+APH,Amphenol Corp,reports,Information Technology,Electronic Components,"Wallingford, Connecticut",2008-09-30,820313,1932,13.036343,13.113208,67.88723788367349,30.404815804838705
+APTV,Aptiv,reports,Consumer Discretionary,Auto Parts & Equipment,"Dublin, Ireland",2012-12-24,1521332,1994,140.2709,33.080555,67.88723788367349,30.404815804838705
+ARE,Alexandria Real Estate Equities,reports,Real Estate,Office REITs,"Pasadena, California",2017-03-20,1035443,1994,0,0,28.965826470588233,26.892273936363633
+ATO,Atmos Energy,reports,Utilities,Gas Utilities,"Dallas, Texas",2019-02-15,731802,1906,0,41.6269,67.88723788367349,30.404815804838705
+ATVI,Activision Blizzard,reports,Communication Services,Interactive Home Entertainment,"Santa Monica, California",2015-08-31,718877,2008,10.00894,14.293617,28.965826470588233,26.892273936363633
+AVB,AvalonBay Communities,reports,Real Estate,Residential REITs,"Arlington, Virginia[3]",2007-01-10,915912,1978,19.903248,20.063786,67.88723788367349,30.404815804838705
+AVGO,Broadcom,reports,Information Technology,Semiconductors,"San Jose, California",2014-05-08,1730168,1961,119.95499,30.856907,67.88723788367349,30.404815804838705
+AVY,Avery Dennison,reports,Materials,Paper Packaging,"Glendale, California",1987-12-31,8818,1990,17.080566,17.020191,67.88723788367349,30.404815804838705
+AWK,American Water Works,reports,Utilities,Water Utilities,"Camden, New Jersey",2016-03-04,1410636,1886,0,0,67.88723788367349,30.404815804838705
+AXP,American Express,reports,Financials,Consumer Finance,"New York City, New York",1976-06-30,4962,1850,45.77978,37.140244,67.88723788367349,30.404815804838705
+AZO,AutoZone,reports,Consumer Discretionary,Specialty Stores,"Memphis, Tennessee",1997-01-02,866787,1979,17.830725,13.1947365,67.88723788367349,30.404815804838705
+BA,Boeing Company,reports,Industrials,Aerospace & Defense,"Chicago, Illinois",1957-03-04,12927,1916,24.452435,22.512651,67.88723788367349,30.404815804838705
+BAC,Bank of America,reports,Financials,Diversified Banks,"Charlotte, North Carolina",1976-06-30,70858,1998 (1923 / 1874),21.122715,11.082191,67.88723788367349,30.404815804838705
+BAX,Baxter International,reports,Health Care,Health Care Equipment,"Deerfield, Illinois",1972-09-30,10456,1931,60.3117,51.427578,67.88723788367349,30.404815804838705
+BBWI,"Bath & Body Works, Inc.",reports,Consumer Discretionary,Specialty Stores,"Columbus, Ohio",1983-09-30,701985,1963,33.6157,12.79088,67.88723788367349,30.404815804838705
+BBY,Best Buy,reports,Consumer Discretionary,Computer & Electronics Retail,"Richfield, Minnesota",1999-06-29,764478,1966,74.26357,41.652172,67.88723788367349,30.404815804838705
+BDX,Becton Dickinson,reports,Health Care,Health Care Equipment,"Franklin Lakes, New Jersey",1972-09-30,10795,1897,68.36364,19.413044,67.88723788367349,30.404815804838705
+BEN,Franklin Resources,reports,Financials,Asset Management & Custody Banks,"San Mateo, California",,38777,1947,26.606005,21.401398,20.33115822580645,16.272918912698415
+BF.B,Brown–Forman,reports,Consumer Staples,Distillers & Vintners,"Louisville, Kentucky",1982-10-31,14693,1870,58.53735,55.109627,67.88723788367349,30.404815804838705
+BIIB,Biogen,reports,Health Care,Biotechnology,"Cambridge, Massachusetts",2003-11-13,875045,1978,21.540451,15.683138,67.88723788367349,30.404815804838705
+BIO,Bio-Rad Laboratories,reports,Health Care,Life Sciences Tools & Services,"Hercules, California",2020-06-22,12208,1952,327.90408,18.584627,67.88723788367349,30.404815804838705
+BK,BNY Mellon,reports,Financials,Asset Management & Custody Banks,"New York City, New York",1995-03-31,1390777,1784,0,31.363636,67.88723788367349,30.404815804838705
+BKNG,Booking Holdings,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Norwalk, Connecticut",2009-11-06,1075531,1996,0,69.10135,67.88723788367349,30.404815804838705
+BKR,Baker Hughes,reports,Energy,Oil & Gas Equipment & Services,"Houston, Texas",2017-07-07,1701605,2017,12.742656,7.1967044,67.88723788367349,30.404815804838705
+BLK,BlackRock,reports,Financials,Asset Management & Custody Banks,"New York City, New York",2011-04-04,1364742,1988,10.176805,9.419257,67.88723788367349,30.404815804838705
+BLL,Ball Corp,reports,Materials,Metal & Glass Containers,"Broomfield, Colorado",1984-10-31,9389,1880,0,17.460905,67.88723788367349,30.404815804838705
+BMY,Bristol-Myers Squibb,reports,Health Care,Health Care Distributors,"New York City, New York",1957-03-04,14272,1989,31.301392,28.814142,67.88723788367349,30.404815804838705
+BR,Broadridge Financial Solutions,reports,Information Technology,Data Processing & Outsourced Services,"Lake Success, New York",2018-06-18,1383312,1962,718.0711,115.21464,67.88723788367349,30.404815804838705
+BRK.B,Berkshire Hathaway,reports,Financials,Multi-Sector Holdings,"Omaha, Nebraska",2010-02-16,1067983,1839,8.047409,7.256725,67.88723788367349,30.404815804838705
+BSX,Boston Scientific,reports,Health Care,Health Care Equipment,"Marlborough, Massachusetts[4]",1995-02-24,885725,1979,86.08527,43.54902,67.88723788367349,30.404815804838705
+BWA,BorgWarner,reports,Consumer Discretionary,Auto Parts & Equipment,"Auburn Hills, Michigan",2011-12-19,908255,1880,34.519928,27.461704,67.88723788367349,30.404815804838705
+BXP,Boston Properties,reports,Real Estate,Office REITs,"Boston, Massachusetts",2006-04-03,1037540,1970,0,11.169642,67.88723788367349,30.404815804838705
+C,Citigroup,reports,Financials,Diversified Banks,"New York City, New York",1988-05-31,831001,1998,33.83796,23.351437,28.837969749999996,20.357568177419356
+CAG,Conagra Brands,reports,Consumer Staples,Packaged Foods & Meats,"Chicago, Illinois",1983-08-31,23217,1919,0,11.907458,1608.3654926666666,16.547779875
+CAH,Cardinal Health,reports,Health Care,Health Care Distributors,"Dublin, Ohio",1997-05-27,721371,1971,28.328255,26.390968,67.88723788367349,30.404815804838705
+CARR,Carrier Global,reports,Industrials,Building Products,"Palm Beach Gardens, Florida",2020-04-03,1783180,2020 (1915),33.703594,23.849577,28.837969749999996,20.357568177419356
+CAT,Caterpillar,reports,Industrials,Construction Machinery & Heavy Trucks,"Deerfield, Illinois",1957-03-04,18230,1925,13.781894,12.73384,28.837969749999996,20.357568177419356
+CB,Chubb,reports,Financials,Property & Casualty Insurance,"Zurich, Switzerland",2010-07-15,896159,1985,14.241321,15.81132,28.837969749999996,20.357568177419356
+CBOE,Cboe Global Markets,reports,Financials,Financial Exchanges & Data,"Chicago, Illinois",2017-03-01,1374310,1973,30.394506,27.306961,28.837969749999996,20.357568177419356
+CBRE,CBRE,reports,Real Estate,Real Estate Services,"Dallas, Texas",2006-11-10,1138118,1906,20.849878,18.336882,28.837969749999996,20.357568177419356
+CCI,Crown Castle,reports,Real Estate,Specialized REITs,"Houston, Texas",2012-03-14,1051470,1994,27.698528,12.812924,1608.3654926666666,16.547779875
+CCL,Carnival Corporation,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Miami, Florida",1998-12-22,815097,1972,9.145426,7.207451,67.88723788367349,30.404815804838705
+CDNS,Cadence Design Systems,reports,Information Technology,Application Software,"San Jose, California",2017-09-18,813672,1988,39.93054,27.297022,67.88723788367349,30.404815804838705
+CDW,CDW,reports,Information Technology,Technology Distributors,"Lincolnshire, Illinois",2019-09-23,1402057,1984,23.957552,22.421652,28.837969749999996,20.357568177419356
+CE,Celanese,reports,Materials,Specialty Chemicals,"Irving, Texas",2018-12-24,1306830,1918,28.992966,23.83866,28.837969749999996,20.357568177419356
+CERN,Cerner,reports,Health Care,Health Care Technology,"North Kansas City, Missouri",2010-04-30,804753,1979,83.868774,13.9360895,28.837969749999996,20.357568177419356
+CF,CF Industries,reports,Materials,Fertilizers & Agricultural Chemicals,"Deerfield, Illinois",2008-08-27,1324404,1946,36.122807,19.798079,28.837969749999996,20.357568177419356
+CFG,Citizens Financial Group,reports,Financials,Regional Banks,"Providence, Rhode Island",2016-01-29,759944,1828,26.884922,24.575983,28.837969749999996,20.357568177419356
+CHD,Church & Dwight,reports,Consumer Staples,Household Products,"Ewing, New Jersey",2015-12-29,313927,1847,23.19318,19.625,28.837969749999996,20.357568177419356
+CHRW,C. H. Robinson,reports,Industrials,Air Freight & Logistics,"Eden Prairie, Minnesota",2007-03-02,1043277,1905,0,29.042196,67.88723788367349,30.404815804838705
+CHTR,Charter Communications,reports,Communication Services,Cable & Satellite,"Stamford, Connecticut",2016-09-08,1091667,1993,22.477968,14.263158,28.837969749999996,20.357568177419356
+CI,Cigna,reports,Health Care,Managed Health Care,"Bloomfield, Connecticut",1976-06-30,1739940,1982,20.836832,17.520807,28.837969749999996,20.357568177419356
+CINF,Cincinnati Financial,reports,Financials,Property & Casualty Insurance,"Fairfield, Ohio",1997-12-18,20286,1950,35.519913,32.003323,28.837969749999996,20.357568177419356
+CL,Colgate-Palmolive,reports,Consumer Staples,Household Products,"New York City, New York",1957-03-04,21665,1806,0,0,28.837969749999996,20.357568177419356
+CLX,Clorox,reports,Consumer Staples,Household Products,"Oakland, California",1969-03-31,21076,1913,0,23.175001,28.837969749999996,20.357568177419356
+CMA,Comerica,reports,Financials,Diversified Banks,"Dallas, Texas",1995-12-01,28412,1849,0,64.52381,1608.3654926666666,16.547779875
+CMCSA,Comcast,reports,Communication Services,Cable & Satellite,"Philadelphia, Pennsylvania",2002-11-19,1166691,1963,16.632807,14.447712,28.837969749999996,20.357568177419356
+CME,CME Group,reports,Financials,Financial Exchanges & Data,"Chicago, Illinois",2006-08-11,1156375,1848,21.64736,10.468879,28.837969749999996,20.357568177419356
+CMG,Chipotle Mexican Grill,reports,Consumer Discretionary,Restaurants,"Newport Beach, California",2011-04-28,1058090,1993,0,11.130024,28.837969749999996,20.357568177419356
+CMI,Cummins,reports,Industrials,Industrial Machinery,"Columbus, Indiana",1965-03-31,26172,1919,0,9.3354845,1608.3654926666666,16.547779875
+CMS,CMS Energy,reports,Utilities,Multi-Utilities,"Jackson, Michigan",1999-05-03,811156,1886,14.768405,13.256018,28.837969749999996,20.357568177419356
+CNC,Centene Corporation,reports,Health Care,Managed Health Care,"St. Louis, Missouri",2016-03-30,1071739,1984,88.085785,46.59664,28.837969749999996,20.357568177419356
+CNP,CenterPoint Energy,reports,Utilities,Multi-Utilities,"Houston, Texas",1985-07-31,1130310,1882,47.56212,42.3212,28.837969749999996,20.357568177419356
+COF,Capital One Financial,reports,Financials,Consumer Finance,"Tysons Corner, Virginia",1998-07-01,927628,1994,20.409145,15.142858,67.88723788367349,30.404815804838705
+COG,Cabot Oil & Gas,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",2008-06-23,858470,1989,22.215961,15.565789,67.88723788367349,30.404815804838705
+COO,The Cooper Companies,reports,Health Care,Health Care Supplies,"San Ramon, California",2016-09-23,711404,1958,10.407349,6.471854,1608.3654926666666,16.547779875
+COP,ConocoPhillips,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1957-03-04,1163165,2002,0,7.567805,1608.3654926666666,16.547779875
+COST,Costco,reports,Consumer Staples,Hypermarkets & Super Centers,"Issaquah, Washington",1993-10-01,909832,1976,0,12.16,1608.3654926666666,16.547779875
+CPB,Campbell Soup,reports,Consumer Staples,Packaged Foods & Meats,"Camden, New Jersey",1957-03-04,16732,1869,0,24.489832,67.88723788367349,30.404815804838705
+CPRT,Copart,reports,Industrials,Diversified Support Services,"Dallas, Texas",2018-07-02,900075,1982,0,12.403118,1608.3654926666666,16.547779875
+CRL,Charles River Laboratories,reports,Health Care,Life Sciences Tools & Services,"Wilmington, Massachusetts",2021-05-14,1100682,1947,26.349705,24.322802,28.837969749999996,20.357568177419356
+CRM,Salesforce,reports,Information Technology,Application Software,"San Francisco, California",2008-09-15,1108524,1999,0,,68.64970985915494,28.98603496527778
+CSCO,Cisco Systems,reports,Information Technology,Communications Equipment,"San Jose, California",1993-12-01,858877,1984,25.102894,22.242165,28.837969749999996,20.357568177419356
+CSX,CSX,reports,Industrials,Railroads,"Jacksonville, Florida",1967-09-30,277948,1980,0,17.685535,1608.3654926666666,16.547779875
+CTAS,Cintas Corporation,reports,Industrials,Diversified Support Services,"Mason, Ohio",2001-03-01,723254,1929,18.653187,15.375,28.837969749999996,20.357568177419356
+CTLT,Catalent,reports,Health Care,Pharmaceuticals,"Somerset, New Jersey",2020-09-21,1596783,2007,26.518518,22.610527,28.837969749999996,20.357568177419356
+CTSH,Cognizant Technology Solutions,reports,Information Technology,IT Consulting & Other Services,"Teaneck, New Jersey",2006-11-17,1058290,1994,27.31893,25.731592,28.837969749999996,20.357568177419356
+CTVA,Corteva,reports,Materials,Fertilizers & Agricultural Chemicals,"Wilmington, Delaware",2019-06-03,1755672,2019,0,20.253471,1608.3654926666666,16.547779875
+CTXS,Citrix Systems,reports,Information Technology,Application Software,"Fort Lauderdale, Florida",1999-12-01,877890,1989,0,9.683398,28.837969749999996,20.357568177419356
+CVS,CVS Health,reports,Health Care,Health Care Services,"Woonsocket, Rhode Island",1957-03-04,64803,1996,0,9.942815,1608.3654926666666,16.547779875
+CVX,Chevron Corporation,reports,Energy,Integrated Oil & Gas,"San Ramon, California",1957-03-04,93410,1879,17.255259,15.159977,28.837969749999996,20.357568177419356
+CZR,Caesars Entertainment,reports,Consumer Discretionary,Casinos & Gaming,"Reno, Nevada",2021-03-22,1590895,1973,55.79288,21.892063,67.88723788367349,30.404815804838705
+D,Dominion Energy,reports,Utilities,Electric Utilities,"Richmond, Virginia",,715957,1983,0,18.672413,20.33115822580645,16.272918912698415
+DAL,Delta Air Lines,reports,Industrials,Airlines,"Atlanta, Georgia",2013-09-11,27904,1929,0,9.607651,1608.3654926666666,16.547779875
+DD,DuPont,reports,Materials,Specialty Chemicals,"Wilmington, Delaware",2019-04-02,1666700,2017,10.454402,10.250965,20.33115822580645,16.272918912698415
+DE,Deere & Co.,reports,Industrials,Agricultural & Farm Machinery,"Moline, Illinois",1957-03-04,315189,1837,0,-59.93182,1608.3654926666666,16.547779875
+DFS,Discover Financial Services,reports,Financials,Consumer Finance,"Riverwoods, Illinois",2007-07-02,1393612,1985,32.2257,25.21154,20.33115822580645,16.272918912698415
+DG,Dollar General,reports,Consumer Discretionary,General Merchandise Stores,"Goodlettsville, Tennessee",2012-12-03,29534,1939,16.317854,8.429054,20.33115822580645,16.272918912698415
+DGX,Quest Diagnostics,reports,Health Care,Health Care Services,"Secaucus, New Jersey",2002-12-12,1022079,1967,45.510536,14.857143,68.64970985915494,28.98603496527778
+DHI,D. R. Horton,reports,Consumer Discretionary,Homebuilding,"Arlington, Texas",2005-06-22,882184,1978,0,21.023952,1608.3654926666666,16.547779875
+DHR,Danaher Corporation,reports,Health Care,Health Care Equipment,"Washington, D.C.",,313616,1969,9545,14.836788,1608.3654926666666,16.547779875
+DIS,The Walt Disney Company,reports,Communication Services,Movies & Entertainment,"Burbank, California",1976-06-30,1744489,1923,80.39338,18.849516,29.268901760000002,18.959020714285714
+DISCA,Discovery (Series A),reports,Communication Services,Broadcasting,"New York City, New York",2010-03-01,1437107,1985,12.138071,11.559194,20.33115822580645,16.272918912698415
+DISCK,Discovery (Series C),reports,Communication Services,Broadcasting,"New York City, New York",2014-08-07,1437107,1985,32.04861,22.811785,20.33115822580645,16.272918912698415
+DISH,Dish Network,reports,Communication Services,Cable & Satellite,"Meridian, Colorado",2017-03-13,1001082,1980,21.96244,13.926556,20.33115822580645,16.272918912698415
+DLR,Digital Realty Trust,reports,Real Estate,Specialized REITs,"Austin, Texas",2016-05-18,1297996,2004,55.28625,49.307693,20.33115822580645,16.272918912698415
+DLTR,Dollar Tree,reports,Consumer Discretionary,General Merchandise Stores,"Chesapeake, Virginia",2011-12-19,935703,1986,14.277707,12.861564,20.33115822580645,16.272918912698415
+DOV,Dover Corporation,reports,Industrials,Industrial Machinery,"Downers Grove, Illinois",1985-10-31,29905,1955,12.281712,8.566934,20.33115822580645,16.272918912698415
+DOW,Dow,reports,Materials,Commodity Chemicals,"Midland, Michigan",2019-04-01,1751788,2019,0,,20.33115822580645,16.272918912698415
+DPZ,Domino's Pizza,reports,Consumer Discretionary,Restaurants,"Ann Arbor, Michigan",2020-05-12,1286681,1960,32.311836,22.745934,20.33115822580645,16.272918912698415
+DRE,Duke Realty Corp,reports,Real Estate,Industrial REITs,"Indianapolis, Indiana",2017-07-26,783280,1972,11.487556,10.309645,20.33115822580645,16.272918912698415
+DRI,Darden Restaurants,reports,Consumer Discretionary,Restaurants,"Orlando, Florida",,940944,1938,26.21308,20.203253,1608.3654926666666,16.547779875
+DTE,DTE Energy,reports,Utilities,Multi-Utilities,"Detroit, Michigan",1957-03-04,936340,1995,17.904575,16.286354,20.33115822580645,16.272918912698415
+DUK,Duke Energy,reports,Utilities,Electric Utilities,"Charlotte, North Carolina",1976-06-30,1326160,1904,18.925701,6.0527525,20.33115822580645,16.272918912698415
+DVA,DaVita,reports,Health Care,Health Care Facilities,"Denver, Colorado",2008-07-31,927066,1979,0,14.361703,1608.3654926666666,16.547779875
+DVN,Devon Energy,reports,Energy,Oil & Gas Exploration & Production,"Oklahoma City, Oklahoma",2000-08-30,1090012,1971,20.699652,15.387931,1608.3654926666666,16.547779875
+DXC,DXC Technology,reports,Information Technology,IT Consulting & Other Services,"Tysons Corner, Virginia",2017-04-04,1688568,2017,13.60615,12.211563,20.33115822580645,16.272918912698415
+DXCM,DexCom,reports,Health Care,Health Care Equipment,"San Diego, California",2020-05-12,1093557,1999,21.504114,17.260088,20.33115822580645,16.272918912698415
+EA,Electronic Arts,reports,Communication Services,Interactive Home Entertainment,"Redwood City, California",2002-07-22,712515,1982,11.408303,10.1635685,20.33115822580645,16.272918912698415
+EBAY,eBay,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"San Jose, California",2002-07-22,1065088,1995,6.7874775,4.837963,20.33115822580645,16.272918912698415
+ECL,Ecolab,reports,Materials,Specialty Chemicals,"Saint Paul, Minnesota",1989-01-31,31462,1923,36.562286,26.052118,20.33115822580645,16.272918912698415
+ED,Consolidated Edison,reports,Utilities,Electric Utilities,"New York City, New York",,1047862,1823,0,,1608.3654926666666,16.547779875
+EFX,Equifax,reports,Industrials,Research & Consulting Services,"Atlanta, Georgia",1997-06-19,33185,1899,6.608989,10.576923,20.33115822580645,16.272918912698415
+EIX,Edison International,reports,Utilities,Electric Utilities,"Rosemead, California",1957-03-04,827052,1886,20.21823,9.603659,20.33115822580645,16.272918912698415
+EL,Estée Lauder Companies,reports,Consumer Staples,Personal Products,"New York City, New York",2006-01-05,1001250,1946,13.493871,10.929078,20.33115822580645,16.272918912698415
+EMN,Eastman Chemical,reports,Materials,Diversified Chemicals,"Kingsport, Tennessee",1994-01-01,915389,1920,12.597763,13.279264,20.33115822580645,16.272918912698415
+EMR,Emerson Electric Company,reports,Industrials,Electrical Components & Equipment,"Ferguson, Missouri",1965-03-31,32604,1890,14.863481,10.446776,20.33115822580645,16.272918912698415
+ENPH,Enphase Energy,reports,Information Technology,Electronic Components,"Fremont, California",2021-01-07,1463101,2006,30.867207,11.184519,20.33115822580645,16.272918912698415
+EOG,EOG Resources,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",2000-11-02,821189,1999,14.89575,12.915332,20.33115822580645,16.272918912698415
+EQIX,Equinix,reports,Real Estate,Specialized REITs,"Redwood City, California",2015-03-20,1101239,1998,14.331374,12.077399,20.33115822580645,16.272918912698415
+EQR,Equity Residential,reports,Real Estate,Residential REITs,"Chicago, Illinois",2001-12-03,906107,1969,31.07232,25.700905,20.33115822580645,16.272918912698415
+ES,Eversource Energy,reports,Utilities,Multi-Utilities,"Hartford, Connecticut",,72741,1966,13.590465,10.321094,20.33115822580645,16.272918912698415
+ESS,Essex Property Trust,reports,Real Estate,Residential REITs,"San Mateo, California",2014-04-02,920522,1971,9.574701,8.469661,20.33115822580645,16.272918912698415
+ETN,Eaton Corporation,reports,Industrials,Electrical Components & Equipment,"Dublin, Ireland",,1551182,1911,10.0698,11.27336,20.33115822580645,16.272918912698415
+ETR,Entergy,reports,Utilities,Electric Utilities,"New Orleans, Louisiana",1957-03-04,65984,1913,31.222527,12.733893,20.33115822580645,16.272918912698415
+ETSY,Etsy,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Brooklyn, New York",2020-09-21,1370637,2005,31.40232,12.299242,20.33115822580645,16.272918912698415
+EVRG,Evergy,reports,Utilities,Electric Utilities,"Kansas City, Missouri",2018-06-05,1711269,1909,44.22426,32.249104,20.33115822580645,16.272918912698415
+EW,Edwards Lifesciences,reports,Health Care,Health Care Equipment,"Irvine, California",2011-04-01,1099800,1958,26.220293,17.57912,20.33115822580645,16.272918912698415
+EXC,Exelon,reports,Utilities,Multi-Utilities,"Chicago, Illinois",1957-03-04,1109357,2000,12.998028,10.035533,20.33115822580645,16.272918912698415
+EXPD,Expeditors,reports,Industrials,Air Freight & Logistics,"Seattle, Washington",2007-10-10,746515,1979,10.168592,14.281571,20.33115822580645,16.272918912698415
+EXPE,Expedia Group,reports,Consumer Discretionary,Internet & Direct Marketing Retail,"Seattle, Washington",2007-10-02,1324424,1996,20.406488,15.594005,20.33115822580645,16.272918912698415
+EXR,Extra Space Storage,reports,Real Estate,Specialized REITs,"Salt Lake City, Utah",2016-01-19,1289490,1977,18.429857,16.889494,20.33115822580645,16.272918912698415
+F,Ford,reports,Consumer Discretionary,Automobile Manufacturers,"Dearborn, Michigan",1957-03-04,37996,1903,6.263392,26.184032,20.33115822580645,16.272918912698415
+FANG,Diamondback Energy,reports,Energy,Oil & Gas Exploration & Production,"Midland, Texas",2018-12-03,1539838,2007,11.868266,13.451612,20.33115822580645,16.272918912698415
+FAST,Fastenal,reports,Industrials,Building Products,"Winona, Minnesota",2008-09-15,815556,1967,15.614504,8.082308,20.33115822580645,16.272918912698415
+FB,Facebook,reports,Communication Services,Interactive Media & Services,"Menlo Park, California",2013-12-23,1326801,2004,14.748295,14.20172,20.33115822580645,16.272918912698415
+FBHS,Fortune Brands Home & Security,reports,Industrials,Building Products,"Deerfield, Illinois",2016-06-22,1519751,2011 (1969),13.558179,8.9168215,20.33115822580645,16.272918912698415
+FCX,Freeport-McMoRan,reports,Materials,Copper,"Phoenix, Arizona",,831259,1912,35.645775,31.438692,20.33115822580645,16.272918912698415
+FDX,FedEx,reports,Industrials,Air Freight & Logistics,"Memphis, Tennessee",1980-12-31,1048911,1971,11.153061,9.559767,20.33115822580645,16.272918912698415
+FE,FirstEnergy,reports,Utilities,Electric Utilities,"Akron, Ohio",,1031296,1997,14.569192,11.026807,20.33115822580645,16.272918912698415
+FFIV,F5 Networks,reports,Information Technology,Communications Equipment,"Seattle, Washington",2010-12-20,1048695,1996,27.421516,25.700617,20.33115822580645,16.272918912698415
+FIS,Fidelity National Information Services,reports,Information Technology,Data Processing & Outsourced Services,"Jacksonville, Florida",2006-11-10,1136893,1968,11.850163,13.754253,20.33115822580645,16.272918912698415
+FISV,Fiserv,reports,Information Technology,Data Processing & Outsourced Services,"Brookfield, Wisconsin",2001-04-02,798354,1984,10.809859,8.771429,20.33115822580645,16.272918912698415
+FITB,Fifth Third Bancorp,reports,Financials,Regional Banks,"Cincinnati, Ohio",,35527,1858,13.859695,11.470198,20.33115822580645,16.272918912698415
+FLT,Fleetcor,reports,Information Technology,Data Processing & Outsourced Services,"Norcross, Georgia",2018-06-20,1175454,2000,17.375538,13.017686,20.33115822580645,16.272918912698415
+FMC,FMC Corporation,reports,Materials,Fertilizers & Agricultural Chemicals,"Philadelphia, Pennsylvania",2009-08-19,37785,1883,12.14767,10.109813,20.33115822580645,16.272918912698415
+FOX,Fox Corporation (Class B),reports,Communication Services,Movies & Entertainment,"New York City, New York",2015-09-18,1754301,2019,0,0,20.33115822580645,16.272918912698415
+FOXA,Fox Corporation (Class A),reports,Communication Services,Movies & Entertainment,"New York City, New York",2013-07-01,1754301,2019,19.82293,23.43502,20.33115822580645,16.272918912698415
+FRC,First Republic Bank,reports,Financials,Regional Banks,"San Francisco, California",2019-01-02,1132979,1985,83.363884,59.74283,20.33115822580645,16.272918912698415
+FRT,Federal Realty Investment Trust,reports,Real Estate,Retail REITs,"Rockville, Maryland",2016-02-01,34903,1962,8.50882,16.051458,20.33115822580645,16.272918912698415
+FTNT,Fortinet,reports,Information Technology,Systems Software,"Sunnyvale, California",2018-10-11,1262039,2000,35.78133,25.912294,20.33115822580645,16.272918912698415
+FTV,Fortive,reports,Industrials,Industrial Machinery,"Everett, Washington",2016-07-01,1659166,2016,31.85691,27.098202,20.33115822580645,16.272918912698415
+GD,General Dynamics,reports,Industrials,Aerospace & Defense,"Falls Church, Virginia",1957-03-04,40533,1899,0,15.629372,57.254677186440674,29.030018319047624
+GE,General Electric,reports,Industrials,Industrial Conglomerates,"Boston, Massachusetts",,40545,1892,79.54562,56.856228,57.254677186440674,29.030018319047624
+GILD,Gilead Sciences,reports,Health Care,Biotechnology,"Foster City, California",2004-07-01,882095,1987,32.958138,15.973711,57.254677186440674,29.030018319047624
+GIS,General Mills,reports,Consumer Staples,Packaged Foods & Meats,"Golden Valley, Minnesota",1969-03-31,40704,1856,104.66049,64.38608,57.254677186440674,29.030018319047624
+GL,Globe Life,reports,Financials,Life & Health Insurance,"McKinney, Texas",1989-04-30,320335,1900,18.9335,29.348461,57.254677186440674,29.030018319047624
+GLW,Corning,reports,Information Technology,Electronic Components,"Corning, New York",,24741,1851,0,17.26087,1608.3654926666666,16.547779875
+GM,General Motors,reports,Consumer Discretionary,Automobile Manufacturers,"Detroit, Michigan",2013-06-06,1467858,1908,41.335697,37.14195,57.254677186440674,29.030018319047624
+GNRC,Generac Holdings,reports,Industrials,Electrical Components & Equipment,"Waukesha, Wisconsin",2021-03-22,1474735,1959,122.11496,26.008257,57.254677186440674,29.030018319047624
+GOOG,Alphabet (Class C),reports,Communication Services,Interactive Media & Services,"Mountain View, California",2006-04-03,1652044,1998,0,36.61556,28.965826470588233,26.892273936363633
+GOOGL,Alphabet (Class A),reports,Communication Services,Interactive Media & Services,"Mountain View, California",2014-04-03,1652044,1998,27.08277,18.136877,28.965826470588233,26.892273936363633
+GPC,Genuine Parts,reports,Consumer Discretionary,Specialty Stores,"Atlanta, Georgia",1973-12-31,40987,1925,51.962578,16.151651,57.254677186440674,29.030018319047624
+GPN,Global Payments,reports,Information Technology,Data Processing & Outsourced Services,"Atlanta, Georgia",2016-04-25,1123360,2000,105.74999,62.8625,57.254677186440674,29.030018319047624
+GPS,Gap,reports,Consumer Discretionary,Apparel Retail,"San Francisco, California",1986-08-31,39911,1969,13.576194,14.827143,20.33115822580645,16.272918912698415
+GRMN,Garmin,reports,Consumer Discretionary,Consumer Electronics,"Schaffhausen, Switzerland",2012-12-12,1121788,1989,30.923208,20.776812,20.33115822580645,16.272918912698415
+GS,Goldman Sachs,reports,Financials,Investment Banking & Brokerage,"New York City, New York",2002-07-22,886982,1869,22.669706,12.933526,57.254677186440674,29.030018319047624
+GWW,W. W. Grainger,reports,Industrials,Industrial Machinery,"Lake Forest, Illinois",1981-06-30,277135,1927,63.986763,25.302687,57.254677186440674,29.030018319047624
+HAL,Halliburton,reports,Energy,Oil & Gas Equipment & Services,"Houston, Texas",1957-03-04,45012,1919,0,,57.254677186440674,29.030018319047624
+HAS,Hasbro,reports,Consumer Discretionary,Leisure Products,"Pawtucket, Rhode Island",1984-09-30,46080,1923,26.412062,10.948354,57.254677186440674,29.030018319047624
+HBAN,Huntington Bancshares,reports,Financials,Regional Banks,"Columbus, Ohio; Detroit, Michigan",,49196,1866,54.919136,40.187374,57.254677186440674,29.030018319047624
+HBI,Hanesbrands,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Winston-Salem, North Carolina",2015-03-20,1359841,2000,0,10.854112,57.254677186440674,29.030018319047624
+HCA,HCA Healthcare,reports,Health Care,Health Care Facilities,"Nashville, Tennessee",2015-01-27,860730,1968,27.907715,28.095745,57.254677186440674,29.030018319047624
+HD,Home Depot,reports,Consumer Discretionary,Home Improvement Retail,"Atlanta, Georgia",1988-03-31,354950,1978,11.027739,18.57107,57.254677186440674,29.030018319047624
+HES,Hess Corporation,reports,Energy,Integrated Oil & Gas,"New York City, New York",1984-05-31,4447,1919,29.450628,16,57.254677186440674,29.030018319047624
+HIG,The Hartford,reports,Financials,Property & Casualty Insurance,"Hartford, Connecticut",1957-03-04,874766,1810,49.124058,20.774244,57.254677186440674,29.030018319047624
+HII,Huntington Ingalls Industries,reports,Industrials,Aerospace & Defense,"Newport News, Virginia",2018-01-03,1501585,2011,45.462242,39.254387,57.254677186440674,29.030018319047624
+HLT,Hilton Worldwide,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Tysons Corner, Virginia",2017-06-19,1585689,1919,23.522743,19.359755,57.254677186440674,29.030018319047624
+HOLX,Hologic,reports,Health Care,Health Care Equipment,"Marlborough, Massachusetts",2016-03-30,859737,1985,12.568267,12.098368,57.254677186440674,29.030018319047624
+HON,Honeywell,reports,Industrials,Industrial Conglomerates,"Charlotte, North Carolina",1964-03-31,773840,1906,92.56632,52.66182,57.254677186440674,29.030018319047624
+HPE,Hewlett Packard Enterprise,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Houston, Texas",2015-11-02,1645590,2015,35.537426,27.603487,57.254677186440674,29.030018319047624
+HPQ,HP,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Palo Alto, California",1974-12-31,47217,1939 (2015),45.228943,25.169472,57.254677186440674,29.030018319047624
+HRL,Hormel,reports,Consumer Staples,Packaged Foods & Meats,"Austin, Minnesota",2009-03-04,48465,1891,18.292246,16.036186,57.254677186440674,29.030018319047624
+HSIC,Henry Schein,reports,Health Care,Health Care Distributors,"Melville, New York",2015-03-17,1000228,1932,281.04895,22.617313,57.254677186440674,29.030018319047624
+HST,Host Hotels & Resorts,reports,Real Estate,Hotel & Resort REITs,"Bethesda, Maryland",2007-03-20,1070750,1993,11.643399,19.230577,57.254677186440674,29.030018319047624
+HSY,The Hershey Company,reports,Consumer Staples,Packaged Foods & Meats,"Hershey, Pennsylvania",1957-03-04,47111,1894,73.4187,26.200678,57.254677186440674,29.030018319047624
+HUM,Humana,reports,Health Care,Managed Health Care,"Louisville, Kentucky",,49071,1961,18.23849,15.393402,57.254677186440674,29.030018319047624
+HWM,Howmet Aerospace,reports,Industrials,Aerospace & Defense,"Pittsburgh, Pennsylvania",1964-03-31,4281,2016,0,,57.254677186440674,29.030018319047624
+IBM,IBM,reports,Information Technology,IT Consulting & Other Services,"Armonk, New York",1957-03-04,51143,1911,19.195187,16.866055,57.254677186440674,29.030018319047624
+ICE,Intercontinental Exchange,reports,Financials,Financial Exchanges & Data,"Atlanta, Georgia",2007-09-26,1571949,2000,0,7.895,57.254677186440674,29.030018319047624
+IDXX,Idexx Laboratories,reports,Health Care,Health Care Equipment,"Westbrook, Maine",2017-01-05,874716,1983,46.343548,19.838291,57.254677186440674,29.030018319047624
+IEX,IDEX Corporation,reports,Industrials,Industrial Machinery,"Lake Forest, Illinois",2019-08-09,832101,1988,5.893341,63.702465,57.254677186440674,29.030018319047624
+IFF,International Flavors & Fragrances,reports,Materials,Specialty Chemicals,"New York City, New York",1976-03-31,51253,1958 (1889),0,11.660984,57.254677186440674,29.030018319047624
+ILMN,Illumina,reports,Health Care,Life Sciences Tools & Services,"San Diego, California",2015-11-19,1110803,1998,314.75177,24.119566,57.254677186440674,29.030018319047624
+INCY,Incyte,reports,Health Care,Biotechnology,"Wilmington, Delaware",2017-02-28,879169,1991,9.350262,30.149357,57.254677186440674,29.030018319047624
+INFO,IHS Markit,reports,Industrials,Research & Consulting Services,"London, England",2017-06-02,1598014,1959,39.396137,20.28607,57.254677186440674,29.030018319047624
+INTC,Intel,reports,Information Technology,Semiconductors,"Santa Clara, California",1976-12-31,50863,1968,102.059555,159.52553,57.254677186440674,29.030018319047624
+INTU,Intuit,reports,Information Technology,Application Software,"Mountain View, California",2000-12-05,896878,1983,8.922508,8.9792385,57.254677186440674,29.030018319047624
+IP,International Paper,reports,Materials,Paper Packaging,"Memphis, Tennessee",1957-03-04,51434,1898,21.748625,12.895789,57.254677186440674,29.030018319047624
+IPG,Interpublic Group,reports,Communication Services,Advertising,"New York City, New York",1992-10-01,51644,1961 (1930),22.15213,12.195421,57.254677186440674,29.030018319047624
+IPGP,IPG Photonics,reports,Information Technology,Electronic Manufacturing Services,"Oxford, Massachusetts",2018-03-07,1111928,1990,50.667606,35.52313,57.254677186440674,29.030018319047624
+IQV,IQVIA,reports,Health Care,Life Sciences Tools & Services,"Durham, North Carolina",2017-08-29,1478242,1982,35.918312,27.362661,57.254677186440674,29.030018319047624
+IR,Ingersoll Rand,reports,Industrials,Industrial Machinery,"Milwaukee, Wisconsin",2020-03-03,1699150,1859,14.634662,16.74096,57.254677186440674,29.030018319047624
+IRM,Iron Mountain,reports,Real Estate,Specialized REITs,"Boston, Massachusetts",2009-01-06,1020569,1951,29.072277,7.7165356,57.254677186440674,29.030018319047624
+ISRG,Intuitive Surgical,reports,Health Care,Health Care Equipment,"Sunnyvale, California",2008-06-02,1035267,1995,110.1633,67.37417,57.254677186440674,29.030018319047624
+IT,Gartner,reports,Information Technology,IT Consulting & Other Services,"Stamford, Connecticut",2017-04-05,749251,1979,85.50251,73.01538,57.254677186440674,29.030018319047624
+ITW,Illinois Tool Works,reports,Industrials,Industrial Machinery,"Glenview, Illinois",1986-02-28,49826,1912,298.04166,10.772591,57.254677186440674,29.030018319047624
+IVZ,Invesco,reports,Financials,Asset Management & Custody Banks,"Atlanta, Georgia",2008-08-21,914208,1935,15.134462,10.250905,57.254677186440674,29.030018319047624
+J,Jacobs Engineering Group,reports,Industrials,Construction & Engineering,"Dallas, Texas",2007-10-26,52988,1947,105.20994,66.63296,57.254677186440674,29.030018319047624
+JBHT,J. B. Hunt,reports,Industrials,Trucking,"Lowell, Arkansas",2015-07-01,728535,1961,53.990025,36.158665,57.254677186440674,29.030018319047624
+JCI,Johnson Controls,reports,Industrials,Building Products,"Cork, Ireland",2010-08-27,833444,1885,14.822069,10.868651,57.254677186440674,29.030018319047624
+JKHY,Jack Henry & Associates,reports,Information Technology,Data Processing & Outsourced Services,"Monett, Missouri",2018-11-13,779152,1976,13.625193,8.597738,57.254677186440674,29.030018319047624
+JNJ,Johnson & Johnson,reports,Health Care,Pharmaceuticals,"New Brunswick, New Jersey",1973-06-30,200406,1886,24.954382,17.565367,57.254677186440674,29.030018319047624
+JNPR,Juniper Networks,reports,Information Technology,Communications Equipment,"Sunnyvale, California",2006-06-02,1043604,1996,58.641285,37.681885,57.254677186440674,29.030018319047624
+JPM,JPMorgan Chase,reports,Financials,Diversified Banks,"New York City, New York",1975-06-30,19617,2000 (1799 / 1871),28.512634,20.516527,57.254677186440674,29.030018319047624
+K,Kellogg's,reports,Consumer Staples,Packaged Foods & Meats,"Battle Creek, Michigan",1989-09-11,55067,1906,88.791695,47.531746,57.254677186440674,29.030018319047624
+KEY,KeyCorp,reports,Financials,Regional Banks,"Cleveland, Ohio",1994-03-01,91576,1825,19.182253,12.926041,57.254677186440674,29.030018319047624
+KEYS,Keysight Technologies,reports,Information Technology,Electronic Equipment & Instruments,"Santa Rosa, California",2018-11-06,1601046,2014,79.47111,52.26387,57.254677186440674,29.030018319047624
+KHC,Kraft Heinz,reports,Consumer Staples,Packaged Foods & Meats,"Chicago, Illinois; Pittsburgh, Pennsylvania",2015-07-06,1637459,2015 (1869),30.819868,22.183138,36.23174975833333,25.400241500000003
+KIM,Kimco Realty,reports,Real Estate,Retail REITs,"New Hyde Park, New York",2006-04-04,879101,1958,33.475857,23.156942,36.23174975833333,25.400241500000003
+KLAC,KLA Corporation,reports,Information Technology,Semiconductor Equipment,"Milpitas, California",,319201,1975/1977 (1997),12.125467,13.828866,36.23174975833333,25.400241500000003
+KMB,Kimberly-Clark,reports,Consumer Staples,Household Products,"Irving, Texas",1957-03-04,55785,1872,15.821366,14.70183,57.254677186440674,29.030018319047624
+KMI,Kinder Morgan,reports,Energy,Oil & Gas Storage & Transportation,"Houston, Texas",2012-05-25,1506307,1997,44.68586,39.90714,36.23174975833333,25.400241500000003
+KMX,CarMax,reports,Consumer Discretionary,Specialty Stores,"Richmond, Virginia",2010-06-28,1170010,1993,22.510908,17.38669,67.88723788367349,30.404815804838705
+KO,Coca-Cola Company,reports,Consumer Staples,Soft Drinks,"Atlanta, Georgia",1957-03-04,21344,1886,13.088969,11.755796,28.837969749999996,20.357568177419356
+KR,Kroger,reports,Consumer Staples,Food Retail,"Cincinnati, Ohio",1957-03-04,56873,1883,24.366568,16.832357,36.23174975833333,25.400241500000003
+KSU,Kansas City Southern,reports,Industrials,Railroads,"Kansas City, Missouri",2013-05-24,54480,1887,10.782065,18.964975,57.254677186440674,29.030018319047624
+L,Loews Corporation,reports,Financials,Multi-line Insurance,"New York City, New York",,60086,1959,80.01497,40.73933,36.23174975833333,25.400241500000003
+LDOS,Leidos,reports,Industrials,Diversified Support Services,"Reston, Virginia",2019-08-09,1336920,1969,13.081936,13.876562,36.23174975833333,25.400241500000003
+LEG,Leggett & Platt,reports,Consumer Discretionary,Home Furnishings,"Carthage, Missouri",1999-10-14,58492,1883,24.86314,17.320604,36.23174975833333,25.400241500000003
+LEN,Lennar,reports,Consumer Discretionary,Homebuilding,"Miami, Florida",2005-10-04,920760,1954,0,9.534314,36.23174975833333,25.400241500000003
+LH,LabCorp,reports,Health Care,Health Care Services,"Burlington, North Carolina",2004-11-01,920148,1978,0,,36.23174975833333,25.400241500000003
+LHX,L3Harris Technologies,reports,Industrials,Aerospace & Defense,"Melbourne, Florida",2008-09-22,202058,2019 (1895),20.529428,11.775424,36.23174975833333,25.400241500000003
+LIN,Linde,reports,Materials,Industrial Gases,"Guildford, England",1992-07-01,1707925,1879,41.207043,36.918575,36.23174975833333,25.400241500000003
+LKQ,LKQ Corporation,reports,Consumer Discretionary,Distributors,"Chicago, Illinois",2016-05-23,1065696,1998,17.753511,15.738078,36.23174975833333,25.400241500000003
+LLY,Eli Lilly & Co,reports,Health Care,Pharmaceuticals,"Indianapolis, Indiana",1970-12-31,59478,1876,27.40423,18.966667,36.23174975833333,25.400241500000003
+LMT,Lockheed Martin,reports,Industrials,Aerospace & Defense,"Bethesda, Maryland",1984-07-31,936468,1995,0,,36.23174975833333,25.400241500000003
+LNC,Lincoln National,reports,Financials,Multi-line Insurance,"Radnor, Pennsylvania",1976-06-30,59558,1905,12.572397,11.863372,36.23174975833333,25.400241500000003
+LNT,Alliant Energy,reports,Utilities,Electric Utilities,"Madison, Wisconsin",2016-07-01,352541,1917,30.327112,21.895744,28.965826470588233,26.892273936363633
+LOW,Lowe's,reports,Consumer Discretionary,Home Improvement Retail,"Mooresville, North Carolina",1984-02-29,60667,1904/1946/1959,42.53825,28.566975,36.23174975833333,25.400241500000003
+LRCX,Lam Research,reports,Information Technology,Semiconductor Equipment,"Fremont, California",2012-06-29,707549,1980,32.771027,17.064945,36.23174975833333,25.400241500000003
+LUMN,Lumen Technologies,reports,Communication Services,Alternative Carriers,"Monroe, Louisiana",1999-03-25,18926,1983 (1877),0,10.063177,36.23174975833333,25.400241500000003
+LUV,Southwest Airlines,reports,Industrials,Airlines,"Dallas, Texas",1994-07-01,92380,1967,11.846897,11.9849615,27.53460128,19.318890246428573
+LVS,Las Vegas Sands,reports,Consumer Discretionary,Casinos & Gaming,"Las Vegas, Nevada",2019-10-03,1300514,1988,18.548756,12.589497,36.23174975833333,25.400241500000003
+LW,Lamb Weston,reports,Consumer Staples,Packaged Foods & Meats,"Eagle, Idaho",2018-12-03,1679273,2016 (1950),45.99139,32.789772,36.23174975833333,25.400241500000003
+LYB,LyondellBasell,reports,Materials,Specialty Chemicals,"Rotterdam, Netherlands",2012-09-05,1489393,2007,41.2099,18.733332,36.23174975833333,25.400241500000003
+LYV,Live Nation Entertainment,reports,Communication Services,Movies & Entertainment,"Beverly Hills, California",2019-12-23,1335258,2010,8.808444,6.267137,36.23174975833333,25.400241500000003
+MA,Mastercard,reports,Information Technology,Data Processing & Outsourced Services,"Harrison, New York",2008-07-18,1141391,1966,0,,36.23174975833333,25.400241500000003
+MAA,Mid-America Apartments,reports,Real Estate,Residential REITs,"Memphis, Tennessee",2016-12-02,912595,1977,35.635387,22.668503,36.23174975833333,25.400241500000003
+MAR,Marriott International,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Bethesda, Maryland",,1048286,1927,32.691658,16.761906,36.23174975833333,25.400241500000003
+MAS,Masco,reports,Industrials,Building Products,"Livonia, Michigan",1981-06-30,62996,1929,34.67109,24.84981,36.23174975833333,25.400241500000003
+MCD,McDonald's,reports,Consumer Discretionary,Restaurants,"Chicago, Illinois",1970-06-30,63908,1940,0,,36.23174975833333,25.400241500000003
+MCHP,Microchip Technology,reports,Information Technology,Semiconductors,"Chandler, Arizona",2007-09-07,827054,1989,50.52911,29.598757,36.23174975833333,25.400241500000003
+MCK,McKesson Corporation,reports,Health Care,Health Care Distributors,"Irving, Texas",,927653,1833,37.908466,18.944149,36.23174975833333,25.400241500000003
+MCO,Moody's Corporation,reports,Financials,Financial Exchanges & Data,"New York City, New York",,1059556,1909,0,,36.23174975833333,25.400241500000003
+MDLZ,Mondelez International,reports,Consumer Staples,Packaged Foods & Meats,"Chicago, Illinois",2012-10-02,1103982,2012,19.01453,17.545797,36.23174975833333,25.400241500000003
+MDT,Medtronic,reports,Health Care,Health Care Equipment,"Dublin, Ireland",1986-10-31,1613103,1949,40.287506,27.772112,36.23174975833333,25.400241500000003
+MET,MetLife,reports,Financials,Life & Health Insurance,"New York City, New York",,1099219,1868,18.979074,15.402308,36.23174975833333,25.400241500000003
+MGM,MGM Resorts International,reports,Consumer Discretionary,Casinos & Gaming,"Paradise, Nevada",2017-07-26,789570,1986,20.404156,17.89505,36.23174975833333,25.400241500000003
+MHK,Mohawk Industries,reports,Consumer Discretionary,Home Furnishings,"Calhoun, Georgia",2013-12-23,851968,1878,223.20322,35.30693,36.23174975833333,25.400241500000003
+MKC,McCormick & Company,reports,Consumer Staples,Packaged Foods & Meats,"Hunt Valley, Maryland",2003-03-20,63754,1889,25.95203,21.841616,36.23174975833333,25.400241500000003
+MKTX,MarketAxess,reports,Financials,Financial Exchanges & Data,"New York City, New York",2019-07-01,1278021,2000,27.038702,14.359147,36.23174975833333,25.400241500000003
+MLM,Martin Marietta Materials,reports,Materials,Construction Materials,"Raleigh, North Carolina",2014-07-02,916076,1993,26.840946,19.0625,36.23174975833333,25.400241500000003
+MMC,Marsh & McLennan,reports,Financials,Insurance Brokers,"New York City, New York",1987-08-31,62709,1905,0,18.797468,36.23174975833333,25.400241500000003
+MMM,3M,reports,Industrials,Industrial Conglomerates,"Saint Paul, Minnesota",1976-08-09,66740,1902,32.908024,15.529787,28.965826470588233,26.892273936363633
+MNST,Monster Beverage,reports,Consumer Staples,Soft Drinks,"Corona, California",2012-06-28,865752,2012 (1935),55.645912,32.74344,36.23174975833333,25.400241500000003
+MO,Altria Group,reports,Consumer Staples,Tobacco,"Richmond, Virginia",1957-03-04,764180,1985,0,,28.965826470588233,26.892273936363633
+MOS,The Mosaic Company,reports,Materials,Fertilizers & Agricultural Chemicals,"Tampa, Florida",2011-09-26,1285785,2004 (1865 / 1909),31.32363,17.41755,36.23174975833333,25.400241500000003
+MPC,Marathon Petroleum,reports,Energy,Oil & Gas Refining & Marketing,"Findlay, Ohio",2011-07-01,1510295,2009 (1887),0,19.520731,36.23174975833333,25.400241500000003
+MPWR,Monolithic Power Systems,reports,Information Technology,Semiconductors,"Kirkland, Washington",2021-02-12,1280452,1997,22.731356,12.673539,36.23174975833333,25.400241500000003
+MRK,Merck & Co.,reports,Health Care,Pharmaceuticals,"Kenilworth, New Jersey",1957-03-04,310158,1891,0,40.297894,36.23174975833333,25.400241500000003
+MRNA,Moderna,reports,Health Care,Biotechnology,"Cambridge, Massachusetts",2021-07-21,1682852,2010,39.433174,29.715048,36.23174975833333,25.400241500000003
+MRO,Marathon Oil,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1991-05-01,101778,1887,47.890694,35.022106,36.23174975833333,25.400241500000003
+MS,Morgan Stanley,reports,Financials,Investment Banking & Brokerage,"New York City, New York",,895421,1935,18.164545,16.271173,36.23174975833333,25.400241500000003
+MSCI,MSCI,reports,Financials,Financial Exchanges & Data,"New York City, New York",2018-04-04,1408198,1969,22.084837,16.01964,36.23174975833333,25.400241500000003
+MSFT,Microsoft,reports,Information Technology,Systems Software,"Redmond, Washington",1994-06-01,789019,1975,23.069355,31.809452,36.23174975833333,25.400241500000003
+MSI,Motorola Solutions,reports,Information Technology,Communications Equipment,"Chicago, Illinois",,68505,1928 (2011),28.090267,22.735159,36.23174975833333,25.400241500000003
+MTB,M&T Bank,reports,Financials,Regional Banks,"Buffalo, New York",2004-02-23,36270,1856,28.485743,24.222408,36.23174975833333,25.400241500000003
+MTD,Mettler Toledo,reports,Health Care,Life Sciences Tools & Services,"Columbus, Ohio",2016-09-06,1037646,1945,0,15.580646,36.23174975833333,25.400241500000003
+MU,Micron Technology,reports,Information Technology,Semiconductors,"Boise, Idaho",1994-09-27,723125,1978,61.26984,55.942028,36.23174975833333,25.400241500000003
+NCLH,Norwegian Cruise Line Holdings,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Miami, Florida",2017-10-13,1513761,2011 (1966),90.85457,34.33428,36.23174975833333,25.400241500000003
+NDAQ,Nasdaq,reports,Financials,Financial Exchanges & Data,"New York City, New York",2008-10-22,1120193,1971,42.76916,27.1021,36.23174975833333,25.400241500000003
+NEE,NextEra Energy,reports,Utilities,Multi-Utilities,"Juno Beach, Florida",1976-06-30,753308,1984 (1925),51.798607,23.907051,36.23174975833333,25.400241500000003
+NEM,Newmont,reports,Materials,Gold,"Denver, Colorado",1969-06-30,1164727,1921,35.50331,31.350878,36.23174975833333,25.400241500000003
+NFLX,Netflix,reports,Communication Services,Movies & Entertainment,"Los Gatos, California",2010-12-20,1065280,1997,34.383038,24.70737,36.23174975833333,25.400241500000003
+NI,NiSource,reports,Utilities,Multi-Utilities,"Merrillville, Indiana",,1111711,1912,20.142094,15.213384,36.23174975833333,25.400241500000003
+NKE,Nike,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Washington County, Oregon",1988-11-30,320187,1964,14.0096035,12.444445,36.23174975833333,25.400241500000003
+NLOK,NortonLifeLock,reports,Information Technology,Application Software,"Tempe, Arizona",2003-03-25,849399,1982,0,197.25961,36.23174975833333,25.400241500000003
+NLSN,Nielsen Holdings,reports,Industrials,Research & Consulting Services,"New York City, New York",2013-07-09,1492633,1923,0,,36.23174975833333,25.400241500000003
+NOC,Northrop Grumman,reports,Industrials,Aerospace & Defense,"West Falls Church, Virginia",1985-06-30,1133421,"1994 (Northrop 1939, Grumman 1930)",31.426317,23.498928,36.23174975833333,25.400241500000003
+NOV,Nov,reports,Energy,Oil & Gas Equipment & Services,"Houston, Texas",2005-03-14,1021860,1841,42.74656,31.671034,36.23174975833333,25.400241500000003
+NOW,ServiceNow,reports,Information Technology,Systems Software,"Santa Clara, California",2019-11-21,1373715,2003,42.20268,24.858461,68.64970985915494,28.98603496527778
+NRG,NRG Energy,reports,Utilities,Independent Power Producers & Energy Traders,"Houston, Texas",2010-01-29,1013871,1992,44.388187,22.869566,36.23174975833333,25.400241500000003
+NSC,Norfolk Southern,reports,Industrials,Railroads,"Norfolk, Virginia",1957-03-04,702165,1881/1894 (1980),16.035881,26.34386,36.23174975833333,25.400241500000003
+NTAP,NetApp,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Sunnyvale, California",1999-06-25,1002047,1992,33.777042,22.714285,36.23174975833333,25.400241500000003
+NTRS,Northern Trust,reports,Financials,Asset Management & Custody Banks,"Chicago, Illinois",,73124,1889,22.672018,13.825174,36.23174975833333,25.400241500000003
+NUE,Nucor,reports,Materials,Steel,"Charlotte, North Carolina",1985-04-30,73309,1940,60.88281,38.354553,36.23174975833333,25.400241500000003
+NVDA,Nvidia,reports,Information Technology,Semiconductors,"Santa Clara, California",2001-11-30,1045810,1993,64.215645,44.76798,68.64970985915494,28.98603496527778
+NVR,NVR,reports,Consumer Discretionary,Homebuilding,"Reston, Virginia",2019-09-26,906163,1980,44.88235,27.756191,68.64970985915494,28.98603496527778
+NWL,Newell Brands,reports,Consumer Discretionary,Housewares & Specialties,"Atlanta, Georgia",1989-04-30,814453,1903,29.434393,18.295546,36.23174975833333,25.400241500000003
+NWS,News Corp (Class B),reports,Communication Services,Publishing,"New York City, New York",2015-09-18,1564708,2013 (1980),25.128155,24.509691,36.23174975833333,25.400241500000003
+NWSA,News Corp (Class A),reports,Communication Services,Publishing,"New York City, New York",2013-08-01,1564708,2013 (1980),0,26.617647,36.23174975833333,25.400241500000003
+NXPI,NXP,reports,Information Technology,Semiconductors,"Eindhoven, Netherlands",2021-03-22,1413447,1953,33.461285,27.823288,68.64970985915494,28.98603496527778
+O,Realty Income Corporation,reports,Real Estate,Retail REITs,"San Diego, California",2015-04-07,726728,1969,24.047127,17.108822,68.64970985915494,28.98603496527778
+ODFL,Old Dominion Freight Line,reports,Industrials,Trucking,"Thomasville, North Carolina",2019-12-09,878927,1934,78.15245,49.701447,68.64970985915494,28.98603496527778
+OGN,Organon & Co.,reports,Health Care,Pharmaceuticals,"Jersey City, New Jersey",2021-06-03,1821825,2021,57.627853,60.821686,68.64970985915494,28.98603496527778
+OKE,Oneok,reports,Energy,Oil & Gas Storage & Transportation,"Tulsa, Oklahoma",2010-03-15,1039684,1906,0,10.244186,68.64970985915494,28.98603496527778
+OMC,Omnicom Group,reports,Communication Services,Advertising,"New York City, New York",,29989,1986,832.2894,89.341805,68.64970985915494,28.98603496527778
+ORCL,Oracle,reports,Information Technology,Application Software,"Austin, Texas",1989-08-31,1341439,1977,25.685354,18.738743,68.64970985915494,28.98603496527778
+ORLY,O'Reilly Automotive,reports,Consumer Discretionary,Specialty Stores,"Springfield, Missouri",2009-03-27,898173,1957,45.081814,21.600592,68.64970985915494,28.98603496527778
+OTIS,Otis Worldwide,reports,Industrials,Industrial Machinery,"Farmington, Connecticut",2020-04-03,1781335,2020 (1853),46.446697,16.674007,68.64970985915494,28.98603496527778
+OXY,Occidental Petroleum,reports,Energy,Oil & Gas Exploration & Production,"Houston, Texas",1982-12-31,797468,1920,24.667774,16.423962,68.64970985915494,28.98603496527778
+PAYC,Paycom,reports,Information Technology,Application Software,"Oklahoma City, Oklahoma",2020-01-28,1590955,1998,86.779,17.247663,68.64970985915494,28.98603496527778
+PAYX,Paychex,reports,Information Technology,Data Processing & Outsourced Services,"Penfield, New York",,723531,1971,70.416664,49.186565,68.64970985915494,28.98603496527778
+PBCT,People's United Financial,reports,Financials,Thrifts & Mortgage Finance,"Bridgeport, Connecticut",2008-11-13,1378946,1842,29.077692,24.489796,68.64970985915494,28.98603496527778
+PCAR,Paccar,reports,Industrials,Construction Machinery & Heavy Trucks,"Bellevue, Washington",1980-12-31,75362,1905,38.839855,27.274761,68.64970985915494,28.98603496527778
+PEAK,Healthpeak Properties,reports,Real Estate,Health Care REITs,"Long Beach, California",2008-03-31,765880,1985,57.643234,44.997417,57.254677186440674,29.030018319047624
+PEG,Public Service Enterprise Group,reports,Utilities,Electric Utilities,"Newark, New Jersey",1957-03-04,788784,1903,37.606125,23.639614,68.64970985915494,28.98603496527778
+PENN,Penn National Gaming,reports,Consumer Discretionary,Casinos & Gaming,"Wyomissing, Pennsylvania",2021-03-22,921738,1972,47.766132,40.67338,68.64970985915494,28.98603496527778
+PEP,PepsiCo,reports,Consumer Staples,Soft Drinks,"Purchase, New York",1957-03-04,77476,1898,48.684097,31.567934,68.64970985915494,28.98603496527778
+PFE,Pfizer,reports,Health Care,Pharmaceuticals,"New York City, New York",1957-03-04,78003,1849,38.153984,34.558704,68.64970985915494,28.98603496527778
+PFG,Principal Financial Group,reports,Financials,Life & Health Insurance,"Des Moines, Iowa",2002-07-22,1126328,1879,27.56253,21.008665,68.64970985915494,28.98603496527778
+PG,Procter & Gamble,reports,Consumer Staples,Personal Products,"Cincinnati, Ohio",1957-03-04,80424,1837,40.26435,36.10065,68.64970985915494,28.98603496527778
+PGR,Progressive Corporation,reports,Financials,Property & Casualty Insurance,"Mayfield Village, Ohio",1997-08-04,80661,1937,28.82353,7.2871795,68.64970985915494,28.98603496527778
+PH,Parker-Hannifin,reports,Industrials,Industrial Machinery,"Cleveland, Ohio",1985-11-30,76334,1917,32.317738,17.949385,68.64970985915494,28.98603496527778
+PHM,PulteGroup,reports,Consumer Discretionary,Homebuilding,"Atlanta, Georgia",1984-04-30,822416,1956,71.46201,47.507652,68.64970985915494,28.98603496527778
+PKG,Packaging Corporation of America,reports,Materials,Paper Packaging,"Lake Forest, Illinois",2017-07-26,75677,1959,101.20112,68.77023,68.64970985915494,28.98603496527778
+PKI,PerkinElmer,reports,Health Care,Health Care Equipment,"Waltham, Massachusetts",1985-05-31,31791,1937,10.186782,7.921788,68.64970985915494,28.98603496527778
+PLD,Prologis,reports,Real Estate,Industrial REITs,"San Francisco, California",2003-07-17,1045609,1983,58.324917,25.815947,68.64970985915494,28.98603496527778
+PM,Philip Morris International,reports,Consumer Staples,Tobacco,"New York City, New York",2008-03-31,1413329,2008 (1847),56.170383,46.16453,68.64970985915494,28.98603496527778
+PNC,PNC Financial Services,reports,Financials,Regional Banks,"Pittsburgh, Pennsylvania",1988-04-30,713676,1845,31.954416,18.267101,68.64970985915494,28.98603496527778
+PNR,Pentair,reports,Industrials,Industrial Machinery,"Worsley, England",2012-10-01,77360,1966,131.27888,62.56153,68.64970985915494,28.98603496527778
+PNW,Pinnacle West Capital,reports,Utilities,Multi-Utilities,"Phoenix, Arizona",,764622,1985,11.986188,9.473799,68.64970985915494,28.98603496527778
+POOL,Pool Corporation,reports,Consumer Discretionary,Distributors,"Covington, Louisiana",2020-10-07,945841,1993,12.331688,12.02407,68.64970985915494,28.98603496527778
+PPG,PPG Industries,reports,Materials,Specialty Chemicals,"Pittsburgh, Pennsylvania",1957-03-04,79879,1883,46.562634,31.953192,68.64970985915494,28.98603496527778
+PPL,PPL,reports,Utilities,Electric Utilities,"Allentown, Pennsylvania",,922224,1920,23.066242,11.443153,68.64970985915494,28.98603496527778
+PRGO,Perrigo,reports,Health Care,Pharmaceuticals,"Dublin, Ireland",2011-12-19,1585364,2013 (1887),57.85878,39.579636,68.64970985915494,28.98603496527778
+PRU,Prudential Financial,reports,Financials,Life & Health Insurance,"Newark, New Jersey",2002-07-22,1137774,1875,43.83703,37.444935,68.64970985915494,28.98603496527778
+PSA,Public Storage,reports,Real Estate,Specialized REITs,"Glendale, California",2005-08-19,1393311,1972,105.70894,59.057667,68.64970985915494,28.98603496527778
+PSX,Phillips 66,reports,Energy,Oil & Gas Refining & Marketing,"Houston, Texas",2012-05-01,1534701,2012 (1917),36.40469,34.085842,68.64970985915494,28.98603496527778
+PTC,PTC,reports,Information Technology,Application Software,"Boston, Massachusetts",2021-04-20,857005,1985,33.49136,28.632574,68.64970985915494,28.98603496527778
+PVH,PVH,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","New York City, New York",2013-02-15,78239,1881,52.994286,33.240143,68.64970985915494,28.98603496527778
+PWR,Quanta Services,reports,Industrials,Construction & Engineering,"Houston, Texas",2009-07-01,1050915,1997,24.346313,17.526909,68.64970985915494,28.98603496527778
+PXD,Pioneer Natural Resources,reports,Energy,Oil & Gas Exploration & Production,"Irving, Texas",2008-09-24,1038357,1997,51.351704,6.580157,68.64970985915494,28.98603496527778
+PYPL,PayPal,reports,Information Technology,Data Processing & Outsourced Services,"San Jose, California",2015-07-20,1633917,1998,29.72357,20.834492,68.64970985915494,28.98603496527778
+QCOM,Qualcomm,reports,Information Technology,Semiconductors,"San Diego, California",,804328,1985,38.425014,29.608913,68.64970985915494,28.98603496527778
+QRVO,Qorvo,reports,Information Technology,Semiconductors,"Greensboro, North Carolina",2015-06-11,1604778,2015,29.285866,26.198282,68.64970985915494,28.98603496527778
+RCL,Royal Caribbean Group,reports,Consumer Discretionary,"Hotels, Resorts & Cruise Lines","Miami, Florida",2014-12-05,884887,1997,33.539448,16.00436,68.64970985915494,28.98603496527778
+RE,Everest Re,reports,Financials,Reinsurance,"Hamilton, Bermuda",2017-06-19,1095073,1973,10.2608185,9.653751,20.33115822580645,16.272918912698415
+REG,Regency Centers,reports,Real Estate,Retail REITs,"Jacksonville, Florida",2017-03-02,910606,1963,53.2602,33.283794,68.64970985915494,28.98603496527778
+REGN,Regeneron Pharmaceuticals,reports,Health Care,Biotechnology,"Tarrytown, New York",2013-05-01,872589,1988,37.89726,34.473522,68.64970985915494,28.98603496527778
+RF,Regions Financial Corporation,reports,Financials,Regional Banks,"Birmingham, Alabama",1998-08-28,1281761,1971,187.68675,85.12569,68.64970985915494,28.98603496527778
+RHI,Robert Half International,reports,Industrials,Human Resource & Employment Services,"Menlo Park, California",2000-12-05,315213,1948,27.64539,16.37815,68.64970985915494,28.98603496527778
+RJF,Raymond James Financial,reports,Financials,Investment Banking & Brokerage,"St. Petersburg, Florida",2017-03-20,720005,1962,77.65853,17.607561,68.64970985915494,28.98603496527778
+RL,Ralph Lauren Corporation,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","New York City, New York",2007-02-02,1037038,1967,70.28524,51.381832,68.64970985915494,28.98603496527778
+RMD,ResMed,reports,Health Care,Health Care Equipment,"San Diego, California",2017-07-26,943819,1989,123.07365,18.59075,68.64970985915494,28.98603496527778
+ROK,Rockwell Automation,reports,Industrials,Electrical Components & Equipment,"Milwaukee, Wisconsin",,1024478,1903,26.532717,7.038679,68.64970985915494,28.98603496527778
+ROL,Rollins,reports,Industrials,Environmental & Facilities Services,"Atlanta, Georgia",2018-10-01,84839,1948,40.174435,35.263157,68.64970985915494,28.98603496527778
+ROP,Roper Technologies,reports,Industrials,Industrial Conglomerates,"Sarasota, Florida",2009-12-23,882835,1981,495.6,16.83424,68.64970985915494,28.98603496527778
+ROST,Ross Stores,reports,Consumer Discretionary,Apparel Retail,"Dublin, California",2009-12-21,745732,1982,26.742798,17.33713,68.64970985915494,28.98603496527778
+RSG,Republic Services,reports,Industrials,Environmental & Facilities Services,"Phoenix, Arizona",2008-12-05,1060391,1998 (1981),63.60463,47.546356,68.64970985915494,28.98603496527778
+RTX,Raytheon Technologies,reports,Industrials,Aerospace & Defense,"Waltham, Massachusetts",,101829,1922,21.261055,12.500743,68.64970985915494,28.98603496527778
+SBAC,SBA Communications,reports,Real Estate,Specialized REITs,"Boca Raton, Florida",2017-09-01,1034054,1989,45.289536,17.5,68.64970985915494,28.98603496527778
+SBUX,Starbucks,reports,Consumer Discretionary,Restaurants,"Seattle, Washington",,829224,1971,32.21404,28.530315,27.53460128,19.318890246428573
+SCHW,Charles Schwab Corporation,reports,Financials,Investment Banking & Brokerage,"Westlake, Texas",1997-06-02,316709,1971,15.815147,13.435114,28.837969749999996,20.357568177419356
+SEE,Sealed Air,reports,Materials,Paper Packaging,"Charlotte, North Carolina",1957-03-04,1012100,1960,33.433254,24.578632,68.64970985915494,28.98603496527778
+SHW,Sherwin-Williams,reports,Materials,Specialty Chemicals,"Cleveland, Ohio",1964-06-30,89800,1866,28.236843,17.883333,68.64970985915494,28.98603496527778
+SIVB,SVB Financial,reports,Financials,Regional Banks,"Santa Clara, California",2018-03-19,719739,1983,24.228579,12.078394,27.53460128,19.318890246428573
+SJM,JM Smucker,reports,Consumer Staples,Packaged Foods & Meats,"Orrville, Ohio",2008-11-06,91419,1897,77.344345,18.962616,57.254677186440674,29.030018319047624
+SLB,Schlumberger,reports,Energy,Oil & Gas Equipment & Services,"Curaçao, Kingdom of the Netherlands",1965-03-31,87347,1926,19.617582,17.433594,68.64970985915494,28.98603496527778
+SNA,Snap-on,reports,Industrials,Industrial Machinery,"Kenosha, Wisconsin",1982-09-30,91440,1920,65.82668,32.244793,68.64970985915494,28.98603496527778
+SNPS,Synopsys,reports,Information Technology,Application Software,"Mountain View, California",2017-03-16,883241,1986,29.770943,24.458424,27.53460128,19.318890246428573
+SO,Southern Company,reports,Utilities,Electric Utilities,"Atlanta, Georgia",1957-03-04,92122,1945,57.018566,28.323689,27.53460128,19.318890246428573
+SPG,Simon Property Group,reports,Real Estate,Retail REITs,"Indianapolis, Indiana",2002-06-26,1063761,2003,25.952719,12.735498,68.64970985915494,28.98603496527778
+SPGI,S&P Global,reports,Financials,Financial Exchanges & Data,"New York City, New York",,64040,1917,142.9028,20.19191,68.64970985915494,28.98603496527778
+SRE,Sempra Energy,reports,Utilities,Multi-Utilities,"San Diego, California",,1032208,1998,28.568037,14.619433,68.64970985915494,28.98603496527778
+STE,Steris,reports,Health Care,Health Care Equipment,"Dublin, Ireland",2019-12-23,1757898,1985,20.481728,14.678572,27.53460128,19.318890246428573
+STT,State Street Corporation,reports,Financials,Asset Management & Custody Banks,"Boston, Massachusetts",,93751,1792,23.935278,10.929107,27.53460128,19.318890246428573
+STX,Seagate Technology,reports,Information Technology,"Technology Hardware, Storage & Peripherals","Dublin, Ireland",2012-07-02,1137789,1979,20.482601,16.631395,68.64970985915494,28.98603496527778
+STZ,Constellation Brands,reports,Consumer Staples,Distillers & Vintners,"Victor, New York",2005-07-01,16918,1945,20.174347,17.608696,1608.3654926666666,16.547779875
+SWK,Stanley Black & Decker,reports,Industrials,Industrial Machinery,"New Britain, Connecticut",1982-09-30,93556,1843,41.376144,23.44307,27.53460128,19.318890246428573
+SWKS,Skyworks Solutions,reports,Information Technology,Semiconductors,"Woburn, Massachusetts",2015-03-12,4127,2002,230.34177,57.414814,68.64970985915494,28.98603496527778
+SYF,Synchrony Financial,reports,Financials,Consumer Finance,"Stamford, Connecticut",2015-11-18,1601712,2003,16.161802,15.945579,27.53460128,19.318890246428573
+SYK,Stryker Corporation,reports,Health Care,Health Care Equipment,"Kalamazoo, Michigan",2000-12-12,310764,1941,29.779455,18.148746,27.53460128,19.318890246428573
+SYY,Sysco,reports,Consumer Staples,Food Distributors,"Houston, Texas",1986-12-31,96021,1969,0,11.189655,27.53460128,19.318890246428573
+T,AT&T,reports,Communication Services,Integrated Telecommunication Services,"Dallas, Texas",1983-11-30 (1957-03-04),732717,1983 (1885),8.684731,5.518814,67.88723788367349,30.404815804838705
+TAP,Molson Coors Beverage Company,reports,Consumer Staples,Brewers,"Chicago, Illinois",1976-06-30,24545,"2005 (Molson 1786, Coors 1873)",33.83997,22.703949,36.23174975833333,25.400241500000003
+TDG,TransDigm Group,reports,Industrials,Aerospace & Defense,"Cleveland, Ohio",2016-06-03,1260221,1993,28.24666,9.689078,27.53460128,19.318890246428573
+TDY,Teledyne Technologies,reports,Industrials,Aerospace & Defense,"Thousand Oaks, California",2020-06-22,1094285,1960,24.53276,15.075908,27.53460128,19.318890246428573
+TECH,Bio-Techne,reports,Health Care,Life Sciences Tools & Services,"Minneapolis, Minnesota",2021-08-30,842023,1976,33.01126,19.04891,67.88723788367349,30.404815804838705
+TEL,TE Connectivity,reports,Information Technology,Electronic Manufacturing Services,"Schaffhausen, Switzerland",2011-10-17,1385157,2007,39.263184,28.900093,27.53460128,19.318890246428573
+TER,Teradyne,reports,Information Technology,Semiconductor Equipment,"North Reading, Massachusetts",2020-09-21,97210,1960,8.59629,11.91725,27.53460128,19.318890246428573
+TFC,Truist Financial,reports,Financials,Regional Banks,"Charlotte, North Carolina",1997-12-04,92230,1872,0,84.33673,76.96517003999999,104.05822710714286
+TFX,Teleflex,reports,Health Care,Health Care Equipment,"Wayne, Pennsylvania",2019-01-18,96943,1943,30.257051,25.213266,27.53460128,19.318890246428573
+TGT,Target Corporation,reports,Consumer Discretionary,General Merchandise Stores,"Minneapolis, Minnesota",1976-12-31,27419,1902,30.232752,11.872688,27.53460128,19.318890246428573
+TJX,TJX Companies,reports,Consumer Discretionary,Apparel Retail,"Framingham, Massachusetts",1985-09-30,109198,1987,20.388042,15.845599,27.53460128,19.318890246428573
+TMO,Thermo Fisher Scientific,reports,Health Care,Life Sciences Tools & Services,"Waltham, Massachusetts",2004-08-03,97745,2006 (1902),36.304348,44.158657,27.53460128,19.318890246428573
+TMUS,T-Mobile US,reports,Communication Services,Wireless Telecommunication Services,"Bellevue, Washington",2019-07-15,1283699,1994,34.830544,29.508253,27.53460128,19.318890246428573
+TPR,Tapestry,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","New York City, New York",,1116132,2017,18.02165,14.957032,27.53460128,19.318890246428573
+TRMB,Trimble,reports,Information Technology,Electronic Equipment & Instruments,"Sunnyvale, California",2021-01-21,864749,1978,83.75875,73.64327,76.96517003999999,104.05822710714286
+TROW,T. Rowe Price,reports,Financials,Asset Management & Custody Banks,"Baltimore, Maryland",,1113169,1937,22.80695,11.016423,27.53460128,19.318890246428573
+TRV,The Travelers Companies,reports,Financials,Property & Casualty Insurance,"New York City, New York",2002-08-21,86312,1853,60.048344,53.902348,76.96517003999999,104.05822710714286
+TSCO,Tractor Supply Company,reports,Consumer Discretionary,Specialty Stores,"Brentwood, Tennessee",2014-01-24,916365,1938,45.926792,22.371017,27.53460128,19.318890246428573
+TSLA,Tesla,reports,Consumer Discretionary,Automobile Manufacturers,"Palo Alto, California",2020-12-21,1318605,2003,30.653173,17.230381,27.53460128,19.318890246428573
+TSN,Tyson Foods,reports,Consumer Staples,Packaged Foods & Meats,"Springdale, Arkansas",2005-08-10,100493,1935,100.0461,94.13976,76.96517003999999,104.05822710714286
+TT,Trane Technologies,reports,Industrials,Building Products,"Dublin, Ireland",2010-11-17,1466258,1871,0,24.176966,27.53460128,19.318890246428573
+TTWO,Take-Two Interactive,reports,Communication Services,Interactive Home Entertainment,"New York City, New York",2018-03-19,946581,1993,18.112389,15.725067,27.53460128,19.318890246428573
+TWTR,Twitter,reports,Communication Services,Interactive Media & Services,"San Francisco, California",2018-06-07,1418091,2006,30.288591,61.24924,76.96517003999999,104.05822710714286
+TXN,Texas Instruments,reports,Information Technology,Semiconductors,"Dallas, Texas",,97476,1930,13.379015,6.9217134,27.53460128,19.318890246428573
+TXT,Textron,reports,Industrials,Aerospace & Defense,"Providence, Rhode Island",1978-12-31,217346,1923,0,36.639023,27.53460128,19.318890246428573
+TYL,Tyler Technologies,reports,Information Technology,Application Software,"Plano, Texas",2020-06-22,860731,1966,0,90.47222,76.96517003999999,104.05822710714286
+UA,Under Armour (Class C),reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Baltimore, Maryland",2016-04-08,1336917,1996,0,,76.96517003999999,104.05822710714286
+UAA,Under Armour (Class A),reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Baltimore, Maryland",2014-05-01,1336917,1996,0,960.8334,76.96517003999999,104.05822710714286
+UAL,United Airlines,reports,Industrials,Airlines,"Chicago, Illinois",2015-09-03,100517,1967,46.508743,92.65169,76.96517003999999,104.05822710714286
+UDR,UDR,reports,Real Estate,Residential REITs,"Highlands Ranch, Colorado",2016-03-07,74208,1972,50.4395,91.103096,76.96517003999999,104.05822710714286
+UHS,Universal Health Services,reports,Health Care,Health Care Facilities,"King of Prussia, Pennsylvania",2014-09-20,352915,1979,9.206182,42.637257,76.96517003999999,104.05822710714286
+ULTA,Ulta Beauty,reports,Consumer Discretionary,Specialty Stores,"Bolingbrook, Illinois",2016-04-18,1403568,1990,19.628588,19.931429,76.96517003999999,104.05822710714286
+UNH,UnitedHealth Group,reports,Health Care,Managed Health Care,"Minnetonka, Minnesota",1994-07-01,731766,1977,37.396652,36.245033,76.96517003999999,104.05822710714286
+UNM,Unum Group,reports,Financials,Life & Health Insurance,"Chattanooga, Tennessee",1994-03-01,5513,1999,39.42153,70.27103,76.96517003999999,104.05822710714286
+UNP,Union Pacific,reports,Industrials,Railroads,"Omaha, Nebraska",1957-03-04,100885,1862,71.06625,41.107788,76.96517003999999,104.05822710714286
+UPS,United Parcel Service,reports,Industrials,Air Freight & Logistics,"Sandy Springs, Georgia",2002-07-22,1090727,1907,39.814972,33.104897,76.96517003999999,104.05822710714286
+URI,United Rentals,reports,Industrials,Trading Companies & Distributors,"Stamford, Connecticut",2014-09-20,1067701,1997,42.51527,41.76889,76.96517003999999,104.05822710714286
+USB,U.S. Bancorp,reports,Financials,Diversified Banks,"Minneapolis, Minnesota",,36104,1968,53.032192,68.09333,76.96517003999999,104.05822710714286
+V,Visa,reports,Information Technology,Data Processing & Outsourced Services,"San Francisco, California",2009-12-21,1403161,1958,74.11111,71.04142,76.96517003999999,104.05822710714286
+VFC,VF Corporation,reports,Consumer Discretionary,"Apparel, Accessories & Luxury Goods","Denver, Colorado",1979-06-30,103379,1899,39.12485,22.45622,76.96517003999999,104.05822710714286
+VIAC,ViacomCBS,reports,Communication Services,Movies & Entertainment,"New York City, New York",,813828,2019 (1952),274.7449,358.99997,76.96517003999999,104.05822710714286
+VLO,Valero Energy,reports,Energy,Oil & Gas Refining & Marketing,"San Antonio, Texas",,1035002,1980,73.71349,62.518684,76.96517003999999,104.05822710714286
+VMC,Vulcan Materials,reports,Materials,Construction Materials,"Birmingham, Alabama",1999-06-30,1396009,1909,23.44429,21.440062,29.268901760000002,18.959020714285714
+VNO,Vornado Realty Trust,reports,Real Estate,Office REITs,"New York City, New York",,899689,1982,36.81134,26.590954,76.96517003999999,104.05822710714286
+VRSK,Verisk Analytics,reports,Industrials,Research & Consulting Services,"Jersey City, New Jersey",2015-10-08,1442145,1971,48.38426,40.174503,76.96517003999999,104.05822710714286
+VRSN,Verisign,reports,Information Technology,Internet Services & Infrastructure,"Dulles, Virginia",2006-02-01,1014473,1995,50.589687,76.39161,76.96517003999999,104.05822710714286
+VRTX,Vertex Pharmaceuticals,reports,Health Care,Biotechnology,"Cambridge, Massachusetts",2013-09-23,875320,1989,186.13585,93.39592,76.96517003999999,104.05822710714286
+VTR,Ventas,reports,Real Estate,Health Care REITs,"Chicago, Illinois",2009-03-04,740260,1998,288.66397,100.42254,76.96517003999999,104.05822710714286
+VTRS,Viatris,reports,Health Care,Pharmaceuticals,"Pittsburgh, Pennsylvania",2004-04-23,1792044,1961,77.48004,45.3,76.96517003999999,104.05822710714286
+VZ,Verizon Communications,reports,Communication Services,Integrated Telecommunication Services,"New York City, New York",1983-11-30,732712,1983 (1877),91.19809,60.84713,76.96517003999999,104.05822710714286
+WAB,Wabtec,reports,Industrials,Construction Machinery & Heavy Trucks,"Pittsburgh, Pennsylvania",2019-02-27,943452,1999 (1869),0,14.217844,29.268901760000002,18.959020714285714
+WAT,Waters Corporation,reports,Health Care,Health Care Distributors,"Milford, Massachusetts",,1000697,1958,10.254128,15.836663,29.268901760000002,18.959020714285714
+WBA,Walgreens Boots Alliance,reports,Consumer Staples,Drug Retail,"Deerfield, Illinois",1979-12-31,1618921,2014,0,18.124138,29.268901760000002,18.959020714285714
+WDC,Western Digital,reports,Information Technology,"Technology Hardware, Storage & Peripherals","San Jose, California",2009-07-01,106040,1970,27.357704,12.525424,29.268901760000002,18.959020714285714
+WEC,WEC Energy Group,reports,Utilities,Electric Utilities,"Milwaukee, Wisconsin",2008-10-31,783325,1896,15.295787,14.519231,29.268901760000002,18.959020714285714
+WELL,Welltower,reports,Real Estate,Health Care REITs,"Toledo, Ohio",2009-01-30,766704,1970,23.949356,22.157343,29.268901760000002,18.959020714285714
+WFC,Wells Fargo,reports,Financials,Diversified Banks,"San Francisco, California",1976-06-30,72971,1852,35.368,7.570205,29.268901760000002,18.959020714285714
+WHR,Whirlpool Corporation,reports,Consumer Discretionary,Household Appliances,"Benton Harbor, Michigan",,106640,1911,24.051155,21.64604,29.268901760000002,18.959020714285714
+WLTW,Willis Towers Watson,reports,Financials,Insurance Brokers,"London, England",2016-01-05,1140536,2016,24.551388,21.970802,29.268901760000002,18.959020714285714
+WM,Waste Management,reports,Industrials,Environmental & Facilities Services,"Houston, Texas",,823768,1968,60.599186,19.113762,29.268901760000002,18.959020714285714
+WMB,Williams Companies,reports,Energy,Oil & Gas Storage & Transportation,"Tulsa, Oklahoma",1975-03-31,107263,1908,20.775383,19.291428,29.268901760000002,18.959020714285714
+WMT,Walmart,reports,Consumer Staples,Hypermarkets & Super Centers,"Bentonville, Arkansas",1982-08-31,104169,1962,16.727394,17.97,29.268901760000002,18.959020714285714
+WRB,W. R. Berkley Corporation,reports,Financials,Property & Casualty Insurance,"Greenwich, Connecticut",2019-12-05,11544,1967,16.226389,16.447659,29.268901760000002,18.959020714285714
+WRK,WestRock,reports,Materials,Paper Packaging,"Atlanta, Georgia",,1732845,2015,18.94563,17.878271,29.268901760000002,18.959020714285714
+WST,West Pharmaceutical Services,reports,Health Care,Health Care Supplies,"Exton, Pennsylvania",2020-05-22,105770,1923,46.747852,40.136223,29.268901760000002,18.959020714285714
+WU,Western Union,reports,Information Technology,Data Processing & Outsourced Services,"Englewood, Colorado",2006-09-29,1365135,1851,14.238298,18.010317,29.268901760000002,18.959020714285714
+WY,Weyerhaeuser,reports,Real Estate,Specialized REITs,"Federal Way, Washington",,106535,1900,16.929745,17.295202,29.268901760000002,18.959020714285714
+WYNN,Wynn Resorts,reports,Consumer Discretionary,Casinos & Gaming,"Paradise, Nevada",2008-11-14,1174922,2002,24.683683,21.75061,29.268901760000002,18.959020714285714
+XEL,Xcel Energy,reports,Utilities,Multi-Utilities,"Minneapolis, Minnesota",1957-03-04,72903,1909,22.275007,16.738358,29.268901760000002,18.959020714285714
+XLNX,Xilinx,reports,Information Technology,Semiconductors,"San Jose, California",1999-11-08,743988,1984,65.20888,17.712767,29.268901760000002,18.959020714285714
+XOM,ExxonMobil,reports,Energy,Integrated Oil & Gas,"Irving, Texas",1957-03-04,34088,1999,18.199545,14.651612,20.33115822580645,16.272918912698415
+XRAY,Dentsply Sirona,reports,Health Care,Health Care Supplies,"Charlotte, North Carolina",2008-11-14,818479,2016 (1969),0,15.600479,1608.3654926666666,16.547779875
+XYL,Xylem,reports,Industrials,Industrial Machinery,"White Plains, New York",2011-11-01,1524472,2011,21.30782,20.924837,29.268901760000002,18.959020714285714
+YUM,Yum! Brands,reports,Consumer Discretionary,Restaurants,"Louisville, Kentucky",1997-10-06,1041061,1997,45.846848,16.79538,29.268901760000002,18.959020714285714
+ZBH,Zimmer Biomet,reports,Health Care,Health Care Equipment,"Warsaw, Indiana",2001-08-07,1136869,1927,20.886791,18.709858,29.268901760000002,18.959020714285714
+ZBRA,Zebra Technologies,reports,Information Technology,Electronic Equipment & Instruments,"Lincolnshire, Illinois",2019-12-23,877212,1969,15.331435,14.726563,29.268901760000002,18.959020714285714
+ZION,Zions Bancorp,reports,Financials,Regional Banks,"Salt Lake City, Utah",2001-06-22,109380,1873,0,17.32558,29.268901760000002,18.959020714285714
+ZTS,Zoetis,reports,Health Care,Pharmaceuticals,"Parsippany, New Jersey",2013-06-21,1555280,1952,40.327015,31.168497,29.268901760000002,18.959020714285714

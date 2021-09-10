@@ -40,6 +40,7 @@ def get_price_signals(df, df_summ):
     price_buy_score = 0
     price_sell_score = 0
     price_max_score = 0
+    nftwl = ''
 
     if ((lp < lpm1) and (lpm1 < lpm2)):
         price_dir = 'falling'
@@ -158,6 +159,7 @@ def get_price_signals(df, df_summ):
         if (lp <= yearly_lowest_val):
             price_buy_score += 3
             price_sell_score -= 3
+            nftwl = 'new fiftyTwoWeekLow'
         else:
             pct_val = yearly_lowest_val*100/lp
 
@@ -244,8 +246,8 @@ def get_price_signals(df, df_summ):
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
 
     if (yearly_lowest_val > 0):
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwl}'
     else:
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwl}'
     
     return price_buy_score, price_sell_score, price_max_score, price_signals
