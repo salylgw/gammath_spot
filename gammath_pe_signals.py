@@ -41,39 +41,40 @@ def get_pe_signals(tsymbol, df_summ):
             print('Abg TPE for ', tsymbol, 'is ', avg_tpe)
             print('Abg FPE for ', tsymbol, 'is ', avg_fpe)
 
-            if (tpe > 0):
+            if ((tpe > 0) and (avg_tpe > 0)):
                 if (tpe < avg_tpe):
-                    pe_buy_score += 1
-                    pe_sell_score -= 1
+                    pe_buy_score += 2
+                    pe_sell_score -= 2
                 else:
-                    pe_sell_score += 1
-                    pe_buy_score -= 1
+                    pe_sell_score += 2
+                    pe_buy_score -= 2
 
-                pe_max_score += 1
+                pe_max_score += 2
 
-            if (fpe > 0):
+            if ((fpe > 0) and (avg_fpe > 0)):
                 if (fpe < avg_fpe):
-                    pe_buy_score += 1
-                    pe_sell_score -= 1
+                    pe_buy_score += 2
+                    pe_sell_score -= 2
                 else:
-                    pe_sell_score +=1
-                    pe_buy_score -= 1
+                    pe_sell_score +=2
+                    pe_buy_score -= 2
 
-                pe_max_score += 1
+                pe_max_score += 2
 
             if (fpe <= tpe):
-                pe_buy_score += 1
-                pe_sell_score -= 1
+                pe_buy_score += 2
+                pe_sell_score -= 2
             else:
-                pe_buy_score -= 1
-                pe_sell_score += 1
+                pe_buy_score -= 2
+                pe_sell_score += 2
 
-            pe_max_score += 1
+            pe_max_score += 2
 
             break
 
     if (i == (len_df_sp-1)):
-        print('\nReference Avg PE for sector not found for ticker ', tsymbol)
+        print('\nReference PE data not found for sector and/or ticker ', tsymbol)
+
         pe_buy_score = 0
         pe_sell_score = 0
         pe_max_score = 0
@@ -81,6 +82,6 @@ def get_pe_signals(tsymbol, df_summ):
     pe_buy_rec = f'pe_buy_score:{pe_buy_score}/{pe_max_score}'
     pe_sell_rec = f'pe_sell_score:{pe_sell_score}/{pe_max_score}'
 
-    pe_signals = f'TPE:{tpe},FPE:{fpe},{pe_buy_rec},{pe_sell_rec}'
+    pe_signals = f'TPE:{tpe},ATPE:{avg_tpe},FPE:{fpe},AFPE:{avg_fpe},{pe_buy_rec},{pe_sell_rec}'
 
     return pe_buy_score, pe_sell_score, pe_max_score, pe_signals

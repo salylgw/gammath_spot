@@ -20,12 +20,13 @@ def get_beta_signals(tsymbol, df_summ):
     print('Beta for ', tsymbol, ': ', beta)
 
     if (beta > 0):
+
         if (beta < 3):
             beta_buy_score += 1
         else:
             beta_sell_score += 1
 
-    beta_max_score += 1
+        beta_max_score += 1
 
     beta_buy_rec = f'beta_buy_score:{beta_buy_score}/{beta_max_score}'
     beta_sell_rec = f'beta_sell_score:{beta_sell_score}/{beta_max_score}'

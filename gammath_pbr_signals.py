@@ -27,9 +27,8 @@ def get_pbr_signals(tsymbol, df_summ):
                     if (pbr < 15):
                         pbr_buy_score += 1
                 else:
-                    #Reduce/Increase buy/sell score significantly to impact overall score
-                    pbr_buy_score -= 10
-                    pbr_sell_score += 10
+                    pbr_buy_score -= 2
+                    pbr_sell_score += 2
 
                 pbr_max_score += 2
     except:
