@@ -21,8 +21,10 @@ def get_peg_signals(tsymbol, df_summ):
     if (peg > 0):
         if (peg < 3):
             peg_buy_score += 1
+            peg_sell_score -= 1
         else:
             peg_sell_score += 1
+            peg_buy_score -= 1
 
     peg_max_score += 1
 

@@ -13,7 +13,8 @@ def get_qbs_signals(tsymbol, path):
     cash = 0
     lti = 0
     sti = 0
-    cash_burnt_last_one_year = -1
+    cash_earned_last_one_year = -1
+    possible_next_year_remaining_cash = 0
     sequity = -1
     dtcr = -1
 
@@ -46,13 +47,13 @@ def get_qbs_signals(tsymbol, path):
                 if (earnings_file_exists):
                     dfe = pd.read_csv(path / f'{tsymbol}_qe.csv', index_col='Unnamed: 0')
                     try:
-                        cash_burnt_last_one_year = dfe.Earnings.sum()
+                        cash_earned_last_one_year = dfe.Earnings.sum()
                         print('\nNumber of earnings is ', len(dfe))
                         if (len(dfe) > 4):
                             print(f'\nNumber Quaterly Earnings are more than one year duration for {tsymbol}')
                     except:
                         print(f'\nQuarterly earnings not found for {tsymbol}')
-                        cash_burnt_last_one_year = 0
+                        cash_earned_last_one_year = -1
                 else:
                     print(f'\nEarnings file not found for {tsymbol}')
             except:
@@ -88,19 +89,20 @@ def get_qbs_signals(tsymbol, path):
             if ((ldebt > 0) and (sequity > 0)):
                 dtcr = round(ldebt / (ldebt + sequity), 3)
 
-            if (cash_burnt_last_one_year > 0):
-                possible_next_year_remaining_cash = cash_burnt_last_one_year + cash + sti + lti
-            else:
-                possible_next_year_remaining_cash = 0
+            if (cash_earned_last_one_year != -1):
+                possible_next_year_remaining_cash = cash_earned_last_one_year
+
+            #Add remaining cash to get an idea of cash position for a year
+            possible_next_year_remaining_cash += (cash + sti + lti)
 
             if (possible_next_year_remaining_cash > 0):
-                qbs_buy_score += 2
-                qbs_sell_score -= 2
+                qbs_buy_score += 3
+                qbs_sell_score -= 3
             else:
-                qbs_sell_score += 2
-                qbs_buy_score -= 2
+                qbs_sell_score += 3
+                qbs_buy_score -= 3
 
-            qbs_max_score += 2
+            qbs_max_score += 3
 
             if (sequity > 0):
                 qbs_buy_score += 2
@@ -117,25 +119,23 @@ def get_qbs_signals(tsymbol, path):
             elif (ldebt > 0):
 
                 if (dtcr > 0):
-                    if (dtcr >= 0.7):
+                    if (dtcr >= 0.8):
                         qbs_buy_score -= 3
                         qbs_sell_score += 3
                     else:
-                        if (dtcr < 0.4):
+                        if (dtcr < 0.8):
                             qbs_buy_score += 1
                             qbs_sell_score -= 1
-                        else:
-                            qbs_buy_score -= 1
-                            qbs_sell_score += 1
+
+                        if (dtcr < 0.6):
+                            qbs_buy_score += 1
+                            qbs_sell_score -= 1
 
                         if (dtcr < 0.2):
                             qbs_buy_score += 1
                             qbs_sell_score -= 1
-                        else:
-                            qbs_buy_score -= 1
-                            qbs_sell_score += 1
 
-            qbs_max_score += 3
+                qbs_max_score += 3
     else:
         print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist. Need to fetch it')
 

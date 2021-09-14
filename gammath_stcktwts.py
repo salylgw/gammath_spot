@@ -74,8 +74,10 @@ def get_stocktwits_ticker_info(tsymbol, path):
 
             if ((sts_change > 5.0) and (stv_change > 0)):
                 st_buy_score += 1
+                st_sell_score -= 1
             elif (sts_change < 0):
                 st_sell_score += 1
+                st_buy_score -= 1
 
             st_max_score += 1
     except:
