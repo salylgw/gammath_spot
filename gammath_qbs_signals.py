@@ -135,7 +135,8 @@ def get_qbs_signals(tsymbol, path):
                             qbs_buy_score += 1
                             qbs_sell_score -= 1
 
-                qbs_max_score += 3
+            #Max score from debt data
+            qbs_max_score += 3
     else:
         print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist. Need to fetch it')
 

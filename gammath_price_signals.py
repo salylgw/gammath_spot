@@ -157,9 +157,11 @@ def get_price_signals(df, df_summ):
 
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):
-            price_buy_score += 3
-            price_sell_score -= 3
+            #Isolated case to bring it to the front for checkout
+            price_buy_score += 30
+            price_sell_score -= 30
             nftwl = 'new fiftyTwoWeekLow'
+            price_max_score += 30
         else:
             pct_val = yearly_lowest_val*100/lp
 
@@ -170,18 +172,19 @@ def get_price_signals(df, df_summ):
                 price_buy_score -= 1
                 price_sell_score += 1
 
+            price_max_score += 1
+
     else:
         print('\n52-week low value not found')
-
-    price_max_score += 3
 
     yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
 
     if (yearly_highest_val > 0):
         if (lp >= yearly_highest_val):
-            #Temporarily increase the score
-            price_sell_score += 3
-            price_buy_score -= 3
+            #Isolated case to bring it to the front for checkout
+            price_sell_score += 30
+            price_buy_score -= 30
+            price_max_score += 30
         else:
             pct_val = lp*100/yearly_highest_val
 
@@ -191,10 +194,10 @@ def get_price_signals(df, df_summ):
             else:
                 price_buy_score += 1
                 price_sell_score -= 1
+
+            price_max_score += 1
     else:
         print('\n52-week high value not found')
-
-    price_max_score += 3
 
     fiftyDayAverage = df_summ['fiftyDayAverage'][0]
 

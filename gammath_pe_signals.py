@@ -25,6 +25,8 @@ def get_pe_signals(tsymbol, df_summ):
 
     tpe = round(df_summ['trailingPE'][0], 3)
     fpe = round(df_summ['forwardPE'][0], 3)
+    avg_tpe = 0
+    avg_fpe = 0
 
     print('TPE: ', tpe)
     print('FPE: ', fpe)
@@ -35,11 +37,11 @@ def get_pe_signals(tsymbol, df_summ):
     for i in range(len_df_sp):
         if (df_sp['Symbol'][i] == tsymbol):
             print('\nFound ticker in SP500 list for ', tsymbol)
-            avg_tpe = df_sp['LS_AVG_TPE'][i]
-            avg_fpe = df_sp['LS_AVG_FPE'][i]
+            avg_tpe = round(df_sp['LS_AVG_TPE'][i], 3)
+            avg_fpe = round(df_sp['LS_AVG_FPE'][i], 3)
 
-            print('Abg TPE for ', tsymbol, 'is ', avg_tpe)
-            print('Abg FPE for ', tsymbol, 'is ', avg_fpe)
+            print('Avg TPE for ', tsymbol, 'is ', avg_tpe)
+            print('Avg FPE for ', tsymbol, 'is ', avg_fpe)
 
             if ((tpe > 0) and (avg_tpe > 0)):
                 if (tpe < avg_tpe):
