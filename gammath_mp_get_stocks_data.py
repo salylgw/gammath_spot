@@ -8,6 +8,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 import time
 import multiprocessing as mp
 from multiprocessing import Process
+import gammath_get_sp500_list as gspl
 import gammath_get_stocks_data as ggsd
 import sys
 from pathlib import Path
@@ -30,6 +31,9 @@ if __name__ == '__main__':
     watch_list = pd.read_csv(sf_name)
 
     max_tickers = len(watch_list)
+
+    #Fetch and save S&P500 list.
+    gspl.get_sp500_list()
 
     start_index = 0
     if (max_tickers > cores_to_use):

@@ -10,25 +10,56 @@ from pathlib import Path
 
 sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
 
-Tickers_dir = Path('.')
+Tickers_dir = Path('./tickers')
 
 def get_sp500_list():
-
-    #Get S&P500 list.
-    #Specify header and get first dataframe
-    sp500 = pd.read_html(sp500_list_url, header=0)[0]
-
-    print('S&P500 list dataframe info:\n')
-    sp500.info()
 
     path = Tickers_dir
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
 
-    #Save the history for reference and processing
-    sp500.to_csv(path / f'SP500_list.csv')
+    #Fetch the file only once a day
+    dont_need_fetch = True
 
-    return sp500
+    try:
+        file_exists = (path / f'SP500_list.csv').exists()
 
-if __name__ == "__main__":
-    get_sp500_list()
+        #Check if file exists and is it from another day
+        if file_exists:
+            fstat = os.stat(path / f'SP500_list.csv')
+            fct_time = time.ctime(fstat.st_ctime).split(' ')
+            dt = time.strftime('%x').split('/')
+            if (fct_time[2] == ''):
+                fct_date_index = 3
+            else:
+                fct_date_index = 2
+
+            fct_date = int(fct_time[fct_date_index])
+            dt_date = int(dt[1])
+
+            if (fct_date == dt_date):
+                print('No need to get new file')
+                dont_need_fetch = True
+            else:
+                print('Date mismatch. Need to fetch new file')
+                dont_need_fetch = False
+        else:
+                dont_need_fetch = False
+    except:
+        print(f'\nError checking SP500 list')
+
+    if (not dont_need_fetch):
+        #Get S&P500 list.
+        #Specify header and get first dataframe
+        sp500 = pd.read_html(sp500_list_url, header=0)[0]
+
+        print('S&P500 list dataframe info:\n')
+        sp500.info()
+
+        #Save the history for reference and processing
+        sp500.to_csv(path / f'SP500_list.csv')
+
+    return
+
+#if __name__ == "__main__":
+#    get_sp500_list()
