@@ -139,47 +139,54 @@ def get_macd_signals(tsymbol, df, path):
     sell_sig_price_str = f'sig_price:%5.3f' % df['Close'][last_sell_signal_index]
 
     if ((curr_macd_ndiff > 0) and (curr_macd_ndiff >= (max_macd_ndiff/2))):
-        macd_buy_score += 2
+        macd_buy_score += 4
+        macd_sell_score -= 4
 
     if ((curr_macd_pdiff > 0) and (curr_macd_pdiff >= (max_macd_pdiff/2))):
-        macd_sell_score += 2
+        macd_sell_score += 4
+        macd_buy_score -= 4
 
-    macd_max_score += 2
+    macd_max_score += 4
 
     if (curr_days_in_negative >= max_days_in_negative/2):
-        macd_buy_score += 2
+        macd_buy_score += 4
+        macd_sell_score -= 4
 
     if (curr_days_in_positive >= max_days_in_positive/2):
-        macd_sell_score += 2
+        macd_sell_score += 4
+        macd_buy_score -= 4
 
-    macd_max_score += 2
+    macd_max_score += 4
 
 
     if (curr_days_in_negative <= (max_days_in_negative/5)):
-        macd_buy_score -= 3
+        macd_buy_score -= 4
+        macd_sell_score += 4
 
     #Get current stock price
     current_price = df['Close'][len(df)-1]
 
     if (buy_sig_price > current_price):
-        macd_buy_score += 1
-        macd_sell_score -= 1
+        macd_buy_score += 2
+        macd_sell_score -= 2
     else:
-        macd_buy_score -= 1
-        macd_sell_score += 1
+        macd_buy_score -= 2
+        macd_sell_score += 2
     
     if (sell_sig_price < current_price):
-        macd_sell_score += 1
-        macd_buy_score -= 1
+        macd_sell_score += 2
+        macd_buy_score -= 2
     else:
-        macd_sell_score -= 1
-        macd_buy_score += 1
+        macd_sell_score -= 2
+        macd_buy_score += 2
 
-    macd_max_score += 1
+    macd_max_score += 2
 
     if (curr_days_in_negative > 0):
         if (curr_days_in_negative >= bnp):
             macd_buy_score += 1
+        else:
+            macd_buy_score -= 3
 
         if (curr_days_in_negative >= mnp):
             macd_buy_score += 1
@@ -190,6 +197,8 @@ def get_macd_signals(tsymbol, df, path):
     if (curr_days_in_positive > 0):
         if (curr_days_in_positive >= bpp):
             macd_sell_score += 1
+        else:
+            macd_sell_score -= 3
 
         if (curr_days_in_positive >= mpp):
             macd_sell_score += 1
