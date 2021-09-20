@@ -16,6 +16,7 @@ import gammath_stocks_summary as gss
 import gammath_stocks_financials as gsf
 import gammath_stocks_history as gsh
 import gammath_stocks_options as gso
+import gammath_get_stcktwts as ggstw
 
 Tickers_dir = Path('tickers')
 
@@ -46,6 +47,9 @@ def get_stocks_data(tsymbol):
     result = gso.get_options_data(tsymbol, ticker, path)
     if (result is None):
         print(f'\nDid not get ticker options info for {tsymbol}')
+
+    #Fetch stocktwits page
+    ggstw.get_stocktwits_ticker_info(tsymbol, path)
 
     #Get stock history
     result = gsh.get_ticker_history(tsymbol, ticker, path)

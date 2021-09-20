@@ -13,7 +13,7 @@ import sys
 
 STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
-def get_stocktwits_ticker_info(tsymbol, path):
+def get_stocktwits_signals(tsymbol, path):
 
     st_buy_score = 0
     st_sell_score = 0
@@ -37,49 +37,50 @@ def get_stocktwits_ticker_info(tsymbol, path):
     st_max_score = 0
 
     try:
-        with urllib.request.urlopen(url) as response:
-            page = response.read()
-            html_page = f'{page}'
-            #Save the page for reference
-            f = open(path / f'{tsymbol}_st_page.html', 'w')
-            f.write(html_page)
-            f.close()
+        #Read the saved page
+        f = open(path / f'{tsymbol}_st_page.html')
+        html_page = f.read()
+        f.close()
 
-            matched_string = pattern_for_sentiment_change.search(html_page)
-            if (matched_string):
-                kw, val = matched_string.groups()
-                print('\nSentiment change data: ', kw, 'Val: ', val)
-                sentiment_change = val
-            else:
-                print('\nSentiment change data NOT found for ticker ', tsymbol)
+        #Find the sentiment change score
+        matched_string = pattern_for_sentiment_change.search(html_page)
+        if (matched_string):
+            kw, val = matched_string.groups()
+            print('\nSentiment change data: ', kw, 'Val: ', val)
+            sentiment_change = val
+        else:
+            print('\nSentiment change data NOT found for ticker ', tsymbol)
 
-            matched_string = pattern_for_volume_change.search(html_page)
-            if (matched_string):
-                kw, val = matched_string.groups()
-                print('\Volume change data: ', kw, 'Val: ', val)
-                volume_change = val
-            else:
-                print('\nVolume change data NOT found for ticker ', tsymbol)
+        #Find the volume change score
+        matched_string = pattern_for_volume_change.search(html_page)
+        if (matched_string):
+            kw, val = matched_string.groups()
+            print('\Volume change data: ', kw, 'Val: ', val)
+            volume_change = val
+        else:
+            print('\nVolume change data NOT found for ticker ', tsymbol)
 
-            sts_change = 0
-            stv_change = 0
+        sts_change = 0
+        stv_change = 0
 
-            if (sentiment_change is not None):
-                sts_change = float(sentiment_change)
-                st_tw_sentiment_change = f'sentiment_change: {sentiment_change}'
+        if (sentiment_change is not None):
+            #Convert to the float type
+            sts_change = float(sentiment_change)
+            st_tw_sentiment_change = f'sentiment_change: {sentiment_change}'
 
-            if (volume_change is not None):
-                stv_change = float(volume_change)
-                st_tw_volume_change = f'volume_change: {volume_change}'
+        if (volume_change is not None):
+            #Convert to the float type
+            stv_change = float(volume_change)
+            st_tw_volume_change = f'volume_change: {volume_change}'
 
-            if ((sts_change > 5.0) and (stv_change > 0)):
-                st_buy_score += 1
-                st_sell_score -= 1
-            elif (sts_change < 0):
-                st_sell_score += 1
-                st_buy_score -= 1
+        if ((sts_change > 5.0) and (stv_change > 0)):
+            st_buy_score += 2
+            st_sell_score -= 2
+        elif (sts_change < 0):
+            st_sell_score += 2
+            st_buy_score -= 2
 
-            st_max_score += 1
+        st_max_score += 2
     except:
         print('\nError while getting stocktwits html page for ', tsymbol, ': ', sys.exc_info()[0])
 

@@ -120,7 +120,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         reco_buy_score, reco_sell_score, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
 
         #StockTwits signals
-        st_buy_score, st_sell_score, st_max_score, st_signals = gstw.get_stocktwits_ticker_info(tsymbol, path)
+        st_buy_score, st_sell_score, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
 
         overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
         overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
