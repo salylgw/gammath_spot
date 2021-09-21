@@ -9,28 +9,33 @@ from pathlib import Path
 import pandas as pd
 import sys
 
-if __name__ == '__main__':
+Tickers_dir = Path('./tickers')
 
-    p = Path('.')
+# if __name__ == '__main__':
+def aggregate_pe_data():
 
-#    df = pd.read_csv(p / 'SP500_US_ONLY.csv')
-    df = pd.read_csv(p / 'SP500_list.csv')
+    path = Tickers_dir
+    if not path.exists():
+        path.mkdir(parents=True, exist_ok=True)
+
+#    df = pd.read_csv(path / 'SP500_US_ONLY.csv')
+    df = pd.read_csv(path / 'SP500_list.csv')
 
     #Need to calculate sector-average so rearrange
     df_sp = df.sort_values('GICS Sector')
 
     df_sp_len = len(df_sp)
 
+    #Create new dataframe for holding trailing/forward PE and their respective sector averages
     df_pe = pd.DataFrame(columns=['TPE', 'FPE', 'LS_AVG_TPE', 'LS_AVG_FPE'], index=range(df_sp_len))
 
-    p = Path('tickers')
-
     i = 0
+    #Get all symbols in list
     symbols = list(df_sp['Symbol'])
 
     for symbol in symbols:
         try:
-            df_summ = pd.read_csv(p / f'{symbol}/{symbol}_summary.csv')
+            df_summ = pd.read_csv(path / f'{symbol}/{symbol}_summary.csv')
             tpe = df_summ['trailingPE'][0]
             fpe = df_summ['forwardPE'][0]
 
@@ -46,8 +51,8 @@ if __name__ == '__main__':
         i += 1
 
     #Extract the sectors
-#    df_sp = pd.read_csv(p / 'SP500_US_ONLY_SEC_PES.csv')
-#    df_sp = pd.read_csv(p / 'SP500_SEC_PES.csv')
+#    df_sp = pd.read_csv(path / 'SP500_US_ONLY_SEC_PES.csv')
+#    df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
     print('DataFrame length: ', df_sp_len)
 
     #Extract unique sectors
@@ -116,15 +121,18 @@ if __name__ == '__main__':
     #Drop unwanted fields
     df_sp = df_sp.dropna(0, how='all').drop('Unnamed: 0', axis=1)
 
-#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+#    df_sp.to_csv(path / 'SP500_US_ONLY_SEC_PES.csv', index=False)
 
     #Rearrange based on ticker symbol
     df_sp = df_sp.sort_values('Symbol')
-#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
-#    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
+#    df_sp.to_csv(path / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+#    df_sp.to_csv(path / 'SP500_SEC_PES.csv', index=False)
 
-    p = Path('.')
-#    df_sp.to_csv(p / 'SP500_US_ONLY_SEC_PES.csv', index=False)
+#    df_sp.to_csv(path / 'SP500_US_ONLY_SEC_PES.csv', index=False)
 
     #Save for later reference and processing
-    df_sp.to_csv(p / 'SP500_SEC_PES.csv', index=False)
+    df_sp.to_csv(path / 'SP500_SEC_PES.csv', index=False)
+
+
+# if __name__ == '__main__':
+#    aggregate_pe_data()

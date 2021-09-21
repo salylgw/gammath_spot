@@ -10,6 +10,7 @@ import multiprocessing as mp
 from multiprocessing import Process
 import gammath_get_sp500_list as gspl
 import gammath_get_stocks_data as ggsd
+import gammath_stocks_pe_aggregation as gspa
 import sys
 from pathlib import Path
 import re
@@ -63,4 +64,5 @@ if __name__ == '__main__':
             else:
                 end_index += max_tickers
 
-
+    #Aggregate and save PE data
+    gspa.aggregate_pe_data()

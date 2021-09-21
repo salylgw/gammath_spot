@@ -8,20 +8,25 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 
+Tickers_dir = Path('./tickers')
+
 def get_pe_signals(tsymbol, df_summ):
 
     print('\nGetting PE signals')
+
+    path = Tickers_dir
+    if not path.exists():
+        path.mkdir(parents=True, exist_ok=True)
+
     pe_buy_score = 0
     pe_sell_score = 0
     pe_max_score = 0
 
-    p = Path('.')
-
-    if not (p / 'SP500_US_ONLY_SEC_PES.csv').exists():
+    if not (path / 'SP500_SEC_PES.csv').exists():
         print('\nStock PE info file not found for ticker ', tsymbol)
     else:
-        print('\nSP500_US_ONLY_SEC_PES file found')
-        df_sp = pd.read_csv(p / 'SP500_US_ONLY_SEC_PES.csv')
+        print('\nSP500_SEC_PES file found')
+        df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
 
     tpe = round(df_summ['trailingPE'][0], 3)
     fpe = round(df_summ['forwardPE'][0], 3)
