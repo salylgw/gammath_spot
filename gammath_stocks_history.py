@@ -40,12 +40,21 @@ def get_ticker_history(tsymbol, ticker, path):
                 print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
                 df.info()
                 df_len = len(df)
+
+                #Read old history for comparison
+                df_old = pd.read_csv(path / f'{tsymbol}_history.csv')
+                df_old_len = len(df_old)
+                if (df_len < df_old_len):
+                    print(f'New stock history is shorter than older stock history for {tsymbol}. old_len: {df_old_len}, new_len: {df_len}')
+                    #Keep a backup of old history
+                    df_old.to_csv(path / f'{tsymbol}_history_old.csv')
+
                 print('Getting last date for stock history')
                 last_date = df['Date'][df_len-1]
                 last_date_string = f'{last_date}'
                 last_date_array = last_date_string.split('-')
-                if (end_date.day != int(last_date_array[2])):
-                    print('Stock history is stale for ', tsymbol)
+                if ((end_date.day != int(last_date_array[2])) or (df_len < df_old_len)):
+                    print('Stock history is incomplete for ', tsymbol)
                     try:
                         #Read Stock summary info into DataFrame.
                         df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
@@ -59,12 +68,19 @@ def get_ticker_history(tsymbol, ticker, path):
                     curr_price = df_summ['currentPrice'][0]
                     if (curr_price > 0):
                         #REVISIT: Temp workaround for stale data issue
-                        df.loc[(df_len-1), 'Close'] = curr_price
+#                        df.loc[(df_len-1), 'Close'] = curr_price
+                        df_old.loc[(df_len-1), 'Close'] = curr_price
                         val = round(curr_price, 3)
                         print(f'\nStale prices for {tsymbol}. Using price from today of {val}')
+                    else:
+                        print(f'{tsymbol} current price not found')
+
+                    #Use history based on older file for current analysis as opposed to using incomplete history
+                    df_old.to_csv(path / f'{tsymbol}_history.csv')
                 else:
                     print('\nStock history is latest for ', tsymbol)
-                df.to_csv(path / f'{tsymbol}_history.csv')
+                    #Use latest history
+                    df.to_csv(path / f'{tsymbol}_history.csv')
             except:
                 print('\nStock history file not found for ', tsymbol)
                 df = pd.DataFrame()
