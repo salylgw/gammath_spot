@@ -30,34 +30,66 @@ def get_ls_signals(tsymbol, df):
     #Fit the model for x and y values
     lreg.fit(x_vals, y_vals)
 
-    #Check the score for fit validity
-    score = lreg.score(x_vals, y_vals)
-
-    #For now, just log it for debugging purposes
-    print(f'LR model score for {tsymbol} is {score}')
-
     #Get yprediction to plot the OLS line along with price chart
     y_predictions = lreg.predict(x_vals)
+
+    #Get the R2 coeff/prediction score
+    pscore = round(lreg.score(x_vals, y_vals), 3)
+
+    #For now, just log it for debugging purposes
+    print(f'LR model pscore for {tsymbol} is {pscore}')
 
     #Flatten it to keep it in same format as other chart data
     y_predictions = y_predictions.flatten()
 
     y_predictions_len = len(y_predictions)
 
-    #For now, just check the last values
-    if (df.Close[prices_len-1] <= y_predictions[y_predictions_len-1]):
-        #Below OLS
-        ls_buy_score += 1
-        ls_sell_score -= 1
-    else:
-        ls_buy_score -= 1
-        ls_sell_score += 1
+    max_ndiff = 0
+    max_pdiff = 0
+    curr_pdiff = 0
+    curr_ndiff = 0
+    curr_diff = 0
+    max_diff = 0
+    cprice = 0
+    cpredict = 0
 
-    ls_max_score += 1
+    #Get info on biggest diff
+    if (prices_len != y_predictions_len):
+        print('Price data and prediction data length mismatched')
+    else:
+        for i in range(prices_len):
+            cprice = df.Close[i]
+            cpredict = y_predictions[i]
+
+            if (cprice <= cpredict):
+                curr_ndiff = (cpredict - cprice)
+                if (max_ndiff < curr_ndiff):
+                    max_ndiff = curr_ndiff
+            else:
+                curr_pdiff = (cprice - cpredict)
+                if (max_pdiff < curr_pdiff):
+                    max_pdiff = curr_pdiff
+
+    #Only use this method when R2 coeff is closer to 1
+    if ((pscore <= 1) and (pscore >= 0.9)):
+        if (df.Close[prices_len-1] <= y_predictions[y_predictions_len-1]):
+            #Below OLS
+            ls_buy_score += 1
+            ls_sell_score -= 1
+            curr_diff = curr_ndiff
+            max_diff = max_ndiff
+        else:
+            ls_buy_score -= 1
+            ls_sell_score += 1
+            curr_diff = curr_pdiff
+            max_diff = max_pdiff
+
+        ls_max_score += 1
+
 
     ls_buy_rec = f'ls_buy_rec:{ls_buy_score}/{ls_max_score}'
     ls_sell_rec = f'ls_sell_rec:{ls_sell_score}/{ls_max_score}'
 
-    ls_signals = f'LS: {ls_buy_rec},{ls_sell_rec}'
+    ls_signals = f'LS: {ls_buy_rec},{ls_sell_rec},pscore:{pscore},cdiff:{curr_diff},max_diff:{max_diff}'
 
     return y_predictions, ls_buy_score, ls_sell_score, ls_max_score, ls_signals

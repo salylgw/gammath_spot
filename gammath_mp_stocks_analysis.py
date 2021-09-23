@@ -79,10 +79,14 @@ if __name__ == '__main__':
 
     pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
     pattern_for_final_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]*[.]*[0-9]+)')
+    #Collect for debugging
+    pattern_for_pscore = re.compile(r'(pscore):([-]*[0-9]*[.]*[0-9]+)')
 
     df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
 
     df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
+
+    df_ps = pd.DataFrame(columns=['Ticker', 'pscore'], index=range(len(subdirs)))
 
     i = 0
     j = 0
@@ -107,10 +111,20 @@ if __name__ == '__main__':
                 matched_string = pattern_for_final_sell_score.search(content)
                 if (matched_string):
                     kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir}: {val}')
+                    print(f'\n{kw} for {subdir.name}: {val}')
                     df_s['Ticker'][j] = f'{subdir.name}'
                     df_s['final_sell_score'][j] = float(val)
                     j += 1
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
+
+                matched_string = pattern_for_pscore.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir.name}: {val}')
+                    df_ps['Ticker'][i] = f'{subdir.name}'
+                    df_ps['pscore'][i] = float(val)
+                    i += 1
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 
@@ -120,5 +134,7 @@ if __name__ == '__main__':
 
     df_b.sort_values('final_buy_score').dropna().to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
     df_s.sort_values('final_sell_score').dropna().to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
+    #Debug data
+    df_ps.sort_values('pscore').dropna().to_csv(Tickers_dir / 'overall_ls_pscores.csv', index=False)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
