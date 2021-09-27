@@ -7,6 +7,8 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 from pathlib import Path
+import os
+import time
 
 sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
 

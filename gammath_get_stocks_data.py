@@ -17,6 +17,7 @@ import gammath_stocks_financials as gsf
 import gammath_stocks_history as gsh
 import gammath_stocks_options as gso
 import gammath_get_stcktwts as ggstw
+import gammath_stocks_calendar as gsc
 
 Tickers_dir = Path('tickers')
 
@@ -50,6 +51,11 @@ def get_stocks_data(tsymbol):
 
     #Fetch stocktwits page
     ggstw.get_stocktwits_ticker_info(tsymbol, path)
+
+    #Fetch calendar
+    result = gsc.get_ticker_calendar(tsymbol, ticker, path)
+    if (result is None):
+        print(f'\nDid not get ticker calendar info for {tsymbol}')
 
     #Get stock history
     result = gsh.get_ticker_history(tsymbol, ticker, path)
