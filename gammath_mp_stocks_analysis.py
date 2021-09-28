@@ -78,18 +78,26 @@ if __name__ == '__main__':
     print('\nNum of subdirs: ', len(subdirs))
 
     pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
-    pattern_for_final_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]*[.]*[0-9]+)')
-    #Collect for debugging
-    pattern_for_fit_score = re.compile(r'(fit_score):([-]*[0-9]*[.]*[0-9]+)')
+    pattern_for_final_sell_score = re.compile(r'(final_sell_score):([-]*[0-9]*[.]*[0-9]+)')
+
+    #Collect OLS fit scores for debugging
+    pattern_for_ols_fit_score = re.compile(r'(ols_fit_score):([-]*[0-9]*[.]*[0-9]+)')
+
+    #Collect SGD fit scores for debugging
+    pattern_for_sgd_fit_score = re.compile(r'(sgd_fit_score):([-]*[0-9]*[.]*[0-9]+)')
 
     df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
 
     df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
 
-    df_ps = pd.DataFrame(columns=['Ticker', 'fit_score'], index=range(len(subdirs)))
+    df_ols_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score'], index=range(len(subdirs)))
+
+    df_sgd_fs = pd.DataFrame(columns=['Ticker', 'sgd_fit_score'], index=range(len(subdirs)))
 
     i = 0
     j = 0
+    k = 0
+    l = 0
 
     for subdir in subdirs:
         if not subdir.exists():
@@ -118,23 +126,38 @@ if __name__ == '__main__':
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 
-                matched_string = pattern_for_fit_score.search(content)
+                matched_string = pattern_for_ols_fit_score.search(content)
                 if (matched_string):
                     kw, val = matched_string.groups()
                     print(f'\n{kw} for {subdir.name}: {val}')
-                    df_ps['Ticker'][i] = f'{subdir.name}'
-                    df_ps['fit_score'][i] = float(val)
-                    i += 1
+                    df_ols_fs['Ticker'][k] = f'{subdir.name}'
+                    df_ols_fs['ols_fit_score'][k] = float(val)
+                    k += 1
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
+
+                matched_string = pattern_for_sgd_fit_score.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir.name}: {val}')
+                    df_sgd_fs['Ticker'][l] = f'{subdir.name}'
+                    df_sgd_fs['sgd_fit_score'][l] = float(val)
+                    l += 1
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
+
 
                 f.close()
             except:
                 print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
-    df_b.sort_values('final_buy_score').dropna().to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
-    df_s.sort_values('final_sell_score').dropna().to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
-    #Debug data
-    df_ps.sort_values('fit_score').dropna().to_csv(Tickers_dir / 'overall_ols_fit_scores.csv', index=False)
+    df_b.sort_values('final_buy_score').dropna(how='all').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
+    df_s.sort_values('final_sell_score').dropna(how='all').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
+
+    #OLS Debug data
+    df_ols_fs.sort_values('ols_fit_score').dropna(how='all').to_csv(Tickers_dir / 'overall_ols_fit_scores.csv', index=False)
+
+    #SGD Debug data
+    df_sgd_fs.sort_values('sgd_fit_score').dropna(how='all').to_csv(Tickers_dir / 'overall_sgd_fit_scores.csv', index=False)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')

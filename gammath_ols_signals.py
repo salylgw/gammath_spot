@@ -27,6 +27,9 @@ def get_ols_signals(tsymbol, df):
     y_predictions = model.predict()
     y_predictions_len = len(y_predictions)
 
+    last_yp = y_predictions[y_predictions_len-1]
+    print(f'Last OLS prediction for {tsymbol} is {last_yp}')
+
     resid = model.resid
     resid_len = len(resid)
 
@@ -158,6 +161,6 @@ def get_ols_signals(tsymbol, df):
     ols_buy_rec = f'ols_buy_rec:{ols_buy_score}/{ols_max_score}'
     ols_sell_rec = f'ols_sell_rec:{ols_sell_score}/{ols_max_score}'
 
-    ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},fit_score:{fit_score},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
+    ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_fit_score:{fit_score},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
 
     return y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals
