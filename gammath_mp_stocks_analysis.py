@@ -80,7 +80,7 @@ if __name__ == '__main__':
     pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
     pattern_for_final_sell_score = re.compile(r'(overall_sell_score):([-]*[0-9]*[.]*[0-9]+)')
     #Collect for debugging
-    pattern_for_pscore = re.compile(r'(fit_score):([-]*[0-9]*[.]*[0-9]+)')
+    pattern_for_fit_score = re.compile(r'(fit_score):([-]*[0-9]*[.]*[0-9]+)')
 
     df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 
-                matched_string = pattern_for_pscore.search(content)
+                matched_string = pattern_for_fit_score.search(content)
                 if (matched_string):
                     kw, val = matched_string.groups()
                     print(f'\n{kw} for {subdir.name}: {val}')
