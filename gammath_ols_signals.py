@@ -39,6 +39,9 @@ def get_ols_signals(tsymbol, df):
     #Log the score for debugging
     print(f'LR OLS  model fit score for {tsymbol} is {fit_score}')
 
+    #Slope of OLS line (just need to do y2-y1 to get the direction
+    slope_dir = (y_predictions[y_predictions_len-1] - y_predictions[0])
+
     max_ndiff = 0
     max_pdiff = 0
     curr_pdiff = 0
@@ -106,51 +109,63 @@ def get_ols_signals(tsymbol, df):
         mp = mpp
         tp = tpp
 
-    #Best score is 1; Using 0.9-1.0 as good fit
-    if ((fit_score <= 1) and (fit_score >= 0.9)):
-        if (residual <= 0):
-            #Below OLS line
-            if (curr_diff > bp):
-                ols_buy_score += 1
-                ols_sell_score -= 1
+    # Only check the fit and compute additional scores if the OLS line slope is +ve
+    if (slope_dir > 0):
+
+        print(f'\nOLS line slope is +ve for {tsymbol}')
+
+        ols_buy_score += 5
+        ols_sell_score -= 5
+
+        #Best score is 1; Using 0.9-1.0 as good fit
+        if ((fit_score <= 1) and (fit_score >= 0.9)):
+            if (residual <= 0):
+                #Below OLS line
+                if (curr_diff > bp):
+                    ols_buy_score += 1
+                    ols_sell_score -= 1
+                else:
+                    ols_buy_score -= 3
+                    ols_sell_score += 3
+
+                if (curr_diff > mp):
+                    ols_buy_score += 1
+                    ols_sell_score -= 1
+
+                if (curr_diff > tp):
+                    ols_buy_score += 1
+                    ols_sell_score -= 1
             else:
-                ols_buy_score -= 3
-                ols_sell_score += 3
+                #Above OLS line
+                if (curr_diff > bp):
+                    ols_buy_score -= 1
+                    ols_sell_score += 1
 
-            if (curr_diff > mp):
-                ols_buy_score += 1
-                ols_sell_score -= 1
+                if (curr_diff > mp):
+                    ols_buy_score -= 1
+                    ols_sell_score += 1
 
-            if (curr_diff > tp):
-                ols_buy_score += 1
-                ols_sell_score -= 1
+                if (curr_diff > tp):
+                    ols_buy_score -= 1
+                    ols_sell_score += 1
         else:
-            #Above OLS line
-            if (curr_diff > bp):
-                ols_buy_score -= 1
-                ols_sell_score += 1
-
-            if (curr_diff > mp):
-                ols_buy_score -= 1
-                ols_sell_score += 1
-
-            if (curr_diff > tp):
-                ols_buy_score -= 1
-                ols_sell_score += 1
+            #Less weight for lesser score
+            if (residual <= 0):
+                #Below OLS line
+                if (curr_diff > mp):
+                    ols_buy_score += 1
+                    ols_sell_score -= 1
+            else:
+                #Above OLS line
+                if (curr_diff > mp):
+                    ols_buy_score -= 1
+                    ols_sell_score += 1
     else:
-        #Less weight for lesser score
-        if (residual <= 0):
-            #Below OLS line
-            if (curr_diff > mp):
-                ols_buy_score += 1
-                ols_sell_score -= 1
-        else:
-            #Above OLS line
-            if (curr_diff > mp):
-                ols_buy_score -= 1
-                ols_sell_score += 1
+        print(f'\nOLS line slope is -ve for {tsymbol}')
+        ols_buy_score -= 5
+        ols_sell_score += 5
 
-    ols_max_score += 3
+    ols_max_score += 8
 
     curr_diff = round(curr_diff, 3)
     max_diff = round(max_diff, 3)
