@@ -86,18 +86,21 @@ if __name__ == '__main__':
     #Collect SGD fit scores for debugging
     pattern_for_sgd_fit_score = re.compile(r'(sgd_fit_score):([-]*[0-9]*[.]*[0-9]+)')
 
+    #Collect Ridge fit scores for debugging
+    pattern_for_ridge_fit_score = re.compile(r'(ridge_fit_score):([-]*[0-9]*[.]*[0-9]+)')
+
+    #Collect Bayesian Ridge fit scores for debugging
+    pattern_for_bayesian_ridge_fit_score = re.compile(r'(bayesian_ridge_fit_score):([-]*[0-9]*[.]*[0-9]+)')
+
     df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
 
     df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
 
-    df_ols_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score'], index=range(len(subdirs)))
-
-    df_sgd_fs = pd.DataFrame(columns=['Ticker', 'sgd_fit_score'], index=range(len(subdirs)))
+    df_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score' ,'sgd_fit_score', 'ridge_fit_score', 'bayesian_fit_score'], index=range(len(subdirs)))
 
     i = 0
     j = 0
     k = 0
-    l = 0
 
     for subdir in subdirs:
         if not subdir.exists():
@@ -130,9 +133,8 @@ if __name__ == '__main__':
                 if (matched_string):
                     kw, val = matched_string.groups()
                     print(f'\n{kw} for {subdir.name}: {val}')
-                    df_ols_fs['Ticker'][k] = f'{subdir.name}'
-                    df_ols_fs['ols_fit_score'][k] = float(val)
-                    k += 1
+                    df_fs['Ticker'][k] = f'{subdir.name}'
+                    df_fs['ols_fit_score'][k] = float(val)
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 
@@ -140,13 +142,30 @@ if __name__ == '__main__':
                 if (matched_string):
                     kw, val = matched_string.groups()
                     print(f'\n{kw} for {subdir.name}: {val}')
-                    df_sgd_fs['Ticker'][l] = f'{subdir.name}'
-                    df_sgd_fs['sgd_fit_score'][l] = float(val)
-                    l += 1
+                    df_fs['Ticker'][k] = f'{subdir.name}'
+                    df_fs['sgd_fit_score'][k] = float(val)
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 
+                matched_string = pattern_for_ridge_fit_score.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir.name}: {val}')
+                    df_fs['Ticker'][k] = f'{subdir.name}'
+                    df_fs['ridge_fit_score'][k] = float(val)
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
 
+                matched_string = pattern_for_bayesian_ridge_fit_score.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir.name}: {val}')
+                    df_fs['Ticker'][k] = f'{subdir.name}'
+                    df_fs['bayesian_fit_score'][k] = float(val)
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
+
+                k += 1
                 f.close()
             except:
                 print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
@@ -154,10 +173,7 @@ if __name__ == '__main__':
     df_b.sort_values('final_buy_score').dropna(how='all').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
     df_s.sort_values('final_sell_score').dropna(how='all').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
 
-    #OLS Debug data
-    df_ols_fs.sort_values('ols_fit_score').dropna(how='all').to_csv(Tickers_dir / 'overall_ols_fit_scores.csv', index=False)
-
-    #SGD Debug data
-    df_sgd_fs.sort_values('sgd_fit_score').dropna(how='all').to_csv(Tickers_dir / 'overall_sgd_fit_scores.csv', index=False)
+    #Regression fit scores Debug data
+    df_fs.sort_values('Ticker').dropna(how='all').to_csv(Tickers_dir / 'overall_regression_fit_scores.csv', index=False)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
