@@ -33,7 +33,7 @@ def get_ridge_signals(tsymbol, df):
     #Fit the model for x and y values
     ridge.fit(x_vals, y_vals)
 
-    #Get yprediction to plot the OLS line along with price chart
+    #Get yprediction to plot the regression line along with price chart
     y_predictions = ridge.predict(x_vals)
     y_predictions_len = len(y_predictions)
 

@@ -92,11 +92,14 @@ if __name__ == '__main__':
     #Collect Bayesian Ridge fit scores for debugging
     pattern_for_bayesian_ridge_fit_score = re.compile(r'(bayesian_ridge_fit_score):([-]*[0-9]*[.]*[0-9]+)')
 
+    #Collect Lasso fit scores for debugging
+    pattern_for_lasso_fit_score = re.compile(r'(lasso_fit_score):([-]*[0-9]*[.]*[0-9]+)')
+
     df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
 
     df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
 
-    df_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score' ,'sgd_fit_score', 'ridge_fit_score', 'bayesian_fit_score'], index=range(len(subdirs)))
+    df_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score' ,'sgd_fit_score', 'ridge_fit_score', 'bayesian_fit_score', 'lasso'], index=range(len(subdirs)))
 
     i = 0
     j = 0
@@ -162,6 +165,15 @@ if __name__ == '__main__':
                     print(f'\n{kw} for {subdir.name}: {val}')
                     df_fs['Ticker'][k] = f'{subdir.name}'
                     df_fs['bayesian_fit_score'][k] = float(val)
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
+
+                matched_string = pattern_for_lasso_fit_score.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir.name}: {val}')
+                    df_fs['Ticker'][k] = f'{subdir.name}'
+                    df_fs['lasso'][k] = float(val)
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 

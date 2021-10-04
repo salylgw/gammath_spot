@@ -28,12 +28,12 @@ def get_bridge_signals(tsymbol, df):
 
     #Bayesian Ridge regression model
     #WIP: experimenting with default params
-    bayesian_ridge = BayesianRidge()
+    bayesian_ridge = BayesianRidge(compute_score=True)
 
     #Fit the model for x and y values
     bayesian_ridge.fit(x_vals, y_vals)
 
-    #Get yprediction to plot the OLS line along with price chart
+    #Get yprediction to plot the regression line along with price chart
     y_predictions = bayesian_ridge.predict(x_vals)
     y_predictions_len = len(y_predictions)
 
