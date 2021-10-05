@@ -21,11 +21,25 @@ def get_ols_signals(tsymbol, df):
     x_vals = sm.add_constant([x for x in range(prices_len)])
 
     #OLS using statsmodels
+    #Model 5 year data
     model = sm.OLS(y_vals, x_vals).fit()
 
-    #Get yprediction to plot the OLS line along with price chart
+    #Model last 1 year data
+    model_1y = sm.OLS(y_vals[len(x_vals)-252:], x_vals[len(x_vals)-252:]).fit()
+
+    #Get yprediction to plot the 5y OLS line along with price chart
     y_predictions = model.predict()
     y_predictions_len = len(y_predictions)
+
+    #Get yprediction to plot the 1y OLS line along with the price chart
+    y1_predictions = model_1y.predict()
+    y1_predictions_len = len(y1_predictions)
+
+    #pd dataframe will need all elements in same size so need to fill in nan elsewhere
+    y1_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
+
+    #Put the 1y predictions in right place
+    y1_series[len(y1_series)-len(y1_predictions):] = y1_predictions
 
     last_yp = y_predictions[y_predictions_len-1]
     print(f'Last OLS prediction for {tsymbol} is {last_yp}')
@@ -33,14 +47,23 @@ def get_ols_signals(tsymbol, df):
     resid = model.resid
     resid_len = len(resid)
 
-    #Get the R2 value for determining goodness-of-fit
+    #Get the R2 value for determining goodness-of-fit for 5y OLS
     fit_score = round(model.rsquared, 3)
 
     #Log the score for debugging
     print(f'LR OLS  model fit score for {tsymbol} is {fit_score}')
 
+    #Get the R2 value for determining goodness-of-fit for 1y OLS
+    fit_score_1y = round(model_1y.rsquared, 3)
+
+    #Log the 1y score for debugging
+    print(f'LR 1Y OLS model fit score for {tsymbol} is {fit_score_1y}')
+
     #Slope of OLS line (just need to do y2-y1 to get the direction
     slope_dir = (y_predictions[y_predictions_len-1] - y_predictions[0])
+
+    #Slope of 1Y OLS line (just need to do y2-y1 to get the direction
+    slope_dir_1y = (y1_predictions[y1_predictions_len-1] - y1_predictions[0])
 
     max_ndiff = 0
     max_pdiff = 0
@@ -176,6 +199,6 @@ def get_ols_signals(tsymbol, df):
     ols_buy_rec = f'ols_buy_rec:{ols_buy_score}/{ols_max_score}'
     ols_sell_rec = f'ols_sell_rec:{ols_sell_score}/{ols_max_score}'
 
-    ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_fit_score:{fit_score},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
+    ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_fit_score:{fit_score},ols_1y_fit_score:{fit_score_1y},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
 
-    return y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals
+    return y_predictions, y1_series, ols_buy_score, ols_sell_score, ols_max_score, ols_signals

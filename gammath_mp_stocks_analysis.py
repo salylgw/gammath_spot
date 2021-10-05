@@ -80,6 +80,9 @@ if __name__ == '__main__':
     pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
     pattern_for_final_sell_score = re.compile(r'(final_sell_score):([-]*[0-9]*[.]*[0-9]+)')
 
+    #Collect 1Y OLS fit scores for debugging
+    pattern_for_1y_ols_fit_score = re.compile(r'(ols_1y_fit_score):([-]*[0-9]*[.]*[0-9]+)')
+
     #Collect OLS fit scores for debugging
     pattern_for_ols_fit_score = re.compile(r'(ols_fit_score):([-]*[0-9]*[.]*[0-9]+)')
 
@@ -99,7 +102,7 @@ if __name__ == '__main__':
 
     df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
 
-    df_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score' ,'sgd_fit_score', 'ridge_fit_score', 'bayesian_fit_score', 'lasso'], index=range(len(subdirs)))
+    df_fs = pd.DataFrame(columns=['Ticker', 'ols_1y_fit_score', 'ols_fit_score' ,'sgd_fit_score', 'ridge_fit_score', 'bayesian_fit_score', 'lasso'], index=range(len(subdirs)))
 
     i = 0
     j = 0
@@ -129,6 +132,15 @@ if __name__ == '__main__':
                     df_s['Ticker'][j] = f'{subdir.name}'
                     df_s['final_sell_score'][j] = float(val)
                     j += 1
+                else:
+                    print(f'\n{kw} NOT found for {subdir}')
+
+                matched_string = pattern_for_1y_ols_fit_score.search(content)
+                if (matched_string):
+                    kw, val = matched_string.groups()
+                    print(f'\n{kw} for {subdir.name}: {val}')
+                    df_fs['Ticker'][k] = f'{subdir.name}'
+                    df_fs['ols_1y_fit_score'][k] = float(val)
                 else:
                     print(f'\n{kw} NOT found for {subdir}')
 

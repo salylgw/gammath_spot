@@ -27,7 +27,7 @@ def get_bridge_signals(tsymbol, df):
     x_vals = x_vals.reshape(-1, 1)
 
     #Bayesian Ridge regression model
-    #WIP: experimenting with default params
+    #WIP: experimenting
     bayesian_ridge = BayesianRidge(compute_score=True)
 
     #Fit the model for x and y values

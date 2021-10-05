@@ -99,7 +99,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         state_means, state_covariance, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_means_covariance(df)
 
         #Least Squares line signals
-        ols_y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df)
+        ols_y_predictions, ols_y1_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df)
 
         #SGD signals
         sgd_y_predictions, sgd_buy_score, sgd_sell_score, sgd_max_score, sgd_signals = gsgd.get_sgd_signals(tsymbol, df)
@@ -193,7 +193,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         plot_data4 = pd.DataFrame({'MFI': mfi})
         plot_data5 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
         plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
-        plot_data7 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions})
+        plot_data7 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions, 'OLS_1Y': ols_y1_predictions})
         plot_data8 = pd.DataFrame({sym_str: df.Close, 'SGD': sgd_y_predictions})
         plot_data9 = pd.DataFrame({sym_str: df.Close, 'Ridge': ridge_y_predictions})
         plot_data10 = pd.DataFrame({sym_str: df.Close, 'Bayesian Ridge': bridge_y_predictions})
