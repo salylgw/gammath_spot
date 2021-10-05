@@ -33,10 +33,12 @@ def get_sgd_signals(tsymbol, df):
     x_vals = scaler.fit_transform(x_vals)
 
     #Stochastic Gradient Descent model;
-    # WIP: experimenting; Using squared_loss loss function for now (not much different from OLS)
+    # WIP: experimenting; Using squared_loss loss function (not much different from OLS)
     #Need to permute the data after each iteration so using shuffle=True
     #Using default for max_iter (which is 1000)
-    sgd = SGDRegressor(loss="squared_loss", fit_intercept=True, shuffle=True, epsilon=0.1, learning_rate='optimal', eta0=0.01, power_t=0.25, early_stopping=False, n_iter_no_change=10)
+#    sgd = SGDRegressor(loss="squared_loss", fit_intercept=True, shuffle=True, epsilon=0.1, learning_rate='optimal', eta0=0.01, power_t=0.25, early_stopping=False, n_iter_no_change=10)
+
+    sgd = SGDRegressor(loss="squared_loss", fit_intercept=True, max_iter=10000, shuffle=True, random_state=19, learning_rate='constant', eta0=0.01, early_stopping=False, n_iter_no_change=10)
 
     #Fit the model for x and y values
     sgd.fit(x_vals, y_vals)
