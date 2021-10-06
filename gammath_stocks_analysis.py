@@ -99,7 +99,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         state_means, state_covariance, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_means_covariance(df)
 
         #Least Squares line signals
-        ols_y_predictions, ols_y1_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df)
+        ols_y_predictions, ols_y1_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
 
         #SGD signals
         sgd_y_predictions, sgd_buy_score, sgd_sell_score, sgd_max_score, sgd_signals = gsgd.get_sgd_signals(tsymbol, df)
