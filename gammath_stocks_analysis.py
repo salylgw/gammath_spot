@@ -34,6 +34,7 @@ import gammath_sgd_signals as gsgd
 import gammath_ridge_signals as gridge
 import gammath_bayesian_ridge_signals as gbridge
 import gammath_lasso_signals as glas
+import gammath_lgstic_signals as glgs
 import gammath_get_events as gge
 import sys
 import time
@@ -84,7 +85,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
 
         #Bollinger bands signals
-        mb, ub, lb, bb_buy_score, bb_sell_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(df, path)
+        mb, ub, lb, bb_buy_score, bb_sell_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
 
         #MFI signals
         mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
@@ -112,6 +113,9 @@ def get_ticker_hist_n_analysis(tsymbol):
 
         #Lasso signals
         lasso_y_predictions, lasso_buy_score, lasso_sell_score, lasso_max_score, lasso_signals = glas.get_lasso_signals(tsymbol, df)
+
+        #Logistic regression signals
+        lgstic_predictions, lgstic_buy_score, lgstic_sell_score, lgstic_max_score, lgstic_signals = glgs.get_lgstic_signals(tsymbol, df, path)
 
         #Options signals
         options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
@@ -146,9 +150,9 @@ def get_ticker_hist_n_analysis(tsymbol):
         #Get events info
         events_info = gge.get_events_info(tsymbol, path)
 
-        overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + sgd_buy_score + ridge_buy_score + bridge_buy_score + lasso_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
-        overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + sgd_sell_score + ridge_sell_score + bridge_sell_score + lasso_sell_score +  options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
-        overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + sgd_max_score + ridge_max_score + bridge_max_score + lasso_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
+        overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + sgd_buy_score + ridge_buy_score + bridge_buy_score + lasso_buy_score + lgstic_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
+        overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + sgd_sell_score + ridge_sell_score + bridge_sell_score + lasso_sell_score + lgstic_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
+        overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + sgd_max_score + ridge_max_score + bridge_max_score + lasso_max_score + lgstic_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
 
         overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
         overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'
@@ -159,7 +163,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         final_sell_score_rec = f'final_sell_score:{final_sell_score}'
 
         f = open(path / 'signal.txt', 'w')
-        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{sgd_signals}\n{ridge_signals}\n{bridge_signals}\n{lasso_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}\n{events_info}')
+        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{sgd_signals}\n{ridge_signals}\n{bridge_signals}\n{lasso_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}\n{events_info}')
         f.close()
 
         file_exists = (path / f'{tsymbol}_charts.png').exists()

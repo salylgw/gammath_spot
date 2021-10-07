@@ -215,6 +215,10 @@ def get_ols_signals(tsymbol, df, path):
         tp_1y = tpp_1y
 
 
+    #Best score is 1; Using 0.9-1.0 as good fit (5y or 1y)
+    fits_5y = ((fit_score <= 1) and (fit_score >= 0.9))
+    fits_1y = ((fit_score_1y <= 1) and (fit_score_1y >= 0.9))
+
     # Only check the fit and compute additional scores if the 1Y OLS line slope is +ve
 #    if (slope_dir > 0):
     if (slope_dir_1y > 0):
@@ -223,10 +227,6 @@ def get_ols_signals(tsymbol, df, path):
 
         ols_buy_score += 5
         ols_sell_score -= 5
-
-        #Best score is 1; Using 0.9-1.0 as good fit (5y or 1y)
-        fits_5y = ((fit_score <= 1) and (fit_score >= 0.9))
-        fits_1y = ((fit_score_1y <= 1) and (fit_score_1y >= 0.9))
 
         if (fits_5y or fits_1y):
             if (fits_5y):
@@ -302,12 +302,12 @@ def get_ols_signals(tsymbol, df, path):
                     ols_buy_score -= 1
                     ols_sell_score += 1
     else:
+
         print(f'\nOLS line slope is -ve for {tsymbol}')
         ols_buy_score -= 5
         ols_sell_score += 5
 
     ols_max_score += 8
-
 
     curr_diff = round(curr_diff, 3)
     max_diff = round(max_diff, 3)
@@ -321,7 +321,6 @@ def get_ols_signals(tsymbol, df, path):
     mp_1y = round(mp_1y, 3)
     tp_1y = round(tp_1y, 3)
 
-
     ols_buy_rec = f'ols_buy_rec:{ols_buy_score}/{ols_max_score}'
     ols_sell_rec = f'ols_sell_rec:{ols_sell_score}/{ols_max_score}'
 
@@ -329,6 +328,5 @@ def get_ols_signals(tsymbol, df, path):
         ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},ols_fit_score:{fit_score},cdiff_1y:{curr_1y_diff},bp_1y:{bp_1y},mp_1y:{mp_1y},tp_1y:{tp_1y},max_1y_diff:{max_1y_diff}'
     else:
         ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y}, ols_fit_score:{fit_score},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
-
 
     return y_predictions, y1_series, ols_buy_score, ols_sell_score, ols_max_score, ols_signals

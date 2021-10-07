@@ -30,7 +30,7 @@ def get_ridge_signals(tsymbol, df):
     #WIP: experimenting
 #    ridge = Ridge(fit_intercept=False, max_iter=None, normalize=False, random_state=None, solver='auto')
 
-    ridge = Ridge(fit_intercept=True, max_iter=None, normalize=False, random_state=19, solver='auto')
+    ridge = Ridge(fit_intercept=True, max_iter=None, normalize=False, random_state=20, solver='auto')
 
     #Fit the model for x and y values
     ridge.fit(x_vals, y_vals)
