@@ -32,33 +32,40 @@ def get_sgd_signals(tsymbol, df):
     scaler.fit(x_vals)
     x_vals = scaler.fit_transform(x_vals)
 
+    fit_score = 0
+
     #Stochastic Gradient Descent model;
     # WIP: experimenting; Using squared_loss loss function (not much different from OLS)
     #Need to permute the data after each iteration so using shuffle=True
     #Using default for max_iter (which is 1000)
 #    sgd = SGDRegressor(loss="squared_loss", fit_intercept=True, shuffle=True, epsilon=0.1, learning_rate='optimal', eta0=0.01, power_t=0.25, early_stopping=False, n_iter_no_change=10)
 
-    sgd = SGDRegressor(loss="squared_loss", fit_intercept=True, max_iter=10000, shuffle=True, random_state=19, learning_rate='constant', eta0=0.01, early_stopping=False, n_iter_no_change=10)
+    sgd = SGDRegressor(loss="squared_loss", fit_intercept=True, max_iter=10000, shuffle=True, random_state=20, learning_rate='constant', eta0=0.01, early_stopping=False, n_iter_no_change=10)
 
-    #Fit the model for x and y values
-    sgd.fit(x_vals, y_vals)
+    try:
+        #Fit the model for x and y values
+        sgd.fit(x_vals, y_vals)
+    except:
+        print(f'\nError: SGD fit failed for {tsymbol}')
+    else:
+        try:
+            #Get yprediction to plot the regression line along with price chart
+            y_predictions = sgd.predict(x_vals)
+            y_predictions_len = len(y_predictions)
+        except:
+            print(f'\nError: SGD predict failed for {tsymbol}')
+        else:
+            last_yp = y_predictions[y_predictions_len-1]
+            print(f'Last SGD prediction for {tsymbol} is {last_yp}')
 
-    #Get yprediction to plot the regression line along with price chart
-    y_predictions = sgd.predict(x_vals)
-    y_predictions_len = len(y_predictions)
+            #Get goodness-of-fit score
+            fit_score = round(sgd.score(x_vals, y_vals), 3)
 
-    last_yp = y_predictions[y_predictions_len-1]
-    print(last_yp)
-    print(f'Last SGD prediction for {tsymbol} is {last_yp}')
+            #Log the score for debugging
+            print(f'SGD model fit_score for {tsymbol} is {fit_score}')
 
-    #Get goodness-of-fit score
-    fit_score = round(sgd.score(x_vals, y_vals), 3)
-
-    #Log the score for debugging
-    print(f'SGD model fit_score for {tsymbol} is {fit_score}')
-
-    #Flatten the predictions to keep it in same format as other chart data
-    y_predictions = y_predictions.flatten()
+            #Flatten the predictions to keep it in same format as other chart data
+            y_predictions = y_predictions.flatten()
 
     sgd_buy_rec = f'sgd_buy_rec:{sgd_buy_score}/{sgd_max_score}'
     sgd_sell_rec = f'sgd_sell_rec:{sgd_sell_score}/{sgd_max_score}'
