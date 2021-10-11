@@ -72,7 +72,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     ridge_buy_score = 0
     bridge_buy_score = 0
     lasso_buy_score = 0
-    lgstic_buy_score = 0
     options_buy_score = 0
     pe_buy_score = 0
     peg_buy_score = 0
@@ -97,7 +96,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     ridge_sell_score = 0
     bridge_sell_score = 0
     lasso_sell_score = 0
-    lgstic_sell_score = 0
     options_sell_score = 0
     pe_sell_score = 0
     peg_sell_score = 0
@@ -121,7 +119,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     ridge_max_score = 0
     bridge_max_score = 0
     lasso_max_score = 0
-    lgstic_max_score = 0
     options_max_score = 0
     pe_max_score = 0
     peg_max_score = 0
@@ -228,7 +225,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         #SGD signals
         sgd_y_predictions, sgd_buy_score, sgd_sell_score, sgd_max_score, sgd_signals = gsgd.get_sgd_signals(tsymbol, df)
     except:
-        print('\nError getting SGD signals')
+        print('\nError while getting SGD signals for ', tsymbol, ': ', sys.exc_info()[0])
         sgd_buy_score = 0
         sgd_sell_score = 0
         sgd_max_score = 0
@@ -239,24 +236,37 @@ def get_ticker_hist_n_analysis(tsymbol):
         ridge_y_predictions, ridge_buy_score, ridge_sell_score, ridge_max_score, ridge_signals = gridge.get_ridge_signals(tsymbol, df)
     except:
         print('\nError while getting ridge signals for ', tsymbol, ': ', sys.exc_info()[0])
+        ridge_buy_score = 0
+        ridge_sell_score = 0
+        ridge_max_score = 0
+        ridge_signals = ''
 
     try:
         #Bayesian Ridge signals
         bridge_y_predictions, bridge_buy_score, bridge_sell_score, bridge_max_score, bridge_signals = gbridge.get_bridge_signals(tsymbol, df)
     except:
         print('\nError while getting br signals for ', tsymbol, ': ', sys.exc_info()[0])
+        bridge_buy_score = 0
+        bridge_sell_score = 0
+        bridge_max_score = 0
+        bridge_signals = ''
 
     try:
         #Lasso signals
         lasso_y_predictions, lasso_buy_score, lasso_sell_score, lasso_max_score, lasso_signals = glas.get_lasso_signals(tsymbol, df)
     except:
         print('\nError while getting lasso signals for ', tsymbol, ': ', sys.exc_info()[0])
+        lasso_buy_score = 0
+        lasso_sell_score = 0
+        lasso_max_score = 0
+        lasso_signals = ''
 
     try:
         #Logistic regression signals
-        lgstic_predictions, lgstic_buy_score, lgstic_sell_score, lgstic_max_score, lgstic_signals = glgs.get_lgstic_signals(tsymbol, df, path)
+        lgstic_signals = glgs.get_lgstic_signals(tsymbol, df, path)
     except:
-        print('\nError while getting lr signals for ', tsymbol, ': ', sys.exc_info()[0])
+        print('\nError while getting lgstic regr signals for ', tsymbol, ': ', sys.exc_info()[0])
+        lgstic_signals = ''
 
     try:
         #Options signals
@@ -324,9 +334,9 @@ def get_ticker_hist_n_analysis(tsymbol):
     except:
         print('\nError while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + sgd_buy_score + ridge_buy_score + bridge_buy_score + lasso_buy_score + lgstic_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
-    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + sgd_sell_score + ridge_sell_score + bridge_sell_score + lasso_sell_score + lgstic_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
-    overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + sgd_max_score + ridge_max_score + bridge_max_score + lasso_max_score + lgstic_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
+    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + sgd_buy_score + ridge_buy_score + bridge_buy_score + lasso_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
+    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + sgd_sell_score + ridge_sell_score + bridge_sell_score + lasso_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
+    overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + sgd_max_score + ridge_max_score + bridge_max_score + lasso_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
 
     overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
     overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'

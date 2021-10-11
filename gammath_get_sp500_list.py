@@ -52,7 +52,8 @@ def get_sp500_list():
 
     if (not dont_need_fetch):
         #Get S&P500 list.
-        #Specify header and get first dataframe
+        #Specify header (row to use to make column headers)
+        #No need to get entire list of dataframes. We only need first dataframe
         sp500 = pd.read_html(sp500_list_url, header=0)[0]
 
         print('S&P500 list dataframe info:\n')

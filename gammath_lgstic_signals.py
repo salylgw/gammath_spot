@@ -40,9 +40,6 @@ def price_sigmoid(prices):
 
 #WIP: Just getting APIs to work... lot more needs to be done
 def get_lgstic_signals(tsymbol, df, path):
-    lgstic_buy_score = 0
-    lgstic_sell_score = 0
-    lgstic_max_score = 0
     lgstic_signals = ''
 
     prices_len = len(df.Close)
@@ -77,7 +74,6 @@ def get_lgstic_signals(tsymbol, df, path):
     y_proba_len = len(y_proba)
 
     last_yproba = y_proba[y_proba_len-1]
-    print(f'Last Logistic regression probability prediction for {tsymbol} is {last_yproba}, corresponding to labels {lrm.classes_}')
 
     #Get goodness-of-fit score
     fit_score = round(lrm.score(x_vals, y_vals), 3)
@@ -85,12 +81,8 @@ def get_lgstic_signals(tsymbol, df, path):
     #Log the score for debugging
     print(f'Logistic regression model fit_score for {tsymbol} is {fit_score}')
 
-    #Flatten the predictions to keep it in same format as other chart data
-    y_predictions = y_predictions.flatten()
+    print(f'Last Logistic regression probability prediction for {tsymbol} is {last_yproba}, corresponding to labels {lrm.classes_}')
 
-    lgstic_buy_rec = f'lgstic_buy_rec:{lgstic_buy_score}/{lgstic_max_score}'
-    lgstic_sell_rec = f'lgstic_sell_rec:{lgstic_sell_score}/{lgstic_max_score}'
+    lgstic_signals = f'Logistic: lgstic_fit_score:{fit_score},probab_pred:{last_yproba} for labels:{lrm.classes_}'
 
-    lgstic_signals = f'Logistic: {lgstic_buy_rec},{lgstic_sell_rec},lgstic_fit_score:{fit_score}'
-
-    return y_predictions, lgstic_buy_score, lgstic_sell_score, lgstic_max_score, lgstic_signals
+    return lgstic_signals
