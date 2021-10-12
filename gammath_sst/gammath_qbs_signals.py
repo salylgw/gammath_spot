@@ -10,19 +10,19 @@ import pandas as pd
 
 def get_qbs_signals(tsymbol, path):
 
+    print(f'\nGetting Quarterly Balance Sheet signals for {tsymbol}')
+
     cash = 0
     lti = 0
     sti = 0
-    cash_earned_last_one_year = -1
-    possible_next_year_remaining_cash = 0
-    sequity = -1
-    dtcr = -1
+    cash_earned_last_one_year = 0
+    possible_remaining_cash = 0
+    sequity = 0
+    dtcr = 0
 
     qbs_buy_score = 0
     qbs_sell_score = 0
     qbs_max_score = 0
-
-    print('\nGetting Quarterly balance sheet signals')
 
     file_exists = (path / f'{tsymbol}_qbs.csv').exists()
 
@@ -47,13 +47,18 @@ def get_qbs_signals(tsymbol, path):
                 if (earnings_file_exists):
                     dfe = pd.read_csv(path / f'{tsymbol}_qe.csv', index_col='Unnamed: 0')
                     try:
-                        cash_earned_last_one_year = dfe.Earnings.sum()
-                        print('\nNumber of earnings is ', len(dfe))
-                        if (len(dfe) > 4):
-                            print(f'\nNumber Quaterly Earnings are more than one year duration for {tsymbol}')
+                        dfe_len = len(dfe)
+                        if (dfe_len > 0):
+                            if (dfe_len >= 4):
+                                #Get the sum for last 4 quarters
+                                cash_earned_last_one_year = dfe.Earnings[(dfe_len-4):].sum()
+                            else:
+                                print(f'\nNot enough Quarterly Earnings data for {tsymbol}. Earnings quarters: {dfe_len} ')
+                        else:
+                            print(f'\nERROR: Earnings dataframe is empty for {tsymbol}')
                     except:
                         print(f'\nQuarterly earnings not found for {tsymbol}')
-                        cash_earned_last_one_year = -1
+                        cash_earned_last_one_year = 0
                 else:
                     print(f'\nEarnings file not found for {tsymbol}')
             except:
@@ -85,33 +90,41 @@ def get_qbs_signals(tsymbol, path):
                 print(f'\nLong Term Debt item not found in quarterly balance sheet for {tsymbol}')
                 ldebt = 0
 
-            #Debt to capital ratio. TBD: Need to revisit the formula for accuracy
+            #Debt to capital ratio. TBD: Need to revisit the formula
             if ((ldebt > 0) and (sequity > 0)):
-                dtcr = round(ldebt / (ldebt + sequity), 3)
+                dtcr = round((ldebt / (ldebt + sequity)), 3)
 
-            if (cash_earned_last_one_year != -1):
-                possible_next_year_remaining_cash = cash_earned_last_one_year
-
-            #Add remaining cash to get an idea of cash position for a year
-            possible_next_year_remaining_cash += (cash + sti + lti)
-
-            if (possible_next_year_remaining_cash > 0):
-                qbs_buy_score += 3
-                qbs_sell_score -= 3
+            #For now just check if this is +ve
+            if (cash_earned_last_one_year > 0):
+                qbs_buy_score += 1
+                qbs_sell_score -= 1
             else:
-                qbs_sell_score += 3
-                qbs_buy_score -= 3
+                qbs_buy_score -= 1
+                qbs_sell_score += 1
 
-            qbs_max_score += 3
+            qbs_max_score += 1
+
+            #Add remaining cash to get an idea of cash position
+            possible_remaining_cash += (cash + sti + lti)
+
+            #For now just check if this is +ve
+            if (possible_remaining_cash > 0):
+                qbs_buy_score += 1
+                qbs_sell_score -= 1
+            else:
+                qbs_sell_score += 1
+                qbs_buy_score -= 1
+
+            qbs_max_score += 1
 
             if (sequity > 0):
-                qbs_buy_score += 2
-                qbs_sell_score -= 2
+                qbs_buy_score += 1
+                qbs_sell_score -= 1
             else:
-                qbs_sell_score += 2
-                qbs_buy_score -= 2
+                qbs_sell_score += 1
+                qbs_buy_score -= 1
 
-            qbs_max_score += 2
+            qbs_max_score += 1
 
             if (ldebt == 0):
                 qbs_buy_score += 3
@@ -139,7 +152,6 @@ def get_qbs_signals(tsymbol, path):
             qbs_max_score += 3
     else:
         print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist. Need to fetch it')
-
 
     qbs_buy_rec = f'qbs_buy_score:{qbs_buy_score}/{qbs_max_score}'
     qbs_sell_rec = f'qbs_sell_score:{qbs_sell_score}/{qbs_max_score}'

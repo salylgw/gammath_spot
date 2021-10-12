@@ -15,12 +15,13 @@ import os
 
 def get_options_signals(tsymbol, path, curr_price, df_summ):
 
+    print(f'\nGetting options signals for {tsymbol}')
+
     options_buy_score = 0
     options_sell_score = 0
     options_max_score = 0
     shortRatio = 0
 
-    print(f'\nGetting options signals for {tsymbol}')
     #Get the options data from existing file
     if ((path / f'{tsymbol}_options_dates.csv').exists()):
         print(f'\nGet options dates for {tsymbol}')
@@ -86,40 +87,39 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
                 if (bc_ratio > 1):
                     print(f'\nbullish signal for {tsymbol}')
-                    options_buy_score += 3
-                    options_sell_score -= 3
+                    options_buy_score += 2
+                    options_sell_score -= 2
                 else:
                     print(f'\nbearish signal for {tsymbol}')
-                    options_buy_score -= 3
-                    options_sell_score += 3
+                    options_buy_score -= 2
+                    options_sell_score += 2
 
-                options_max_score += 3
+                options_max_score += 2
 
                 #Use short ratio to read the bullish/bearish trend
                 #Add weightage for buy/sell scores
                 shortRatio = df_summ['shortRatio'][0]
                 if (shortRatio > 0):
                     if (shortRatio < 3):
-                        options_buy_score += 12
-                        options_sell_score -= 12
+                        options_buy_score += 8
+                        options_sell_score -= 8
                     elif (shortRatio < 6):
-                        options_buy_score += 3
-                        options_sell_score -= 3
+                        options_buy_score += 4
+                        options_sell_score -= 4
                     else:
                         if (shortRatio > 15):
-                            options_buy_score -= 12
-                            options_sell_score += 12
+                            options_buy_score -= 8
+                            options_sell_score += 8
                         elif (shortRatio > 10):
-                            options_buy_score -= 3
-                            options_sell_score += 3
+                            options_buy_score -= 4
+                            options_sell_score += 4
 
-                    options_max_score += 12
                 else:
-                    #Put some -ve weight for lack of info
+                    #Put -ve weight for lack of info
                     options_buy_score -= 2
                     options_sell_score += 2
-                    options_max_score += 2
 
+                options_max_score += 8
             else:
                 print('\nOptions not supported for ', tsymbol)
 

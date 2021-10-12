@@ -12,7 +12,7 @@ buy_recos = ('Above Average', 'Accumulate', 'Add', 'Buy', 'Conviction Buy', 'Gra
 
 def get_reco_signals(tsymbol, path):
 
-    print('\nGetting recommendations signals')
+    print(f'\nGetting signals out of Analysts recommendation for {tsymbol}')
 
     reco_buy_score = 0
     reco_sell_score = 0
@@ -22,50 +22,55 @@ def get_reco_signals(tsymbol, path):
 
     #Check if file exists and is it from another day
     if file_exists:
-        print(f'\nRecommendations for {tsymbol} exists')
+        print(f'\nAnalysts recommendations for {tsymbol} exists')
         df = pd.read_csv(path / f'{tsymbol}_reco.csv')
         len_df = len(df)
         if (len_df == 0):
-            print(f'\nERROR: Recommendations dataframe is empty for {tsymbol}')
+            print(f'\nERROR: Analysts recommendations dataframe is empty for {tsymbol}')
         else:
-            print(f'\nRead recommendations into dataframe for {tsymbol}')
-            #Get shorter of last 10% of recommendations from entire list
-            df_10p = len_df - int(len_df * 10 / 100)
-            if (df_10p < len_df):
-                start_index = df_10p
+            print(f'\nRead Analysts recommendations into dataframe for {tsymbol}')
+            #We only want recent data so get shorter of last 20% of recommendations from entire list
+            df_20p_index = len_df - int((len_df * 20) / 100)
+            if (df_20p_index < len_df):
+                start_index = df_20p_index
             else:
                 start_index = 0
 
+            #Shorter list for recent recommendations
             shorter_df = df[start_index:len_df]
 
-            buy_count = 0
-            sell_coumt = 0
+            total_recos = len(shorter_df)
 
+            buy_count = 0
+            sell_count = 0
+
+            #Extract count for buy/sell/positive recommendations
             for grade in shorter_df['To Grade']:
                 if (grade in buy_recos):
                     buy_count += 1
                 else:
-                    sell_coumt += 1
+                    sell_count += 1
 
-            total_recos = len(shorter_df)
 
+            #Get the percentage of +ve recommendations
             buy_percentage = buy_count*100/total_recos
+            print(f'\nBuy count: {buy_count}, Sell count: {sell_count} for {tsymbol}. buy pct: {buy_percentage}')
 
-            if (buy_percentage > 50):
-                reco_buy_score += 3
-                reco_sell_score -= 3
+            #Reduce buy score and increase sell score
+            if (buy_percentage < 50):
+                reco_buy_score -= 10
+                reco_sell_score += 10
             else:
-                reco_buy_score -= 6
-                reco_sell_score += 6
+                reco_buy_score += 5
+                reco_sell_score -= 5
 
-            if (buy_percentage > 75):
-                reco_buy_score += 3
-                reco_sell_score -= 3
+                if (buy_percentage > 75):
+                    reco_buy_score += 5
+                    reco_sell_score -= 5
 
-            reco_max_score += 6
+            reco_max_score += 10
 
-            print(f'\nRecommendations score based on current grade done for {tsymbol}')
-
+            #Extract count for recent upgrades/downgrades recommendations
             up_count = 0
             down_count = 0
             for action in shorter_df['Action']:
@@ -74,16 +79,24 @@ def get_reco_signals(tsymbol, path):
                 elif (action == 'down'):
                     down_count += 1
 
-            print(f'\nUpgrades: {up_count}, Downgrades: {down_count} for {tsymbol}')
+            #Get the percentage of +ve recommendations
+            up_percentage = (up_count*100)/(up_count + down_count)
 
-            if (up_count > down_count):
-                reco_buy_score += 6
-                reco_sell_score -= 6
+            print(f'\nUpgrades: {up_count}, Downgrades: {down_count} for {tsymbol}. up pct: {up_percentage}')
+
+            #Reduce buy score and increase sell score
+            if (up_percentage < 50):
+                reco_buy_score -= 10
+                reco_sell_score += 10
             else:
-                reco_buy_score -= 6
-                reco_sell_score += 6
+                reco_buy_score += 5
+                reco_sell_score -= 5
 
-            reco_max_score += 6
+                if (up_percentage > 75):
+                    reco_buy_score += 5
+                    reco_sell_score -= 5
+
+            reco_max_score += 10
     else:
         print(f'\nERROR: Quarterly recommendation sheet for {tsymbol} does NOT exist. Need to fetch it')
 

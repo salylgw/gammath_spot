@@ -16,6 +16,8 @@ RSI_OVERBOUGHT_LEVEL = 70
 
 def get_rsi_signals(tsymbol, df, path):
 
+    print(f'\nGetting RSI signals for {tsymbol}')
+
     rsi = RSI(df.Close, timeperiod=RSI_TIME_PERIOD)
     rsi_len = len(rsi)
     if (rsi_len <= 0):
@@ -35,33 +37,34 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_sell_score = 0
     rsi_max_score = 0
 
+    #Get the RSI mean for reference to check for average RSI
     rsi_mean = rsi_ds['mean']
     if (curr_rsi < rsi_mean):
         rsi_avg = 'below average'
-        rsi_buy_score += 1
-        rsi_sell_score = 0
+        rsi_buy_score += 3
+        rsi_sell_score -= 3
     elif (curr_rsi > rsi_mean):
         rsi_avg = 'above average'
-        rsi_sell_score += 1
-        rsi_buy_score = 0
+        rsi_sell_score += 3
+        rsi_buy_score -= 3
     else:
         rsi_avg = 'average'
 
-    rsi_max_score += 1
+    rsi_max_score += 3
 
     #Higher weights when oversold or overbought
     if (curr_rsi <= RSI_OVERSOLD_LEVEL):
         rsi_lvl = 'oversold'
-        rsi_buy_score += 12
-        rsi_sell_score -= 12
+        rsi_buy_score += 6
+        rsi_sell_score -= 6
     elif (curr_rsi >= RSI_OVERBOUGHT_LEVEL):
         rsi_lvl = 'overbought'
-        rsi_sell_score += 12
-        rsi_buy_score -= 12
+        rsi_sell_score += 6
+        rsi_buy_score -= 6
     else:
         rsi_lvl = ''
 
-    rsi_max_score += 12
+    rsi_max_score += 6
 
     if ((curr_rsi < prev_rsi) and (prev_rsi < preprev_rsi)):
         rsi_direction = 'falling'

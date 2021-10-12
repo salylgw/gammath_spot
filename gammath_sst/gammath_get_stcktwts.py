@@ -13,7 +13,7 @@ STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
 def get_stocktwits_ticker_info(tsymbol, path):
 
-    print(f'\nGetting stocktwits signals for {tsymbol}')
+    print(f'\nGetting stocktwits page for {tsymbol}')
     url = f'{STOCKTWITS_TICKER_ADDR}/symbol/{tsymbol}'
     print(url)
 

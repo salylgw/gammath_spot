@@ -11,23 +11,14 @@ import numpy as np
 AVG_TRADING_DAYS_PER_YEAR = 252
 PRICE_PERCENT_CUTOFF = 85
 
-def get_price_signals(df, df_summ):
+def get_price_signals(tsymbol, df, df_summ):
+
+    print(f'\nGetting Price signals for {tsymbol}')
 
     prices = df.Close
     prices_len = len(prices)
     if (prices_len <=0):
         return
-
-    #Get current price from summary
-    one_off_curr_price = df_summ['currentPrice'][0]
-    val_type = type(one_off_curr_price)
-    print(f'\nOne off curr price: {one_off_curr_price}, type:{val_type}')
-
-    #Looks like price history is stale so get current price from summary
-#    if (one_off_curr_price > 0):
-#        lp = one_off_curr_price
-#    else:
-#        lp = prices[prices_len-1]
 
     lp = prices[prices_len-1]
 
@@ -42,20 +33,21 @@ def get_price_signals(df, df_summ):
     price_max_score = 0
     nftwl = ''
 
+    #If price is falling (view this as "falling knife") then lower buy score and increase sell score
     if ((lp < lpm1) and (lpm1 < lpm2)):
         price_dir = 'falling'
-        price_sell_score += 2
-        price_buy_score -= 2
+        price_sell_score += 3
+        price_buy_score -= 3
     elif ((lp > lpm1) and (lpm1 > lpm2)):
         price_dir = 'rising'
-        price_buy_score += 2
-        price_sell_score -= 2
+        price_buy_score += 3
+        price_sell_score -= 3
     else:
         price_dir = 'direction_unclear'
         price_buy_score = 1
         price_sell_score = 1
 
-    price_max_score += 2
+    price_max_score += 3
 
     #Get consecutive falling and rising days count
     last_falling_days_count = 0
@@ -99,11 +91,13 @@ def get_price_signals(df, df_summ):
             last_rising_days_count = 0
 
     price_consec_falling_days_count_series = price_consec_falling_days_count_series.dropna()
+
     #Lower counts will be too many so drop them to get approx percentile past lower numbers
     price_consec_falling_days_count_series = price_consec_falling_days_count_series.drop_duplicates()
     price_consec_falling_days_count_series = price_consec_falling_days_count_series.sort_values()
 
     price_consec_rising_days_count_series = price_consec_rising_days_count_series.dropna()
+
     #Lower counts will be too many so drop them to get approx percentile past lower numbers
     price_consec_rising_days_count_series = price_consec_rising_days_count_series.drop_duplicates()
     price_consec_rising_days_count_series = price_consec_rising_days_count_series.sort_values()
@@ -138,30 +132,30 @@ def get_price_signals(df, df_summ):
     price_max_score += 1
 
     if (last_falling_days_count > fp_mp):
-        price_buy_score += 2
+        price_buy_score += 1
 
     if (last_rising_days_count > rp_mp):
+        price_sell_score += 1
+
+    price_max_score += 1
+
+    if (last_falling_days_count > fp_tp):
+        price_buy_score += 2
+
+    if (last_rising_days_count > rp_tp):
         price_sell_score += 2
 
     price_max_score += 2
-
-    if (last_falling_days_count > fp_tp):
-        price_buy_score += 3
-
-    if (last_rising_days_count > rp_tp):
-        price_sell_score += 3
-
-    price_max_score += 3
 
     yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
 
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):
-            #Isolated case to bring it to the front for checkout
-            price_buy_score += 30
-            price_sell_score -= 30
+
+            #New 52-week low
+            price_buy_score += 3
+            price_sell_score -= 3
             nftwl = 'new fiftyTwoWeekLow'
-            price_max_score += 30
         else:
             pct_val = yearly_lowest_val*100/lp
 
@@ -171,9 +165,6 @@ def get_price_signals(df, df_summ):
             else:
                 price_buy_score -= 1
                 price_sell_score += 1
-
-            price_max_score += 1
-
     else:
         print('\n52-week low value not found')
 
@@ -182,9 +173,8 @@ def get_price_signals(df, df_summ):
     if (yearly_highest_val > 0):
         if (lp >= yearly_highest_val):
             #Isolated case to bring it to the front for checkout
-            price_sell_score += 30
-            price_buy_score -= 30
-            price_max_score += 30
+            price_sell_score += 3
+            price_buy_score -= 3
         else:
             pct_val = lp*100/yearly_highest_val
 
@@ -199,27 +189,31 @@ def get_price_signals(df, df_summ):
     else:
         print('\n52-week high value not found')
 
+    #Max from 52-week high/low price comparison
+    price_max_score += 3
+
     fiftyDayAverage = df_summ['fiftyDayAverage'][0]
 
     if (fiftyDayAverage > 0):
         if (lp <= fiftyDayAverage):
-            price_buy_score += 2
-            price_sell_score -= 2
+            price_buy_score += 1
+            price_sell_score -= 1
         else:
-            price_buy_score -= 2
-            price_sell_score += 2
+            price_buy_score -= 1
+            price_sell_score += 1
 
-    price_max_score += 2
+    price_max_score += 1
 
     twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
 
     if (twoHundredDayAverage > 0):
         if (lp <= twoHundredDayAverage):
-            price_buy_score += 3
-            price_sell_score -= 3
+            price_buy_score += 2
+            price_sell_score -= 2
 
-    price_max_score += 3
+    price_max_score += 2
 
+    #Get percentiles for 52-week prices
     one_year_prices = df['Close'][(prices_len-AVG_TRADING_DAYS_PER_YEAR):]
     bp, mp, tp = one_year_prices.quantile([0.25, 0.5, 0.75])
 
@@ -227,6 +221,8 @@ def get_price_signals(df, df_summ):
     mp = round(mp, 3)
     tp = round(tp, 3)
 
+    #If price is in lower percentile then higher buy score
+    #If price is in higher percentile the higher sell score
     if ((lp <= bp) or (lp >= tp)):
         if (lp <= bp):
             price_buy_score += 3
@@ -236,12 +232,11 @@ def get_price_signals(df, df_summ):
             price_sell_score += 3
     else:
         if ((lp > bp) and (lp < mp)):
-            price_buy_score += 2
-            price_sell_score -= 2
+            price_buy_score += 1
+            price_sell_score -= 1
 
         if ((lp > mp) and (lp < tp)):
             price_buy_score += 1
-            price_sell_score -= 1
 
     price_max_score += 3
 

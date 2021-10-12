@@ -10,23 +10,43 @@ import pandas as pd
 
 def get_beta_signals(tsymbol, df_summ):
 
-    print('\nGetting beta signals')
+    print(f'\nGetting beta signals for {tsymbol}')
+
     beta_buy_score = 0
     beta_sell_score = 0
     beta_max_score = 0
 
+    #Get the beta value from summary DF
     beta = df_summ['beta'][0]
 
     print('Beta for ', tsymbol, ': ', beta)
 
     if (beta > 0):
 
+        #Closer to 1 is near market
         if (beta < 3):
             beta_buy_score += 1
+            beta_sell_score -= 1
         else:
             beta_sell_score += 1
+            beta_buy_score -= 1
 
         beta_max_score += 1
+
+        if (beta < 2):
+            beta_buy_score += 1
+            beta_sell_score -= 1
+        else:
+            beta_sell_score += 1
+            beta_buy_score -= 1
+
+        beta_max_score += 1
+    else:
+        #For no info or -ve info  keep 0/2
+        beta_max_score += 2
+
+    #round it off for taking less space when displaying
+    beta = round(beta, 3)
 
     beta_buy_rec = f'beta_buy_score:{beta_buy_score}/{beta_max_score}'
     beta_sell_rec = f'beta_sell_score:{beta_sell_score}/{beta_max_score}'

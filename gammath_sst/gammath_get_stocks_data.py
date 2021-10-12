@@ -21,17 +21,21 @@ import gammath_stocks_calendar as gsc
 
 Tickers_dir = Path('tickers')
 
+#Get data for stock ticker symbol from the internet
 def get_stocks_data(tsymbol):
     if (len(tsymbol) == 0):
         return None
-
-    #Create Yahoo finance ticker handle
-    ticker = yf.Ticker(tsymbol)
 
     path = Tickers_dir / f'{tsymbol}'
 
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
+
+    #Fetch stocktwits page; Finish getting all data outside of yahoo
+    ggstw.get_stocktwits_ticker_info(tsymbol, path)
+
+    #Create Yahoo finance ticker handle
+    ticker = yf.Ticker(tsymbol)
 
     #Get stock info
     result = gss.get_ticker_summary(tsymbol, ticker, path)
@@ -48,9 +52,6 @@ def get_stocks_data(tsymbol):
     result = gso.get_options_data(tsymbol, ticker, path)
     if (result is None):
         print(f'\nDid not get ticker options info for {tsymbol}')
-
-    #Fetch stocktwits page
-    ggstw.get_stocktwits_ticker_info(tsymbol, path)
 
     #Fetch calendar
     result = gsc.get_ticker_calendar(tsymbol, ticker, path)

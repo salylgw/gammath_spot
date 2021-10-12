@@ -30,10 +30,6 @@ import gammath_qbs_signals as gqbs
 import gammath_pbr_signals as gpbrs
 import gammath_reco_signals as greco
 import gammath_ols_signals as gols
-import gammath_sgd_signals as gsgd
-import gammath_ridge_signals as gridge
-import gammath_bayesian_ridge_signals as gbridge
-import gammath_lasso_signals as glas
 import gammath_lgstic_signals as glgs
 import gammath_get_events as gge
 import sys
@@ -68,10 +64,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     macd_buy_score = 0
     kf_buy_score = 0
     ols_buy_score = 0
-    sgd_buy_score = 0
-    ridge_buy_score = 0
-    bridge_buy_score = 0
-    lasso_buy_score = 0
     options_buy_score = 0
     pe_buy_score = 0
     peg_buy_score = 0
@@ -92,10 +84,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     macd_sell_score = 0
     kf_sell_score = 0
     ols_sell_score = 0
-    sgd_sell_score = 0
-    ridge_sell_score = 0
-    bridge_sell_score = 0
-    lasso_sell_score = 0
     options_sell_score = 0
     pe_sell_score = 0
     peg_sell_score = 0
@@ -115,10 +103,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     macd_max_score = 0
     kf_max_score = 0
     ols_max_score = 0
-    sgd_max_score = 0
-    ridge_max_score = 0
-    bridge_max_score = 0
-    lasso_max_score = 0
     options_max_score = 0
     pe_max_score = 0
     peg_max_score = 0
@@ -136,10 +120,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     macd_signals = ''
     kf_signals = ''
     ols_signals = ''
-    sgd_signals = ''
-    ridge_signals = ''
-    bridge_signals = ''
-    lasso_signals = ''
     lgstic_signals = ''
     mfi_signals = ''
     stoch_slow_signals = ''
@@ -175,7 +155,7 @@ def get_ticker_hist_n_analysis(tsymbol):
 
     try:
         #Price signals
-        price_buy_score, price_sell_score, price_max_score, price_signals = gps.get_price_signals(df, df_summ)
+        price_buy_score, price_sell_score, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
     except:
         print('\nError while getting price signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -199,7 +179,7 @@ def get_ticker_hist_n_analysis(tsymbol):
 
     try:
         #Stochastic slow signals
-        slowk, slowd, stoch_buy_score, stoch_sell_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(df)
+        slowk, slowd, stoch_buy_score, stoch_sell_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
     except:
         print('\nError while getting stochastics signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -211,7 +191,7 @@ def get_ticker_hist_n_analysis(tsymbol):
 
     try:
         #Kalman Filter signals
-        state_means, state_covariance, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_means_covariance(df)
+        state_means, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
     except:
         print('\nError while getting KF signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -220,46 +200,6 @@ def get_ticker_hist_n_analysis(tsymbol):
         ols_y_predictions, ols_y1_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
     except:
         print('\nError while getting OLS signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-    try:
-        #SGD signals
-        sgd_y_predictions, sgd_buy_score, sgd_sell_score, sgd_max_score, sgd_signals = gsgd.get_sgd_signals(tsymbol, df)
-    except:
-        print('\nError while getting SGD signals for ', tsymbol, ': ', sys.exc_info()[0])
-        sgd_buy_score = 0
-        sgd_sell_score = 0
-        sgd_max_score = 0
-        sgd_signals = ''
-
-    try:
-        #Ridge signals
-        ridge_y_predictions, ridge_buy_score, ridge_sell_score, ridge_max_score, ridge_signals = gridge.get_ridge_signals(tsymbol, df)
-    except:
-        print('\nError while getting ridge signals for ', tsymbol, ': ', sys.exc_info()[0])
-        ridge_buy_score = 0
-        ridge_sell_score = 0
-        ridge_max_score = 0
-        ridge_signals = ''
-
-    try:
-        #Bayesian Ridge signals
-        bridge_y_predictions, bridge_buy_score, bridge_sell_score, bridge_max_score, bridge_signals = gbridge.get_bridge_signals(tsymbol, df)
-    except:
-        print('\nError while getting br signals for ', tsymbol, ': ', sys.exc_info()[0])
-        bridge_buy_score = 0
-        bridge_sell_score = 0
-        bridge_max_score = 0
-        bridge_signals = ''
-
-    try:
-        #Lasso signals
-        lasso_y_predictions, lasso_buy_score, lasso_sell_score, lasso_max_score, lasso_signals = glas.get_lasso_signals(tsymbol, df)
-    except:
-        print('\nError while getting lasso signals for ', tsymbol, ': ', sys.exc_info()[0])
-        lasso_buy_score = 0
-        lasso_sell_score = 0
-        lasso_max_score = 0
-        lasso_signals = ''
 
     try:
         #Logistic regression signals
@@ -334,16 +274,21 @@ def get_ticker_hist_n_analysis(tsymbol):
     except:
         print('\nError while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + sgd_buy_score + ridge_buy_score + bridge_buy_score + lasso_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
-    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + sgd_sell_score + ridge_sell_score + bridge_sell_score + lasso_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
-    overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + sgd_max_score + ridge_max_score + bridge_max_score + lasso_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
+    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
+    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
+    overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
 
     overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
     overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'
-    final_buy_score = round((int(overall_buy_score)/int(overall_max_score)), 5)
-    final_buy_score_rec = f'final_buy_score:{final_buy_score}'
 
-    final_sell_score = round((int(overall_sell_score)/int(overall_max_score)), 5)
+    if (overall_max_score != 0):
+        final_buy_score = round((int(overall_buy_score)/int(overall_max_score)), 5)
+        final_sell_score = round((int(overall_sell_score)/int(overall_max_score)), 5)
+    else:
+        final_buy_score = 0
+        final_sell_score = 0
+
+    final_buy_score_rec = f'final_buy_score:{final_buy_score}'
     final_sell_score_rec = f'final_sell_score:{final_sell_score}'
 
     try:
@@ -351,7 +296,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     except:
         print('\nError while opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
     else:
-        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{sgd_signals}\n{ridge_signals}\n{bridge_signals}\n{lasso_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}\n{events_info}')
+        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}\n{events_info}')
         f.close()
 
         file_exists = (path / f'{tsymbol}_charts.png').exists()
@@ -374,7 +319,7 @@ def get_ticker_hist_n_analysis(tsymbol):
                 return
 
     #Draw the charts to view all at once as subplots
-    figure, axes = plt.subplots(nrows=11, figsize=(21, 19))
+    figure, axes = plt.subplots(nrows=7, figsize=(21, 19))
 
     sym_str = f'{tsymbol}'
 
@@ -422,30 +367,6 @@ def get_ticker_hist_n_analysis(tsymbol):
         plot_data7 = pd.DataFrame({sym_str: [0]})
 
     try:
-        plot_data8 = pd.DataFrame({sym_str: df.Close, 'SGD': sgd_y_predictions})
-    except:
-        print(f'\nError generating SGD DF for {sym_str}')
-        plot_data8 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data9 = pd.DataFrame({sym_str: df.Close, 'Ridge': ridge_y_predictions})
-    except:
-        print(f'\nError generating Ridge DF for {sym_str}')
-        plot_data9 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data10 = pd.DataFrame({sym_str: df.Close, 'Bayesian Ridge': bridge_y_predictions})
-    except:
-        print(f'\nError generating BR DF for {sym_str}')
-        plot_data10 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data11 = pd.DataFrame({sym_str: df.Close, 'Lasso': lasso_y_predictions})
-    except:
-        print(f'\nError generating Lasso DF for {sym_str}')
-        plot_data11 = pd.DataFrame({sym_str: [0]})
-
-    try:
         plot_data1.plot(ax=axes[0],lw=1,title='Bollinger Bands')
         plot_data2.plot(ax=axes[1],lw=1,title='Relative Strength Index')
         axes[1].axhline(RSI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
@@ -459,10 +380,6 @@ def get_ticker_hist_n_analysis(tsymbol):
         axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
         plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
         plot_data7.plot(ax=axes[6], lw=1,title='OLS')
-        plot_data8.plot(ax=axes[7], lw=1,title='SGD')
-        plot_data9.plot(ax=axes[8], lw=1,title='Ridge')
-        plot_data10.plot(ax=axes[9], lw=1,title='Bayesian Ridge')
-        plot_data11.plot(ax=axes[10], lw=1,title='Lasso')
         plt.savefig(path / f'{tsymbol}_charts.png')
     except:
         print('\nError while plotting charts for ', tsymbol, ': ', sys.exc_info()[0])

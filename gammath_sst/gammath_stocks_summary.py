@@ -13,14 +13,14 @@ import time
 import os
 import random
 
-MIN_DELAY_BETWEEN_BATCHES = 1
-MAX_DELAY_BETWEEN_BATCHES = 3
-
 Tickers_dir = Path('tickers')
 
 def get_ticker_summary(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
         return None
+
+    #Get stock info summary from the internet
+    print(f'\nGetting {tsymbol} ticker summary.')
 
     new_heldPercentInstitutions = 0
     heldPercentInstitutionsChange = 0
@@ -33,9 +33,9 @@ def get_ticker_summary(tsymbol, ticker, path):
     heldPercentInstitutions = 0
     heldPercentInsiders = 0
 
+    #Check if file exists and is it from another day
     file_exists = (path / f'{tsymbol}_summary.csv').exists()
 
-    #Check if file exists and is it from another day
     if file_exists:
         fstat = os.stat(path / f'{tsymbol}_summary.csv')
         fct_time = time.ctime(fstat.st_ctime).split(' ')
@@ -58,13 +58,17 @@ def get_ticker_summary(tsymbol, ticker, path):
             #Get the values for institution and insider holding pct and pct_change from previous file
             stock_summary = pd.read_csv(path / f'{tsymbol}_summary.csv')
 
-            #Get current pct change
+            #Get pct change info from the existing file
             heldPercentInstitutionsChange = round(stock_summary['heldPercentInstitutionsChange'][0], 5)
+            print(f'\nFrom file: heldPercentInstitutionsChange is {heldPercentInstitutionsChange} for {tsymbol}.')
             heldPercentInsidersChange = round(stock_summary['heldPercentInsidersChange'][0], 5)
+            print(f'\nFrom file: heldPercentInsidersChange is {heldPercentInsidersChange} for {tsymbol}.')
 
-            #Get current values
+            #Get current values info from the existing file
             heldPercentInstitutions = round(stock_summary['heldPercentInstitutions'][0], 5)
+            print(f'\nFrom file: heldPercentInstitutions is {heldPercentInstitutions} for {tsymbol}.')
             heldPercentInsiders = round(stock_summary['heldPercentInsiders'][0], 5)
+            print(f'\nFrom file: heldPercentInsiders is {heldPercentInsiders} for {tsymbol}.')
     else:
         dont_need_fetch = False
 

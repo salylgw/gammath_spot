@@ -16,6 +16,8 @@ MFI_OVERBOUGHT_LEVEL = 80
 
 def get_mfi_signals(tsymbol, df, path):
 
+    print(f'\nGetting MFI signals for {tsymbol}')
+
     mfi = MFI(df.High, df.Low, df.Close, df.Volume, timeperiod=MFI_TIME_PERIOD)
     mfi_ds = mfi.describe()
     mfi_mean = mfi_ds['mean']

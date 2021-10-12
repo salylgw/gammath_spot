@@ -9,7 +9,8 @@ import pandas as pd
 
 def get_pbr_signals(tsymbol, df_summ):
 
-    print('\nGetting PBR signals')
+    print(f'\nGetting PBR signals for {tsymbol}')
+
     pbr_buy_score = 0
     pbr_sell_score = 0
     pbr_max_score = 0
@@ -31,6 +32,8 @@ def get_pbr_signals(tsymbol, df_summ):
                     pbr_sell_score += 2
 
                 pbr_max_score += 2
+        else:
+            print(f'\nSummary DF for {tsymbol} is empty. PBR not found')
     except:
         pbr = 0
         print(f'\nPBR value not found for {tsymbol}')

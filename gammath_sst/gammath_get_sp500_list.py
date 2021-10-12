@@ -24,6 +24,7 @@ def get_sp500_list():
     dont_need_fetch = True
 
     try:
+        #Get existing file
         file_exists = (path / f'SP500_list.csv').exists()
 
         #Check if file exists and is it from another day
@@ -46,12 +47,13 @@ def get_sp500_list():
                 print('Date mismatch. Need to fetch new file')
                 dont_need_fetch = False
         else:
-                dont_need_fetch = False
+            #File doesn't exist/
+            dont_need_fetch = False
     except:
         print(f'\nError checking SP500 list')
 
     if (not dont_need_fetch):
-        #Get S&P500 list.
+        #Get S&P500 list from the internet.
         #Specify header (row to use to make column headers)
         #No need to get entire list of dataframes. We only need first dataframe
         sp500 = pd.read_html(sp500_list_url, header=0)[0]
@@ -63,6 +65,3 @@ def get_sp500_list():
         sp500.to_csv(path / f'SP500_list.csv')
 
     return
-
-#if __name__ == "__main__":
-#    get_sp500_list()

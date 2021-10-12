@@ -8,6 +8,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 
+#Get percentage held by institutions for tsymbol
 def get_ihp_signals(tsymbol, df_summ):
 
     print('\nGetting Institutional holdings percentage signals')
@@ -15,6 +16,7 @@ def get_ihp_signals(tsymbol, df_summ):
     ihp_sell_score = 0
     ihp_max_score = 0
 
+    #Get data about percentage help and change in percentage if any from summary dataframe
     ihp = df_summ['heldPercentInstitutions'][0]
     ihp_change = round(df_summ['heldPercentInstitutionsChange'][0], 5)
     ihp_change_dir = df_summ['heldPercentInstitutionsChangeDir'][0]

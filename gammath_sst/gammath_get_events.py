@@ -18,7 +18,7 @@ def get_events_info(tsymbol, path):
 
     #Get the events data from existing file
     if ((path / f'{tsymbol}_calendar.csv').exists()):
-        print(f'\nReading events for {tsymbol}')
+        print(f'\nReading events for {tsymbol} from existing file')
 
         #Get the latest options expiry date
         df = pd.read_csv(path / f'{tsymbol}_calendar.csv', index_col='Unnamed: 0')
@@ -37,6 +37,8 @@ def get_events_info(tsymbol, path):
                 #Extract all event dates
                 for i in range(num_cols):
                     event_dates.append(df[df.columns[i]][event])
+    else:
+        print(f'\nEvents file for {tsymbol} not found')
 
     events_info = f'{event}: {event_dates}'
     
