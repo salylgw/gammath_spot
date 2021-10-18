@@ -25,16 +25,15 @@ def get_stocktwits_signals(tsymbol, path):
     url = f'{STOCKTWITS_TICKER_ADDR}/symbol/{tsymbol}'
     print(url)
 
+    #RE to extract sentiment change value
     pattern_for_sentiment_change = re.compile(r'("sentimentChange"):([-]*[0-9]*[.]*[0-9]*)')
+
+    #RE to extract volume change value
     pattern_for_volume_change = re.compile(r'("volumeChange"):([-]*[0-9]*[.]*[0-9]*)')
     st_ticker_page_html = ''
 
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
-
-    st_buy_score = 0
-    st_sell_score = 0
-    st_max_score = 0
 
     try:
         #Read the saved page
@@ -80,9 +79,10 @@ def get_stocktwits_signals(tsymbol, path):
             st_sell_score += 2
             st_buy_score -= 2
 
-        st_max_score += 2
     except:
         print('\nError while getting stocktwits html page for ', tsymbol, ': ', sys.exc_info()[0])
+
+    st_max_score += 2
 
     st_buy_rec = f'st_sv_buy_score:{st_buy_score}/{st_max_score}'
     st_sell_rec = f'st_sv_sell_score:{st_sell_score}/{st_max_score}'

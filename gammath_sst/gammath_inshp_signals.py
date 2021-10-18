@@ -10,13 +10,14 @@ import pandas as pd
 
 def get_inshp_signals(tsymbol, df_summ):
 
-    print('\nGetting Insider holdings percentage signals')
+    print(f'\nGetting Insider holdings percentage signals for {tsymbol}')
+
     inshp_buy_score = 0
     inshp_sell_score = 0
     inshp_max_score = 0
 
     inshp = df_summ['heldPercentInsiders'][0]
-    inshp_change = round(df_summ['heldPercentInsidersChange'][0], 5)
+    inshp_change = df_summ['heldPercentInsidersChange'][0]
     inshp_change_dir = df_summ['heldPercentInsidersChangeDir'][0]
 
     print('inshp for ', tsymbol, ': ', inshp)
@@ -45,6 +46,9 @@ def get_inshp_signals(tsymbol, df_summ):
         inshp_sell_score += 1
 
     inshp_max_score += 1
+
+    #Round it off to take less space displaying the value
+    inshp_change = round(inshp_change, 3)
 
     inshp_buy_rec = f'inshp_buy_score:{inshp_buy_score}/{inshp_max_score}'
     inshp_sell_rec = f'inshp_sell_score:{inshp_sell_score}/{inshp_max_score}'

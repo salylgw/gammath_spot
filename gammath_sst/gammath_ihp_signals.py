@@ -11,14 +11,15 @@ import pandas as pd
 #Get percentage held by institutions for tsymbol
 def get_ihp_signals(tsymbol, df_summ):
 
-    print('\nGetting Institutional holdings percentage signals')
+    print(f'\nGetting Institutional holdings percentage signals for {tsymbol}')
+
     ihp_buy_score = 0
     ihp_sell_score = 0
     ihp_max_score = 0
 
     #Get data about percentage help and change in percentage if any from summary dataframe
     ihp = df_summ['heldPercentInstitutions'][0]
-    ihp_change = round(df_summ['heldPercentInstitutionsChange'][0], 5)
+    ihp_change = df_summ['heldPercentInstitutionsChange'][0]
     ihp_change_dir = df_summ['heldPercentInstitutionsChangeDir'][0]
 
     print('ihp for ', tsymbol, ': ', ihp)
@@ -53,6 +54,9 @@ def get_ihp_signals(tsymbol, df_summ):
         ihp_sell_score += 1
 
     ihp_max_score += 1
+
+    #Round it off to take less space when displaying
+    ihp_change = round(ihp_change, 3)
 
     ihp_buy_rec = f'ihp_buy_score:{ihp_buy_score}/{ihp_max_score}'
     ihp_sell_rec = f'ihp_sell_score:{ihp_sell_score}/{ihp_max_score}'

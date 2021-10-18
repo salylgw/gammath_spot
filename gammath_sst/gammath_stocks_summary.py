@@ -59,15 +59,15 @@ def get_ticker_summary(tsymbol, ticker, path):
             stock_summary = pd.read_csv(path / f'{tsymbol}_summary.csv')
 
             #Get pct change info from the existing file
-            heldPercentInstitutionsChange = round(stock_summary['heldPercentInstitutionsChange'][0], 5)
+            heldPercentInstitutionsChange = stock_summary['heldPercentInstitutionsChange'][0]
             print(f'\nFrom file: heldPercentInstitutionsChange is {heldPercentInstitutionsChange} for {tsymbol}.')
-            heldPercentInsidersChange = round(stock_summary['heldPercentInsidersChange'][0], 5)
+            heldPercentInsidersChange = stock_summary['heldPercentInsidersChange'][0]
             print(f'\nFrom file: heldPercentInsidersChange is {heldPercentInsidersChange} for {tsymbol}.')
 
             #Get current values info from the existing file
-            heldPercentInstitutions = round(stock_summary['heldPercentInstitutions'][0], 5)
+            heldPercentInstitutions = stock_summary['heldPercentInstitutions'][0]
             print(f'\nFrom file: heldPercentInstitutions is {heldPercentInstitutions} for {tsymbol}.')
-            heldPercentInsiders = round(stock_summary['heldPercentInsiders'][0], 5)
+            heldPercentInsiders = stock_summary['heldPercentInsiders'][0]
             print(f'\nFrom file: heldPercentInsiders is {heldPercentInsiders} for {tsymbol}.')
     else:
         dont_need_fetch = False
@@ -100,6 +100,7 @@ def get_ticker_summary(tsymbol, ticker, path):
     #state
     #country
     #regularMarketPrice
+    #marketCap
 
     try:
         trailingPE = stock_summary['trailingPE']
@@ -165,14 +166,21 @@ def get_ticker_summary(tsymbol, ticker, path):
         print('\nError while getting pegRatio info for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
-        new_heldPercentInstitutions = round(stock_summary['heldPercentInstitutions'], 5)
-        #Compute pct change for institutional holdings
-        new_heldPercentInstitutionsChange = round((new_heldPercentInstitutions - heldPercentInstitutions), 5)
+        if not dont_need_fetch:
+            new_heldPercentInstitutions = stock_summary['heldPercentInstitutions']
+
+            #Compute pct change for institutional holdings
+            new_heldPercentInstitutionsChange = (new_heldPercentInstitutions - heldPercentInstitutions)
+        else:
+            new_heldPercentInstitutions = 0
+            new_heldPercentInstitutionsChange = 0
 
         print(f'\nInst holdings pct change for {tsymbol}: {new_heldPercentInstitutionsChange}. Was: {heldPercentInstitutionsChange}')
 
+        #Adding 0 or what was in previous file
         new_heldPercentInstitutionsChange += heldPercentInstitutionsChange
-        new_heldPercentInstitutionsChange = round(new_heldPercentInstitutionsChange, 5)
+        new_heldPercentInstitutionsChange = new_heldPercentInstitutionsChange
+
         if (new_heldPercentInstitutionsChange > heldPercentInstitutionsChange):
             heldPercentInstitutionsChangeDir = 'up'
         elif (new_heldPercentInstitutionsChange < heldPercentInstitutionsChange):
@@ -185,14 +193,20 @@ def get_ticker_summary(tsymbol, ticker, path):
         print('\nheldPercentInstitutions not found for ', tsymbol)
         print('\nError while getting heldPercentInstitutions info for ', tsymbol, ': ', sys.exc_info()[0])
     try:
-        new_heldPercentInsiders = round(stock_summary['heldPercentInsiders'], 5)
-        #Compute pct change for insiders holdings
-        new_heldPercentInsidersChange = round((new_heldPercentInsiders - heldPercentInsiders), 5)
-        val_type = type(new_heldPercentInsidersChange)
-        print(f'\nInsiders holdings pct change for {tsymbol}: {new_heldPercentInsidersChange}. Was: {heldPercentInsidersChange}. Type:{val_type}')
+        if not dont_need_fetch:
+            new_heldPercentInsiders = stock_summary['heldPercentInsiders']
+            #Compute pct change for insiders holdings
+            new_heldPercentInsidersChange = (new_heldPercentInsiders - heldPercentInsiders)
+        else:
+            new_heldPercentInsiders = 0
+            new_heldPercentInsidersChange = 0
 
+        print(f'\nInsiders holdings pct change for {tsymbol}: {new_heldPercentInsidersChange}. Was: {heldPercentInsidersChange}.')
+
+        #Adding 0 or what was in previous file
         new_heldPercentInsidersChange += heldPercentInsidersChange
-        new_heldPercentInsidersChange = round(new_heldPercentInsidersChange, 5)
+        new_heldPercentInsidersChange = new_heldPercentInsidersChange
+
         if (new_heldPercentInsidersChange > heldPercentInsidersChange):
             heldPercentInsidersChangeDir = 'up'
         elif (new_heldPercentInsidersChange < heldPercentInsidersChange):
@@ -233,7 +247,15 @@ def get_ticker_summary(tsymbol, ticker, path):
         print('\nCurrent price not found for ', tsymbol)
         print('\nError while getting current price info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': new_heldPercentInstitutions, 'heldPercentInstitutionsChange': new_heldPercentInstitutionsChange, 'heldPercentInstitutionsChangeDir': heldPercentInstitutionsChangeDir , 'heldPercentInsiders': new_heldPercentInsiders, 'heldPercentInsidersChange': new_heldPercentInsidersChange, 'heldPercentInsidersChangeDir': heldPercentInsidersChangeDir, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price}, index=range(1))
+    try:
+        mktcap = stock_summary['marketCap']
+        print(f'\nMarket cap for {tsymbol} is {mktcap}')
+    except:
+        mktcap = 0
+        print('\nMarket Cap not found for ', tsymbol)
+        print('\nError while getting current price info for ', tsymbol, ': ', sys.exc_info()[0])
+
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': new_heldPercentInstitutions, 'heldPercentInstitutionsChange': new_heldPercentInstitutionsChange, 'heldPercentInstitutionsChangeDir': heldPercentInstitutionsChangeDir , 'heldPercentInsiders': new_heldPercentInsiders, 'heldPercentInsidersChange': new_heldPercentInsidersChange, 'heldPercentInsidersChangeDir': heldPercentInsidersChangeDir, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price, 'marketCap': mktcap}, index=range(1))
 
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
