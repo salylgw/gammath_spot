@@ -48,6 +48,7 @@ def get_inshp_signals(tsymbol, df_summ):
     inshp_max_score += 1
 
     #Round it off to take less space displaying the value
+    inshp = round(inshp, 3)
     inshp_change = round(inshp_change, 3)
 
     inshp_buy_rec = f'inshp_buy_score:{inshp_buy_score}/{inshp_max_score}'

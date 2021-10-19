@@ -196,8 +196,8 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('\nError while getting KF signals for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
-        #Least Squares line signals
-        ols_y_predictions, ols_y1_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
+        #Ordinary Least Squares line signals
+        ols_y1_predictions, ols_y3_predictions, ols_y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
     except:
         print('\nError while getting OLS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -361,7 +361,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         plot_data6 = pd.DataFrame({sym_str: [0]})
 
     try:
-        plot_data7 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions, 'OLS_1Y': ols_y1_predictions})
+        plot_data7 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions, 'OLS_1Y': ols_y1_predictions, 'OLS_3Y': ols_y3_predictions})
     except:
         print(f'\nError generating OLS DF for {sym_str}')
         plot_data7 = pd.DataFrame({sym_str: [0]})

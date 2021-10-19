@@ -56,6 +56,7 @@ def get_ihp_signals(tsymbol, df_summ):
     ihp_max_score += 1
 
     #Round it off to take less space when displaying
+    ihp = round(ihp, 3)
     ihp_change = round(ihp_change, 3)
 
     ihp_buy_rec = f'ihp_buy_score:{ihp_buy_score}/{ihp_max_score}'

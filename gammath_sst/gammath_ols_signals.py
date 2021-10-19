@@ -17,50 +17,64 @@ def get_ols_signals(tsymbol, df, path):
     ols_max_score = 0
     ols_signals = ''
 
+    #Get the price data for y-axis
     prices_len = len(df.Close)
     y_vals = np.array(df.Close)
+    y_vals_len = len(y_vals)
     x_vals = sm.add_constant([x for x in range(prices_len)])
+    x_vals_len = len(x_vals)
 
-    #OLS using statsmodels
-    #Model 5 year data
-    model = sm.OLS(y_vals, x_vals).fit()
+    #OLS using statsmodels API
 
     #Model last 1 year data
-    model_1y = sm.OLS(y_vals[len(x_vals)-252:], x_vals[len(x_vals)-252:]).fit()
+    index_1y = 252 #~252 trading days/year
+    model_1y = sm.OLS(y_vals[(y_vals_len-index_1y):], x_vals[(x_vals_len-index_1y):]).fit()
 
-    #Get yprediction to plot the 5y OLS line along with price chart
-    y_predictions = model.predict()
-    y_predictions_len = len(y_predictions)
+    #Model last 3 years data
+    index_3y = (index_1y*3)
+    model_3y = sm.OLS(y_vals[(y_vals_len-index_3y):], x_vals[(x_vals_len-index_3y):]).fit()
+
+    #Model last 5 years data
+    model = sm.OLS(y_vals, x_vals).fit()
 
     #Get yprediction to plot the 1y OLS line along with the price chart
     y1_predictions = model_1y.predict()
     y1_predictions_len = len(y1_predictions)
 
-    #pd dataframe will need all elements in same size so need to fill in nan elsewhere
+    #Get yprediction to plot the 3y OLS line along with the price chart
+    y3_predictions = model_3y.predict()
+    y3_predictions_len = len(y3_predictions)
+
+    #Get yprediction to plot the 5y OLS line along with price chart
+    y_predictions = model.predict()
+    y_predictions_len = len(y_predictions)
+
+    #pd dataframe for 1Y predictions. Will need all elements in same size so need to fill in nan elsewhere
     y1_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
 
+    #pd dataframe for 3Y predictions. Will need all elements in same size so need to fill in nan elsewhere
+    y3_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
+
     #Put the 1y predictions in right place
-    y1_series[len(y1_series)-len(y1_predictions):] = y1_predictions
+    y1_series[len(y1_series)-y1_predictions_len:] = y1_predictions
 
-    last_yp = y_predictions[y_predictions_len-1]
-    print(f'Last OLS prediction for {tsymbol} is {last_yp}')
-
-    #Get the 5y residual values
-    resid = model.resid
-    resid_len = len(resid)
-    print(f'LR OLS  5y resid len for {tsymbol} is {resid_len}')
+    #Put the 3y predictions in right place
+    y3_series[len(y3_series)-y3_predictions_len:] = y3_predictions
 
     #Get the 1y residual values
     resid_1y = model_1y.resid
     resid_1y_len = len(resid_1y)
-    print(f'LR OLS  1y resid len for {tsymbol} is {resid_1y_len}')
+    print(f'LR OLS 1y resid len for {tsymbol} is {resid_1y_len}')
 
+    #Get the 3y residual values
+    resid_3y = model_3y.resid
+    resid_3y_len = len(resid_3y)
+    print(f'LR OLS 3y resid len for {tsymbol} is {resid_3y_len}')
 
-    #Get the R2 value for determining goodness-of-fit for 5y OLS
-    fit_score = round(model.rsquared, 3)
-
-    #Log the score for debugging
-    print(f'LR OLS  model fit score for {tsymbol} is {fit_score}')
+    #Get the 5y residual values
+    resid = model.resid
+    resid_len = len(resid)
+    print(f'LR OLS 5y resid len for {tsymbol} is {resid_len}')
 
     #Get the R2 value for determining goodness-of-fit for 1y OLS
     fit_score_1y = round(model_1y.rsquared, 3)
@@ -68,28 +82,29 @@ def get_ols_signals(tsymbol, df, path):
     #Log the 1y score for debugging
     print(f'LR 1Y OLS model fit score for {tsymbol} is {fit_score_1y}')
 
-    #Slope of OLS line (just need to do y2-y1 to get the direction
-    slope_dir = (y_predictions[y_predictions_len-1] - y_predictions[0])
+    #Get the R2 value for determining goodness-of-fit for 3y OLS
+    fit_score_3y = round(model_3y.rsquared, 3)
 
-    #Slope of 1Y OLS line (just need to do y2-y1 to get the direction
+    #Log the 3y score for debugging
+    print(f'LR 3Y OLS model fit score for {tsymbol} is {fit_score_3y}')
+
+    #Get the R2 value for determining goodness-of-fit for 5y OLS
+    fit_score = round(model.rsquared, 3)
+
+    #Log the score for debugging
+    print(f'LR 5Y OLS  model fit score for {tsymbol} is {fit_score}')
+
+    #Slope of 1Y OLS line (just need to do y2-y1 to get the direction)
     slope_dir_1y = (y1_predictions[y1_predictions_len-1] - y1_predictions[0])
+    print(f'LR 1Y OLS  line slope for {tsymbol} is {slope_dir_1y}')
 
-    max_ndiff = 0
-    max_pdiff = 0
-    curr_pdiff = 0
-    curr_ndiff = 0
-    curr_diff = 0
-    max_diff = 0
-    residual = 0
-    bnp = 0
-    mnp = 0
-    tnp = 0
-    bpp = 0
-    mpp = 0
-    tpp = 0
-    bp = 0
-    mp = 0
-    tp = 0
+    #Slope of 3Y OLS line
+    slope_dir_3y = (y3_predictions[y3_predictions_len-1] - y3_predictions[0])
+    print(f'LR 3Y OLS  line slope for {tsymbol} is {slope_dir_3y}')
+
+    #Slope of OLS line
+    slope_dir_5y = (y_predictions[y_predictions_len-1] - y_predictions[0])
+    print(f'LR 5Y OLS  line slope for {tsymbol} is {slope_dir_5y}')
 
     max_1y_ndiff = 0
     max_1y_pdiff = 0
@@ -108,11 +123,39 @@ def get_ols_signals(tsymbol, df, path):
     mp_1y = 0
     tp_1y = 0
 
-    ls_ndiff_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
-    ls_ndiff_count_index = 0
+    max_3y_ndiff = 0
+    max_3y_pdiff = 0
+    curr_3y_pdiff = 0
+    curr_3y_ndiff = 0
+    curr_3y_diff = 0
+    max_3y_diff = 0
+    residual_3y = 0
+    bnp_3y = 0
+    mnp_3y = 0
+    tnp_3y = 0
+    bpp_3y = 0
+    mpp_3y = 0
+    tpp_3y = 0
+    bp_3y = 0
+    mp_3y = 0
+    tp_3y = 0
 
-    ls_pdiff_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
-    ls_pdiff_count_index = 0
+    max_ndiff = 0
+    max_pdiff = 0
+    curr_pdiff = 0
+    curr_ndiff = 0
+    curr_diff = 0
+    max_diff = 0
+    residual = 0
+    bnp = 0
+    mnp = 0
+    tnp = 0
+    bpp = 0
+    mpp = 0
+    tpp = 0
+    bp = 0
+    mp = 0
+    tp = 0
 
     ls_1y_ndiff_series = pd.Series(np.nan, pd.RangeIndex(resid_1y_len))
     ls_1y_ndiff_count_index = 0
@@ -120,6 +163,103 @@ def get_ols_signals(tsymbol, df, path):
     ls_1y_pdiff_series = pd.Series(np.nan, pd.RangeIndex(resid_1y_len))
     ls_1y_pdiff_count_index = 0
 
+    ls_3y_ndiff_series = pd.Series(np.nan, pd.RangeIndex(resid_3y_len))
+    ls_3y_ndiff_count_index = 0
+
+    ls_3y_pdiff_series = pd.Series(np.nan, pd.RangeIndex(resid_3y_len))
+    ls_3y_pdiff_count_index = 0
+
+    ls_ndiff_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
+    ls_ndiff_count_index = 0
+
+    ls_pdiff_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
+    ls_pdiff_count_index = 0
+
+    #Get info on biggest 1y diff
+    for i in range(resid_1y_len):
+        residual_1y = resid_1y[i]
+
+        if (residual_1y <= 0):
+            curr_1y_ndiff = abs(residual_1y)
+            ls_1y_ndiff_series[ls_1y_ndiff_count_index] = curr_1y_ndiff
+            ls_1y_ndiff_count_index += 1
+            if (max_1y_ndiff < curr_1y_ndiff):
+                max_1y_ndiff = curr_1y_ndiff
+        else:
+            curr_1y_pdiff = residual_1y
+            ls_1y_pdiff_series[ls_1y_pdiff_count_index] = curr_1y_pdiff
+            ls_1y_pdiff_count_index += 1
+            if (max_1y_pdiff < curr_1y_pdiff):
+                max_1y_pdiff = curr_1y_pdiff
+
+    ls_1y_ndiff_series = ls_1y_ndiff_series.dropna(how='all')
+    ls_1y_ndiff_series = ls_1y_ndiff_series.sort_values()
+
+    ls_1y_pdiff_series = ls_1y_pdiff_series.dropna(how='all')
+    ls_1y_pdiff_series = ls_1y_pdiff_series.sort_values()
+
+    #Get 1y percentile values for residuals
+    bnp_1y, mnp_1y, tnp_1y = ls_1y_ndiff_series.quantile([0.25, 0.5, 0.75])
+    print(f'\n 1Y OLS neg percentile: {bnp_1y}, {mnp_1y}, {tnp_1y}')
+
+    bpp_1y, mpp_1y, tpp_1y = ls_1y_pdiff_series.quantile([0.25, 0.5, 0.75])
+    print(f'\n 1Y OLS pos percentile: {bpp_1y}, {mpp_1y}, {tpp_1y}')
+
+    if (residual_1y <= 0):
+        curr_1y_diff = curr_1y_ndiff
+        max_1y_diff = max_1y_ndiff
+        bp_1y = bnp_1y
+        mp_1y = mnp_1y
+        tp_1y = tnp_1y
+    else:
+        curr_1y_diff = curr_1y_pdiff
+        max_1y_diff = max_1y_pdiff
+        bp_1y = bpp_1y
+        mp_1y = mpp_1y
+        tp_1y = tpp_1y
+
+    #Get info on biggest 3y diff
+    for i in range(resid_3y_len):
+        residual_3y = resid_3y[i]
+
+        if (residual_3y <= 0):
+            curr_3y_ndiff = abs(residual_3y)
+            ls_3y_ndiff_series[ls_3y_ndiff_count_index] = curr_3y_ndiff
+            ls_3y_ndiff_count_index += 1
+            if (max_3y_ndiff < curr_3y_ndiff):
+                max_3y_ndiff = curr_3y_ndiff
+        else:
+            curr_3y_pdiff = residual_3y
+            ls_3y_pdiff_series[ls_3y_pdiff_count_index] = curr_3y_pdiff
+            ls_3y_pdiff_count_index += 1
+            if (max_3y_pdiff < curr_3y_pdiff):
+                max_3y_pdiff = curr_3y_pdiff
+
+    ls_3y_ndiff_series = ls_3y_ndiff_series.dropna(how='all')
+    ls_3y_ndiff_series = ls_3y_ndiff_series.sort_values()
+
+    ls_3y_pdiff_series = ls_3y_pdiff_series.dropna(how='all')
+    ls_3y_pdiff_series = ls_3y_pdiff_series.sort_values()
+
+    #Get 3y percentile values for residuals
+    bnp_3y, mnp_3y, tnp_3y = ls_3y_ndiff_series.quantile([0.25, 0.5, 0.75])
+    print(f'\n 3Y OLS neg percentile: {bnp_3y}, {mnp_3y}, {tnp_3y}')
+
+    bpp_3y, mpp_3y, tpp_3y = ls_3y_pdiff_series.quantile([0.25, 0.5, 0.75])
+    print(f'\n 3Y OLS pos percentile: {bpp_3y}, {mpp_3y}, {tpp_3y}')
+
+    if (residual_3y <= 0):
+        curr_3y_diff = curr_3y_ndiff
+        max_3y_diff = max_3y_ndiff
+        bp_3y = bnp_3y
+        mp_3y = mnp_3y
+        tp_3y = tnp_3y
+    else:
+        curr_3y_diff = curr_3y_pdiff
+        max_3y_diff = max_3y_pdiff
+        bp_3y = bpp_3y
+        mp_3y = mpp_3y
+        tp_3y = tpp_3y
 
     #Get info on biggest 5y diff
     if ((prices_len != y_predictions_len) or (prices_len != len(resid))):
@@ -147,7 +287,6 @@ def get_ols_signals(tsymbol, df, path):
     ls_pdiff_series = ls_pdiff_series.dropna(how='all')
     ls_pdiff_series = ls_pdiff_series.sort_values()
 
-
     #Get 5y percentile values for residuals
     bnp, mnp, tnp = ls_ndiff_series.quantile([0.25, 0.5, 0.75])
     print(f'\n OLS neg percentile: {bnp}, {mnp}, {tnp}')
@@ -169,55 +308,11 @@ def get_ols_signals(tsymbol, df, path):
         tp = tpp
 
 
-    #Get info on biggest 1y diff
-    for i in range(resid_1y_len):
-        residual_1y = resid_1y[i]
-
-        if (residual_1y <= 0):
-            curr_1y_ndiff = abs(residual_1y)
-            ls_1y_ndiff_series[ls_1y_ndiff_count_index] = curr_1y_ndiff
-            ls_1y_ndiff_count_index += 1
-            if (max_1y_ndiff < curr_1y_ndiff):
-                max_1y_ndiff = curr_1y_ndiff
-        else:
-            curr_1y_pdiff = residual_1y
-            ls_1y_pdiff_series[ls_1y_pdiff_count_index] = curr_1y_pdiff
-            ls_1y_pdiff_count_index += 1
-            if (max_1y_pdiff < curr_1y_pdiff):
-                max_1y_pdiff = curr_1y_pdiff
-
-    ls_1y_ndiff_series = ls_1y_ndiff_series.dropna(how='all')
-    ls_1y_ndiff_series = ls_1y_ndiff_series.sort_values()
-#    ls_1y_ndiff_series.to_csv(path / f'{tsymbol}_1y_ols_ndiff.csv')
-
-    ls_1y_pdiff_series = ls_1y_pdiff_series.dropna(how='all')
-    ls_1y_pdiff_series = ls_1y_pdiff_series.sort_values()
-#    ls_1y_pdiff_series.to_csv(path / f'{tsymbol}_1y_ols_pdiff.csv')
-
-    #Get 1y percentile values for residuals
-    bnp_1y, mnp_1y, tnp_1y = ls_1y_ndiff_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n 1Y OLS neg percentile: {bnp_1y}, {mnp_1y}, {tnp_1y}')
-
-    bpp_1y, mpp_1y, tpp_1y = ls_1y_pdiff_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n 1Y OLS pos percentile: {bpp_1y}, {mpp_1y}, {tpp_1y}')
-
-    if (residual_1y <= 0):
-        curr_1y_diff = curr_1y_ndiff
-        max_1y_diff = max_1y_ndiff
-        bp_1y = bnp_1y
-        mp_1y = mnp_1y
-        tp_1y = tnp_1y
-    else:
-        curr_1y_diff = curr_1y_pdiff
-        max_1y_diff = max_1y_pdiff
-        bp_1y = bpp_1y
-        mp_1y = mpp_1y
-        tp_1y = tpp_1y
-
-
     #Best score is 1; Using 0.9-1.0 as good fit (5y or 1y)
-    fits_5y = ((fit_score <= 1) and (fit_score >= 0.9))
     fits_1y = ((fit_score_1y <= 1) and (fit_score_1y >= 0.9))
+    fits_3y = ((fit_score_3y <= 1) and (fit_score_3y >= 0.9))
+    fits_5y = ((fit_score <= 1) and (fit_score >= 0.9))
+
 
     # Only check the fit and compute additional scores if the 1Y OLS line slope is +ve
 #    if (slope_dir > 0):
@@ -228,7 +323,7 @@ def get_ols_signals(tsymbol, df, path):
         ols_buy_score += 5
         ols_sell_score -= 5
 
-        if (fits_5y or fits_1y):
+        if (fits_1y or fits_3y or fits_5y):
             if (fits_5y):
                 if (residual <= 0):
                     #Below OLS line
@@ -257,6 +352,36 @@ def get_ols_signals(tsymbol, df, path):
                         ols_sell_score += 1
 
                     if (curr_diff > tp):
+                        ols_buy_score -= 1
+                        ols_sell_score += 1
+            elif(fits_3y):
+                if (residual_3y <= 0):
+                    #Below OLS line
+                    if (curr_3y_diff > bp_3y):
+                        ols_buy_score += 1
+                        ols_sell_score -= 1
+                    else:
+                        ols_buy_score -= 3
+                        ols_sell_score += 3
+
+                    if (curr_3y_diff > mp_3y):
+                        ols_buy_score += 1
+                        ols_sell_score -= 1
+
+                    if (curr_3y_diff > tp_3y):
+                        ols_buy_score += 1
+                        ols_sell_score -= 1
+                else:
+                    #Above OLS line
+                    if (curr_3y_diff > bp_3y):
+                        ols_buy_score -= 1
+                        ols_sell_score += 1
+
+                    if (curr_3y_diff > mp_3y):
+                        ols_buy_score -= 1
+                        ols_sell_score += 1
+
+                    if (curr_3y_diff > tp_3y):
                         ols_buy_score -= 1
                         ols_sell_score += 1
             elif (fits_1y):
@@ -324,9 +449,11 @@ def get_ols_signals(tsymbol, df, path):
     ols_buy_rec = f'ols_buy_rec:{ols_buy_score}/{ols_max_score}'
     ols_sell_rec = f'ols_sell_rec:{ols_sell_score}/{ols_max_score}'
 
-    if (fits_1y):
-        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},ols_fit_score:{fit_score},cdiff_1y:{curr_1y_diff},bp_1y:{bp_1y},mp_1y:{mp_1y},tp_1y:{tp_1y},max_1y_diff:{max_1y_diff}'
+    if (fits_5y):
+        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},ols_3y_fit_score:{fit_score_3y},ols_fit_score:{fit_score},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
+    elif (fits_3y):
+        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},ols_3y_fit_score:{fit_score_3y},ols_fit_score:{fit_score},cdiff_3y:{curr_3y_diff},bp_3y:{bp_3y},mp_3y:{mp_3y},tp_3y:{tp_3y},max_3y_diff:{max_3y_diff}'
     else:
-        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y}, ols_fit_score:{fit_score},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
+        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},ols_3y_fit_score:{fit_score_3y},ols_fit_score:{fit_score},cdiff_1y:{curr_1y_diff},bp_1y:{bp_1y},mp_1y:{mp_1y},tp_1y:{tp_1y},max_1y_diff:{max_1y_diff}'
 
-    return y_predictions, y1_series, ols_buy_score, ols_sell_score, ols_max_score, ols_signals
+    return y1_series, y3_series, y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals
