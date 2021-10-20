@@ -26,6 +26,7 @@ import gammath_peg_signals as gpeg
 import gammath_beta_signals as gbeta
 import gammath_ihp_signals as gihp
 import gammath_inshp_signals as ginshp
+import gammath_mktcap_signals as gmktcap
 import gammath_qbs_signals as gqbs
 import gammath_pbr_signals as gpbrs
 import gammath_reco_signals as greco
@@ -70,6 +71,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     beta_buy_score = 0
     ihp_buy_score = 0
     inshp_buy_score = 0
+    mktcap_buy_score = 0
     qbs_buy_score = 0
     pbr_buy_score = 0
     reco_buy_score = 0
@@ -90,6 +92,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     beta_sell_score = 0
     ihp_sell_score = 0
     inshp_sell_score = 0
+    mktcap_sell_score = 0
     qbs_sell_score = 0
     pbr_sell_score = 0
     reco_sell_score = 0
@@ -109,6 +112,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     beta_max_score = 0
     ihp_max_score = 0
     inshp_max_score = 0
+    mktcap_max_score = 0
     qbs_max_score = 0
     pbr_max_score = 0
     reco_max_score = 0
@@ -129,6 +133,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     beta_signals = ''
     ihp_signals = ''
     inshp_signals = ''
+    mktcap_signals = ''
     qbs_signals = ''
     pbr_signals = ''
     reco_signals = ''
@@ -245,6 +250,12 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('\nError while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
+        #Market cap signals
+        mktcap_buy_score, mktcap_sell_score, mktcap_max_score, mktcap_signals = gmktcap.get_mktcap_signals(tsymbol, df_summ)
+    except:
+        print('\nError while getting mktcap signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
         #Quarterly Balance sheet signals
         qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
     except:
@@ -274,9 +285,9 @@ def get_ticker_hist_n_analysis(tsymbol):
     except:
         print('\nError while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
-    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
-    overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score +  qbs_max_score + pbr_max_score + reco_max_score + st_max_score
+    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + mktcap_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
+    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + mktcap_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
+    overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score + mktcap_max_score + qbs_max_score + pbr_max_score + reco_max_score + st_max_score
 
     overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
     overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'
@@ -296,7 +307,7 @@ def get_ticker_hist_n_analysis(tsymbol):
     except:
         print('\nError while opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
     else:
-        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}\n{events_info}')
+        f.write(f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{mktcap_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{overall_buy_rec}\n{overall_sell_rec}\n{final_buy_score_rec}\n{final_sell_score_rec}\n{events_info}')
         f.close()
 
         file_exists = (path / f'{tsymbol}_charts.png').exists()
