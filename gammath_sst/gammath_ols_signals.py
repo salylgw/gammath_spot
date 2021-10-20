@@ -315,13 +315,12 @@ def get_ols_signals(tsymbol, df, path):
 
 
     # Only check the fit and compute additional scores if the 1Y OLS line slope is +ve
-#    if (slope_dir > 0):
     if (slope_dir_1y > 0):
 
         print(f'\n1Y OLS line slope is +ve for {tsymbol}')
 
-        ols_buy_score += 5
-        ols_sell_score -= 5
+        ols_buy_score += 4
+        ols_sell_score -= 4
 
         if (fits_1y or fits_3y or fits_5y):
             if (fits_5y):
@@ -330,90 +329,87 @@ def get_ols_signals(tsymbol, df, path):
                     if (curr_diff > bp):
                         ols_buy_score += 1
                         ols_sell_score -= 1
-                    else:
-                        ols_buy_score -= 3
-                        ols_sell_score += 3
 
-                    if (curr_diff > mp):
-                        ols_buy_score += 1
-                        ols_sell_score -= 1
+                        if (curr_diff > mp):
+                            ols_buy_score += 2
+                            ols_sell_score -= 2
 
-                    if (curr_diff > tp):
-                        ols_buy_score += 1
-                        ols_sell_score -= 1
+                            if (curr_diff > tp):
+                                ols_buy_score += 3
+                                ols_sell_score -= 3
+#                    else: #Diff isn't much; keep buy/sell scores as is
                 else:
                     #Above OLS line
                     if (curr_diff > bp):
                         ols_buy_score -= 1
                         ols_sell_score += 1
 
-                    if (curr_diff > mp):
-                        ols_buy_score -= 1
-                        ols_sell_score += 1
+                        if (curr_diff > mp):
+                            ols_buy_score -= 2
+                            ols_sell_score += 2
 
-                    if (curr_diff > tp):
-                        ols_buy_score -= 1
-                        ols_sell_score += 1
-            elif(fits_3y):
+                            if (curr_diff > tp):
+                                ols_buy_score -= 3
+                                ols_sell_score += 3
+#                    else: #Diff isn't much; keep buy/sell scores as is
+            elif (fits_3y):
                 if (residual_3y <= 0):
                     #Below OLS line
                     if (curr_3y_diff > bp_3y):
                         ols_buy_score += 1
                         ols_sell_score -= 1
-                    else:
-                        ols_buy_score -= 3
-                        ols_sell_score += 3
 
-                    if (curr_3y_diff > mp_3y):
-                        ols_buy_score += 1
-                        ols_sell_score -= 1
+                        if (curr_3y_diff > mp_3y):
+                            ols_buy_score += 2
+                            ols_sell_score -= 2
 
-                    if (curr_3y_diff > tp_3y):
-                        ols_buy_score += 1
-                        ols_sell_score -= 1
+                            if (curr_3y_diff > tp_3y):
+                                ols_buy_score += 3
+                                ols_sell_score -= 3
+#                    else: #Diff isn't much; keep buy/sell scores as is
                 else:
                     #Above OLS line
                     if (curr_3y_diff > bp_3y):
                         ols_buy_score -= 1
                         ols_sell_score += 1
 
-                    if (curr_3y_diff > mp_3y):
-                        ols_buy_score -= 1
-                        ols_sell_score += 1
+                        if (curr_3y_diff > mp_3y):
+                            ols_buy_score -= 2
+                            ols_sell_score += 2
 
-                    if (curr_3y_diff > tp_3y):
-                        ols_buy_score -= 1
-                        ols_sell_score += 1
+                            if (curr_3y_diff > tp_3y):
+                                ols_buy_score -= 3
+                                ols_sell_score += 3
+#                    else: #Diff isn't much; keep buy/sell scores as is
             elif (fits_1y):
                 if (residual_1y <= 0):
                     #Below OLS line
                     if (curr_1y_diff > bp_1y):
                         ols_buy_score += 1
                         ols_sell_score -= 1
-                    else:
-                        ols_buy_score -= 3
-                        ols_sell_score += 3
 
-                    if (curr_1y_diff > mp_1y):
-                        ols_buy_score += 1
-                        ols_sell_score -= 1
+                        if (curr_1y_diff > mp_1y):
+                            ols_buy_score += 2
+                            ols_sell_score -= 2
 
-                    if (curr_1y_diff > tp_1y):
-                        ols_buy_score += 1
-                        ols_sell_score -= 1
+                            if (curr_1y_diff > tp_1y):
+                                ols_buy_score += 3
+                                ols_sell_score -= 3
+#                    else: #Diff isn't much; keep buy/sell scores as is
                 else:
                     #Above OLS line
                     if (curr_1y_diff > bp_1y):
                         ols_buy_score -= 1
                         ols_sell_score += 1
 
-                    if (curr_1y_diff > mp_1y):
-                        ols_buy_score -= 1
-                        ols_sell_score += 1
+                        if (curr_1y_diff > mp_1y):
+                            ols_buy_score -= 2
+                            ols_sell_score += 2
 
-                    if (curr_1y_diff > tp_1y):
-                        ols_buy_score -= 1
-                        ols_sell_score += 1
+                            if (curr_1y_diff > tp_1y):
+                                ols_buy_score -= 3
+                                ols_sell_score += 3
+#                    else: #Diff isn't much; keep buy/sell scores as is
         else:
             #Less weight for lesser score
             if (residual_1y <= 0):
@@ -429,10 +425,10 @@ def get_ols_signals(tsymbol, df, path):
     else:
 
         print(f'\nOLS line slope is -ve for {tsymbol}')
-        ols_buy_score -= 5
-        ols_sell_score += 5
+        ols_buy_score -= 10
+        ols_sell_score += 10
 
-    ols_max_score += 8
+    ols_max_score += 10
 
     curr_diff = round(curr_diff, 3)
     max_diff = round(max_diff, 3)

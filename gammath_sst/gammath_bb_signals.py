@@ -39,8 +39,8 @@ def get_bollinger_bands_signals(tsymbol, df, path):
     if (lp < last_val_mb):
 
         bb_avg = 'below average'
-        bb_buy_score += 3
-        bb_sell_score -= 3
+        bb_buy_score += 4
+        bb_sell_score -= 4
 
         if ((last_val_mb - lp) < (abs(lp - last_val_lb))):
             bb_vicinity = 'near middle band'
@@ -49,14 +49,14 @@ def get_bollinger_bands_signals(tsymbol, df, path):
         else:
             #Higher buy weights when near lower band
             bb_vicinity = 'near lower band'
-            bb_buy_score += 3
-            bb_sell_score -= 3
+            bb_buy_score += 6
+            bb_sell_score -= 6
 
     elif (lp > last_val_mb):
 
         bb_avg = 'above average'
-        bb_sell_score += 3
-        bb_buy_score -= 3
+        bb_sell_score += 4
+        bb_buy_score -= 4
 
         if ((lp - last_val_mb) < (abs(last_val_ub - lp))):
             bb_vicinity = 'near middle band'
@@ -65,15 +65,15 @@ def get_bollinger_bands_signals(tsymbol, df, path):
         else:
             #Higher sell weights when near upper band
             bb_vicinity = 'near upper band'
-            bb_sell_score += 3
-            bb_buy_score -= 3
+            bb_sell_score += 6
+            bb_buy_score -= 6
     else:
         bb_avg = 'average'
         bb_vicinity = 'at middle band'
         bb_buy_score += 2
         bb_sell_score -= 2
 
-    bb_max_score += 6
+    bb_max_score += 10
 
     bb_buy_rec = f'bb_buy_score:{bb_buy_score}/{bb_max_score}'
     bb_sell_rec = f'bb_sell_score:{bb_sell_score}/{bb_max_score}'

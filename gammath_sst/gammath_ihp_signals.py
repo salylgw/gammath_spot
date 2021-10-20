@@ -17,10 +17,8 @@ def get_ihp_signals(tsymbol, df_summ):
     ihp_sell_score = 0
     ihp_max_score = 0
 
-    #Get data about percentage help and change in percentage if any from summary dataframe
+    #Get data about percentage held from summary dataframe
     ihp = df_summ['heldPercentInstitutions'][0]
-    ihp_change = df_summ['heldPercentInstitutionsChange'][0]
-    ihp_change_dir = df_summ['heldPercentInstitutionsChangeDir'][0]
 
     print('ihp for ', tsymbol, ': ', ihp)
 
@@ -37,31 +35,14 @@ def get_ihp_signals(tsymbol, df_summ):
 
     ihp_max_score += 2
 
-    if (ihp_change_dir == 'up'):
-        ihp_buy_score += 1
-        ihp_sell_score -= 1
-    elif (ihp_change_dir == 'down'):
-        ihp_buy_score -= 1
-        ihp_sell_score += 1
-
-    ihp_max_score += 1
-
-    if (ihp_change > 0):
-        ihp_buy_score += 1
-        ihp_sell_score -= 1
-    elif (ihp_change < 0):
-        ihp_buy_score -= 1
-        ihp_sell_score += 1
-
-    ihp_max_score += 1
-
     #Round it off to take less space when displaying
     ihp = round(ihp, 3)
-    ihp_change = round(ihp_change, 3)
+
+    #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 
     ihp_buy_rec = f'ihp_buy_score:{ihp_buy_score}/{ihp_max_score}'
     ihp_sell_rec = f'ihp_sell_score:{ihp_sell_score}/{ihp_max_score}'
 
-    ihp_signals = f'IHP:{ihp},{ihp_buy_rec},{ihp_sell_rec},ihp_change:{ihp_change},dir:{ihp_change_dir}'
+    ihp_signals = f'IHP:{ihp},{ihp_buy_rec},{ihp_sell_rec}'
 
     return ihp_buy_score, ihp_sell_score, ihp_max_score, ihp_signals

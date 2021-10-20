@@ -161,15 +161,7 @@ def get_macd_signals(tsymbol, df, path):
     macd_neg_days_count_descr.to_csv(path / f'{tsymbol}_macd_neg_days_count_summary.csv')
     macd_pos_days_count_descr.to_csv(path / f'{tsymbol}_macd_pos_days_count_summary.csv')
 
-    #Buy/Sell signal moment is only a small part of the equation
-    if (buy_sig == 1):
-        macd_buy_score += 1
-        macd_sell_score -= 1
-    elif (sell_sig == 1):
-        macd_sell_score += 1
-        macd_buy_score -= 1
-
-    macd_max_score += 1
+    #Buy/Sell signal moment is only a small part of the equation; No scoring on the start of the indication
 
     #Check which percentile quarter do current -ve diff fall
     if (curr_macd_ndiff > 0):
@@ -177,13 +169,13 @@ def get_macd_signals(tsymbol, df, path):
         if (curr_macd_ndiff >= bnp_diff):
             macd_buy_score += 1
         else:
-            macd_buy_score -= 3
+            macd_buy_score -= 4
 
         if (curr_macd_ndiff >= mnp_diff):
             macd_buy_score += 1
 
         if (curr_macd_ndiff >= tnp_diff):
-            macd_buy_score += 1
+            macd_buy_score += 2
 
     #Check which percentile quarter do current +ve diff fall
     if (curr_macd_pdiff > 0):
@@ -191,15 +183,15 @@ def get_macd_signals(tsymbol, df, path):
         if (curr_macd_pdiff >= bpp_diff):
             macd_sell_score += 1
         else:
-            macd_sell_score -= 3
+            macd_sell_score -= 4
 
         if (curr_macd_pdiff >= mpp_diff):
             macd_sell_score += 1
 
         if (curr_macd_pdiff >= tpp_diff):
-            macd_sell_score += 1
+            macd_sell_score += 2
 
-    macd_max_score += 3
+    macd_max_score += 4
 
     #Check which percentile quarter do current -ve trend days fall
     if (curr_days_in_negative > 0):
@@ -207,13 +199,13 @@ def get_macd_signals(tsymbol, df, path):
         if (curr_days_in_negative >= bnp):
             macd_buy_score += 1
         else:
-            macd_buy_score -= 3
+            macd_buy_score -= 4
 
         if (curr_days_in_negative >= mnp):
             macd_buy_score += 1
 
         if (curr_days_in_negative >= tnp):
-            macd_buy_score += 1
+            macd_buy_score += 2
 
     #Check which percentile quarter do current -ve trend days fall
     if (curr_days_in_positive > 0):
@@ -221,15 +213,15 @@ def get_macd_signals(tsymbol, df, path):
         if (curr_days_in_positive >= bpp):
             macd_sell_score += 1
         else:
-            macd_sell_score -= 3
+            macd_sell_score -= 4
 
         if (curr_days_in_positive >= mpp):
             macd_sell_score += 1
 
         if (curr_days_in_positive >= tpp):
-            macd_sell_score += 1
+            macd_sell_score += 2
 
-    macd_max_score += 3
+    macd_max_score += 4
 
     #Get current stock price
     current_price = df['Close'][len(df)-1]
@@ -243,20 +235,20 @@ def get_macd_signals(tsymbol, df, path):
     sell_sig_price_str = f'sig_price:%5.3f' % df['Close'][last_sell_signal_index]
 
     #If current price is less than the price when buy signal was generated then it is a bargain
-    if (buy_sig_price > current_price):
-        macd_buy_score += 2
-        macd_sell_score -= 2
+    if (macd_trend == 'positive'):
+        if (buy_sig_price > current_price):
+            macd_buy_score += 2
+            macd_sell_score -= 2
+        else:
+            macd_buy_score -= 2
+            macd_sell_score += 2
     else:
-        macd_buy_score -= 2
-        macd_sell_score += 2
-
-    #If current price is greater than the price when sell signal was generated then it is expensive
-    if (sell_sig_price < current_price):
-        macd_sell_score += 2
-        macd_buy_score -= 2
-    else:
-        macd_sell_score -= 2
-        macd_buy_score += 2
+        if (sell_sig_price < current_price):
+            macd_sell_score += 2
+            macd_buy_score -= 2
+        else:
+            macd_sell_score -= 2
+            macd_buy_score += 2
 
     macd_max_score += 2
 

@@ -155,16 +155,16 @@ def get_kf_state_means(tsymbol, df):
         kf_max_score += 1
 
         if (curr_diff > nd_mp):
-            kf_buy_score += 1
-            kf_sell_score -= 1
+            kf_buy_score += 2
+            kf_sell_score -= 2
 
-        kf_max_score += 1
+        kf_max_score += 2
 
         if (curr_diff > nd_tp):
-            kf_buy_score += 1
-            kf_sell_score -= 1
+            kf_buy_score += 3
+            kf_sell_score -= 3
 
-        kf_max_score += 1
+        kf_max_score += 3
 
     else:
         print('\nUsing positive diff from KF means')
@@ -178,16 +178,16 @@ def get_kf_state_means(tsymbol, df):
         kf_max_score += 1
 
         if (curr_diff > pd_mp):
-            kf_sell_score += 1
-            kf_buy_score -=1
+            kf_sell_score += 2
+            kf_buy_score -= 2
 
-        kf_max_score += 1
+        kf_max_score += 2
 
         if (curr_diff > pd_tp):
-            kf_sell_score += 1
-            kf_buy_score -= 1
+            kf_sell_score += 3
+            kf_buy_score -= 3
 
-        kf_max_score += 1
+        kf_max_score += 3
 
     if (curr_below_mean_count > kf_max_below_mean_count):
         kf_max_below_mean_count = curr_below_mean_count

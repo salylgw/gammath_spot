@@ -36,18 +36,18 @@ def get_price_signals(tsymbol, df, df_summ):
     #If price is falling (view this as "falling knife") then lower buy score and increase sell score
     if ((lp < lpm1) and (lpm1 < lpm2)):
         price_dir = 'falling'
-        price_sell_score += 3
-        price_buy_score -= 3
+        price_sell_score += 2
+        price_buy_score -= 2
     elif ((lp > lpm1) and (lpm1 > lpm2)):
         price_dir = 'rising'
-        price_buy_score += 3
-        price_sell_score -= 3
+        price_buy_score += 2
+        price_sell_score -= 2
     else:
         price_dir = 'direction_unclear'
         price_buy_score = 1
         price_sell_score = 1
 
-    price_max_score += 3
+    price_max_score += 2
 
     #Get consecutive falling and rising days count
     last_falling_days_count = 0
@@ -117,44 +117,64 @@ def get_price_signals(tsymbol, df, df_summ):
 
     if (last_falling_days_count > fp_bp):
         price_buy_score += 1
-        price_sell_score -= 1
+
+        if (last_falling_days_count > fp_mp):
+            price_buy_score += 1
+
+        if (last_falling_days_count > fp_tp):
+            price_buy_score += 1
     else:
-        price_buy_score -= 1
-        price_sell_score += 1
+        price_buy_score -= 3
+        price_sell_score += 3
 
     if (last_rising_days_count > rp_bp):
         price_sell_score += 1
-        price_buy_score -= 1
+
+        if (last_rising_days_count > rp_mp):
+            price_sell_score += 1
+
+        if (last_rising_days_count > rp_tp):
+            price_sell_score += 1
     else:
-        price_buy_score += 1
-        price_sell_score -= 1
+        price_buy_score += 3
+        price_sell_score -= 3
+
+    price_max_score += 3
+
+    #Checkout price wrt 50-day average, 200-day average and 52-week low
+
+    #50-day average
+    fiftyDayAverage = df_summ['fiftyDayAverage'][0]
+
+    if (fiftyDayAverage > 0):
+        if (lp <= fiftyDayAverage):
+            price_buy_score += 1
+            price_sell_score -= 1
+        else:
+            price_buy_score -= 1
+            price_sell_score += 1
 
     price_max_score += 1
 
-    if (last_falling_days_count > fp_mp):
-        price_buy_score += 1
+    #200-day average
+    twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
 
-    if (last_rising_days_count > rp_mp):
-        price_sell_score += 1
+    if (twoHundredDayAverage > 0):
+        if (lp <= twoHundredDayAverage):
+            price_buy_score += 1
+            price_sell_score -= 1
 
     price_max_score += 1
 
-    if (last_falling_days_count > fp_tp):
-        price_buy_score += 2
-
-    if (last_rising_days_count > rp_tp):
-        price_sell_score += 2
-
-    price_max_score += 2
-
+    #52-week high/low
     yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
 
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):
 
             #New 52-week low
-            price_buy_score += 3
-            price_sell_score -= 3
+            price_buy_score += 1
+            price_sell_score -= 1
             nftwl = 'new fiftyTwoWeekLow'
         else:
             pct_val = yearly_lowest_val*100/lp
@@ -173,8 +193,8 @@ def get_price_signals(tsymbol, df, df_summ):
     if (yearly_highest_val > 0):
         if (lp >= yearly_highest_val):
             #Isolated case to bring it to the front for checkout
-            price_sell_score += 3
-            price_buy_score -= 3
+            price_sell_score += 1
+            price_buy_score -= 1
         else:
             pct_val = lp*100/yearly_highest_val
 
@@ -184,34 +204,11 @@ def get_price_signals(tsymbol, df, df_summ):
             else:
                 price_buy_score += 1
                 price_sell_score -= 1
-
-            price_max_score += 1
     else:
         print('\n52-week high value not found')
 
     #Max from 52-week high/low price comparison
-    price_max_score += 3
-
-    fiftyDayAverage = df_summ['fiftyDayAverage'][0]
-
-    if (fiftyDayAverage > 0):
-        if (lp <= fiftyDayAverage):
-            price_buy_score += 1
-            price_sell_score -= 1
-        else:
-            price_buy_score -= 1
-            price_sell_score += 1
-
     price_max_score += 1
-
-    twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
-
-    if (twoHundredDayAverage > 0):
-        if (lp <= twoHundredDayAverage):
-            price_buy_score += 2
-            price_sell_score -= 2
-
-    price_max_score += 2
 
     #Get percentiles for 52-week prices
     one_year_prices = df['Close'][(prices_len-AVG_TRADING_DAYS_PER_YEAR):]
@@ -225,11 +222,11 @@ def get_price_signals(tsymbol, df, df_summ):
     #If price is in higher percentile the higher sell score
     if ((lp <= bp) or (lp >= tp)):
         if (lp <= bp):
-            price_buy_score += 3
-            price_sell_score -= 3
+            price_buy_score += 2
+            price_sell_score -= 2
         elif (lp >= tp):
-            price_buy_score -= 3
-            price_sell_score += 3
+            price_buy_score -= 2
+            price_sell_score += 2
     else:
         if ((lp > bp) and (lp < mp)):
             price_buy_score += 1
@@ -238,7 +235,7 @@ def get_price_signals(tsymbol, df, df_summ):
         if ((lp > mp) and (lp < tp)):
             price_buy_score += 1
 
-    price_max_score += 3
+    price_max_score += 2
 
     price_buy_rec = f'price_buy_score:{price_buy_score}/{price_max_score}'
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'

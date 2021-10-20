@@ -23,20 +23,18 @@ def get_pbr_signals(tsymbol, df_summ):
 
                 print('PBR ratio for ', tsymbol, ': ', pbr)
 
-                if (pbr < 40):
+                #Lower PBR is better; Not giving more weight as we have analyst reco and other factors accouting for "selection" criteria
+                if (pbr < 20):
                     pbr_buy_score += 1
-                    if (pbr < 15):
-                        pbr_buy_score += 1
                 else:
-                    pbr_buy_score -= 2
-                    pbr_sell_score += 2
-
-                pbr_max_score += 2
+                    pbr_sell_score += 1
         else:
             print(f'\nSummary DF for {tsymbol} is empty. PBR not found')
     except:
         pbr = 0
         print(f'\nPBR value not found for {tsymbol}')
+
+    pbr_max_score += 1
 
     pbr_buy_rec = f'pbr_buy_score:{pbr_buy_score}/{pbr_max_score}'
     pbr_sell_rec = f'pbr_sell_score:{pbr_sell_score}/{pbr_max_score}'

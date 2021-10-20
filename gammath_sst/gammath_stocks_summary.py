@@ -22,14 +22,6 @@ def get_ticker_summary(tsymbol, ticker, path):
     #Get stock info summary from the internet
     print(f'\nGetting {tsymbol} ticker summary.')
 
-    new_heldPercentInstitutions = 0
-    heldPercentInstitutionsChange = 0
-    new_heldPercentInstitutionsChange = 0
-    heldPercentInsidersChange = 0
-    new_heldPercentInsiders = 0
-    new_heldPercentInsidersChange = 0
-    heldPercentInstitutionsChangeDir = ''
-    heldPercentInsidersChangeDir = ''
     heldPercentInstitutions = 0
     heldPercentInsiders = 0
 
@@ -54,21 +46,6 @@ def get_ticker_summary(tsymbol, ticker, path):
         else:
             print('Date mismatch. Need to fetch new file')
             dont_need_fetch = False
-
-            #Get the values for institution and insider holding pct and pct_change from previous file
-            stock_summary = pd.read_csv(path / f'{tsymbol}_summary.csv')
-
-            #Get pct change info from the existing file
-            heldPercentInstitutionsChange = stock_summary['heldPercentInstitutionsChange'][0]
-            print(f'\nFrom file: heldPercentInstitutionsChange is {heldPercentInstitutionsChange} for {tsymbol}.')
-            heldPercentInsidersChange = stock_summary['heldPercentInsidersChange'][0]
-            print(f'\nFrom file: heldPercentInsidersChange is {heldPercentInsidersChange} for {tsymbol}.')
-
-            #Get current values info from the existing file
-            heldPercentInstitutions = stock_summary['heldPercentInstitutions'][0]
-            print(f'\nFrom file: heldPercentInstitutions is {heldPercentInstitutions} for {tsymbol}.')
-            heldPercentInsiders = stock_summary['heldPercentInsiders'][0]
-            print(f'\nFrom file: heldPercentInsiders is {heldPercentInsiders} for {tsymbol}.')
     else:
         dont_need_fetch = False
 
@@ -167,54 +144,21 @@ def get_ticker_summary(tsymbol, ticker, path):
 
     try:
         if not dont_need_fetch:
-            new_heldPercentInstitutions = stock_summary['heldPercentInstitutions']
-
-            #Compute pct change for institutional holdings
-            new_heldPercentInstitutionsChange = (new_heldPercentInstitutions - heldPercentInstitutions)
+            heldPercentInstitutions = stock_summary['heldPercentInstitutions']
         else:
-            new_heldPercentInstitutions = 0
-            new_heldPercentInstitutionsChange = 0
-
-        print(f'\nInst holdings pct change for {tsymbol}: {new_heldPercentInstitutionsChange}. Was: {heldPercentInstitutionsChange}')
-
-        #Adding 0 or what was in previous file
-        new_heldPercentInstitutionsChange += heldPercentInstitutionsChange
-        new_heldPercentInstitutionsChange = new_heldPercentInstitutionsChange
-
-        if (new_heldPercentInstitutionsChange > heldPercentInstitutionsChange):
-            heldPercentInstitutionsChangeDir = 'up'
-        elif (new_heldPercentInstitutionsChange < heldPercentInstitutionsChange):
-            heldPercentInstitutionsChangeDir = 'down'
-        else:
-            heldPercentInstitutionsChangeDir = 'flat'
+            heldPercentInstitutions = 0
     except:
-        new_heldPercentInstitutions = 0
+        heldPercentInstitutions = 0
         stock_summary['heldPercentInstitutions'] = 0
         print('\nheldPercentInstitutions not found for ', tsymbol)
         print('\nError while getting heldPercentInstitutions info for ', tsymbol, ': ', sys.exc_info()[0])
     try:
         if not dont_need_fetch:
-            new_heldPercentInsiders = stock_summary['heldPercentInsiders']
-            #Compute pct change for insiders holdings
-            new_heldPercentInsidersChange = (new_heldPercentInsiders - heldPercentInsiders)
+            heldPercentInsiders = stock_summary['heldPercentInsiders']
         else:
-            new_heldPercentInsiders = 0
-            new_heldPercentInsidersChange = 0
-
-        print(f'\nInsiders holdings pct change for {tsymbol}: {new_heldPercentInsidersChange}. Was: {heldPercentInsidersChange}.')
-
-        #Adding 0 or what was in previous file
-        new_heldPercentInsidersChange += heldPercentInsidersChange
-        new_heldPercentInsidersChange = new_heldPercentInsidersChange
-
-        if (new_heldPercentInsidersChange > heldPercentInsidersChange):
-            heldPercentInsidersChangeDir = 'up'
-        elif (new_heldPercentInsidersChange < heldPercentInsidersChange):
-            heldPercentInsidersChangeDir = 'down'
-        else:
-            heldPercentInsidersChangeDir = 'flat'
+            heldPercentInsiders = 0
     except:
-        new_heldPercentInsiders = 0
+        heldPercentInsiders = 0
         stock_summary['heldPercentInsiders'] = 0
         print('\nheldPercentInsiders not found for ', tsymbol)
         print('\nError while getting heldPercentInsiders info for ', tsymbol, ': ', sys.exc_info()[0])
@@ -255,7 +199,7 @@ def get_ticker_summary(tsymbol, ticker, path):
         print('\nMarket Cap not found for ', tsymbol)
         print('\nError while getting current price info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': new_heldPercentInstitutions, 'heldPercentInstitutionsChange': new_heldPercentInstitutionsChange, 'heldPercentInstitutionsChangeDir': heldPercentInstitutionsChangeDir , 'heldPercentInsiders': new_heldPercentInsiders, 'heldPercentInsidersChange': new_heldPercentInsidersChange, 'heldPercentInsidersChangeDir': heldPercentInsidersChangeDir, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price, 'marketCap': mktcap}, index=range(1))
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price, 'marketCap': mktcap}, index=range(1))
 
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)

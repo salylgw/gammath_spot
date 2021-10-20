@@ -25,19 +25,19 @@ def get_mktcap_signals(tsymbol, df_summ):
     print('\nmktcap for ', tsymbol, ': ', mktcap)
 
     if (mktcap < FIFTY_MILLION_DOLLAR_MCAP):
-        mktcap_sell_score += 6
-        mktcap_sell_score -= 6
+        mktcap_sell_score += 4
+        mktcap_buy_score -= 4
     else:
 
         mktcap_buy_score += 1
 
         if (mktcap >= BILLION_DOLLAR_MCAP):
-            mktcap_buy_score += 2
+            mktcap_buy_score += 1
 
         if (mktcap >= TRILLION_DOLLAR_MCAP):
-            mktcap_buy_score += 3
+            mktcap_buy_score += 2
 
-    mktcap_max_score += 6
+    mktcap_max_score += 4
 
     mktcap_buy_rec = f'mktcap_buy_score:{mktcap_buy_score}/{mktcap_max_score}'
     mktcap_sell_rec = f'mktcap_sell_score:{mktcap_sell_score}/{mktcap_max_score}'

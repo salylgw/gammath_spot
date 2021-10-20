@@ -22,28 +22,13 @@ def get_beta_signals(tsymbol, df_summ):
     print('Beta for ', tsymbol, ': ', beta)
 
     if (beta > 0):
-
-        #Closer to 1 is near market
-        if (beta < 3):
-            beta_buy_score += 1
-            beta_sell_score -= 1
-        else:
-            beta_sell_score += 1
-            beta_buy_score -= 1
-
-        beta_max_score += 1
-
+        #Closer to 1 is near market and is better
         if (beta < 2):
             beta_buy_score += 1
-            beta_sell_score -= 1
         else:
             beta_sell_score += 1
-            beta_buy_score -= 1
 
-        beta_max_score += 1
-    else:
-        #For no info or -ve info  keep 0/2
-        beta_max_score += 2
+    beta_max_score += 1
 
     #round it off for taking less space when displaying
     beta = round(beta, 3)
