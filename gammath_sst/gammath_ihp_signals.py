@@ -22,18 +22,14 @@ def get_ihp_signals(tsymbol, df_summ):
 
     print('ihp for ', tsymbol, ': ', ihp)
 
+    #We can do checks for different levels but for now this will suffice
     if (ihp > 0):
-        if (ihp > 0.5):
-            ihp_buy_score += 1
-        else:
-            ihp_sell_score += 1
-
         if (ihp > 0.7):
             ihp_buy_score += 1
         else:
             ihp_sell_score += 1
 
-    ihp_max_score += 2
+    ihp_max_score += 1
 
     #Round it off to take less space when displaying
     ihp = round(ihp, 3)

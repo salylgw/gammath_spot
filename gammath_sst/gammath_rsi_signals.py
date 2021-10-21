@@ -18,10 +18,18 @@ def get_rsi_signals(tsymbol, df, path):
 
     print(f'\nGetting RSI signals for {tsymbol}')
 
+    rsi_buy_score = 0
+    rsi_sell_score = 0
+    rsi_max_score = 0
+    rsi_signals = ''
+
     rsi = RSI(df.Close, timeperiod=RSI_TIME_PERIOD)
     rsi_len = len(rsi)
     if (rsi_len <= 0):
-        return
+        print(f'\nError: Incorrect length returned in RSI for {tsymbol}')
+        rsi_signals = f'rsi:ERROR'
+        rsi_max_score += 10
+        return rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals
 
     rsi_ds = rsi.describe()
     rsi_ds.to_csv(path / f'{tsymbol}_RSI_summary.csv')
@@ -33,26 +41,21 @@ def get_rsi_signals(tsymbol, df, path):
     prev_rsi = rsi[rsi_len-2]
     preprev_rsi = rsi[rsi_len-3]
 
-    rsi_buy_score = 0
-    rsi_sell_score = 0
-    rsi_max_score = 0
-
     #Get the RSI mean for reference to check for average RSI
     rsi_mean = rsi_ds['mean']
     if (curr_rsi < rsi_mean):
         rsi_avg = 'below average'
         rsi_buy_score += 3
-        rsi_sell_score -= 3
     elif (curr_rsi > rsi_mean):
         rsi_avg = 'above average'
         rsi_sell_score += 3
-        rsi_buy_score -= 3
     else:
         rsi_avg = 'average'
 
     rsi_max_score += 3
 
     #Higher weights when oversold or overbought
+    #Score is calculated after checking percentile for number of days oversold/overbought
     if (curr_rsi <= RSI_OVERSOLD_LEVEL):
         rsi_lvl = 'oversold'
     elif (curr_rsi >= RSI_OVERBOUGHT_LEVEL):
@@ -64,13 +67,11 @@ def get_rsi_signals(tsymbol, df, path):
         rsi_direction = 'falling'
 
         rsi_sell_score += 1
-        rsi_buy_score -= 1
 
     elif ((curr_rsi > prev_rsi) and (prev_rsi > preprev_rsi)):
         rsi_direction = 'rising'
 
         rsi_buy_score += 1
-        rsi_sell_score -= 1
 
     else:
         rsi_direction = 'direction_unclear'
@@ -166,30 +167,21 @@ def get_rsi_signals(tsymbol, df, path):
 
     if (curr_oversold_count >= bp):
         rsi_buy_score += 1
-        rsi_sell_score -= 1
-
-    if (curr_overbought_count >= bp_ob):
-        rsi_buy_score -= 1
+    elif (curr_overbought_count >= bp_ob):
         rsi_sell_score += 1
 
     rsi_max_score += 1
 
     if (curr_oversold_count >= mp):
         rsi_buy_score += 2
-        rsi_sell_score -= 2
-
-    if (curr_overbought_count >= mp_ob):
-        rsi_buy_score -= 2
+    elif (curr_overbought_count >= mp_ob):
         rsi_sell_score += 2
 
     rsi_max_score += 2
 
     if (curr_oversold_count >= tp):
         rsi_buy_score += 3
-        rsi_sell_score -= 3
-
-    if (curr_overbought_count >= tp_ob):
-        rsi_buy_score -= 3
+    elif (curr_overbought_count >= tp_ob):
         rsi_sell_score += 3
 
     rsi_max_score += 3

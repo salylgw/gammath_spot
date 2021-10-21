@@ -95,7 +95,7 @@ def get_qbs_signals(tsymbol, path):
             if ((ldebt > 0) and (sequity > 0)):
                 dtcr = round((ldebt / (ldebt + sequity)), 3)
 
-            #For now just check if this is +ve
+            #For now just check if cash earned is +ve
             if (cash_earned_last_one_year > 0):
                 qbs_buy_score += 1
             else:
@@ -106,12 +106,11 @@ def get_qbs_signals(tsymbol, path):
             #Add remaining cash to get an idea of cash position
             possible_remaining_cash += (cash + sti + lti)
 
-            #For now just check if this is +ve
+            #For now just check if there is +ve remaining cash
             if (possible_remaining_cash > 0):
                 qbs_buy_score += 1
             else:
                 qbs_sell_score += 1
-                qbs_buy_score -= 1
 
             qbs_max_score += 1
 
@@ -124,12 +123,12 @@ def get_qbs_signals(tsymbol, path):
 
             if (ldebt == 0):
                 qbs_buy_score += 3
-                qbs_sell_score -= 3
             elif (ldebt > 0):
 
                 if (dtcr > 0):
-                    if (dtcr >= 0.7):
-                        qbs_buy_score -= 2
+                    if (dtcr >= 0.9):
+                        qbs_sell_score += 3
+                    elif (dtcr >= 0.7):
                         qbs_sell_score += 2
                     else:
                         if (dtcr < 0.6):

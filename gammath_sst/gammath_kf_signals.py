@@ -18,18 +18,29 @@ def get_kf_state_means(tsymbol, df):
     kf_max_score = 0
     kf_signals = ''
 
-    #Initialize Kalman filter
-    kf  = KalmanFilter(transition_matrices = [1], observation_matrices = [1], initial_state_mean = 0, initial_state_covariance = 1, observation_covariance = 1, transition_covariance=.01)
-
-    #Get the state mean and covariance
-    state_means, state_covariance = kf.filter(df.Close)
-
-    #Extract state means into PD series
-    ds_sm = pd.Series(state_means.flatten())
     prices = df.Close
-
-    sm_len = len(ds_sm)
     prices_len = len(prices)
+    sm_len = 0
+
+    if (prices_len > 0):
+        #Initialize Kalman filter with default params
+        kf = KalmanFilter()
+
+        #Get the state mean and covariance
+        state_means, state_covariance = kf.filter(df.Close)
+
+        #Extract state means into PD series
+        ds_sm = pd.Series(state_means.flatten())
+        sm_len = len(ds_sm)
+        if (sm_len <= 0):
+            print(f'\nError: Incorrect length in KF for state means for {tsymbol}')
+    else:
+        print(f'\nError: Incorrect prices length in KF for {tsymbol}')
+
+    if ((sm_len <= 0) or (prices_len <= 0)):
+        kf_max_score += 10
+        kf_signals = f'KF:ERROR'
+        return state_means, kf_buy_score, kf_sell_score, kf_max_score, kf_signals
 
     #Get the most recent state mean to compare with most recent price
     last_sm = ds_sm[sm_len-1]
@@ -37,11 +48,9 @@ def get_kf_state_means(tsymbol, df):
 
     #Check if current price is greater or less than current state mean
     if (last_price > last_sm):
-        kf_buy_score -= 1
         kf_sell_score += 1
     else:
         kf_buy_score += 1
-        kf_sell_score -= 1
 
     kf_max_score += 1
 
@@ -150,19 +159,16 @@ def get_kf_state_means(tsymbol, df):
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > nd_bp):
             kf_buy_score += 1
-            kf_sell_score -= 1
 
         kf_max_score += 1
 
         if (curr_diff > nd_mp):
             kf_buy_score += 2
-            kf_sell_score -= 2
 
         kf_max_score += 2
 
         if (curr_diff > nd_tp):
             kf_buy_score += 3
-            kf_sell_score -= 3
 
         kf_max_score += 3
 
@@ -173,19 +179,16 @@ def get_kf_state_means(tsymbol, df):
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > pd_bp):
             kf_sell_score += 1
-            kf_buy_score -= 1
 
         kf_max_score += 1
 
         if (curr_diff > pd_mp):
             kf_sell_score += 2
-            kf_buy_score -= 2
 
         kf_max_score += 2
 
         if (curr_diff > pd_tp):
             kf_sell_score += 3
-            kf_buy_score -= 3
 
         kf_max_score += 3
 
@@ -226,31 +229,22 @@ def get_kf_state_means(tsymbol, df):
     #Compute buy/sell scores based on where current below mean count falls in 25, 50, 75 percentile
     if (curr_below_mean_count > bp):
         kf_buy_score += 1
-        kf_sell_score -= 1
-
-    if (curr_above_mean_count > bp_am):
+    elif (curr_above_mean_count > bp_am):
         kf_sell_score += 1
-        kf_buy_score -= 1
 
     kf_max_score += 1
 
     if (curr_below_mean_count > mp):
         kf_buy_score += 1
-        kf_sell_score -= 1
-
-    if (curr_above_mean_count > mp_am):
+    elif (curr_above_mean_count > mp_am):
         kf_sell_score += 1
-        kf_buy_score -= 1
 
     kf_max_score += 1
 
     if (curr_below_mean_count > tp):
         kf_buy_score += 1
-        kf_sell_score -= 1
-
-    if (curr_above_mean_count > tp_am):
+    elif (curr_above_mean_count > tp_am):
         kf_sell_score += 1
-        kf_buy_score -= 1
 
     kf_max_score += 1
 

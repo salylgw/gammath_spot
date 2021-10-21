@@ -146,8 +146,8 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
         df_summ.info()
     except:
-        print('\nStock summary file not found for symbol ', tsymbol)
-        df_summ = pd.DataFrame()
+        print('\nERROR: Stock summary file not found for symbol ', tsymbol)
+        return
 
     try:
         #Read CSV into DataFrame.
@@ -155,8 +155,8 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
         df.info()
     except:
-        print('\nStock history file not found for ', tsymbol)
-        df = pd.DataFrame()
+        print('\nERROR: Stock history file not found for ', tsymbol)
+        return
 
     try:
         #Price signals

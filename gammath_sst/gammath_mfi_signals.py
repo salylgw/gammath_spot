@@ -39,16 +39,8 @@ def get_mfi_signals(tsymbol, df, path):
 
         if ((curr_mfi < lm1_mfi) and (lm1_mfi < lm2_mfi)):
             mfi_dir = 'falling'
-
-            mfi_sell_score += 1
-            mfi_buy_score -= 1
-
         elif ((curr_mfi > lm1_mfi) and (lm1_mfi > lm2_mfi)):
             mfi_dir = 'rising'
-
-            mfi_buy_score += 1
-            mfi_sell_score -= 1
-
         else:
             mfi_dir = 'direction unclear'
 
@@ -57,13 +49,17 @@ def get_mfi_signals(tsymbol, df, path):
         if (curr_mfi < mfi_mean):
             mfi_avg = 'below average'
             mfi_buy_score += 1
+            if (mfi_dir == 'rising'):
+                mfi_buy_score += 1
         elif (curr_mfi > mfi_mean):
             mfi_avg = 'above average'
             mfi_sell_score += 1
+            if (mfi_dir == 'falling'):
+                mfi_sell_score += 1
         else:
             mfi_avg = 'average'
 
-        mfi_max_score += 1
+        mfi_max_score += 2
 
         if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
             mfi_lvl = 'overbought'
@@ -71,6 +67,9 @@ def get_mfi_signals(tsymbol, df, path):
             mfi_lvl = 'oversold'
         else:
             mfi_lvl = ''
+    else:
+        print(f'\nError: MFI length is 0 for {tsymbol}')
+        mfi_max_score += 2
 
     mfi_buy_rec = f'mfi_buy_score:{mfi_buy_score}/{mfi_max_score}'
     mfi_sell_rec = f'mfi_sell_score:{mfi_sell_score}/{mfi_max_score}'

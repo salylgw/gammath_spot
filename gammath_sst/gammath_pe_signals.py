@@ -52,10 +52,8 @@ def get_pe_signals(tsymbol, df_summ):
                 #If below average trailing and forward PE then improve buy score else improve sell score
                 if ((tpe < avg_tpe) and (fpe < avg_fpe)):
                     pe_buy_score += 1
-                    pe_sell_score -= 1
                 else:
                     pe_sell_score += 1
-                    pe_buy_score -= 1
 
             pe_max_score += 1
 
@@ -63,9 +61,7 @@ def get_pe_signals(tsymbol, df_summ):
             if ((fpe > 0) and (tpe > 0)):
                 if (fpe < tpe):
                     pe_buy_score += 1
-                    pe_sell_score -= 1
                 else:
-                    pe_buy_score -= 1
                     pe_sell_score += 1
 
             pe_max_score += 1

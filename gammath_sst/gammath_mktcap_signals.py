@@ -9,8 +9,6 @@ from pathlib import Path
 import pandas as pd
 
 TRILLION_DOLLAR_MCAP = 1000000000000
-BILLION_DOLLAR_MCAP = 1000000000
-FIFTY_MILLION_DOLLAR_MCAP = 50000000
 
 def get_mktcap_signals(tsymbol, df_summ):
 
@@ -24,20 +22,12 @@ def get_mktcap_signals(tsymbol, df_summ):
 
     print('\nmktcap for ', tsymbol, ': ', mktcap)
 
-    if (mktcap < FIFTY_MILLION_DOLLAR_MCAP):
-        mktcap_sell_score += 4
-        mktcap_buy_score -= 4
-    else:
-
+    #Just give an extra point to trillion dollar companies
+    #When we add more weight for marketcap, we can add buy/sell scores this in levels from market cap in millions to trillions
+    if (mktcap >= TRILLION_DOLLAR_MCAP):
         mktcap_buy_score += 1
 
-        if (mktcap >= BILLION_DOLLAR_MCAP):
-            mktcap_buy_score += 1
-
-        if (mktcap >= TRILLION_DOLLAR_MCAP):
-            mktcap_buy_score += 2
-
-    mktcap_max_score += 4
+    mktcap_max_score += 1
 
     mktcap_buy_rec = f'mktcap_buy_score:{mktcap_buy_score}/{mktcap_max_score}'
     mktcap_sell_rec = f'mktcap_sell_score:{mktcap_sell_score}/{mktcap_max_score}'

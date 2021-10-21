@@ -19,15 +19,18 @@ def get_macd_signals(tsymbol, df, path):
 
     print(f'\nGetting MACD signals for {tsymbol}')
 
-    macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
-
-    macd_len = len(macd)
-    if (macd_len<=0):
-        return
-
     macd_buy_score = 0
     macd_sell_score = 0
     macd_max_score = 0
+
+    macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
+
+    macd_len = len(macd)
+    if (macd_len <= 0):
+        print(f'\nERROR: MACD length is 0 for {tsymbol}')
+        macd_max_score += 10
+        macd_signals = f'MACD: ERROR'
+        return macd, macd_signal, macd_buy_score, macd_sell_score, macd_max_score, macd_signals
 
     #Check current MACD trend
     macd_trend = ''
@@ -163,27 +166,21 @@ def get_macd_signals(tsymbol, df, path):
 
     #Buy/Sell signal moment is only a small part of the equation; No scoring on the start of the indication
 
-    #Check which percentile quarter do current -ve diff fall
+    #Check which percentile quarter do current -ve and +ve diff fall
     if (curr_macd_ndiff > 0):
         #Increase buy score at 25, 50 and 75 percentile crossing
         if (curr_macd_ndiff >= bnp_diff):
             macd_buy_score += 1
-        else:
-            macd_buy_score -= 4
 
         if (curr_macd_ndiff >= mnp_diff):
             macd_buy_score += 1
 
         if (curr_macd_ndiff >= tnp_diff):
             macd_buy_score += 2
-
-    #Check which percentile quarter do current +ve diff fall
-    if (curr_macd_pdiff > 0):
+    elif (curr_macd_pdiff > 0):
         #Increase sell score at 25, 50 and 75 percentile crossing
         if (curr_macd_pdiff >= bpp_diff):
             macd_sell_score += 1
-        else:
-            macd_sell_score -= 4
 
         if (curr_macd_pdiff >= mpp_diff):
             macd_sell_score += 1
@@ -193,13 +190,11 @@ def get_macd_signals(tsymbol, df, path):
 
     macd_max_score += 4
 
-    #Check which percentile quarter do current -ve trend days fall
+    #Check which percentile quarter do current -ve and +ve trend days fall
     if (curr_days_in_negative > 0):
         #Increase buy score at 25, 50 and 75 percentile crossing
         if (curr_days_in_negative >= bnp):
             macd_buy_score += 1
-        else:
-            macd_buy_score -= 4
 
         if (curr_days_in_negative >= mnp):
             macd_buy_score += 1
@@ -207,13 +202,10 @@ def get_macd_signals(tsymbol, df, path):
         if (curr_days_in_negative >= tnp):
             macd_buy_score += 2
 
-    #Check which percentile quarter do current -ve trend days fall
-    if (curr_days_in_positive > 0):
+    elif (curr_days_in_positive > 0):
         #Increase sell score at 25, 50 and 75 percentile crossing
         if (curr_days_in_positive >= bpp):
             macd_sell_score += 1
-        else:
-            macd_sell_score -= 4
 
         if (curr_days_in_positive >= mpp):
             macd_sell_score += 1
@@ -238,17 +230,9 @@ def get_macd_signals(tsymbol, df, path):
     if (macd_trend == 'positive'):
         if (buy_sig_price > current_price):
             macd_buy_score += 2
-            macd_sell_score -= 2
-        else:
-            macd_buy_score -= 2
-            macd_sell_score += 2
     else:
         if (sell_sig_price < current_price):
             macd_sell_score += 2
-            macd_buy_score -= 2
-        else:
-            macd_sell_score -= 2
-            macd_buy_score += 2
 
     macd_max_score += 2
 

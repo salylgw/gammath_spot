@@ -75,10 +75,8 @@ def get_stocktwits_signals(tsymbol, path):
         #Token score and information logging purpose
         if ((sts_change > 5.0) and (stv_change > 0)):
             st_buy_score += 1
-            st_sell_score -= 1
         elif (sts_change < 0):
             st_sell_score += 1
-            st_buy_score -= 1
 
     except:
         print('\nError while getting stocktwits html page for ', tsymbol, ': ', sys.exc_info()[0])
