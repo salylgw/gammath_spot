@@ -12,6 +12,8 @@ from pathlib import Path
 
 def get_ols_signals(tsymbol, df, path):
 
+    print(f'\nGetting OLS signals for {tsymbol}')
+
     ols_buy_score = 0
     ols_sell_score = 0
     ols_max_score = 0
@@ -19,34 +21,71 @@ def get_ols_signals(tsymbol, df, path):
 
     #Get the price data for y-axis
     prices_len = len(df.Close)
+
+    if (prices_len <= 0):
+        print(f'\nERROR: Incorrect length of Price dataframe for {tsymbol} while generating OLS signals')
+        ols_signals = f'OLS:ERROR'
+        return
+
     y_vals = np.array(df.Close)
     y_vals_len = len(y_vals)
-    x_vals = sm.add_constant([x for x in range(prices_len)])
+    try:
+        x_vals = sm.add_constant([x for x in range(prices_len)])
+    except:
+        print(f'\nERROR: Stats models add const API failed for {tsymbol} while generating OLS signals')
+        return
+
     x_vals_len = len(x_vals)
 
     #OLS using statsmodels API
 
     #Model last 1 year data
     index_1y = 252 #~252 trading days/year
-    model_1y = sm.OLS(y_vals[(y_vals_len-index_1y):], x_vals[(x_vals_len-index_1y):]).fit()
+    try:
+        model_1y = sm.OLS(y_vals[(y_vals_len-index_1y):], x_vals[(x_vals_len-index_1y):]).fit()
+    except:
+        print(f'\nERROR: Stats models OLS API failed for {tsymbol} while generating OLS signals')
+        return
 
     #Model last 3 years data
     index_3y = (index_1y*3)
-    model_3y = sm.OLS(y_vals[(y_vals_len-index_3y):], x_vals[(x_vals_len-index_3y):]).fit()
+
+    try:
+        model_3y = sm.OLS(y_vals[(y_vals_len-index_3y):], x_vals[(x_vals_len-index_3y):]).fit()
+    except:
+        print(f'\nERROR: Stats models OLS API failed for {tsymbol} while generating OLS signals')
+        return
 
     #Model last 5 years data
-    model = sm.OLS(y_vals, x_vals).fit()
+    try:
+        model = sm.OLS(y_vals, x_vals).fit()
+    except:
+        print(f'\nERROR: Stats models OLS API failed for {tsymbol} while generating OLS signals')
+        return
 
     #Get yprediction to plot the 1y OLS line along with the price chart
-    y1_predictions = model_1y.predict()
+    try:
+        y1_predictions = model_1y.predict()
+    except:
+        print(f'\nERROR: Stats models OLS predict API failed for {tsymbol} while generating OLS signals')
+        return
+
     y1_predictions_len = len(y1_predictions)
 
     #Get yprediction to plot the 3y OLS line along with the price chart
-    y3_predictions = model_3y.predict()
+    try:
+        y3_predictions = model_3y.predict()
+    except:
+        print(f'\nERROR: Stats models OLS predict API failed for {tsymbol} while generating OLS signals')
+        return
     y3_predictions_len = len(y3_predictions)
 
     #Get yprediction to plot the 5y OLS line along with price chart
-    y_predictions = model.predict()
+    try:
+        y_predictions = model.predict()
+    except:
+        print(f'\nERROR: Stats models OLS predict API failed for {tsymbol} while generating OLS signals')
+        return
     y_predictions_len = len(y_predictions)
 
     #pd dataframe for 1Y predictions. Will need all elements in same size so need to fill in nan elsewhere

@@ -54,7 +54,7 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
                 i = bisect.bisect_right(df_calls['strike'], curr_price)
 
                 if (i < (call_opts_size-1)):
-                    print('\nFound the strike for current price of ', curr_price, 'in call option chain at index', bullish_start_index)
+                    print('\nFound the strike for current price of ', curr_price, 'in call option chain at index ', i)
                     bullish_start_index = i
                 else:
                     bullish_start_index = 0
@@ -65,7 +65,7 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
                 i = bisect.bisect_right(df_puts['strike'], curr_price)
 
                 if (i < (put_opts_size-1)):
-                    print('\nFound the strike for current price of ', curr_price, 'in put option chain at index', bearish_end_index)
+                    print('\nFound the strike for current price of ', curr_price, 'in put option chain at index ', i)
                     bearish_end_index = i
                 else:
                     bearish_end_index = 0

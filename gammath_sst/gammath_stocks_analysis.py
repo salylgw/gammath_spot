@@ -60,7 +60,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     price_buy_score = 0
     rsi_buy_score = 0
     bb_buy_score = 0
-    mfi_buy_score = 0
     stoch_buy_score = 0
     macd_buy_score = 0
     kf_buy_score = 0
@@ -81,7 +80,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     price_sell_score = 0
     rsi_sell_score = 0
     bb_sell_score = 0
-    mfi_sell_score = 0
     stoch_sell_score = 0
     macd_sell_score = 0
     kf_sell_score = 0
@@ -101,7 +99,6 @@ def get_ticker_hist_n_analysis(tsymbol):
     price_max_score = 0
     rsi_max_score = 0
     bb_max_score = 0
-    mfi_max_score = 0
     stoch_max_score = 0
     macd_max_score = 0
     kf_max_score = 0
@@ -165,42 +162,46 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('\nError while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
         reco_buy_score = 0
         reco_sell_score = 0
-        reco_max_score = 10
+        reco_max_score = 0
 
-    if ((reco_buy_score == 0) and (reco_sell_score == 0) and (reco_max_score == 10)):
+    try:
+        #PE signals
+        pe_buy_score, pe_sell_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
+    except:
+        print('\nError while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        print('\nThere are no reco signals for ', tsymbol)
+    try:
+        #PEG signals
+        peg_buy_score, peg_sell_score, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
+    except:
+        print('\nError while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #There are no analyst recommendation signals; General signals using fundamentals
-        try:
-            #PE signals
-            pe_buy_score, pe_sell_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
-        except:
-            print('\nError while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
+    try:
+        #Beta signals
+        beta_buy_score, beta_sell_score, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
+    except:
+        print('\nError while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        try:
-            #PEG signals
-            peg_buy_score, peg_sell_score, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
-        except:
-            print('\nError while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
+    try:
+        #PBR signals
+        pbr_buy_score, pbr_sell_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
+    except:
+        print('\nError while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        try:
-            #Beta signals
-            beta_buy_score, beta_sell_score, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
-        except:
-            print('\nError while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
+    try:
+        #Quarterly Balance sheet signals
+        qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
+    except:
+        print('\nError while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        try:
-            #PBR signals
-            pbr_buy_score, pbr_sell_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
-        except:
-            print('\nError while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-        try:
-            #Quarterly Balance sheet signals
-            qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
-        except:
-            print('\nError while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
+    if (((reco_buy_score != 0) or (reco_sell_score != 0)) and (reco_max_score == 10)):
+        print('\nThere are reco signals for ', tsymbol)
+        #Omit buy/sell scores for fundamental analysis as analyst recommendation score is used for those stocks
+        pe_buy_score = pe_sell_score = pe_max_score = 0
+        peg_buy_score = peg_sell_score = peg_max_score = 0
+        beta_buy_score = beta_sell_score = beta_max_score = 0
+        pbr_buy_score = pbr_sell_score = pbr_max_score = 0
+        qbs_buy_score = qbs_sell_score = qbs_max_score = 0
 
     try:
         #Price signals
@@ -222,7 +223,7 @@ def get_ticker_hist_n_analysis(tsymbol):
 
     try:
         #MFI signals
-        mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
+        mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
     except:
         print('\nError while getting MFI signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -293,9 +294,9 @@ def get_ticker_hist_n_analysis(tsymbol):
     except:
         print('\nError while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
 
-    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + mfi_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + mktcap_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
-    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + mfi_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + mktcap_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
-    overall_max_score = price_max_score + rsi_max_score + bb_max_score + mfi_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score + mktcap_max_score + qbs_max_score + pbr_max_score + reco_max_score + st_max_score
+    overall_buy_score = price_buy_score + rsi_buy_score + bb_buy_score + stoch_buy_score + macd_buy_score + kf_buy_score + ols_buy_score + options_buy_score + pe_buy_score + peg_buy_score + beta_buy_score + ihp_buy_score + inshp_buy_score + mktcap_buy_score + qbs_buy_score + pbr_buy_score + reco_buy_score + st_buy_score
+    overall_sell_score = price_sell_score + rsi_sell_score + bb_sell_score + stoch_sell_score + macd_sell_score + kf_sell_score + ols_sell_score + options_sell_score + pe_sell_score + peg_sell_score + beta_sell_score + ihp_sell_score + inshp_sell_score + mktcap_sell_score + qbs_sell_score + pbr_sell_score + reco_sell_score + st_sell_score
+    overall_max_score = price_max_score + rsi_max_score + bb_max_score + stoch_max_score + macd_max_score + kf_max_score + ols_max_score + options_max_score + pe_max_score + peg_max_score + beta_max_score + ihp_max_score + inshp_max_score + mktcap_max_score + qbs_max_score + pbr_max_score + reco_max_score + st_max_score
 
     overall_buy_rec = f'overall_buy_score:{overall_buy_score}/{overall_max_score}'
     overall_sell_rec = f'overall_sell_score:{overall_sell_score}/{overall_max_score}'
@@ -338,7 +339,7 @@ def get_ticker_hist_n_analysis(tsymbol):
                 return
 
     #Draw the charts to view all at once as subplots
-    figure, axes = plt.subplots(nrows=7, figsize=(21, 19))
+    figure, axes = plt.subplots(nrows=6, figsize=(21, 19))
 
     sym_str = f'{tsymbol}'
 
@@ -362,28 +363,22 @@ def get_ticker_hist_n_analysis(tsymbol):
         plot_data3 = pd.DataFrame({sym_str: [0]})
 
     try:
-        plot_data4 = pd.DataFrame({'MFI': mfi})
+        plot_data4 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
     except:
-        print(f'\nError generating MFI DF for {sym_str}')
+        print(f'\nError generating stochastic DF for {sym_str}')
         plot_data4 = pd.DataFrame({sym_str: [0]})
 
     try:
-        plot_data5 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
+        plot_data5 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
     except:
-        print(f'\nError generating stochastic DF for {sym_str}')
+        print(f'\nError generating KF DF for {sym_str}')
         plot_data5 = pd.DataFrame({sym_str: [0]})
 
     try:
-        plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
-    except:
-        print(f'\nError generating KF DF for {sym_str}')
-        plot_data6 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data7 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions, 'OLS_1Y': ols_y1_predictions, 'OLS_3Y': ols_y3_predictions})
+        plot_data6 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions, 'OLS_1Y': ols_y1_predictions, 'OLS_3Y': ols_y3_predictions})
     except:
         print(f'\nError generating OLS DF for {sym_str}')
-        plot_data7 = pd.DataFrame({sym_str: [0]})
+        plot_data6 = pd.DataFrame({sym_str: [0]})
 
     try:
         plot_data1.plot(ax=axes[0],lw=1,title='Bollinger Bands')
@@ -391,14 +386,11 @@ def get_ticker_hist_n_analysis(tsymbol):
         axes[1].axhline(RSI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[1].axhline(RSI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
         plot_data3.plot(ax=axes[2],lw=1,title='Moving Average Convergence Divergence')
-        plot_data4.plot(ax=axes[3],lw=1,title='Money Flow Index')
-        axes[3].axhline(MFI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
-        axes[3].axhline(MFI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-        plot_data5.plot(ax=axes[4],lw=1,title='Stochastic Slow')
-        axes[4].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
-        axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-        plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
-        plot_data7.plot(ax=axes[6], lw=1,title='OLS')
+        plot_data4.plot(ax=axes[3],lw=1,title='Stochastic Slow')
+        axes[3].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
+        axes[3].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
+        plot_data5.plot(ax=axes[4], lw=1,title='Kalman Filter')
+        plot_data6.plot(ax=axes[5], lw=1,title='OLS')
         plt.savefig(path / f'{tsymbol}_charts.png')
     except:
         print('\nError while plotting charts for ', tsymbol, ': ', sys.exc_info()[0])

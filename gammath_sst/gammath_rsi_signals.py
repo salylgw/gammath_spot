@@ -46,9 +46,11 @@ def get_rsi_signals(tsymbol, df, path):
     if (curr_rsi < rsi_mean):
         rsi_avg = 'below average'
         rsi_buy_score += 3
+        rsi_sell_score -= 3
     elif (curr_rsi > rsi_mean):
         rsi_avg = 'above average'
         rsi_sell_score += 3
+        rsi_buy_score -= 3
     else:
         rsi_avg = 'average'
 
@@ -67,11 +69,13 @@ def get_rsi_signals(tsymbol, df, path):
         rsi_direction = 'falling'
 
         rsi_sell_score += 1
+        rsi_buy_score -= 1
 
     elif ((curr_rsi > prev_rsi) and (prev_rsi > preprev_rsi)):
         rsi_direction = 'rising'
 
         rsi_buy_score += 1
+        rsi_sell_score -= 1
 
     else:
         rsi_direction = 'direction_unclear'
@@ -167,22 +171,28 @@ def get_rsi_signals(tsymbol, df, path):
 
     if (curr_oversold_count >= bp):
         rsi_buy_score += 1
+        rsi_sell_score -= 1
     elif (curr_overbought_count >= bp_ob):
         rsi_sell_score += 1
+        rsi_buy_score -= 1
 
     rsi_max_score += 1
 
     if (curr_oversold_count >= mp):
         rsi_buy_score += 2
+        rsi_sell_score -= 2
     elif (curr_overbought_count >= mp_ob):
         rsi_sell_score += 2
+        rsi_buy_score -= 2
 
     rsi_max_score += 2
 
     if (curr_oversold_count >= tp):
         rsi_buy_score += 3
+        rsi_sell_score -= 3
     elif (curr_overbought_count >= tp_ob):
         rsi_sell_score += 3
+        rsi_buy_score -= 3
 
     rsi_max_score += 3
 

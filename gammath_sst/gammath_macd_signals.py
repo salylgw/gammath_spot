@@ -39,6 +39,8 @@ def get_macd_signals(tsymbol, df, path):
     else:
         macd_trend = 'negative'
 
+    #Generally speaking, buy signal is when -ve to +ve crossover is encountered and sell signal is when +ve to -ve crossover is encountered. However, here, we are not using the buy/sell signal; instead we are using the trends and difference to get better price before the crossover is seen i.e. higher buy score during -ve trend and higher sell score during +ve trend
+
     buy_sig = 0
     curr_days_in_positive = 0
     max_days_in_positive = 0
@@ -168,52 +170,60 @@ def get_macd_signals(tsymbol, df, path):
 
     #Check which percentile quarter do current -ve and +ve diff fall
     if (curr_macd_ndiff > 0):
-        #Increase buy score at 25, 50 and 75 percentile crossing
-        if (curr_macd_ndiff >= bnp_diff):
-            macd_buy_score += 1
+        #Increase buy score at 50 and 75 percentile crossing
 
         if (curr_macd_ndiff >= mnp_diff):
-            macd_buy_score += 1
+            macd_buy_score += 2
+            macd_sell_score -= 2
 
         if (curr_macd_ndiff >= tnp_diff):
-            macd_buy_score += 2
+            macd_buy_score += 3
+            macd_sell_score -= 3
+
     elif (curr_macd_pdiff > 0):
-        #Increase sell score at 25, 50 and 75 percentile crossing
-        if (curr_macd_pdiff >= bpp_diff):
-            macd_sell_score += 1
+        #Increase sell score at 50 and 75 percentile crossing
 
         if (curr_macd_pdiff >= mpp_diff):
-            macd_sell_score += 1
+            macd_sell_score += 2
+            macd_buy_score -= 2
+
 
         if (curr_macd_pdiff >= tpp_diff):
-            macd_sell_score += 2
+            macd_sell_score += 3
+            macd_buy_score -= 3
 
-    macd_max_score += 4
+    macd_max_score += 5
 
     #Check which percentile quarter do current -ve and +ve trend days fall
     if (curr_days_in_negative > 0):
         #Increase buy score at 25, 50 and 75 percentile crossing
         if (curr_days_in_negative >= bnp):
             macd_buy_score += 1
+            macd_sell_score -= 1
 
         if (curr_days_in_negative >= mnp):
-            macd_buy_score += 1
+            macd_buy_score += 2
+            macd_sell_score -= 2
 
         if (curr_days_in_negative >= tnp):
             macd_buy_score += 2
+            macd_sell_score -= 2
 
     elif (curr_days_in_positive > 0):
         #Increase sell score at 25, 50 and 75 percentile crossing
         if (curr_days_in_positive >= bpp):
             macd_sell_score += 1
+            macd_buy_score -= 1
 
         if (curr_days_in_positive >= mpp):
-            macd_sell_score += 1
+            macd_sell_score += 2
+            macd_buy_score -= 2
 
         if (curr_days_in_positive >= tpp):
             macd_sell_score += 2
+            macd_buy_score -= 2
 
-    macd_max_score += 4
+    macd_max_score += 5
 
     #Get current stock price
     current_price = df['Close'][len(df)-1]
@@ -225,16 +235,6 @@ def get_macd_signals(tsymbol, df, path):
     macd_sell_signal_date = df['Date'][last_sell_signal_index]
     sell_sig_price = df['Close'][last_sell_signal_index]
     sell_sig_price_str = f'sig_price:%5.3f' % df['Close'][last_sell_signal_index]
-
-    #If current price is less than the price when buy signal was generated then it is a bargain
-    if (macd_trend == 'positive'):
-        if (buy_sig_price > current_price):
-            macd_buy_score += 2
-    else:
-        if (sell_sig_price < current_price):
-            macd_sell_score += 2
-
-    macd_max_score += 2
 
     #Round off diff values to take less space while displaying
     bnp_diff = round(bnp_diff, 3)

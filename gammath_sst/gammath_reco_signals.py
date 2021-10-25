@@ -61,11 +61,14 @@ def get_reco_signals(tsymbol, path):
             #Reduce buy score and increase sell score
             if (buy_percentage < 50):
                 reco_sell_score += 4
+                reco_buy_score -= 4
             else:
                 reco_buy_score += 2
+                reco_sell_score -= 2
 
                 if (buy_percentage >= 75):
-                    reco_buy_score += 4
+                    reco_buy_score += 2
+                    reco_sell_score -= 2
 
             reco_max_score += 4
 
@@ -90,17 +93,20 @@ def get_reco_signals(tsymbol, path):
             #More weightage to recent upgrade/downgrade compared to buy/sell reco
             if (up_percentage < 50):
                 reco_sell_score += 6
+                reco_buy_score -= 6
             else:
                 reco_buy_score += 3
+                reco_sell_score -= 3
 
                 if (up_percentage > 75):
                     reco_buy_score += 3
+                    reco_sell_score -= 3
 
             reco_max_score += 6
     else:
         print(f'\nERROR: Quarterly recommendation sheet for {tsymbol} does NOT exist. Need to fetch it')
         #This will show 0/10 where expert recommendations don't exist.
-        reco_max_score += 10
+        reco_max_score = 0
 
     reco_buy_rec = f'reco_buy_score:{reco_buy_score}/{reco_max_score}'
     reco_sell_rec = f'reco_sell_score:{reco_sell_score}/{reco_max_score}'
