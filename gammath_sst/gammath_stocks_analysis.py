@@ -159,6 +159,50 @@ def get_ticker_hist_n_analysis(tsymbol):
         return
 
     try:
+        #Reco signals
+        reco_buy_score, reco_sell_score, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
+    except:
+        print('\nError while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
+        reco_buy_score = 0
+        reco_sell_score = 0
+        reco_max_score = 10
+
+    if ((reco_buy_score == 0) and (reco_sell_score == 0) and (reco_max_score == 10)):
+
+        print('\nThere are no reco signals for ', tsymbol)
+
+        #There are no analyst recommendation signals; General signals using fundamentals
+        try:
+            #PE signals
+            pe_buy_score, pe_sell_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
+        except:
+            print('\nError while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+        try:
+            #PEG signals
+            peg_buy_score, peg_sell_score, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
+        except:
+            print('\nError while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+        try:
+            #Beta signals
+            beta_buy_score, beta_sell_score, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
+        except:
+            print('\nError while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+        try:
+            #PBR signals
+            pbr_buy_score, pbr_sell_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
+        except:
+            print('\nError while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+        try:
+            #Quarterly Balance sheet signals
+            qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
+        except:
+            print('\nError while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+    try:
         #Price signals
         price_buy_score, price_sell_score, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
     except:
@@ -220,24 +264,6 @@ def get_ticker_hist_n_analysis(tsymbol):
         print('\nError while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
-        #PE signals
-        pe_buy_score, pe_sell_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
-    except:
-        print('\nError while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-    try:
-        #PEG signals
-        peg_buy_score, peg_sell_score, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
-    except:
-        print('\nError while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-    try:
-        #Beta signals
-        beta_buy_score, beta_sell_score, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
-    except:
-        print('\nError while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-    try:
         #Institutional Holders Percentage signals
         ihp_buy_score, ihp_sell_score, ihp_max_score, ihp_signals = gihp.get_ihp_signals(tsymbol, df_summ)
     except:
@@ -254,24 +280,6 @@ def get_ticker_hist_n_analysis(tsymbol):
         mktcap_buy_score, mktcap_sell_score, mktcap_max_score, mktcap_signals = gmktcap.get_mktcap_signals(tsymbol, df_summ)
     except:
         print('\nError while getting mktcap signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-    try:
-        #Quarterly Balance sheet signals
-        qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
-    except:
-        print('\nError while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-    try:
-        #PBR signals
-        pbr_buy_score, pbr_sell_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
-    except:
-        print('\nError while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-    try:
-        #Reco signals
-        reco_buy_score, reco_sell_score, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
-    except:
-        print('\nError while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
         #StockTwits signals
