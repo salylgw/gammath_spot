@@ -46,14 +46,6 @@ def get_kf_state_means(tsymbol, df):
     last_sm = ds_sm[sm_len-1]
     last_price = prices[prices_len-1]
 
-    #Check if current price is greater or less than current state mean
-    if (last_price > last_sm):
-        kf_sell_score += 1
-    else:
-        kf_buy_score += 1
-
-    kf_max_score += 1
-
     #Use historical levels' comparison to current levels for computing buy/sell scores
     curr_below_mean_count = 0
     curr_above_mean_count = 0
@@ -158,17 +150,20 @@ def get_kf_state_means(tsymbol, df):
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > nd_bp):
-            kf_buy_score += 1
+            kf_buy_score += 2
+            kf_sell_score -= 2
 
-        kf_max_score += 1
+        kf_max_score += 2
 
         if (curr_diff > nd_mp):
             kf_buy_score += 2
+            kf_sell_score -= 2
 
         kf_max_score += 2
 
         if (curr_diff > nd_tp):
             kf_buy_score += 3
+            kf_sell_score -= 3
 
         kf_max_score += 3
 
@@ -178,17 +173,20 @@ def get_kf_state_means(tsymbol, df):
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > pd_bp):
-            kf_sell_score += 1
+            kf_sell_score += 2
+            kf_buy_score -= 2
 
-        kf_max_score += 1
+        kf_max_score += 2
 
         if (curr_diff > pd_mp):
             kf_sell_score += 2
+            kf_buy_score -= 2
 
         kf_max_score += 2
 
         if (curr_diff > pd_tp):
             kf_sell_score += 3
+            kf_buy_score -= 3
 
         kf_max_score += 3
 
@@ -229,22 +227,28 @@ def get_kf_state_means(tsymbol, df):
     #Compute buy/sell scores based on where current below mean count falls in 25, 50, 75 percentile
     if (curr_below_mean_count > bp):
         kf_buy_score += 1
+        kf_sell_score -= 1
     elif (curr_above_mean_count > bp_am):
         kf_sell_score += 1
+        kf_buy_score -= 1
 
     kf_max_score += 1
 
     if (curr_below_mean_count > mp):
         kf_buy_score += 1
+        kf_sell_score -= 1
     elif (curr_above_mean_count > mp_am):
         kf_sell_score += 1
+        kf_buy_score -= 1
 
     kf_max_score += 1
 
     if (curr_below_mean_count > tp):
         kf_buy_score += 1
+        kf_sell_score -= 1
     elif (curr_above_mean_count > tp_am):
         kf_sell_score += 1
+        kf_buy_score -= 1
 
     kf_max_score += 1
 

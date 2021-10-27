@@ -29,7 +29,7 @@ def get_stochastics_slow_signals(tsymbol, df):
     if (stoch_len <= 0):
         print(f'\nError: Incorrect length returned in stoch for {tsymbol}')
         stoch_slow_signals = f'stochs:ERROR'
-        stoch_max_score += 10
+        stoch_max_score += 5
         return slowk, slowd, stoch_buy_score, stoch_sell_score, stoch_max_score, stoch_slow_signals
 
     stoch_d_curr_val = slowd[stoch_len-1]
@@ -38,29 +38,29 @@ def get_stochastics_slow_signals(tsymbol, df):
 
     if (stoch_d_curr_val < slowd_mean):
         stoch_lvl = 'below average'
-        stoch_buy_score += 5
-        stoch_sell_score -= 5
+        stoch_buy_score += 2
+        stoch_sell_score -= 2
     elif (stoch_d_curr_val > slowd_mean):
         stoch_lvl = 'above average'
-        stoch_sell_score += 5
-        stoch_buy_score -= 5
+        stoch_sell_score += 2
+        stoch_buy_score -= 2
     else:
         stoch_lvl = 'average'
 
-    stoch_max_score += 5
+    stoch_max_score += 2
 
     #Check for stochastic oversold/overbought levels
     stoch_lvl = ''
     if (stoch_d_curr_val <= STOCH_OVERSOLD_LEVEL):
         stoch_lvl = 'oversold'
-        stoch_buy_score += 5
-        stoch_sell_score -= 5
+        stoch_buy_score += 3
+        stoch_sell_score -= 3
     elif (stoch_d_curr_val >= STOCH_OVERBOUGHT_LEVEL):
         stoch_lvl = 'overbought'
-        stoch_sell_score += 5
-        stoch_buy_score -= 5
+        stoch_sell_score += 3
+        stoch_buy_score -= 3
 
-    stoch_max_score += 5
+    stoch_max_score += 3
 
     last_crossover_index = 0
 

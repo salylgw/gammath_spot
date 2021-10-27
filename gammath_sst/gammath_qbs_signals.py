@@ -35,7 +35,7 @@ def get_qbs_signals(tsymbol, path):
 
         if (len(df) == 0):
             print(f'\nERROR: QBS balansheet dataframe is empty for {tsymbol}')
-            qbs_max_score += 5
+            qbs_max_score += 8
         else:
 
             #Get the most recent quarter date
@@ -109,8 +109,10 @@ def get_qbs_signals(tsymbol, path):
             #For now just check if there is +ve remaining cash
             if (possible_remaining_cash > 0):
                 qbs_buy_score += 1
+                qbs_buy_score -= 1
             else:
                 qbs_sell_score += 1
+                qbs_buy_score -= 1
 
             qbs_max_score += 1
 
@@ -122,25 +124,30 @@ def get_qbs_signals(tsymbol, path):
             qbs_max_score += 1
 
             if (ldebt == 0):
-                qbs_buy_score += 2
+                qbs_buy_score += 5
+                qbs_sell_score -= 5
             elif (ldebt > 0):
 
                 if (dtcr > 0):
-                    if (dtcr >= 0.7):
-                        qbs_sell_score += 2
+                    if (dtcr >= 0.8):
+                        qbs_sell_score += 5
+                        qbs_buy_score -= 5
                     else:
-                        if (dtcr < 0.7):
+                        if (dtcr < 0.8):
                             qbs_buy_score += 1
 
-                        if (dtcr < 0.3):
+                        if (dtcr < 0.5):
                             qbs_buy_score += 1
+
+                        if (dtcr < 0.2):
+                            qbs_buy_score += 3
 
             #Max score from debt data
-            qbs_max_score += 2
+            qbs_max_score += 5
     else:
         print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist. Need to fetch it')
-        #This will show 0/6 when no balance sheet data
-        qbs_max_score += 5
+        #This will show 0/8 when no balance sheet data
+        qbs_max_score += 8
 
     qbs_buy_rec = f'qbs_buy_score:{qbs_buy_score}/{qbs_max_score}'
     qbs_sell_rec = f'qbs_sell_score:{qbs_sell_score}/{qbs_max_score}'
