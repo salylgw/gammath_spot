@@ -74,19 +74,19 @@ def get_stocktwits_signals(tsymbol, path):
 
         #Token score and information logging purpose
         if ((sts_change > 0) and (stv_change > 0)):
+            st_buy_score += 5
+            st_sell_score -= 5
+        elif (sts_change > 0):
             st_buy_score += 2
             st_sell_score -= 2
-        elif (sts_change > 0):
-            st_buy_score += 1
-            st_sell_score -= 1
         else:
-            st_sell_score += 2
-            st_buy_score -= 2
+            st_sell_score += 5
+            st_buy_score -= 5
 
     except:
         print('\nError while getting stocktwits html page for ', tsymbol, ': ', sys.exc_info()[0])
 
-    st_max_score += 2
+    st_max_score += 5
 
     st_buy_rec = f'st_sv_buy_score:{st_buy_score}/{st_max_score}'
     st_sell_rec = f'st_sv_sell_score:{st_sell_score}/{st_max_score}'

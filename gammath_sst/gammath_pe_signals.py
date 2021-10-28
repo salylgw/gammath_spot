@@ -49,24 +49,7 @@ def get_pe_signals(tsymbol, df_summ):
             print('Avg TPE for ', tsymbol, 'is ', avg_tpe)
             print('Avg FPE for ', tsymbol, 'is ', avg_fpe)
 
-            if ((tpe > 0) and (avg_tpe > 0)):
-                #If below average trailing/forward PE then improve buy score else improve sell score
-                if (tpe < avg_tpe):
-                    pe_buy_score += 1
-                else:
-                    pe_sell_score += 1
-
-            pe_max_score += 1
-
-            if ((fpe > 0) and (avg_fpe > 0)):
-
-                if (fpe < avg_fpe):
-                    pe_buy_score += 1
-                else:
-                    pe_sell_score += 1
-
-            pe_max_score += 1
-
+            #Avg TPE and FPE data needs to be authentic before we can factor it into score computation. For now just check if FPE is less or more than TPE
             #If forward PE is less than trailing PE then view this as a +ve sign
             if ((fpe > 0) and (tpe > 0)):
                 if (fpe < tpe):
@@ -76,8 +59,8 @@ def get_pe_signals(tsymbol, df_summ):
                     pe_sell_score += 2
                     pe_buy_score -= 2
             else:
-                pe_sell_score += 1
-                pe_buy_score -= 1
+                pe_sell_score += 2
+                pe_buy_score -= 2
 
             pe_max_score += 2
 
@@ -90,7 +73,7 @@ def get_pe_signals(tsymbol, df_summ):
         pe_sell_score = 0
 
         #No data viewed as a -ve so have an impact on total score
-        pe_max_score = 4
+        pe_max_score = 2
 
     pe_buy_rec = f'pe_buy_score:{pe_buy_score}/{pe_max_score}'
     pe_sell_rec = f'pe_sell_score:{pe_sell_score}/{pe_max_score}'

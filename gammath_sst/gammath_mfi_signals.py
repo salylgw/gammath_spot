@@ -29,12 +29,12 @@ def get_mfi_signals(tsymbol, df, path):
     mfi_lvl = ''
 
     #Using MFI only to look for probable price direction reversal indicator
-    mfi_indicator = 'Probable Reversal not detected'
+    mfi_indicator = ''
 
     prices = df.Close
     prices_len = len(prices)
     if (prices_len <= 0):
-        mfi_max_score = 5
+        mfi_max_score = 10
         print(f'\nError: Incorrect length of Price dataframe for {tsymbol}')
         mfi_signals = f'MFI:ERROR'
         return mfi_signals
@@ -68,50 +68,50 @@ def get_mfi_signals(tsymbol, df, path):
         #Get the current MFI level compared to the mean
         if (curr_mfi < mfi_mean):
             mfi_avg = 'below average'
-            mfi_buy_score += 1
-            mfi_sell_score -= 1
+            mfi_buy_score += 3
+            mfi_sell_score -= 3
         elif (curr_mfi > mfi_mean):
             mfi_avg = 'above average'
-            mfi_sell_score += 1
-            mfi_buy_score -= 1
+            mfi_sell_score += 3
+            mfi_buy_score -= 3
         else:
             mfi_avg = 'average'
 
-        mfi_max_score += 1
+        mfi_max_score += 3
 
         if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
             mfi_lvl = 'overbought'
-            mfi_sell_score += 2
-            mfi_buy_score -= 2
+            mfi_sell_score += 4
+            mfi_buy_score -= 4
         elif (curr_mfi <= MFI_OVERSOLD_LEVEL):
             mfi_lvl = 'oversold'
-            mfi_buy_score += 2
-            mfi_sell_score -= 2
+            mfi_buy_score += 4
+            mfi_sell_score -= 4
         else:
             mfi_lvl = ''
 
-        mfi_max_score += 2
+        mfi_max_score += 4
 
         #Look for reversal when overbought/oversold
         if ((curr_mfi < lm1_mfi) and (curr_mfi >= MFI_OVERBOUGHT_LEVEL)):
             mfi_dir = 'falling'
             if (price_dir == 'rising'):
-                mfi_indicator = 'Overbought and reversal probable. Price could start falling'
-                mfi_sell_score += 2
-                mfi_buy_score -= 2
+                mfi_indicator = 'Price could start FALLING'
+                mfi_sell_score += 3
+                mfi_buy_score -= 3
         elif ((curr_mfi > lm1_mfi) and (curr_mfi <= MFI_OVERSOLD_LEVEL)):
             mfi_dir = 'rising'
             if (price_dir == 'falling'):
-                mfi_indicator = 'Oversold and reversal probable. Price could start rising'
-                mfi_buy_score += 2
-                mfi_sell_score -= 2
+                mfi_indicator = 'Price could start RISING'
+                mfi_buy_score += 3
+                mfi_sell_score -= 3
 
 
-        mfi_max_score += 2
+        mfi_max_score += 3
     else:
         print(f'\nError: MFI length is 0 for {tsymbol}')
         mfi_signals = f'MFI:ERROR'
-        mfi_max_score = 5
+        mfi_max_score = 10
         return mfi_signals
 
     mfi_buy_rec = f'mfi_buy_score:{mfi_buy_score}/{mfi_max_score}'

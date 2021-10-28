@@ -36,7 +36,7 @@ def get_price_signals(tsymbol, df, df_summ):
     lpm1 = prices[prices_len-2]
     lpm2 = prices[prices_len-3]
 
-    nftwl = ''
+    nftwlh = ''
 
     #No score on this; Just log it to make a decision on buy/sell by seeing falling/rising in signals data
     if ((lp < lpm1) and (lpm1 < lpm2)):
@@ -112,84 +112,78 @@ def get_price_signals(tsymbol, df, df_summ):
     rp_mp = round(rp_mp, 3)
     rp_tp = round(rp_tp, 3)
 
-    if (last_falling_days_count > fp_bp):
-        price_buy_score += 1
-
-        if (last_falling_days_count > fp_mp):
-            price_buy_score += 1
-
-        if (last_falling_days_count > fp_tp):
-            price_buy_score += 1
-    elif (last_rising_days_count > rp_bp):
-        price_sell_score += 1
-
-        if (last_rising_days_count > rp_mp):
-            price_sell_score += 1
-
-        if (last_rising_days_count > rp_tp):
-            price_sell_score += 1
-
-    price_max_score += 3
-
-    #Checkout price wrt 50-day average, 200-day average and 52-week low
-
     #50-day average
     fiftyDayAverage = df_summ['fiftyDayAverage'][0]
-
-    if (fiftyDayAverage > 0):
-        if (lp <= fiftyDayAverage):
-            price_buy_score += 1
-        else:
-            price_sell_score += 1
-
-    price_max_score += 1
 
     #200-day average
     twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
 
-    if (twoHundredDayAverage > 0):
-        if (lp <= twoHundredDayAverage):
-            price_buy_score += 1
-        else:
-            price_sell_score += 1
-
-    price_max_score += 1
-
-    #52-week high/low
+    #52-week low
     yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
+
+    #52-week high
+    yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
 
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):
-
-            #New 52-week low
-            price_buy_score += 3
-            nftwl = 'new fiftyTwoWeekLow'
-        else:
-            pct_val = yearly_lowest_val*100/lp
-
-            #If current price is not too far from 52-week low then increase buy score
-            if (pct_val >= PRICE_PERCENT_CUTOFF):
-                price_buy_score += 1
+            #New 52-week low; Log it for information
+            nftwlh = 'new fiftyTwoWeekLow'
     else:
         print('\n52-week low value not found')
 
-    yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
+    if (yearly_highest_val <= 0):
+        #New 52-week high; Log it for information
+        print('\n52-week high value not found')
+        nftwlh = 'new fiftyTwoWeekHigh'
 
-    if (yearly_highest_val > 0):
-        if (lp >= yearly_highest_val):
-            #Isolated case to bring it to the front for checkout
-            price_sell_score += 3
-        else:
+    if (last_falling_days_count > 0):
+        price_buy_score -= 1
+        price_sell_score += 1
+
+        if (last_falling_days_count >= fp_bp):
+            price_buy_score -= 2
+            price_sell_score += 2
+
+        #Checkout price wrt 50-day average, 200-day average and 52-week low
+        if (fiftyDayAverage > 0):
+            if (lp > fiftyDayAverage):
+                price_sell_score += 1
+
+        if (twoHundredDayAverage > 0):
+            if (lp > twoHundredDayAverage):
+                price_sell_score += 1
+
+        if (yearly_highest_val > 0):
             pct_val = lp*100/yearly_highest_val
 
             #If we are closer to 52-week high then increase the sell score; else increase the buy score
             if (pct_val >= PRICE_PERCENT_CUTOFF):
-                price_sell_score += 1
-    else:
-        print('\n52-week high value not found')
+                price_sell_score += 3
+    elif (last_rising_days_count > 0):
+        price_buy_score += 1
+        price_sell_score -= 1
+        if (last_rising_days_count <= rp_bp):
+            price_buy_score += 2
+            price_sell_score -= 2
 
-    #Max from 52-week high/low price comparison
-    price_max_score += 3
+        #Checkout price wrt 50-day average, 200-day average and 52-week low
+        if (fiftyDayAverage > 0):
+            if (lp <= fiftyDayAverage):
+                price_buy_score += 1
+
+        if (twoHundredDayAverage > 0):
+            if (lp <= twoHundredDayAverage):
+                price_buy_score += 1
+
+        if (yearly_lowest_val > 0):
+            pct_val = yearly_lowest_val*100/lp
+
+            #If current price is not too far from 52-week low then increase buy score
+            if (pct_val >= PRICE_PERCENT_CUTOFF):
+                price_buy_score += 3
+
+
+    price_max_score += 8
 
     #Get percentiles for 52-week prices
     one_year_prices = df['Close'][(prices_len-AVG_TRADING_DAYS_PER_YEAR):]
@@ -220,8 +214,8 @@ def get_price_signals(tsymbol, df, df_summ):
     price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
 
     if (yearly_lowest_val > 0):
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwl}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwlh}'
     else:
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwl}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwlh}'
     
     return price_buy_score, price_sell_score, price_max_score, price_signals

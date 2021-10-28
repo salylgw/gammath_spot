@@ -146,7 +146,7 @@ def get_macd_signals(tsymbol, df, path):
     bnp, mnp, tnp = macd_neg_days_count_series.quantile([0.25, 0.5, 0.75])
     print(f'\n MACD neg days percentile: {bnp}, {mnp}, {tnp}')
 
-    #Get percentile values for +ve trend counts
+    #Get percentile values for +ve trend days counts
     bpp, mpp, tpp = macd_pos_days_count_series.quantile([0.25, 0.5, 0.75])
     print(f'\n MACD pos percentile: {bpp}, {mpp}, {tpp}')
 
@@ -168,62 +168,74 @@ def get_macd_signals(tsymbol, df, path):
 
     #Buy/Sell signal moment is only a small part of the equation; No scoring on the start of the indication
 
-    #Check which percentile quarter do current -ve and +ve diff fall
-    if (curr_macd_ndiff > 0):
-        #Increase buy score at 50 and 75 percentile crossing
-
-        if (curr_macd_ndiff >= mnp_diff):
-            macd_buy_score += 2
-            macd_sell_score -= 2
-
-        if (curr_macd_ndiff >= tnp_diff):
-            macd_buy_score += 3
-            macd_sell_score -= 3
-
-    elif (curr_macd_pdiff > 0):
-        #Increase sell score at 50 and 75 percentile crossing
-
-        if (curr_macd_pdiff >= mpp_diff):
-            macd_sell_score += 2
-            macd_buy_score -= 2
-
-
-        if (curr_macd_pdiff >= tpp_diff):
-            macd_sell_score += 3
-            macd_buy_score -= 3
-
-    macd_max_score += 5
-
     #Check which percentile quarter do current -ve and +ve trend days fall
     if (curr_days_in_negative > 0):
-        #Increase buy score at 25, 50 and 75 percentile crossing
-        if (curr_days_in_negative >= bnp):
-            macd_buy_score += 1
-            macd_sell_score -= 1
+        #It has just crossed over to sell side so don't buy at least until we hit 25 percentile of -ve days
+        if (curr_days_in_negative < bnp):
+            macd_buy_score -= 10
+            macd_sell_score += 10
+        else:
+            #Increase buy score at 25, 50 and 75 percentile crossing
+            if (curr_days_in_negative >= bnp):
+                macd_buy_score += 1
+                macd_sell_score -= 1
 
-        if (curr_days_in_negative >= mnp):
-            macd_buy_score += 2
-            macd_sell_score -= 2
+            if (curr_days_in_negative >= mnp):
+                macd_buy_score += 2
+                macd_sell_score -= 2
 
-        if (curr_days_in_negative >= tnp):
-            macd_buy_score += 2
-            macd_sell_score -= 2
+            if (curr_days_in_negative >= tnp):
+                macd_buy_score += 2
+                macd_sell_score -= 2
+
+            #Check which percentile quarter do current -ve and +ve diff fall
+            if (curr_macd_ndiff > 0):
+                #Increase buy score at 50 and 25 percentile diffs
+                if (curr_macd_ndiff <= mnp_diff):
+                    macd_buy_score += 2
+                    macd_sell_score -= 2
+
+                if (curr_macd_ndiff <= bnp_diff):
+                    macd_buy_score += 3
+                    macd_sell_score -= 3
+
 
     elif (curr_days_in_positive > 0):
-        #Increase sell score at 25, 50 and 75 percentile crossing
-        if (curr_days_in_positive >= bpp):
-            macd_sell_score += 1
-            macd_buy_score -= 1
+        #It has just crossed over to buy side so buy only until we hit 25 percentile of +ve days
+        if (curr_days_in_positive < bpp):
+            if (curr_macd_pdiff < mpp_diff):
+                macd_buy_score += 5
+                macd_sell_score -= 5
+            else:
+                macd_buy_score -= 5
+                macd_sell_score += 5
+        else:
+            #Increase sell score at 25, 50 and 75 percentile crossing
+            if (curr_days_in_positive >= bpp):
+                macd_sell_score += 1
+                macd_buy_score -= 1
 
-        if (curr_days_in_positive >= mpp):
-            macd_sell_score += 2
-            macd_buy_score -= 2
+            if (curr_days_in_positive >= mpp):
+                macd_sell_score += 2
+                macd_buy_score -= 2
 
-        if (curr_days_in_positive >= tpp):
-            macd_sell_score += 2
-            macd_buy_score -= 2
+            if (curr_days_in_positive >= tpp):
+                macd_sell_score += 2
+                macd_buy_score -= 2
 
-    macd_max_score += 5
+            if (curr_macd_pdiff > 0):
+                #Increase sell score at 50 and 75 percentile crossing
+
+                if (curr_macd_pdiff >= mpp_diff):
+                    macd_sell_score += 2
+                    macd_buy_score -= 2
+
+                if (curr_macd_pdiff >= tpp_diff):
+                    macd_sell_score += 3
+                    macd_buy_score -= 3
+
+
+    macd_max_score += 10
 
     #Get current stock price
     current_price = df['Close'][len(df)-1]

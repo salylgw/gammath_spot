@@ -27,14 +27,14 @@ def get_reco_signals(tsymbol, path):
         len_df = len(df)
         if (len_df == 0):
             print(f'\nERROR: Analysts recommendations dataframe is empty for {tsymbol}')
-            #This will show 0/15 where expert recommendations don't exist.
-            reco_max_score += 0
+            #This will allow doing our own fundamental analysis.
+            reco_max_score = 0
         else:
             print(f'\nRead Analysts recommendations into dataframe for {tsymbol}')
-            #We only want recent data so get shorter of last 20% of recommendations from entire list
-            df_20p_index = len_df - int((len_df * 20) / 100)
-            if (df_20p_index < len_df):
-                start_index = df_20p_index
+            #We only want recent data so get shorter of last 25% of recommendations from entire list; 25% to align with approximately quarterly updates
+            df_25p_index = len_df - int((len_df * 25) / 100)
+            if (df_25p_index < len_df):
+                start_index = df_25p_index
             else:
                 start_index = 0
 
@@ -60,17 +60,17 @@ def get_reco_signals(tsymbol, path):
 
             #Reduce buy score and increase sell score
             if (buy_percentage < 50):
-                reco_sell_score += 5
-                reco_buy_score -= 5
+                reco_sell_score += 4
+                reco_buy_score -= 4
             else:
                 reco_buy_score += 2
                 reco_sell_score -= 2
 
                 if (buy_percentage >= 75):
-                    reco_buy_score += 3
-                    reco_sell_score -= 3
+                    reco_buy_score += 2
+                    reco_sell_score -= 2
 
-            reco_max_score += 5
+            reco_max_score += 4
 
             #Extract count for recent upgrades/downgrades recommendations
             up_count = 0
@@ -92,20 +92,23 @@ def get_reco_signals(tsymbol, path):
 
             #More weightage to recent upgrade/downgrade compared to buy/sell reco
             if (up_percentage < 50):
-                reco_sell_score += 10
-                reco_buy_score -= 10
+                reco_sell_score += 6
+                reco_buy_score -= 6
             else:
-                reco_buy_score += 5
-                reco_sell_score -= 5
+                reco_buy_score += 3
+                reco_sell_score -= 3
 
                 if (up_percentage >= 75):
-                    reco_buy_score += 5
-                    reco_sell_score -= 5
+                    reco_buy_score += 3
+                    reco_sell_score -= 3
 
-            reco_max_score += 10
+            reco_max_score += 6
+
+        print(f'\nRecommendation signals extracted for {tsymbol}')
+
     else:
-        print(f'\nERROR: Quarterly recommendation sheet for {tsymbol} does NOT exist. Need to fetch it')
-        #This will show 0/15 where expert recommendations don't exist.
+        print(f'\nINFO: Quarterly recommendation sheet for {tsymbol} does NOT exist.')
+        #This will show 0/10 where expert recommendations don't exist.
         reco_max_score = 0
 
     reco_buy_rec = f'reco_buy_score:{reco_buy_score}/{reco_max_score}'
@@ -113,5 +116,4 @@ def get_reco_signals(tsymbol, path):
 
     reco_signals = f'reco:{reco_buy_rec},{reco_sell_rec}'
 
-    print(f'\nRecommendation signals extracted for {tsymbol}')
     return reco_buy_score, reco_sell_score, reco_max_score, reco_signals

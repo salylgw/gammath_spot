@@ -35,7 +35,7 @@ def get_qbs_signals(tsymbol, path):
 
         if (len(df) == 0):
             print(f'\nERROR: QBS balansheet dataframe is empty for {tsymbol}')
-            qbs_max_score += 8
+            qbs_max_score += 4
         else:
 
             #Get the most recent quarter date
@@ -98,16 +98,18 @@ def get_qbs_signals(tsymbol, path):
             #For now just check if cash earned is +ve
             if (cash_earned_last_one_year > 0):
                 qbs_buy_score += 1
+                qbs_sell_score -= 1
             else:
                 qbs_sell_score += 1
+                qbs_buy_score -= 1
 
             qbs_max_score += 1
 
             #Add remaining cash to get an idea of cash position
             possible_remaining_cash += (cash + sti + lti)
 
-            #For now just check if there is +ve remaining cash
-            if (possible_remaining_cash > 0):
+            #For now just check if there is +ve remaining cash past last year's earnings
+            if (possible_remaining_cash > cash_earned_last_one_year):
                 qbs_buy_score += 1
                 qbs_buy_score -= 1
             else:
@@ -123,31 +125,19 @@ def get_qbs_signals(tsymbol, path):
 
             qbs_max_score += 1
 
-            if (ldebt == 0):
-                qbs_buy_score += 5
-                qbs_sell_score -= 5
-            elif (ldebt > 0):
-
-                if (dtcr > 0):
-                    if (dtcr >= 0.8):
-                        qbs_sell_score += 5
-                        qbs_buy_score -= 5
-                    else:
-                        if (dtcr < 0.8):
-                            qbs_buy_score += 1
-
-                        if (dtcr < 0.5):
-                            qbs_buy_score += 1
-
-                        if (dtcr < 0.2):
-                            qbs_buy_score += 3
+            if (ldebt > 0) and (ldebt <= 0.5):
+                qbs_buy_score += 1
+                qbs_sell_score -= 1
+            else:
+                qbs_sell_score += 1
+                qbs_buy_score -= 1
 
             #Max score from debt data
-            qbs_max_score += 5
+            qbs_max_score += 1
     else:
         print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist. Need to fetch it')
-        #This will show 0/8 when no balance sheet data
-        qbs_max_score += 8
+        #This will show 0/4 when no balance sheet data
+        qbs_max_score += 4
 
     qbs_buy_rec = f'qbs_buy_score:{qbs_buy_score}/{qbs_max_score}'
     qbs_sell_rec = f'qbs_sell_score:{qbs_sell_score}/{qbs_max_score}'
