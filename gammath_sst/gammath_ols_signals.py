@@ -24,10 +24,9 @@ def get_ols_signals(tsymbol, df, path):
     #Get the price data for y-axis
     prices_len = len(df.Close)
 
-    if (prices_len <= 0):
-        print(f'\nERROR: Incorrect length of Price dataframe for {tsymbol} while generating OLS signals')
-        ols_signals = f'OLS:ERROR'
-        return
+    if (prices_len <= AVG_TRADING_DAYS_PER_YEAR):
+        print(f'\nERROR: Not enought price history for {tsymbol} to generate OLS signals')
+        raise
 
     y_vals = np.array(df.Close)
     y_vals_len = len(y_vals)
