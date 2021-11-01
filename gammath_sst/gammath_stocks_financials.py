@@ -19,8 +19,9 @@ MAX_DELAY_BETWEEN_BATCHES = 3
 Tickers_dir = Path('tickers')
 
 def get_ticker_financials(tsymbol, ticker, path):
+
     if (len(tsymbol) == 0):
-        return None
+        raise ValueError('Invalid symbol')
 
     qbs_dont_need_fetch = True
     qcf_dont_need_fetch = True

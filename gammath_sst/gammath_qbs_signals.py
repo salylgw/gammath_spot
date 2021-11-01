@@ -35,7 +35,7 @@ def get_qbs_signals(tsymbol, path):
 
         if (len(df) == 0):
             print(f'\nERROR: QBS balansheet dataframe is empty for {tsymbol}')
-            qbs_max_score += 4
+            raise ValueError('QBS dataframe empty')
         else:
 
             #Get the most recent quarter date
@@ -135,9 +135,9 @@ def get_qbs_signals(tsymbol, path):
             #Max score from debt data
             qbs_max_score += 1
     else:
-        print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist. Need to fetch it')
+        print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist.')
         #This will show 0/4 when no balance sheet data
-        qbs_max_score += 4
+        raise ValueError('QBS file doesn\'t exist')
 
     qbs_buy_rec = f'qbs_buy_score:{qbs_buy_score}/{qbs_max_score}'
     qbs_sell_rec = f'qbs_sell_score:{qbs_sell_score}/{qbs_max_score}'

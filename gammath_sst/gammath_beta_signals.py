@@ -16,8 +16,11 @@ def get_beta_signals(tsymbol, df_summ):
     beta_sell_score = 0
     beta_max_score = 0
 
-    #Get the beta value from summary DF
-    beta = df_summ['beta'][0]
+    try:
+        #Get the beta value from summary DF
+        beta = df_summ['beta'][0]
+    except:
+        raise ValueError('Beta value not found')
 
     print('Beta for ', tsymbol, ': ', beta)
 

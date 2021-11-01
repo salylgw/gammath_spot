@@ -17,8 +17,11 @@ def get_ihp_signals(tsymbol, df_summ):
     ihp_sell_score = 0
     ihp_max_score = 0
 
-    #Get data about percentage held from summary dataframe
-    ihp = df_summ['heldPercentInstitutions'][0]
+    try:
+        #Get data about percentage held from summary dataframe
+        ihp = df_summ['heldPercentInstitutions'][0]
+    except:
+        raise ValueError('heldPercentInstitutions value not found')
 
     print('ihp for ', tsymbol, ': ', ihp)
 

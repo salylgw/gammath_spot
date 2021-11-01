@@ -17,13 +17,10 @@ Tickers_dir = Path('tickers')
 
 def get_ticker_summary(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
-        return None
+        raise ValueError('Invalid symbol')
 
     #Get stock info summary from the internet
     print(f'\nGetting {tsymbol} ticker summary.')
-
-    heldPercentInstitutions = 0
-    heldPercentInsiders = 0
 
     #Check if file exists and is it from another day
     file_exists = (path / f'{tsymbol}_summary.csv').exists()
@@ -59,7 +56,7 @@ def get_ticker_summary(tsymbol, ticker, path):
             stock_summary = ticker.info
         except:
             print(f'\nStock summary for ticker {tsymbol} not found')
-            return
+            raise ValueError('Stock summary not found')
 
     #Extract the items of interest
     #trailingPE
@@ -143,23 +140,15 @@ def get_ticker_summary(tsymbol, ticker, path):
         print('\nError while getting pegRatio info for ', tsymbol, ': ', sys.exc_info()[0])
 
     try:
-        if not dont_need_fetch:
-            heldPercentInstitutions = stock_summary['heldPercentInstitutions']
-        else:
-            heldPercentInstitutions = 0
+        heldPercentInstitutions = stock_summary['heldPercentInstitutions']
     except:
         heldPercentInstitutions = 0
-        stock_summary['heldPercentInstitutions'] = 0
         print('\nheldPercentInstitutions not found for ', tsymbol)
         print('\nError while getting heldPercentInstitutions info for ', tsymbol, ': ', sys.exc_info()[0])
     try:
-        if not dont_need_fetch:
-            heldPercentInsiders = stock_summary['heldPercentInsiders']
-        else:
-            heldPercentInsiders = 0
+        heldPercentInsiders = stock_summary['heldPercentInsiders']
     except:
         heldPercentInsiders = 0
-        stock_summary['heldPercentInsiders'] = 0
         print('\nheldPercentInsiders not found for ', tsymbol)
         print('\nError while getting heldPercentInsiders info for ', tsymbol, ': ', sys.exc_info()[0])
 

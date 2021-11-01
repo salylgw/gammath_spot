@@ -22,15 +22,17 @@ def get_stochastics_slow_signals(tsymbol, df):
     stoch_max_score = 0
     stoch_slow_signals = ''
 
-    slowk, slowd = STOCH(df.High, df.Low, df.Close, fastk_period=STOCH_FAST_PERIOD, slowk_period=STOCH_SLOW_PERIOD, slowk_matype=0, slowd_period=STOCH_SLOW_PERIOD, slowd_matype=0)
+    try:
+        slowk, slowd = STOCH(df.High, df.Low, df.Close, fastk_period=STOCH_FAST_PERIOD, slowk_period=STOCH_SLOW_PERIOD, slowk_matype=0, slowd_period=STOCH_SLOW_PERIOD, slowd_matype=0)
+    except:
+        print(f'\nError: getting Stochastics for {tsymbol}')
+        raise RuntimeError('Stochastics data generation failed')
 
     stoch_len = len(slowd)
 
     if (stoch_len <= 0):
-        print(f'\nError: Incorrect length returned in stoch for {tsymbol}')
-        stoch_slow_signals = f'stochs:ERROR'
-        stoch_max_score += 5
-        return slowk, slowd, stoch_buy_score, stoch_sell_score, stoch_max_score, stoch_slow_signals
+        print(f'\nError: Incorrect length stochastics data returned for {tsymbol}')
+        raise ValueError('Stochastics data length error')
 
     stoch_d_curr_val = slowd[stoch_len-1]
     slowd_ds = slowd.describe()

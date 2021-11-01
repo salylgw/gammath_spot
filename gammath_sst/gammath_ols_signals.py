@@ -25,8 +25,8 @@ def get_ols_signals(tsymbol, df, path):
     prices_len = len(df.Close)
 
     if (prices_len <= AVG_TRADING_DAYS_PER_YEAR):
-        print(f'\nERROR: Not enought price history for {tsymbol} to generate OLS signals')
-        raise
+        print(f'\nERROR: Not enough price history for {tsymbol} to generate OLS signals')
+        raise ValueError('price history too short')
 
     y_vals = np.array(df.Close)
     y_vals_len = len(y_vals)
@@ -34,7 +34,7 @@ def get_ols_signals(tsymbol, df, path):
         x_vals = sm.add_constant([x for x in range(prices_len)])
     except:
         print(f'\nERROR: Stats models add const API failed for {tsymbol} while generating OLS signals')
-        return
+        raise RuntimeError('Stats Models API failure')
 
     x_vals_len = len(x_vals)
 
@@ -47,21 +47,21 @@ def get_ols_signals(tsymbol, df, path):
         model_1y = sm.OLS(y_vals[(y_vals_len-index_1y):], x_vals[(x_vals_len-index_1y):]).fit()
     except:
         print(f'\nERROR: Stats models OLS API failed for {tsymbol} while generating OLS signals')
-        return
+        raise RuntimeError('Stats Models API failure')
 
     #Model last 5 years data
     try:
         model = sm.OLS(y_vals, x_vals).fit()
     except:
         print(f'\nERROR: Stats models OLS API failed for {tsymbol} while generating OLS signals')
-        return
+        raise RuntimeError('Stats Models API failure')
 
     #Get yprediction to plot the 1y OLS line along with the price chart
     try:
         y1_predictions = model_1y.predict()
     except:
         print(f'\nERROR: Stats models OLS predict API failed for {tsymbol} while generating OLS signals')
-        return
+        raise RuntimeError('Stats Models API failure')
 
     y1_predictions_len = len(y1_predictions)
 
@@ -70,7 +70,8 @@ def get_ols_signals(tsymbol, df, path):
         y_predictions = model.predict()
     except:
         print(f'\nERROR: Stats models OLS predict API failed for {tsymbol} while generating OLS signals')
-        return
+        raise RuntimeError('Stats Models API failure')
+
     y_predictions_len = len(y_predictions)
 
     #pd dataframe for 1Y predictions. Will need all elements in same size so need to fill in nan elsewhere

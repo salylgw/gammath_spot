@@ -23,11 +23,14 @@ def get_kf_state_means(tsymbol, df):
     sm_len = 0
 
     if (prices_len > 0):
-        #Initialize Kalman filter with default params
-        kf = KalmanFilter()
+        try:
+            #Initialize Kalman filter with default params
+            kf = KalmanFilter()
 
-        #Get the state mean and covariance
-        state_means, state_covariance = kf.filter(df.Close)
+            #Get the state mean and covariance
+            state_means, state_covariance = kf.filter(df.Close)
+        except:
+            raise RuntimeError('Failed to generate Kalman Filter State Means and Covariance')
 
         #Extract state means into PD series
         ds_sm = pd.Series(state_means.flatten())
@@ -38,9 +41,7 @@ def get_kf_state_means(tsymbol, df):
         print(f'\nError: Incorrect prices length in KF for {tsymbol}')
 
     if ((sm_len <= 0) or (prices_len <= 0)):
-        kf_max_score += 10
-        kf_signals = f'KF:ERROR'
-        return state_means, kf_buy_score, kf_sell_score, kf_max_score, kf_signals
+        raise ValueError('Incorrect length of data frame')
 
     #Get the most recent state mean to compare with most recent price
     last_sm = ds_sm[sm_len-1]

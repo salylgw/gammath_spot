@@ -23,14 +23,16 @@ def get_macd_signals(tsymbol, df, path):
     macd_sell_score = 0
     macd_max_score = 0
 
-    macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
+    try:
+        macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
+    except:
+        print(f'\nError: getting MACD for {tsymbol}')
+        raise RuntimeError('MACD data generation failed')
 
     macd_len = len(macd)
     if (macd_len <= 0):
-        print(f'\nERROR: MACD length is 0 for {tsymbol}')
-        macd_max_score += 10
-        macd_signals = f'MACD: ERROR'
-        return macd, macd_signal, macd_buy_score, macd_sell_score, macd_max_score, macd_signals
+        print(f'\nError: Incorrect length MACD data returned for {tsymbol}')
+        raise ValueError('MACD data length error')
 
     #Check current MACD trend
     macd_trend = ''

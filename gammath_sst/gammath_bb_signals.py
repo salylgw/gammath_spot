@@ -15,8 +15,11 @@ def get_bollinger_bands_signals(tsymbol, df, path):
 
     print(f'\nGetting bollinger bands signals for {tsymbol}')
 
-    #Get bollinger bands values
-    ub, mb, lb = BBANDS(df.Close, timeperiod=BBANDS_TIME_PERIOD, nbdevup=2, nbdevdn=2, matype=0)
+    try:
+        #Get bollinger bands values
+        ub, mb, lb = BBANDS(df.Close, timeperiod=BBANDS_TIME_PERIOD, nbdevup=2, nbdevdn=2, matype=0)
+    except:
+        raise RuntimeError('Bollinger Band Call Failed')
 
     bb_len = len(mb)
 
@@ -25,11 +28,11 @@ def get_bollinger_bands_signals(tsymbol, df, path):
     bb_max_score = 0
     bb_signals = ''
 
-    if (bb_len<=0):
+    if (bb_len <= 0):
         print(f'\nERROR: bollinger bands length is 0 for {tsymbol}')
         bb_max_score += 10
         bb_signals = f'bollinger bands: ERROR'
-        return ub, mb, lb, bb_buy_score, bb_sell_score, bb_max_score, bb_signals
+        raise ValueError('Bollinger Bands call return 0 length data')
 
     #Get current values for lower, middle and upper bands
     last_val_lb = lb[bb_len-1]

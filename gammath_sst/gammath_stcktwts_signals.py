@@ -85,6 +85,7 @@ def get_stocktwits_signals(tsymbol, path):
 
     except:
         print('\nError while getting stocktwits html page for ', tsymbol, ': ', sys.exc_info()[0])
+        raise RuntimeError('Stocktwits signal generation failed')
 
     st_max_score += 5
 

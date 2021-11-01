@@ -15,7 +15,10 @@ def get_peg_signals(tsymbol, df_summ):
     peg_sell_score = 0
     peg_max_score = 0
 
-    peg = round(df_summ['pegRatio'][0], 3)
+    try:
+        peg = round(df_summ['pegRatio'][0], 3)
+    except:
+        raise ValueError('PEG value not found')
 
     print('PEG ratio for ', tsymbol, ': ', peg)
 

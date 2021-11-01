@@ -28,8 +28,11 @@ def get_pe_signals(tsymbol, df_summ):
         print('\nSP500_SEC_PES file found')
         df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
 
-    tpe = round(df_summ['trailingPE'][0], 3)
-    fpe = round(df_summ['forwardPE'][0], 3)
+    try:
+        tpe = round(df_summ['trailingPE'][0], 3)
+        fpe = round(df_summ['forwardPE'][0], 3)
+    except:
+        raise ValueError('PE values not found')
 
     avg_tpe = 0
     avg_fpe = 0

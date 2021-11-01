@@ -14,8 +14,9 @@ import os
 Tickers_dir = Path('tickers')
 
 def get_ticker_calendar(tsymbol, ticker, path):
+
     if (len(tsymbol) == 0):
-        return None
+        raise ValueError('Invalid symbol')
 
     calendar_dont_need_fetch = True
 
@@ -48,7 +49,7 @@ def get_ticker_calendar(tsymbol, ticker, path):
             calendar_dont_need_fetch = False
     except:
         print(f'\nError reading Calendar file for ticker {tsymbol} not found')
-        return None
+        raise RuntimeError('Error calendar data file')
 
     if not calendar_dont_need_fetch:
         print(f'\nFetching calendar for {tsymbol}')
@@ -61,7 +62,7 @@ def get_ticker_calendar(tsymbol, ticker, path):
                 print(f'\nCalendar for {tsymbol} is empty')
         except:
             print(f'\nError getting Calendar for ticker {tsymbol} not found')
-            return None
+            raise RuntimeError('Error getting calendar data')
 
 
     return

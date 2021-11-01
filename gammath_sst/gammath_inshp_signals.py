@@ -16,7 +16,10 @@ def get_inshp_signals(tsymbol, df_summ):
     inshp_sell_score = 0
     inshp_max_score = 0
 
-    inshp = df_summ['heldPercentInsiders'][0]
+    try:
+        inshp = df_summ['heldPercentInsiders'][0]
+    except:
+        raise ValueError('heldPercentInsiders not found')
 
     print('inshp for ', tsymbol, ': ', inshp)
 

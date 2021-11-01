@@ -100,7 +100,11 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
     #Use short ratio to read the bullish/bearish trend
     #Add weightage for buy/sell scores
-    shortRatio = df_summ['shortRatio'][0]
+    try:
+        shortRatio = df_summ['shortRatio'][0]
+    except:
+        shortRatio = 0
+
     if (shortRatio > 0):
         if (shortRatio < 3):
             options_buy_score += 6

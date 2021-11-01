@@ -23,13 +23,15 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_max_score = 0
     rsi_signals = ''
 
-    rsi = RSI(df.Close, timeperiod=RSI_TIME_PERIOD)
+    try:
+        rsi = RSI(df.Close, timeperiod=RSI_TIME_PERIOD)
+    except:
+        raise RuntimeError('RSI call failed')
+
     rsi_len = len(rsi)
     if (rsi_len <= 0):
         print(f'\nError: Incorrect length returned in RSI for {tsymbol}')
-        rsi_signals = f'rsi:ERROR'
-        rsi_max_score += 10
-        return rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals
+        raise ValueError('Invalid length of RSI data')
 
     rsi_ds = rsi.describe()
     rsi_ds.to_csv(path / f'{tsymbol}_RSI_summary.csv')

@@ -24,9 +24,7 @@ def get_price_signals(tsymbol, df, df_summ):
     prices_len = len(prices)
     if (prices_len <= 0):
         print(f'\nError: Incorrect length of Price dataframe for {tsymbol}')
-        price_signals = f'price:ERROR'
-        price_max_score += 10
-        return price_buy_score, price_sell_score, price_max_score, price_signals
+        raise ValueError('Invalid Price data for generating signals')
 
     lp = prices[prices_len-1]
 
@@ -112,17 +110,33 @@ def get_price_signals(tsymbol, df, df_summ):
     rp_mp = round(rp_mp, 3)
     rp_tp = round(rp_tp, 3)
 
-    #50-day average
-    fiftyDayAverage = df_summ['fiftyDayAverage'][0]
+    try:
+        #50-day average
+        fiftyDayAverage = df_summ['fiftyDayAverage'][0]
+    except:
+        print(f'\n50-day average value not found for {tsymbol}')
+        fiftyDayAverage = 0
 
-    #200-day average
-    twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
+    try:
+        #200-day average
+        twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
+    except:
+        print(f'\n200-day average value not found for {tsymbol}')
+        twoHundredDayAverage = 0
 
-    #52-week low
-    yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
+    try:
+        #52-week low
+        yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
+    except:
+        print(f'\52-week low value not found for {tsymbol}')
+        yearly_lowest_val = 0
 
-    #52-week high
-    yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
+    try:
+        #52-week high
+        yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
+    except:
+        print(f'\52-week high value not found for {tsymbol}')
+        yearly_highest_val = 0
 
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):

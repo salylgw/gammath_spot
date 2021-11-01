@@ -17,7 +17,11 @@ def get_pbr_signals(tsymbol, df_summ):
 
     try:
         if (len(df_summ) > 0):
-            pbr = df_summ['priceToBook'][0]
+            try:
+                pbr = df_summ['priceToBook'][0]
+            except:
+                raise ValueError('PBR not found')
+
             if (pbr > 0):
                 pbr = round(pbr, 3)
 
@@ -30,6 +34,8 @@ def get_pbr_signals(tsymbol, df_summ):
                     pbr_sell_score += 1
         else:
             print(f'\nSummary DF for {tsymbol} is empty. PBR not found')
+            raise RuntimeError('Dataframe empty')
+
     except:
         pbr = 0
         print(f'\nPBR value not found for {tsymbol}')

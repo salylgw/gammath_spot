@@ -15,6 +15,9 @@ import os
 
 def get_options_data(tsymbol, ticker, path):
 
+    if (len(tsymbol) == 0):
+        raise ValueError('Invalid symbol')
+
     #Get current date and time
     current_dt = datetime.now()
 
@@ -33,7 +36,7 @@ def get_options_data(tsymbol, ticker, path):
 
                 option_date = option_dates[0]
             else:
-                return None
+                raise RuntimeError('No option expiry dates')
 
         #Check if file exists and is it from another day
         file_exists = (path / f'{tsymbol}_call_{option_date}.csv').exists()
@@ -80,7 +83,7 @@ def get_options_data(tsymbol, ticker, path):
 
     except:
         print(f'\nError getting options data for {tsymbol}')
-        return None
+        raise RuntimeError('No option data')
 
     return
 

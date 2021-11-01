@@ -34,10 +34,8 @@ def get_mfi_signals(tsymbol, df, path):
     prices = df.Close
     prices_len = len(prices)
     if (prices_len <= 0):
-        mfi_max_score = 10
         print(f'\nError: Incorrect length of Price dataframe for {tsymbol}')
-        mfi_signals = f'MFI:ERROR'
-        return mfi_signals
+        raise ValueError('Invalid Price data for generating MFI')
     else:
         lp = prices[prices_len-1]
         lpm1 = prices[prices_len-2]
@@ -48,10 +46,8 @@ def get_mfi_signals(tsymbol, df, path):
         mfi_ds = mfi.describe()
         mfi_mean = mfi_ds['mean']
     except:
-        mfi_max_score = 5
         print(f'\nError: getting MFI for {tsymbol}')
-        mfi_signals = f'MFI:ERROR'
-        return mfi_signals
+        raise RuntimeError('MFI data generation failed')
 
     #Get current price direction
     if (lp < lpm1):
@@ -110,9 +106,7 @@ def get_mfi_signals(tsymbol, df, path):
         mfi_max_score += 3
     else:
         print(f'\nError: MFI length is 0 for {tsymbol}')
-        mfi_signals = f'MFI:ERROR'
-        mfi_max_score = 10
-        return mfi_signals
+        raise ValueError('Invalid MFI data length ')
 
     mfi_buy_rec = f'mfi_buy_score:{mfi_buy_score}/{mfi_max_score}'
     mfi_sell_rec = f'mfi_sell_score:{mfi_sell_score}/{mfi_max_score}'
