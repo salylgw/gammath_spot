@@ -18,14 +18,19 @@ import random
 MIN_DELAY_BETWEEN_BATCHES = 1
 MAX_DELAY_BETWEEN_BATCHES = 3
 
-cores_to_use = ((mp.cpu_count() >> 1) + 1)
-
 if __name__ == '__main__':
+
     mp.set_start_method('fork')
+
+    #Check number of cores we have to be able to run in parallel
     core_count = mp.cpu_count()
-#    cores_to_use = ((core_count // 2) - 1)
-    print('\nNumber of logical cores: ', core_count, 'Usable logical cores: ', cores_to_use)
+
+    #Use half the cores from count; Need to check portability on this
+    cores_to_use = (core_count >> 1)
+
+    print('\nNumber of logical cores: ', core_count, 'Using logical cores: ', cores_to_use)
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
+
     proc_handles = []
     sf_name = sys.argv[1]
     print(sf_name)
@@ -34,6 +39,7 @@ if __name__ == '__main__':
 
     max_tickers = len(watch_list)
 
+    #Use one process per core so we can run core_to_use number of processes in parallel
     start_index = 0
     if (max_tickers > cores_to_use):
         end_index = cores_to_use

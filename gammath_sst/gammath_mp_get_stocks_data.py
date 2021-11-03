@@ -17,13 +17,18 @@ import re
 import pandas as pd
 import random
 
-cores_to_use = ((mp.cpu_count() >> 1) + 1)
-
 if __name__ == '__main__':
+
     mp.set_start_method('fork')
+
+    #Check how many cores we have to be able to run parallel
     core_count = mp.cpu_count()
-#    cores_to_use = ((core_count // 2) - 1)
-    print('\nNumber of logical cores: ', core_count, 'Usable logical cores: ', cores_to_use)
+
+    #Use half the cores from count; Need to check portability on this
+    cores_to_use = ((mp.cpu_count() >> 1))
+
+    print('\nNumber of logical cores: ', core_count, 'Using logical cores: ', cores_to_use)
+
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
     proc_handles = []
     sf_name = sys.argv[1]
@@ -36,6 +41,8 @@ if __name__ == '__main__':
     #Fetch and save S&P500 list.
     gspl.get_sp500_list()
 
+    #One process per ticker symbol
+    #Run cores_to_use number of processes in parallel
     start_index = 0
     if (max_tickers > cores_to_use):
         end_index = cores_to_use
