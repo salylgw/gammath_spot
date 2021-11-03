@@ -386,9 +386,15 @@ def get_ols_signals(tsymbol, df, path):
     ols_buy_rec = f'ols_buy_rec:{ols_buy_score}/{ols_max_score}'
     ols_sell_rec = f'ols_sell_rec:{ols_sell_score}/{ols_max_score}'
 
+    #Round it to use less space when logging
+    slope_dir_1y = round(slope_dir_1y, 3)
+
+    #Round it to use less space when logging
+    slope_dir_5y = round(slope_dir_5y, 3)
+
     if (fits_5y):
-        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},ols_fit_score:{fit_score},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
+        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},1y_slope:{slope_dir_1y},ols_fit_score:{fit_score},5y_slope:{slope_dir_5y},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
     else:
-        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},ols_fit_score:{fit_score},cdiff_1y:{curr_1y_diff},bp_1y:{bp_1y},mp_1y:{mp_1y},tp_1y:{tp_1y},max_1y_diff:{max_1y_diff}'
+        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},1y_slope:{slope_dir_1y},ols_fit_score:{fit_score},5y_slope:{slope_dir_5y},cdiff_1y:{curr_1y_diff},bp_1y:{bp_1y},mp_1y:{mp_1y},tp_1y:{tp_1y},max_1y_diff:{max_1y_diff}'
 
     return y1_series, y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals
