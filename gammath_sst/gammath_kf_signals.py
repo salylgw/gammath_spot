@@ -262,4 +262,4 @@ def get_kf_state_means(tsymbol, df):
         kf_signals = f'KF: {kf_buy_rec},{kf_sell_rec},camdc: {curr_above_mean_count}, bp:{bp_am}, mp:{mp_am}, tp:{tp_am}, mamdc: {kf_max_above_mean_count}, cd:{curr_diff},pd_bp:{pd_bp},pd_mp:{pd_mp},pd_tp:{pd_tp}'
 
     #return state means also to plot the charts
-    return state_means, kf_buy_score, kf_sell_score, kf_max_score, kf_signals
+    return ds_sm, kf_buy_score, kf_sell_score, kf_max_score, kf_signals

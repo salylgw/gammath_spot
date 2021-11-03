@@ -244,7 +244,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         kf_signals = ''
 
         #Kalman Filter signals
-        state_means, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
+        ds_sm, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
     except RuntimeError:
         print('\nError generating Kalman filter data for ', tsymbol, ': ', sys.exc_info()[0])
     except ValueError:
@@ -378,7 +378,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         plot_data5 = pd.DataFrame({sym_str: [0]})
 
     try:
-        plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
+        plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': ds_sm})
     except:
         print(f'\nError generating KF DF for {sym_str}')
         plot_data6 = pd.DataFrame({sym_str: [0]})
@@ -398,7 +398,7 @@ def get_ticker_hist_n_analysis(tsymbol):
         plot_data4.plot(ax=axes[3],lw=1,title='Money Flow Index')
         axes[3].axhline(MFI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[3].axhline(MFI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-        plot_data5.plot(ax=axes[5],lw=1,title='Stochastic Slow')
+        plot_data5.plot(ax=axes[4],lw=1,title='Stochastic Slow')
         axes[4].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
         plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
