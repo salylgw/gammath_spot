@@ -15,6 +15,9 @@ import os
 
 def get_options_data(tsymbol, ticker, path):
 
+    #Get stock info summary from the internet
+    print(f'\nGetting {tsymbol} options data.')
+
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
@@ -22,13 +25,35 @@ def get_options_data(tsymbol, ticker, path):
     current_dt = datetime.now()
 
     try:
-        if ((path / f'{tsymbol}_options_dates.csv').exists()):
+
+        #Check if file exists and is it from another day
+        file_exists = (path / f'{tsymbol}_options_dates.csv').exists()
+
+        if (file_exists):
+            print(f'\nOptions dates for {tsymbol} exist. Checking it is latest')
+
+            #Check if it is latest
+            fstat = os.stat(path / f'{tsymbol}_options_dates.csv')
+            fct_time = time.ctime(fstat.st_ctime).split(' ')
+            dt = time.strftime('%x').split('/')
+            if (fct_time[2] == dt[1]):
+                print('No need to get new file')
+                dont_need_fetch = True
+            else:
+                print('Date mismatch. Need to fetch new file')
+                dont_need_fetch = False
+        else:
+            print(f'\nOptions dates for {tsymbol} exist and is from today')
+            dont_need_fetch = False
+
+        if (dont_need_fetch):
             print(f'\nGet options dates for {tsymbol}')
             #Get the latest options expiry date
             dates_df = pd.read_csv(path / f'{tsymbol}_options_dates.csv', index_col='Unnamed: 0')
 
             option_date = dates_df.loc[0][0]
         else:
+            #Read fresh data
             option_dates = ticker.options
             if (len(option_dates)):
                 opt_dates_ds = pd.Series(option_dates)
@@ -42,6 +67,7 @@ def get_options_data(tsymbol, ticker, path):
         file_exists = (path / f'{tsymbol}_call_{option_date}.csv').exists()
 
         if file_exists:
+            #Check if it is latest
             fstat = os.stat(path / f'{tsymbol}_call_{option_date}.csv')
             fct_time = time.ctime(fstat.st_ctime).split(' ')
             dt = time.strftime('%x').split('/')
