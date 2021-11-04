@@ -21,9 +21,6 @@ def get_options_data(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
-    #Get current date and time
-    current_dt = datetime.now()
-
     try:
 
         #Check if file exists and is it from another day

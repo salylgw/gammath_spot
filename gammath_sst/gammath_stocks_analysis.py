@@ -71,6 +71,14 @@ def get_ticker_hist_n_analysis(tsymbol):
         df = pd.read_csv(path / f'{tsymbol}_history.csv')
         print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
         df.info()
+        dt = time.strftime('%x').split('/')
+        df_ld = df.Date[len(df)-1]
+        df_ld = df_ld.split('-')
+        if ((int(dt[0]) != int(df_ld[1])) and (int(dt[1]) != int(df_ld[2]))):
+            raise ValueError('Stale price data')
+    except ValueError:
+        print('\nERROR: Stale price data for ', tsymbol)
+        return
     except:
         print('\nERROR: Stock history file not found for ', tsymbol)
         return
