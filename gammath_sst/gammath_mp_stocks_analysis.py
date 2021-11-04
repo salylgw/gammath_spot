@@ -9,14 +9,8 @@ import time
 import multiprocessing as mp
 from multiprocessing import Process
 import gammath_stocks_analysis as gsa
-import sys
-from pathlib import Path
-import re
 import pandas as pd
-import random
-
-MIN_DELAY_BETWEEN_BATCHES = 1
-MAX_DELAY_BETWEEN_BATCHES = 3
+import sys
 
 if __name__ == '__main__':
 
@@ -46,10 +40,14 @@ if __name__ == '__main__':
     else:
         end_index = max_tickers
 
+    #Instantiate GSA class
+    gsa_instance = gsa.GSA()
+
     while (max_tickers):
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
-            proc_handles.append(Process(target=gsa.get_ticker_hist_n_analysis, args=(f'{sym}',)))
+            tsymbol = f'{sym}'
+            proc_handles.append(Process(target=gsa_instance.do_stock_analysis_and_compute_score, args=(f'{sym}',)))
             proc_handles[i].start()
 
             max_tickers -= 1
@@ -69,151 +67,7 @@ if __name__ == '__main__':
                 end_index += max_tickers
 
 
-    Tickers_dir = Path('tickers')
-
-    #Get all the subdirs. Need to check for is_dir
-    p = Path('tickers')
-    
-    #Somehow looks like os.is_dir isn't supported
-    #Using pathlib/Path instead since is_dir is supported there
-    subdirs = [x for x in p.iterdir() if x.is_dir()]
-
-    print('\nNum of subdirs: ', len(subdirs))
-
-    pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
-    pattern_for_final_sell_score = re.compile(r'(final_sell_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    #Collect 1Y OLS regression fit scores for debugging
-    pattern_for_1y_ols_fit_score = re.compile(r'(ols_1y_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    #Collect OLS regression fit scores for debugging
-    pattern_for_ols_fit_score = re.compile(r'(ols_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    #Collect SGD regression fit scores for debugging
-    pattern_for_sgd_fit_score = re.compile(r'(sgd_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    #Collect Ridge regression fit scores for debugging
-    pattern_for_ridge_fit_score = re.compile(r'(ridge_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    #Collect Bayesian Ridge regression fit scores for debugging
-    pattern_for_bayesian_ridge_fit_score = re.compile(r'(bayesian_ridge_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    #Collect Lasso regression fit scores for debugging
-    pattern_for_lasso_fit_score = re.compile(r'(lasso_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    #Collect Logistic regression scores for debugging
-    pattern_for_lgstic_fit_score = re.compile(r'(lgstic_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-    df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
-
-    df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
-
-    df_fs = pd.DataFrame(columns=['Ticker', 'ols_1y_fit_score', 'ols_fit_score' ,'sgd_fit_score', 'ridge_fit_score', 'bayesian_fit_score', 'lasso_fit_score', 'lgstic_fit_score'], index=range(len(subdirs)))
-
-    i = 0
-    j = 0
-    k = 0
-
-    for subdir in subdirs:
-        if not subdir.exists():
-            print('\nError. ', subdir, ' not found')
-        else:
-            try:
-                f = open(subdir / 'signal.txt', 'r')
-                content = f.read()
-                matched_string = pattern_for_final_buy_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_b['Ticker'][i] = f'{subdir.name}'
-                    df_b['final_buy_score'][i] = float(val)
-                    i += 1
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                matched_string = pattern_for_final_sell_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_s['Ticker'][j] = f'{subdir.name}'
-                    df_s['final_sell_score'][j] = float(val)
-                    j += 1
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-
-                matched_string = pattern_for_1y_ols_fit_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_fs['Ticker'][k] = f'{subdir.name}'
-                    df_fs['ols_1y_fit_score'][k] = float(val)
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                matched_string = pattern_for_ols_fit_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_fs['Ticker'][k] = f'{subdir.name}'
-                    df_fs['ols_fit_score'][k] = float(val)
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                matched_string = pattern_for_sgd_fit_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_fs['Ticker'][k] = f'{subdir.name}'
-                    df_fs['sgd_fit_score'][k] = float(val)
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                matched_string = pattern_for_ridge_fit_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_fs['Ticker'][k] = f'{subdir.name}'
-                    df_fs['ridge_fit_score'][k] = float(val)
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                matched_string = pattern_for_bayesian_ridge_fit_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_fs['Ticker'][k] = f'{subdir.name}'
-                    df_fs['bayesian_fit_score'][k] = float(val)
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                matched_string = pattern_for_lasso_fit_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_fs['Ticker'][k] = f'{subdir.name}'
-                    df_fs['lasso_fit_score'][k] = float(val)
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                matched_string = pattern_for_lgstic_fit_score.search(content)
-                if (matched_string):
-                    kw, val = matched_string.groups()
-                    print(f'\n{kw} for {subdir.name}: {val}')
-                    df_fs['Ticker'][k] = f'{subdir.name}'
-                    df_fs['lgstic_fit_score'][k] = float(val)
-                else:
-                    print(f'\n{kw} NOT found for {subdir}')
-
-                k += 1
-                f.close()
-            except:
-                print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
-
-    df_b.sort_values('final_buy_score').dropna(how='all').to_csv(Tickers_dir / 'overall_buy_scores.csv', index=False)
-    df_s.sort_values('final_sell_score').dropna(how='all').to_csv(Tickers_dir / 'overall_sell_scores.csv', index=False)
-
-    #Regression fit scores Debug data
-    df_fs.sort_values('Ticker').dropna(how='all').to_csv(Tickers_dir / 'overall_regression_fit_scores.csv', index=False)
+    #Aggregate all buy and sell scores
+    gsa_instance.aggregate_scores()
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')

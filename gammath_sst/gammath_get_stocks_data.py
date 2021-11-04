@@ -19,63 +19,68 @@ import gammath_stocks_options as gso
 import gammath_get_stcktwts as ggstw
 import gammath_stocks_calendar as gsc
 
-Tickers_dir = Path('tickers')
+class GSD:
 
-#Get data for stock ticker symbol from the internet
-def get_stocks_data(tsymbol):
-    if (len(tsymbol) == 0):
-        return None
+    def __init__(self):
 
-    path = Tickers_dir / f'{tsymbol}'
+        self.Tickers_dir = Path('tickers')
 
-    if not path.exists():
-        path.mkdir(parents=True, exist_ok=True)
+    def get_stocks_data(self, tsymbol):
+        #Get data for stock ticker symbol from the internet
 
-    #Fetch stocktwits page; Finish getting all data outside of yahoo
-    ggstw.get_stocktwits_ticker_info(tsymbol, path)
+        if (len(tsymbol) == 0):
+            return None
 
-    try:
-        #Create Yahoo finance ticker handle
-        ticker = yf.Ticker(tsymbol)
-    except:
-        raise RuntimeError('Failed to create Yahoo ticker handle')
+        path = self.Tickers_dir / f'{tsymbol}'
 
-    try:
-        #Get stock info
-        gss.get_ticker_summary(tsymbol, ticker, path)
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
 
-    except ValueError:
-        print(f'Error while getting stock summary for {tsymbol}')
+        #Fetch stocktwits page; Finish getting all data outside of yahoo
+        ggstw.get_stocktwits_ticker_info(tsymbol, path)
 
-    try:
-        #Get stock financials
-        gsf.get_ticker_financials(tsymbol, ticker, path)
-    except ValueError:
-        print(f'Error while getting stock financial data for {tsymbol}')
+        try:
+            #Create Yahoo finance ticker handle
+            ticker = yf.Ticker(tsymbol)
+        except:
+            raise RuntimeError('Failed to create Yahoo ticker handle')
 
-    try:
-        #Get stock options data
-        gso.get_options_data(tsymbol, ticker, path)
-    except ValueError:
-        print(f'Error while getting stock options data for {tsymbol}')
-    except RuntimeError:
-        print(f'Could not get stock options data for {tsymbol}')
+        try:
+            #Get stock info
+            gss.get_ticker_summary(tsymbol, ticker, path)
 
-    #Getting calendar info is too slow.
-#    try:
-#        #Fetch calendar
-#        gsc.get_ticker_calendar(tsymbol, ticker, path)
-#    except ValueError:
-#        print(f'Error while getting stock calendar data for {tsymbol}')
-#    except RuntimeError:
-#        print(f'Could not get stock calendar data for {tsymbol}')
+        except ValueError:
+            print(f'Error while getting stock summary for {tsymbol}')
 
-    try:
-        #Get stock history
-        result = gsh.get_ticker_history(tsymbol, ticker, path)
-    except ValueError:
-        print(f'\nError while getting ticker price history for {tsymbol}')
-    except RuntimeError:
-        print(f'\nCould not get stock price history data for {tsymbol}')
+        try:
+            #Get stock financials
+            gsf.get_ticker_financials(tsymbol, ticker, path)
+        except ValueError:
+            print(f'Error while getting stock financial data for {tsymbol}')
 
-    return
+        try:
+            #Get stock options data
+            gso.get_options_data(tsymbol, ticker, path)
+        except ValueError:
+            print(f'Error while getting stock options data for {tsymbol}')
+        except RuntimeError:
+            print(f'Could not get stock options data for {tsymbol}')
+
+        #Getting calendar info is too slow.
+#       try:
+#       #Fetch calendar
+#       gsc.get_ticker_calendar(tsymbol, ticker, path)
+#       except ValueError:
+#           print(f'Error while getting stock calendar data for {tsymbol}')
+#       except RuntimeError:
+#           print(f'Could not get stock calendar data for {tsymbol}')
+
+        try:
+            #Get stock history
+            result = gsh.get_ticker_history(tsymbol, ticker, path)
+        except ValueError:
+            print(f'\nError while getting ticker price history for {tsymbol}')
+        except RuntimeError:
+            print(f'\nCould not get stock price history data for {tsymbol}')
+
+        return

@@ -41,6 +41,9 @@ if __name__ == '__main__':
     #Fetch and save S&P500 list.
     gspl.get_sp500_list()
 
+    #Instantiate GSD class
+    gsd_instance = ggsd.GSD()
+
     #One process per ticker symbol
     #Run cores_to_use number of processes in parallel
     start_index = 0
@@ -52,7 +55,7 @@ if __name__ == '__main__':
     while (max_tickers):
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
-            proc_handles.append(Process(target=ggsd.get_stocks_data, args=(f'{sym}',)))
+            proc_handles.append(Process(target=gsd_instance.get_stocks_data, args=(f'{sym}',)))
             proc_handles[i].start()
 
             max_tickers -= 1
