@@ -11,14 +11,17 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
-#Get summary of past 5 years history
-end_date = datetime.today()
-start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
 def get_ticker_history(tsymbol, ticker, path):
 
+    print(f'\nGetting ticker history for {tsymbol}')
+
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
+
+    #Get summary of past 5 years history
+    end_date = datetime.today()
+    start_date = datetime(end_date.year-5, end_date.month, end_date.day)
 
     try:
         stock_history = ticker.history(interval='1d', start=start_date, end=end_date, actions=True,auto_adjust=True)

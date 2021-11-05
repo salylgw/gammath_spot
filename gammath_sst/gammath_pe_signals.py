@@ -8,11 +8,12 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 
-Tickers_dir = Path('./tickers')
 
 def get_pe_signals(tsymbol, df_summ):
 
     print(f'\nGetting PE signals for {tsymbol}')
+
+    Tickers_dir = Path('./tickers')
 
     path = Tickers_dir
     if not path.exists():

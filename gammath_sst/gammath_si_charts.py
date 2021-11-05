@@ -15,18 +15,21 @@ import sys
 import os
 import time
 
-RSI_OVERSOLD_LEVEL = 30
-RSI_OVERBOUGHT_LEVEL = 70
-
-MFI_OVERSOLD_LEVEL = 20
-MFI_OVERBOUGHT_LEVEL = 80
-
-STOCH_OVERSOLD_LEVEL = 20
-STOCH_OVERBOUGHT_LEVEL = 80
-
-Tickers_dir = Path('tickers')
 
 def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, ols_y_predictions, ols_y1_predictions):
+
+    print(f'\nPlotting and saving charts for {tsymbol}')
+
+    RSI_OVERSOLD_LEVEL = 30
+    RSI_OVERBOUGHT_LEVEL = 70
+
+    MFI_OVERSOLD_LEVEL = 20
+    MFI_OVERBOUGHT_LEVEL = 80
+
+    STOCH_OVERSOLD_LEVEL = 20
+    STOCH_OVERBOUGHT_LEVEL = 80
+
+    Tickers_dir = Path('tickers')
 
     path = Tickers_dir / f'{tsymbol}'
 

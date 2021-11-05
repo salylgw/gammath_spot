@@ -10,11 +10,12 @@ import numpy as np
 import statsmodels.api as sm
 from pathlib import Path
 
-AVG_TRADING_DAYS_PER_YEAR = 252
 
 def get_ols_signals(tsymbol, df, path):
 
     print(f'\nGetting OLS signals for {tsymbol}')
+
+    AVG_TRADING_DAYS_PER_YEAR = 252
 
     ols_buy_score = 0
     ols_sell_score = 0

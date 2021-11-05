@@ -8,11 +8,12 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 
-TRILLION_DOLLAR_MCAP = 1000000000000
 
 def get_mktcap_signals(tsymbol, df_summ):
 
     print(f'\nGetting Market Cap signals for {tsymbol}')
+
+    TRILLION_DOLLAR_MCAP = 1000000000000
 
     mktcap_buy_score = 0
     mktcap_sell_score = 0

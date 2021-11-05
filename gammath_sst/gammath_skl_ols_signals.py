@@ -9,11 +9,12 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
-NUM_TRADING_DAYS_PER_YEAR = 252
 
 def get_ols_signals(tsymbol, df, path):
 
     print(f'\nGetting OLS signals for {tsymbol}')
+
+    NUM_TRADING_DAYS_PER_YEAR = 252
 
     ols_buy_score = 0
     ols_sell_score = 0

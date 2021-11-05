@@ -13,15 +13,17 @@ import time
 import os
 import random
 
-MIN_DELAY_BETWEEN_BATCHES = 1
-MAX_DELAY_BETWEEN_BATCHES = 3
-
-Tickers_dir = Path('tickers')
-
 def get_ticker_financials(tsymbol, ticker, path):
+
+    print(f'\nGetting financials for {tsymbol}')
 
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
+
+    MIN_DELAY_BETWEEN_BATCHES = 1
+    MAX_DELAY_BETWEEN_BATCHES = 3
+
+    Tickers_dir = Path('tickers')
 
     qbs_dont_need_fetch = True
     qcf_dont_need_fetch = True

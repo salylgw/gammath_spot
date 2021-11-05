@@ -11,13 +11,13 @@ from pathlib import Path
 from talib import RSI, BBANDS, MACD, MFI, STOCH
 import numpy as np
 
-MACD_FAST_PERIOD = 12
-MACD_SLOW_PERIOD = 26
-MACD_SIGNAL_PERIOD = 9
-
 def get_macd_signals(tsymbol, df, path):
 
     print(f'\nGetting MACD signals for {tsymbol}')
+
+    MACD_FAST_PERIOD = 12
+    MACD_SLOW_PERIOD = 26
+    MACD_SIGNAL_PERIOD = 9
 
     macd_buy_score = 0
     macd_sell_score = 0

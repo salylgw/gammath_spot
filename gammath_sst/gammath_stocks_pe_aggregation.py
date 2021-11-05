@@ -9,10 +9,13 @@ from pathlib import Path
 import pandas as pd
 import sys
 
-Tickers_dir = Path('./tickers')
 
 # if __name__ == '__main__':
 def aggregate_pe_data():
+
+    print(f'\nAggregating PE data for {tsymbol}')
+
+    Tickers_dir = Path('./tickers')
 
     path = Tickers_dir
     if not path.exists():

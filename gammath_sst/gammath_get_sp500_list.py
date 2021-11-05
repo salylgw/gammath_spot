@@ -10,11 +10,14 @@ from pathlib import Path
 import os
 import time
 
-sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
-
-Tickers_dir = Path('./tickers')
 
 def get_sp500_list():
+
+    print(f'\nGetting list of SP500 companies')
+
+    sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
+
+    Tickers_dir = Path('./tickers')
 
     path = Tickers_dir
     if not path.exists():

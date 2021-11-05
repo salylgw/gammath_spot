@@ -10,14 +10,14 @@ from pathlib import Path
 from talib import MFI
 import numpy as np
 
-MFI_TIME_PERIOD = 14
-
-MFI_OVERSOLD_LEVEL = 20
-MFI_OVERBOUGHT_LEVEL = 80
 
 def get_mfi_signals(tsymbol, df, path):
 
     print(f'\nGetting MFI signals for {tsymbol}')
+
+    MFI_TIME_PERIOD = 14
+    MFI_OVERSOLD_LEVEL = 20
+    MFI_OVERBOUGHT_LEVEL = 80
 
     mfi_buy_score = 0
     mfi_sell_score = 0

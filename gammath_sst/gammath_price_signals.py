@@ -8,12 +8,13 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 import pandas as pd
 import numpy as np
 
-AVG_TRADING_DAYS_PER_YEAR = 252
-PRICE_PERCENT_CUTOFF = 85
 
 def get_price_signals(tsymbol, df, df_summ):
 
     print(f'\nGetting Price signals for {tsymbol}')
+
+    AVG_TRADING_DAYS_PER_YEAR = 252
+    PRICE_PERCENT_CUTOFF = 85
 
     price_buy_score = 0
     price_sell_score = 0

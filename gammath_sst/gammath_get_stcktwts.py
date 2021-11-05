@@ -9,11 +9,13 @@ from pathlib import Path
 import urllib.request
 import sys
 
-STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
 def get_stocktwits_ticker_info(tsymbol, path):
 
     print(f'\nGetting stocktwits page for {tsymbol}')
+
+    STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
+
     url = f'{STOCKTWITS_TICKER_ADDR}/symbol/{tsymbol}'
     print(url)
 

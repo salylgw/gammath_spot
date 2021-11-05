@@ -8,14 +8,14 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 import pandas as pd
 from talib import STOCH
 
-STOCH_FAST_PERIOD = 14
-STOCH_SLOW_PERIOD = 3
-STOCH_OVERSOLD_LEVEL = 20
-STOCH_OVERBOUGHT_LEVEL = 80
-
 def get_stochastics_slow_signals(tsymbol, df):
 
     print(f'\nGetting stochastics signals for {tsymbol}')
+
+    STOCH_FAST_PERIOD = 14
+    STOCH_SLOW_PERIOD = 3
+    STOCH_OVERSOLD_LEVEL = 20
+    STOCH_OVERBOUGHT_LEVEL = 80
 
     stoch_buy_score = 0
     stoch_sell_score = 0

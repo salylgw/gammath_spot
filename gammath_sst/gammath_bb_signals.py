@@ -9,11 +9,12 @@ import pandas as pd
 from talib import BBANDS
 import numpy as np
 
-BBANDS_TIME_PERIOD = 14
 
 def get_bollinger_bands_signals(tsymbol, df, path):
 
     print(f'\nGetting bollinger bands signals for {tsymbol}')
+
+    BBANDS_TIME_PERIOD = 14
 
     try:
         #Get bollinger bands values

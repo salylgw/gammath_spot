@@ -10,13 +10,14 @@ from pathlib import Path
 from talib import RSI
 import numpy as np
 
-RSI_TIME_PERIOD = 14
-RSI_OVERSOLD_LEVEL = 30
-RSI_OVERBOUGHT_LEVEL = 70
 
 def get_rsi_signals(tsymbol, df, path):
 
     print(f'\nGetting RSI signals for {tsymbol}')
+
+    RSI_TIME_PERIOD = 14
+    RSI_OVERSOLD_LEVEL = 30
+    RSI_OVERBOUGHT_LEVEL = 70
 
     rsi_buy_score = 0
     rsi_sell_score = 0

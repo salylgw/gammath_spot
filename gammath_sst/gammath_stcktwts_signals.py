@@ -8,22 +8,19 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import time
 import re
-import urllib.request
 import sys
 
 STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
 def get_stocktwits_signals(tsymbol, path):
 
+    print(f'\nGetting stocktwits signals for {tsymbol}')
+
     st_buy_score = 0
     st_sell_score = 0
     st_max_score = 0
     sentiment_change = None
     volume_change = None
-
-    print(f'\nGetting stocktwits signals for {tsymbol}')
-    url = f'{STOCKTWITS_TICKER_ADDR}/symbol/{tsymbol}'
-    print(url)
 
     #RE to extract sentiment change value
     pattern_for_sentiment_change = re.compile(r'("sentimentChange"):([-]*[0-9]*[.]*[0-9]*)')
