@@ -13,7 +13,7 @@ import sys
 # if __name__ == '__main__':
 def aggregate_pe_data():
 
-    print(f'\nAggregating PE data for {tsymbol}')
+    print(f'\nAggregating PE data')
 
     Tickers_dir = Path('./tickers')
 

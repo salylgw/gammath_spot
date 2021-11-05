@@ -10,7 +10,7 @@ import time
 
 def check_if_same_day(fstat):
 
-    print(f'\nChecking day')
+    print(f'\nChecking if same day file')
 
     fct_time = time.ctime(fstat.st_ctime).split(' ')
     dt = time.strftime('%x').split('/')

@@ -51,8 +51,6 @@ def get_rsi_signals(tsymbol, df, path):
     else:
         rsi_direction = 'direction_unclear'
 
-    rsi_max_score += 1
-
     #Get the RSI mean for reference to check for average RSI
     rsi_mean = rsi_ds['mean']
     if ((curr_rsi < rsi_mean) and (rsi_direction != 'falling')):

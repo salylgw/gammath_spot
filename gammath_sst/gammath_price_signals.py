@@ -152,6 +152,7 @@ def get_price_signals(tsymbol, df, df_summ):
         nftwlh = 'new fiftyTwoWeekHigh'
 
     if (last_falling_days_count > 0):
+
         price_buy_score -= 1
         price_sell_score += 1
 
@@ -174,7 +175,9 @@ def get_price_signals(tsymbol, df, df_summ):
             #If we are closer to 52-week high then increase the sell score; else increase the buy score
             if (pct_val >= PRICE_PERCENT_CUTOFF):
                 price_sell_score += 3
+
     elif (last_rising_days_count > 0):
+
         price_buy_score += 1
         price_sell_score -= 1
         if (last_rising_days_count <= rp_bp):
