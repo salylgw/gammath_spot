@@ -10,7 +10,7 @@ from pathlib import Path
 import pandas as pd
 import time
 import os
-
+import gammath_utils as gut
 
 def get_ticker_calendar(tsymbol, ticker, path):
 
@@ -32,22 +32,7 @@ def get_ticker_calendar(tsymbol, ticker, path):
         #Check if file exists and is it from another day
         if file_exists:
             fstat = os.stat(path / f'{tsymbol}_calendar.csv')
-            fct_time = time.ctime(fstat.st_ctime).split(' ')
-            dt = time.strftime('%x').split('/')
-            if (fct_time[2] == ''):
-                fct_date_index = 3
-            else:
-                fct_date_index = 2
-
-            fct_date = int(fct_time[fct_date_index])
-            dt_date = int(dt[1])
-
-            if (fct_date == dt_date):
-                print('No need to get new file')
-                calendar_dont_need_fetch = True
-            else:
-                print('Date mismatch. Need to fetch new file')
-                calendar_dont_need_fetch = False
+            calendar_dont_need_fetch = gut.check_if_same_day(fstat)
         else:
             calendar_dont_need_fetch = False
     except:

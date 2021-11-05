@@ -44,20 +44,33 @@ def get_rsi_signals(tsymbol, df, path):
     prev_rsi = rsi[rsi_len-2]
     preprev_rsi = rsi[rsi_len-3]
 
+    if ((curr_rsi < prev_rsi) and (prev_rsi < preprev_rsi)):
+        rsi_direction = 'falling'
+    elif ((curr_rsi > prev_rsi) and (prev_rsi > preprev_rsi)):
+        rsi_direction = 'rising'
+    else:
+        rsi_direction = 'direction_unclear'
+
+    rsi_max_score += 1
+
     #Get the RSI mean for reference to check for average RSI
     rsi_mean = rsi_ds['mean']
-    if (curr_rsi < rsi_mean):
+    if ((curr_rsi < rsi_mean) and (rsi_direction != 'falling')):
         rsi_avg = 'below average'
-        rsi_buy_score += 3
-        rsi_sell_score -= 3
+        rsi_buy_score += 4
+        rsi_sell_score -= 4
+    elif (curr_rsi < rsi_mean):
+        rsi_avg = 'below average'
+        rsi_buy_score += 2
+        rsi_sell_score -= 2
     elif (curr_rsi > rsi_mean):
         rsi_avg = 'above average'
-        rsi_sell_score += 3
-        rsi_buy_score -= 3
+        rsi_sell_score += 4
+        rsi_buy_score -= 4
     else:
         rsi_avg = 'average'
 
-    rsi_max_score += 3
+    rsi_max_score += 4
 
     #Higher weights when oversold or overbought
     #Score is calculated after checking percentile for number of days oversold/overbought
@@ -67,23 +80,6 @@ def get_rsi_signals(tsymbol, df, path):
         rsi_lvl = 'overbought'
     else:
         rsi_lvl = ''
-
-    if ((curr_rsi < prev_rsi) and (prev_rsi < preprev_rsi)):
-        rsi_direction = 'falling'
-
-        rsi_sell_score += 1
-        rsi_buy_score -= 1
-
-    elif ((curr_rsi > prev_rsi) and (prev_rsi > preprev_rsi)):
-        rsi_direction = 'rising'
-
-        rsi_buy_score += 1
-        rsi_sell_score -= 1
-
-    else:
-        rsi_direction = 'direction_unclear'
-
-    rsi_max_score += 1
 
     curr_oversold_count = 0
     min_oversold_days = 0

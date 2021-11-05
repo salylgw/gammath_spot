@@ -9,6 +9,7 @@ import pandas as pd
 from pathlib import Path
 import os
 import time
+import gammath_utils as gut
 
 
 def get_sp500_list():
@@ -33,22 +34,7 @@ def get_sp500_list():
         #Check if file exists and is it from another day
         if file_exists:
             fstat = os.stat(path / f'SP500_list.csv')
-            fct_time = time.ctime(fstat.st_ctime).split(' ')
-            dt = time.strftime('%x').split('/')
-            if (fct_time[2] == ''):
-                fct_date_index = 3
-            else:
-                fct_date_index = 2
-
-            fct_date = int(fct_time[fct_date_index])
-            dt_date = int(dt[1])
-
-            if (fct_date == dt_date):
-                print('No need to get new file')
-                dont_need_fetch = True
-            else:
-                print('Date mismatch. Need to fetch new file')
-                dont_need_fetch = False
+            dont_need_fetch = gut.check_if_same_day(fstat)
         else:
             #File doesn't exist/
             dont_need_fetch = False

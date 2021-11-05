@@ -209,7 +209,7 @@ def get_price_signals(tsymbol, df, df_summ):
     tp = round(tp, 3)
 
     #If price is in lower percentile then higher buy score
-    #If price is in higher percentile the higher sell score
+    #If price is in higher percentile then higher sell score
     if ((lp <= bp) or (lp >= tp)):
         if (lp <= bp):
             price_buy_score += 2
