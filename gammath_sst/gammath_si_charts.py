@@ -38,17 +38,8 @@ def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slo
     #Check if file exists and is it from another day
     if file_exists:
         fstat = os.stat(path / f'{tsymbol}_charts.png')
-        fct_time = time.ctime(fstat.st_ctime).split(' ')
-        dt = time.strftime('%x').split('/')
-        if (fct_time[2] == ''):
-            fct_date_index = 3
-        else:
-            fct_date_index = 2
 
-        fct_date = int(fct_time[fct_date_index])
-        dt_date = int(dt[1])
-
-        if (fct_date == dt_date):
+        if (True == gut.check_if_same_day(fstat)):
             print('No need to draw charts again for today')
             return
 
@@ -89,7 +80,7 @@ def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slo
         plot_data5 = pd.DataFrame({sym_str: [0]})
 
     try:
-        plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': state_means.flatten()})
+        plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': ds_sm})
     except:
         print(f'\nError generating KF DF for {sym_str}')
         plot_data6 = pd.DataFrame({sym_str: [0]})
@@ -109,7 +100,7 @@ def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slo
         plot_data4.plot(ax=axes[3],lw=1,title='Money Flow Index')
         axes[3].axhline(MFI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[3].axhline(MFI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-        plot_data5.plot(ax=axes[5],lw=1,title='Stochastic Slow')
+        plot_data5.plot(ax=axes[4],lw=1,title='Stochastic Slow')
         axes[4].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
         plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
