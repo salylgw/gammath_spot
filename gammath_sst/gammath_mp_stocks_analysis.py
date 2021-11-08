@@ -9,6 +9,7 @@ import time
 import multiprocessing as mp
 from multiprocessing import Process
 import gammath_stocks_analysis as gsa
+import gammath_utils as gut
 import pandas as pd
 import sys
 
@@ -40,14 +41,15 @@ if __name__ == '__main__':
     else:
         end_index = max_tickers
 
-    #Instantiate GSA class
-    gsa_instance = gsa.GSA()
+    #Instances of GSA class
+    gsa_instances = []
 
     while (max_tickers):
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             tsymbol = f'{sym}'
-            proc_handles.append(Process(target=gsa_instance.do_stock_analysis_and_compute_score, args=(f'{sym}',)))
+            gsa_instances.append(gsa.GSA())
+            proc_handles.append(Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',)))
             proc_handles[i].start()
 
             max_tickers -= 1
@@ -67,7 +69,10 @@ if __name__ == '__main__':
                 end_index += max_tickers
 
 
+    #Instantiate GUTILS class
+    gutils = gut.GUTILS()
+
     #Aggregate all buy and sell scores
-    gsa_instance.aggregate_scores()
+    gutils.aggregate_scores()
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')

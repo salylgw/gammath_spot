@@ -49,6 +49,7 @@ class GSA:
         self.overall_sell_score = 0
         self.overall_max_score = 0
         self.reco_signals_exist = False
+        self.note = ''
 
     def do_stock_analysis_and_compute_score(self, tsymbol):
         print('\nGSA do_stock_analysis_and_compute_score')
@@ -76,7 +77,7 @@ class GSA:
                 raise ValueError('Stale price data')
         except ValueError:
             print('\nERROR: Stale price data for ', tsymbol)
-            return
+            self.note = 'Note: INVALID_STOCK_HISTORY'
         except:
             print('\nERROR: Stock history file not found for ', tsymbol)
             return
@@ -377,7 +378,7 @@ class GSA:
             print('\nError while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
             events_info = ''
 
-        overall_signals = f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{events_info}'
+        overall_signals = f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{events_info}\n{self.note}\n'
 
         try:
             gscsi.score_n_signals_save(tsymbol, path, self.overall_buy_score, self.overall_sell_score, self.overall_max_score, overall_signals)
@@ -389,92 +390,3 @@ class GSA:
         except:
             print(f'\nCharts not drawn for {tsymbol} due to missing params')
 
-    def aggregate_scores(self):
-        print('\nGSA aggregate_scores')
-
-        #Get all the subdirs. Need to check for is_dir
-        p = self.Tickers_dir
-
-        #Somehow looks like os.is_dir isn't supported
-        #Using pathlib/Path instead since is_dir is supported there
-        subdirs = [x for x in p.iterdir() if x.is_dir()]
-
-        print('\nNum of subdirs: ', len(subdirs))
-
-        pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
-        pattern_for_final_sell_score = re.compile(r'(final_sell_score):([-]*[0-9]*[.]*[0-9]+)')
-
-        #Collect 1Y OLS regression fit scores for debugging
-        pattern_for_1y_ols_fit_score = re.compile(r'(ols_1y_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-        #Collect OLS regression fit scores for debugging
-        pattern_for_ols_fit_score = re.compile(r'(ols_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
-        df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score'], index=range(len(subdirs)))
-
-        df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score'], index=range(len(subdirs)))
-
-        df_fs = pd.DataFrame(columns=['Ticker', 'ols_1y_fit_score', 'ols_fit_score'], index=range(len(subdirs)))
-
-        i = 0
-        j = 0
-        k = 0
-
-        for subdir in subdirs:
-            if not subdir.exists():
-                print('\nError. ', subdir, ' not found')
-            else:
-                try:
-                    f = open(subdir / 'signal.txt', 'r')
-                    content = f.read()
-                    matched_string = pattern_for_final_buy_score.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
-                        df_b['Ticker'][i] = f'{subdir.name}'
-                        df_b['final_buy_score'][i] = float(val)
-                        i += 1
-                    else:
-                        print(f'\n{kw} NOT found for {subdir}')
-
-                    matched_string = pattern_for_final_sell_score.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
-                        df_s['Ticker'][j] = f'{subdir.name}'
-                        df_s['final_sell_score'][j] = float(val)
-                        j += 1
-                    else:
-                        print(f'\n{kw} NOT found for {subdir}')
-
-
-                    matched_string = pattern_for_1y_ols_fit_score.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
-                        df_fs['Ticker'][k] = f'{subdir.name}'
-                        df_fs['ols_1y_fit_score'][k] = float(val)
-                    else:
-                        print(f'\n{kw} NOT found for {subdir}')
-
-                    matched_string = pattern_for_ols_fit_score.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
-                        df_fs['Ticker'][k] = f'{subdir.name}'
-                        df_fs['ols_fit_score'][k] = float(val)
-                    else:
-                        print(f'\n{kw} NOT found for {subdir}')
-
-                    k += 1
-                    f.close()
-                except:
-                    print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
-
-        df_b.sort_values('final_buy_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_buy_scores.csv', index=False)
-        df_s.sort_values('final_sell_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_sell_scores.csv', index=False)
-
-        #Regression fit scores Debug data
-        df_fs.sort_values('Ticker').dropna(how='all').to_csv(self.Tickers_dir / 'overall_regression_fit_scores.csv', index=False)
-
-    
