@@ -17,8 +17,7 @@ def get_ols_signals(tsymbol, df, path):
 
     AVG_TRADING_DAYS_PER_YEAR = 252
 
-    ols_buy_score = 0
-    ols_sell_score = 0
+    ols_dip_score = 0
     ols_max_score = 0
     ols_signals = ''
 
@@ -261,114 +260,95 @@ def get_ols_signals(tsymbol, df, path):
                 if (residual <= 0):
 
                     #Below OLS line
-                    ols_buy_score += 4
+                    ols_dip_score += 4
 
                     if (curr_diff > bp):
-                        ols_buy_score += 1
+                        ols_dip_score += 1
 
                         if (curr_diff > mp):
-                            ols_buy_score += 2
+                            ols_dip_score += 2
 
                             if (curr_diff > tp):
-                                ols_buy_score += 3
+                                ols_dip_score += 3
 #                    else: #Diff isn't much; keep buy/sell scores as is
                 else:
                     #Above OLS line
-                    ols_sell_score += 4
+                    ols_dip_score -= 4
 
                     if (curr_diff > bp):
-                        ols_sell_score += 1
+                        ols_dip_score -= 1
 
                         if (curr_diff > mp):
-                            ols_sell_score += 2
+                            ols_dip_score -= 2
 
                             if (curr_diff > tp):
-                                ols_sell_score += 3
+                                ols_dip_score -= 3
 #                    else: #Diff isn't much; keep buy/sell scores as is
             elif (fits_1y):
                 if (residual_1y <= 0):
                     #Below OLS line
-                    ols_buy_score += 4
-                    ols_sell_score -= 4
+                    ols_dip_score += 4
 
                     if (curr_1y_diff > bp_1y):
-                        ols_buy_score += 1
-                        ols_sell_score -= 1
+                        ols_dip_score += 1
 
                         if (curr_1y_diff > mp_1y):
-                            ols_buy_score += 2
-                            ols_sell_score -= 2
+                            ols_dip_score += 2
 
                             if (curr_1y_diff > tp_1y):
-                                ols_buy_score += 3
-                                ols_sell_score -= 3
+                                ols_dip_score += 3
 #                    else: #Diff isn't much; keep buy/sell scores as is
                 else:
                     #Above OLS line
-                    ols_sell_score += 4
-                    ols_buy_score -= 4
+                    ols_dip_score -= 4
 
                     if (curr_1y_diff > bp_1y):
-                        ols_sell_score += 1
-                        ols_buy_score -= 1
+                        ols_dip_score -= 1
 
                         if (curr_1y_diff > mp_1y):
-                            ols_sell_score += 2
-                            ols_buy_score -= 2
+                            ols_dip_score -= 2
 
                             if (curr_1y_diff > tp_1y):
-                                ols_sell_score += 3
-                                ols_buy_score -= 3
+                                ols_dip_score -= 3
 #                    else: #Diff isn't much; keep buy/sell scores as is
         else:
             #Less weight for lesser lesser fit
             if (residual_1y <= 0):
-                ols_buy_score += 2
-                ols_sell_score -= 2
+                ols_dip_score += 2
                 #Below OLS line
                 if (curr_1y_diff >= mp_1y):
-                    ols_buy_score += 3
-                    ols_sell_score -= 3
+                    ols_dip_score += 3
             else:
-                ols_sell_score += 2
-                ols_buy_score -= 2
+                ols_dip_score -= 2
                 #Above OLS line
                 if (curr_1y_diff >= mp_1y):
-                    ols_sell_score += 3
-                    ols_buy_score -= 3
+                    ols_dip_score -= 3
     else:
         if (slope_dir_1y > 0):
             print(f'\nOLS line slopes for 1Y is +ve for {tsymbol}')
             if (fits_1y):
                 if (residual_1y <= 0):
                     #Below OLS line
-                    ols_buy_score += 3
-                    ols_sell_score -= 3
+                    ols_dip_score += 3
 
                     if (curr_1y_diff >= mp_1y):
-                        ols_buy_score += 3
-                        ols_sell_score -= 3
+                        ols_dip_score += 3
                 else:
                     #Above OLS line
-                    ols_sell_score += 3
-                    ols_buy_score -= 3
+                    ols_dip_score -= 3
 
                     if (curr_1y_diff >= mp_1y):
-                        ols_sell_score += 3
-                        ols_buy_score -= 3
+                        ols_dip_score -= 3
             else:
                 if (curr_1y_diff >= mp_1y):
                     if (residual_1y <= 0):
-                        ols_buy_score += 3
-                        ols_sell_score -= 3
+                        ols_dip_score += 3
                     else:
-                        ols_sell_score += 3
-                        ols_buy_score -= 3
+                        ols_dip_score -= 3
 
         else:
             #Slope is -ve for last 1 year so no need to check fits or residuals
-            ols_sell_score += 10
-            ols_buy_score -= 10
+            ols_dip_score -= 10
 
     ols_max_score += 10
 
@@ -384,8 +364,7 @@ def get_ols_signals(tsymbol, df, path):
     mp_1y = round(mp_1y, 3)
     tp_1y = round(tp_1y, 3)
 
-    ols_buy_rec = f'ols_buy_rec:{ols_buy_score}/{ols_max_score}'
-    ols_sell_rec = f'ols_sell_rec:{ols_sell_score}/{ols_max_score}'
+    ols_dip_rec = f'ols_dip_rec:{ols_dip_score}/{ols_max_score}'
 
     #Round it to use less space when logging
     slope_dir_1y = round(slope_dir_1y, 3)
@@ -394,8 +373,8 @@ def get_ols_signals(tsymbol, df, path):
     slope_dir_5y = round(slope_dir_5y, 3)
 
     if (fits_5y):
-        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},1y_slope:{slope_dir_1y},ols_fit_score:{fit_score},5y_slope:{slope_dir_5y},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff}'
+        ols_signals = f'OLS: ols_1y_fit_score:{fit_score_1y},1y_slope:{slope_dir_1y},ols_fit_score:{fit_score},5y_slope:{slope_dir_5y},cdiff:{curr_diff},bp:{bp},mp:{mp},tp:{tp},max_diff:{max_diff},{ols_dip_rec}'
     else:
-        ols_signals = f'OLS: {ols_buy_rec},{ols_sell_rec},ols_1y_fit_score:{fit_score_1y},1y_slope:{slope_dir_1y},ols_fit_score:{fit_score},5y_slope:{slope_dir_5y},cdiff_1y:{curr_1y_diff},bp_1y:{bp_1y},mp_1y:{mp_1y},tp_1y:{tp_1y},max_1y_diff:{max_1y_diff}'
+        ols_signals = f'OLS: ols_1y_fit_score:{fit_score_1y},1y_slope:{slope_dir_1y},ols_fit_score:{fit_score},5y_slope:{slope_dir_5y},cdiff_1y:{curr_1y_diff},bp_1y:{bp_1y},mp_1y:{mp_1y},tp_1y:{tp_1y},max_1y_diff:{max_1y_diff},{ols_dip_rec}'
 
-    return y1_series, y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals
+    return y1_series, y_predictions, ols_dip_score, ols_max_score, ols_signals

@@ -12,8 +12,7 @@ def get_beta_signals(tsymbol, df_summ):
 
     print(f'\nGetting beta signals for {tsymbol}')
 
-    beta_buy_score = 0
-    beta_sell_score = 0
+    beta_dip_score = 0
     beta_max_score = 0
 
     try:
@@ -27,18 +26,17 @@ def get_beta_signals(tsymbol, df_summ):
     if (beta > 0):
         #Closer to 1 is near market and is better
         if (beta < 2):
-            beta_buy_score += 1
+            beta_dip_score += 1
         else:
-            beta_sell_score += 1
+            beta_dip_score -= 1
 
     beta_max_score += 1
 
     #round it off for taking less space when displaying
     beta = round(beta, 3)
 
-    beta_buy_rec = f'beta_buy_score:{beta_buy_score}/{beta_max_score}'
-    beta_sell_rec = f'beta_sell_score:{beta_sell_score}/{beta_max_score}'
+    beta_dip_rec = f'beta_dip_score:{beta_dip_score}/{beta_max_score}'
 
-    beta_signals = f'BETA:{beta},{beta_buy_rec},{beta_sell_rec}'
+    beta_signals = f'BETA:{beta},{beta_dip_rec}'
 
-    return beta_buy_score, beta_sell_score, beta_max_score, beta_signals
+    return beta_dip_score, beta_max_score, beta_signals

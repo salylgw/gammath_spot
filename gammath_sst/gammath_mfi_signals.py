@@ -19,8 +19,7 @@ def get_mfi_signals(tsymbol, df, path):
     MFI_OVERSOLD_LEVEL = 20
     MFI_OVERBOUGHT_LEVEL = 80
 
-    mfi_buy_score = 0
-    mfi_sell_score = 0
+    mfi_dip_score = 0
     mfi_max_score = 0
     mfi_signals = ''
 
@@ -64,12 +63,10 @@ def get_mfi_signals(tsymbol, df, path):
         #Get the current MFI level compared to the mean
         if (curr_mfi < mfi_mean):
             mfi_avg = 'below average'
-            mfi_buy_score += 3
-            mfi_sell_score -= 3
+            mfi_dip_score += 3
         elif (curr_mfi > mfi_mean):
             mfi_avg = 'above average'
-            mfi_sell_score += 3
-            mfi_buy_score -= 3
+            mfi_dip_score -= 3
         else:
             mfi_avg = 'average'
 
@@ -77,12 +74,10 @@ def get_mfi_signals(tsymbol, df, path):
 
         if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
             mfi_lvl = 'overbought'
-            mfi_sell_score += 4
-            mfi_buy_score -= 4
+            mfi_dip_score -= 4
         elif (curr_mfi <= MFI_OVERSOLD_LEVEL):
             mfi_lvl = 'oversold'
-            mfi_buy_score += 4
-            mfi_sell_score -= 4
+            mfi_dip_score += 4
         else:
             mfi_lvl = ''
 
@@ -93,14 +88,12 @@ def get_mfi_signals(tsymbol, df, path):
             mfi_dir = 'falling'
             if (price_dir == 'rising'):
                 mfi_indicator = 'Price could start FALLING'
-                mfi_sell_score += 3
-                mfi_buy_score -= 3
+                mfi_dip_score -= 3
         elif ((curr_mfi > lm1_mfi) and (curr_mfi <= MFI_OVERSOLD_LEVEL)):
             mfi_dir = 'rising'
             if (price_dir == 'falling'):
                 mfi_indicator = 'Price could start RISING'
-                mfi_buy_score += 3
-                mfi_sell_score -= 3
+                mfi_dip_score += 3
 
 
         mfi_max_score += 3
@@ -108,11 +101,10 @@ def get_mfi_signals(tsymbol, df, path):
         print(f'\nError: MFI length is 0 for {tsymbol}')
         raise ValueError('Invalid MFI data length ')
 
-    mfi_buy_rec = f'mfi_buy_score:{mfi_buy_score}/{mfi_max_score}'
-    mfi_sell_rec = f'mfi_sell_score:{mfi_sell_score}/{mfi_max_score}'
+    mfi_dip_rec = f'mfi_dip_score:{mfi_dip_score}/{mfi_max_score}'
 
-    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_buy_rec},{mfi_sell_rec},{mfi_indicator}'
+    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_dip_rec},{mfi_indicator}'
 
     
-    return mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals
+    return mfi, mfi_dip_score, mfi_max_score, mfi_signals
 

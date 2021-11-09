@@ -19,8 +19,7 @@ def get_rsi_signals(tsymbol, df, path):
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
 
-    rsi_buy_score = 0
-    rsi_sell_score = 0
+    rsi_dip_score = 0
     rsi_max_score = 0
     rsi_signals = ''
 
@@ -55,16 +54,13 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_mean = rsi_ds['mean']
     if ((curr_rsi < rsi_mean) and (rsi_direction != 'falling')):
         rsi_avg = 'below average'
-        rsi_buy_score += 4
-        rsi_sell_score -= 4
+        rsi_dip_score += 4
     elif (curr_rsi < rsi_mean):
         rsi_avg = 'below average'
-        rsi_buy_score += 2
-        rsi_sell_score -= 2
+        rsi_dip_score += 2
     elif (curr_rsi > rsi_mean):
         rsi_avg = 'above average'
-        rsi_sell_score += 4
-        rsi_buy_score -= 4
+        rsi_dip_score -= 4
     else:
         rsi_avg = 'average'
 
@@ -167,34 +163,27 @@ def get_rsi_signals(tsymbol, df, path):
     tp_ob = round(tp_ob, 3)
 
     if (curr_oversold_count >= bp):
-        rsi_buy_score += 1
-        rsi_sell_score -= 1
+        rsi_dip_score += 1
     elif (curr_overbought_count >= bp_ob):
-        rsi_sell_score += 1
-        rsi_buy_score -= 1
+        rsi_dip_score -= 1
 
     rsi_max_score += 1
 
     if (curr_oversold_count >= mp):
-        rsi_buy_score += 2
-        rsi_sell_score -= 2
+        rsi_dip_score += 2
     elif (curr_overbought_count >= mp_ob):
-        rsi_sell_score += 2
-        rsi_buy_score -= 2
+        rsi_dip_score -= 2
 
     rsi_max_score += 2
 
     if (curr_oversold_count >= tp):
-        rsi_buy_score += 3
-        rsi_sell_score -= 3
+        rsi_dip_score += 3
     elif (curr_overbought_count >= tp_ob):
-        rsi_sell_score += 3
-        rsi_buy_score -= 3
+        rsi_dip_score -= 3
 
     rsi_max_score += 3
 
-    rsi_buy_rec = f'rsi_buy_score:{rsi_buy_score}/{rsi_max_score}'
-    rsi_sell_rec = f'rsi_sell_score:{rsi_sell_score}/{rsi_max_score}'
-    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{rsi_buy_rec},{rsi_sell_rec},cosd:{curr_oversold_count},mosd:{max_oversold_days},losdp:{bp},mosdp:{mp},tosdp:{tp},cobd:{curr_overbought_count},mobd:{max_overbought_days},lobdp:{bp_ob},mobdp:{mp_ob},tobdp:{tp_ob}'
+    rsi_dip_rec = f'rsi_dip_score:{rsi_dip_score}/{rsi_max_score}'
+    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},cosd:{curr_oversold_count},mosd:{max_oversold_days},losdp:{bp},mosdp:{mp},tosdp:{tp},cobd:{curr_overbought_count},mobd:{max_overbought_days},lobdp:{bp_ob},mobdp:{mp_ob},tobdp:{tp_ob},{rsi_dip_rec}'
     
-    return rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals
+    return rsi, rsi_dip_score, rsi_max_score, rsi_signals

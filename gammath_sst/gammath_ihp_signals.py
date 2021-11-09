@@ -13,8 +13,7 @@ def get_ihp_signals(tsymbol, df_summ):
 
     print(f'\nGetting Institutional holdings percentage signals for {tsymbol}')
 
-    ihp_buy_score = 0
-    ihp_sell_score = 0
+    ihp_dip_score = 0
     ihp_max_score = 0
 
     try:
@@ -28,9 +27,9 @@ def get_ihp_signals(tsymbol, df_summ):
     #We can do checks for different levels but for now this will suffice
     if (ihp > 0):
         if (ihp > 0.7):
-            ihp_buy_score += 1
+            ihp_dip_score += 1
         else:
-            ihp_sell_score += 1
+            ihp_dip_score -= 1
 
     ihp_max_score += 1
 
@@ -39,9 +38,8 @@ def get_ihp_signals(tsymbol, df_summ):
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 
-    ihp_buy_rec = f'ihp_buy_score:{ihp_buy_score}/{ihp_max_score}'
-    ihp_sell_rec = f'ihp_sell_score:{ihp_sell_score}/{ihp_max_score}'
+    ihp_dip_rec = f'ihp_dip_score:{ihp_dip_score}/{ihp_max_score}'
 
-    ihp_signals = f'IHP:{ihp},{ihp_buy_rec},{ihp_sell_rec}'
+    ihp_signals = f'IHP:{ihp},{ihp_dip_rec}'
 
-    return ihp_buy_score, ihp_sell_score, ihp_max_score, ihp_signals
+    return ihp_dip_score, ihp_max_score, ihp_signals

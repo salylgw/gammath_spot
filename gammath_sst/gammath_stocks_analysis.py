@@ -30,7 +30,6 @@ import gammath_qbs_signals as gqbs
 import gammath_pbr_signals as gpbrs
 import gammath_reco_signals as greco
 import gammath_ols_signals as gols
-import gammath_lgstic_signals as glgs
 import gammath_get_events as gge
 import gammath_score_signals as gscsi
 import gammath_si_charts as gsc
@@ -45,8 +44,7 @@ class GSA:
     def __init__(self):
         print('\nGSA instantiated')
         self.Tickers_dir = Path('tickers')
-        self.overall_buy_score = 0
-        self.overall_sell_score = 0
+        self.overall_dip_score = 0
         self.overall_max_score = 0
         self.reco_signals_exist = False
         self.note = ''
@@ -83,77 +81,72 @@ class GSA:
             return
 
         try:
-            reco_buy_score = reco_sell_score = 0
+            reco_dip_score = 0
             reco_max_score = 0 #In case there is an exception, we should do fundamental analysis
             reco_signals = ''
             #Reco signals
-            reco_buy_score, reco_sell_score, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
+            reco_dip_score, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
 
-            self.overall_buy_score += reco_buy_score
-            self.overall_sell_score += reco_sell_score
+            self.overall_dip_score += reco_dip_score
             self.overall_max_score += reco_max_score
-            self.reco_signals_exist = (((reco_buy_score != 0) or (reco_sell_score != 0)) and (reco_max_score != 0))
+            self.reco_signals_exist = ((reco_dip_score != 0) and (reco_max_score != 0))
         except RuntimeError:
             print('\nError while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            pe_buy_score = pe_sell_score = 0
+            pe_dip_score = 0
             pe_max_score = 2
             pe_signals = ''
 
             #PE signals
-            pe_buy_score, pe_sell_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
+            pe_dip_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
             if not self.reco_signals_exist:
-                self.overall_buy_score += pe_buy_score
-                self.overall_sell_score += pe_sell_score
+                self.overall_dip_score += pe_dip_score
                 self.overall_max_score += pe_max_score
 
         except ValueError:
             print('\nError while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            peg_buy_score = peg_sell_score = 0
+            peg_dip_score = 0
             peg_max_score = 1
             peg_signals = ''
 
             #PEG signals
-            peg_buy_score, peg_sell_score, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
+            peg_dip_score, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_buy_score += peg_buy_score
-                self.overall_sell_score += peg_sell_score
+                self.overall_dip_score += peg_dip_score
                 self.overall_max_score += peg_max_score
 
         except ValueError:
             print('\nError while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            beta_buy_score = beta_sell_score = 0
+            beta_dip_score = 0
             beta_max_score = 1
             beta_signals = ''
 
             #Beta signals
-            beta_buy_score, beta_sell_score, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
+            beta_dip_score, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_buy_score += beta_buy_score
-                self.overall_sell_score += beta_sell_score
+                self.overall_dip_score += beta_dip_score
                 self.overall_max_score += beta_max_score
 
         except ValueError:
             print('\nError while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            pbr_buy_score = pbr_sell_score = 0
+            pbr_dip_score = 0
             pbr_max_score = 1
             pbr_signals = ''
 
             #PBR signals
-            pbr_buy_score, pbr_sell_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
+            pbr_dip_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_buy_score += pbr_buy_score
-                self.overall_sell_score += pbr_sell_score
+                self.overall_dip_score += pbr_dip_score
                 self.overall_max_score += pbr_max_score
 
         except RuntimeError:
@@ -162,70 +155,66 @@ class GSA:
             print('\nError while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            qbs_buy_score = qbs_sell_score = 0
+            qbs_dip_score = 0
             qbs_max_score = 4
             qbs_signals = ''
 
             #Quarterly Balance sheet signals
-            qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
+            qbs_dip_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
 
             if not self.reco_signals_exist:
-                self.overall_buy_score += qbs_buy_score
-                self.overall_sell_score += qbs_sell_score
+                self.overall_dip_score += qbs_dip_score
                 self.overall_max_score += qbs_max_score
 
         except ValueError:
             print('\nError while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            ihp_buy_score = ihp_sell_score = 0
+            ihp_dip_score = 0
             ihp_max_score = 1
             ihp_signals = ''
 
             #Institutional Holders Percentage signals
-            ihp_buy_score, ihp_sell_score, ihp_max_score, ihp_signals = gihp.get_ihp_signals(tsymbol, df_summ)
+            ihp_dip_score, ihp_max_score, ihp_signals = gihp.get_ihp_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_buy_score += ihp_buy_score
-                self.overall_sell_score += ihp_sell_score
+                self.overall_dip_score += ihp_dip_score
                 self.overall_max_score += ihp_max_score
 
         except ValueError:
             print('\nError while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            inshp_buy_score = inshp_sell_score = 0
+            inshp_dip_score = 0
             inshp_max_score = 1
             inshp_signals = ''
 
             #Insider Holders Percentage signals
-            inshp_buy_score, inshp_sell_score, inshp_max_score, inshp_signals = ginshp.get_inshp_signals(tsymbol, df_summ)
+            inshp_dip_score, inshp_max_score, inshp_signals = ginshp.get_inshp_signals(tsymbol, df_summ)
         except ValueError:
             print('\nError while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            price_buy_score = price_sell_score = 0
+            price_dip_score = 0
             price_max_score = 10
             price_signals = ''
             #Price signals
-            price_buy_score, price_sell_score, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
+            price_dip_score, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
 
-            self.overall_buy_score += price_buy_score
-            self.overall_sell_score += price_sell_score
+            self.overall_dip_score += price_dip_score
             self.overall_max_score += price_max_score
 
         except ValueError:
             print('\nError generating price signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            rsi_buy_score = rsi_sell_score = 0
+            rsi_dip_score = 0
             rsi_max_score = 10
             rsi_signals = ''
             #Relative Strength Index signals
-            rsi, rsi_buy_score, rsi_sell_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
+            rsi, rsi_dip_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
 
-            self.overall_buy_score += rsi_buy_score
-            self.overall_sell_score += rsi_sell_score
+            self.overall_dip_score += rsi_dip_score
             self.overall_max_score += rsi_max_score
 
         except RuntimeError:
@@ -234,14 +223,13 @@ class GSA:
             print('\nError generating signals from RSI data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            bb_buy_score = bb_sell_score = 0
+            bb_dip_score = 0
             bb_max_score = 10
             bb_signals = ''
             #Bollinger bands signals
-            mb, ub, lb, bb_buy_score, bb_sell_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
+            ub, mb, lb, bb_dip_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
 
-            self.overall_buy_score += bb_buy_score
-            self.overall_sell_score += bb_sell_score
+            self.overall_dip_score += bb_dip_score
             self.overall_max_score += bb_max_score
 
         except RuntimeError:
@@ -250,15 +238,14 @@ class GSA:
             print('\nError generating signals from Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            mfi_buy_score = mfi_sell_score = 0
+            mfi_dip_score = 0
             mfi_max_score = 10
             mfi_signals = ''
 
             #MFI signals
-            mfi, mfi_buy_score, mfi_sell_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
+            mfi, mfi_dip_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
 
-            self.overall_buy_score += mfi_buy_score
-            self.overall_sell_score += mfi_sell_score
+            self.overall_dip_score += mfi_dip_score
             self.overall_max_score += mfi_max_score
 
         except RuntimeError:
@@ -267,15 +254,14 @@ class GSA:
             print('\nError generating signals from MFI data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            stoch_buy_score = stoch_sell_score = 0
+            stoch_dip_score = 0
             stoch_max_score = 5
             stoch_slow_signals = ''
 
             #Stochastic slow signals
-            slowk, slowd, stoch_buy_score, stoch_sell_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
+            slowk, slowd, stoch_dip_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
 
-            self.overall_buy_score += stoch_buy_score
-            self.overall_sell_score += stoch_sell_score
+            self.overall_dip_score += stoch_dip_score
             self.overall_max_score += stoch_max_score
 
         except RuntimeError:
@@ -284,15 +270,14 @@ class GSA:
             print('\nError generating signals from stochastics data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            macd_buy_score = macd_sell_score = 0
+            macd_dip_score = 0
             macd_max_score = 10
             macd_signals = ''
 
             #MACD signals
-            macd, macd_signal, macd_buy_score, macd_sell_score, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
+            macd, macd_signal, macd_dip_score, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
 
-            self.overall_buy_score += macd_buy_score
-            self.overall_sell_score += macd_sell_score
+            self.overall_dip_score += macd_dip_score
             self.overall_max_score += macd_max_score
 
         except RuntimeError:
@@ -301,15 +286,14 @@ class GSA:
             print('\nError generating signals from MACD data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            kf_buy_score = kf_sell_score = 0
+            kf_dip_score = 0
             kf_max_score = 10
             kf_signals = ''
 
             #Kalman Filter signals
-            ds_sm, kf_buy_score, kf_sell_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
+            ds_sm, kf_dip_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
 
-            self.overall_buy_score += kf_buy_score
-            self.overall_sell_score += kf_sell_score
+            self.overall_dip_score += kf_dip_score
             self.overall_max_score += kf_max_score
 
         except RuntimeError:
@@ -318,15 +302,14 @@ class GSA:
             print('\nError generating signals from Kalman filter data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            ols_buy_score = ols_sell_score = 0
+            ols_dip_score = 0
             ols_max_score = 10
             ols_signals = ''
 
             #Ordinary Least Squares line signals
-            ols_y1_predictions, ols_y_predictions, ols_buy_score, ols_sell_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
+            y1_series, y_predictions, ols_dip_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
 
-            self.overall_buy_score += ols_buy_score
-            self.overall_sell_score += ols_sell_score
+            self.overall_dip_score += ols_dip_score
             self.overall_max_score += ols_max_score
 
         except RuntimeError:
@@ -335,37 +318,28 @@ class GSA:
             print('\nError generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            #Logistic regression signals
-            lgstic_signals = glgs.get_lgstic_signals(tsymbol, df, path)
-        except:
-            print('\nError while getting lgstic regr signals for ', tsymbol, ': ', sys.exc_info()[0])
-            lgstic_signals = ''
-
-        try:
-            options_buy_score = options_sell_score = 0
+            options_dip_score = 0
             options_max_score = 10
             options_signals = ''
 
             #Options signals
-            options_buy_score, options_sell_score, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
+            options_dip_score, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
 
-            self.overall_buy_score += options_buy_score
-            self.overall_sell_score += options_sell_score
+            self.overall_dip_score += options_dip_score
             self.overall_max_score += options_max_score
 
         except:
             print('\nError while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            st_buy_score = st_sell_score = 0
+            st_dip_score = 0
             st_max_score = 5
             st_signals = ''
 
             #StockTwits signals
-            st_buy_score, st_sell_score, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
+            st_dip_score, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
 
-            self.overall_buy_score += st_buy_score
-            self.overall_sell_score += st_sell_score
+            self.overall_dip_score += st_dip_score
             self.overall_max_score += st_max_score
 
         except RuntimeError:
@@ -378,15 +352,15 @@ class GSA:
             print('\nError while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
             events_info = ''
 
-        overall_signals = f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{lgstic_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{events_info}\n{self.note}\n'
+        overall_signals = f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{events_info}\n{self.note}'
 
         try:
-            gscsi.score_n_signals_save(tsymbol, path, self.overall_buy_score, self.overall_sell_score, self.overall_max_score, overall_signals)
+            gscsi.score_n_signals_save(tsymbol, path, self.overall_dip_score, self.overall_max_score, overall_signals)
         except:
             print('\nError while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            gsc.plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, ols_y_predictions, ols_y1_predictions)
+            gsc.plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, y_predictions, y1_series)
         except:
-            print(f'\nCharts not drawn for {tsymbol} due to missing params')
+            print('\nError while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])
 

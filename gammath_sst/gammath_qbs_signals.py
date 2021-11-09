@@ -20,8 +20,7 @@ def get_qbs_signals(tsymbol, path):
     sequity = 0
     dtcr = 0
 
-    qbs_buy_score = 0
-    qbs_sell_score = 0
+    qbs_dip_score = 0
     qbs_max_score = 0
 
     file_exists = (path / f'{tsymbol}_qbs.csv').exists()
@@ -97,11 +96,9 @@ def get_qbs_signals(tsymbol, path):
 
             #For now just check if cash earned is +ve
             if (cash_earned_last_one_year > 0):
-                qbs_buy_score += 1
-                qbs_sell_score -= 1
+                qbs_dip_score += 1
             else:
-                qbs_sell_score += 1
-                qbs_buy_score -= 1
+                qbs_dip_score -= 1
 
             qbs_max_score += 1
 
@@ -110,27 +107,23 @@ def get_qbs_signals(tsymbol, path):
 
             #For now just check if there is +ve remaining cash past last year's earnings
             if (possible_remaining_cash > cash_earned_last_one_year):
-                qbs_buy_score += 1
-                qbs_buy_score -= 1
+                qbs_dip_score += 1
             else:
-                qbs_sell_score += 1
-                qbs_buy_score -= 1
+                qbs_dip_score -= 1
 
             qbs_max_score += 1
 
             if (sequity > 0):
-                qbs_buy_score += 1
+                qbs_dip_score += 1
             else:
-                qbs_sell_score += 1
+                qbs_dip_score -= 1
 
             qbs_max_score += 1
 
             if (ldebt > 0) and (ldebt <= 0.5):
-                qbs_buy_score += 1
-                qbs_sell_score -= 1
+                qbs_dip_score += 1
             else:
-                qbs_sell_score += 1
-                qbs_buy_score -= 1
+                qbs_dip_score -= 1
 
             #Max score from debt data
             qbs_max_score += 1
@@ -139,10 +132,9 @@ def get_qbs_signals(tsymbol, path):
         #This will show 0/4 when no balance sheet data
         raise ValueError('QBS file doesn\'t exist')
 
-    qbs_buy_rec = f'qbs_buy_score:{qbs_buy_score}/{qbs_max_score}'
-    qbs_sell_rec = f'qbs_sell_score:{qbs_sell_score}/{qbs_max_score}'
+    qbs_dip_rec = f'qbs_dip_score:{qbs_dip_score}/{qbs_max_score}'
 
-    qbs_signals = f'qbs:{qbs_buy_rec},{qbs_sell_rec},dtcr:{dtcr}'
+    qbs_signals = f'qbs:dtcr:{dtcr},{qbs_dip_rec}'
 
     print(f'\nQBS signals extracted for {tsymbol}')
-    return qbs_buy_score, qbs_sell_score, qbs_max_score, qbs_signals
+    return qbs_dip_score, qbs_max_score, qbs_signals

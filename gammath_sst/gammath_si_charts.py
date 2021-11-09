@@ -15,6 +15,8 @@ import sys
 import os
 import time
 import gammath_utils as gut
+import gammath_kf_signals as gkf
+import gammath_ols_signals as gols
 
 
 def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, ols_y_predictions, ols_y1_predictions):

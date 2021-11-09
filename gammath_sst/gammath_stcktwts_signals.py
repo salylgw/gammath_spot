@@ -16,8 +16,7 @@ def get_stocktwits_signals(tsymbol, path):
 
     print(f'\nGetting stocktwits signals for {tsymbol}')
 
-    st_buy_score = 0
-    st_sell_score = 0
+    st_dip_score = 0
     st_max_score = 0
     sentiment_change = None
     volume_change = None
@@ -71,14 +70,11 @@ def get_stocktwits_signals(tsymbol, path):
 
         #Token score and information logging purpose
         if ((sts_change > 0) and (stv_change > 0)):
-            st_buy_score += 5
-            st_sell_score -= 5
+            st_dip_score += 5
         elif (sts_change > 0):
-            st_buy_score += 2
-            st_sell_score -= 2
+            st_dip_score += 2
         else:
-            st_sell_score += 5
-            st_buy_score -= 5
+            st_dip_score -= 5
 
     except:
         print('\nError while getting stocktwits html page for ', tsymbol, ': ', sys.exc_info()[0])
@@ -86,11 +82,10 @@ def get_stocktwits_signals(tsymbol, path):
 
     st_max_score += 5
 
-    st_buy_rec = f'st_sv_buy_score:{st_buy_score}/{st_max_score}'
-    st_sell_rec = f'st_sv_sell_score:{st_sell_score}/{st_max_score}'
+    st_dip_rec = f'st_sv_dip_score:{st_dip_score}/{st_max_score}'
 
-    st_signals = f'{st_buy_rec},{st_sell_rec}'
+    st_signals = f'{st_dip_rec}'
 
     print(f'\nStocktwits signals extracted for {tsymbol}')
-    return st_buy_score, st_sell_score, st_max_score, st_signals
+    return st_dip_score, st_max_score, st_signals
 

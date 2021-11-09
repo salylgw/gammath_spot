@@ -15,8 +15,7 @@ def get_reco_signals(tsymbol, path):
 
     buy_recos = ('Above Average', 'Accumulate', 'Add', 'Buy', 'Conviction Buy', 'Gradually Accumulate', 'Long-Term Buy', 'Long-term Buy', 'Market Outperform', 'Outperform', 'Outperformer', 'Overweight', 'Positive', 'Sector Outperform', 'Strong Buy', 'Top Pick')
 
-    reco_buy_score = 0
-    reco_sell_score = 0
+    reco_dip_score = 0
     reco_max_score = 0
 
     try:
@@ -62,15 +61,12 @@ def get_reco_signals(tsymbol, path):
 
                 #Reduce buy score and increase sell score
                 if (buy_percentage < 50):
-                    reco_sell_score += 4
-                    reco_buy_score -= 4
+                    reco_dip_score -= 4
                 else:
-                    reco_buy_score += 2
-                    reco_sell_score -= 2
+                    reco_dip_score += 2
 
                     if (buy_percentage >= 75):
-                        reco_buy_score += 2
-                        reco_sell_score -= 2
+                        reco_dip_score += 2
 
                 reco_max_score += 4
 
@@ -95,15 +91,12 @@ def get_reco_signals(tsymbol, path):
 
                 #More weightage to recent upgrade/downgrade compared to buy/sell reco
                 if (up_percentage < 50):
-                    reco_sell_score += 6
-                    reco_buy_score -= 6
+                    reco_dip_score -= 6
                 else:
-                    reco_buy_score += 3
-                    reco_sell_score -= 3
+                    reco_dip_score += 3
 
                     if (up_percentage >= 75):
-                        reco_buy_score += 3
-                        reco_sell_score -= 3
+                        reco_dip_score += 3
 
                 reco_max_score += 6
 
@@ -116,9 +109,7 @@ def get_reco_signals(tsymbol, path):
     except:
         raise RuntimeError('Quarterly Recommendations scoring failed')
 
-    reco_buy_rec = f'reco_buy_score:{reco_buy_score}/{reco_max_score}'
-    reco_sell_rec = f'reco_sell_score:{reco_sell_score}/{reco_max_score}'
 
-    reco_signals = f'reco:{reco_buy_rec},{reco_sell_rec}'
+    reco_signals = f'reco:reco_dip_score:{reco_dip_score}/{reco_max_score}'
 
-    return reco_buy_score, reco_sell_score, reco_max_score, reco_signals
+    return reco_dip_score, reco_max_score, reco_signals

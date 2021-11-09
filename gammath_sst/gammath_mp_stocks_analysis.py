@@ -23,6 +23,9 @@ if __name__ == '__main__':
     #Use half the cores from count; Need to check portability on this
     cores_to_use = (core_count >> 1)
 
+    if (cores_to_use < 1):
+        cores_to_use = 1
+
     print('\nNumber of logical cores: ', core_count, 'Using logical cores: ', cores_to_use)
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
 

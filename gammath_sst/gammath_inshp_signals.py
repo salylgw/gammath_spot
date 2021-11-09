@@ -12,8 +12,7 @@ def get_inshp_signals(tsymbol, df_summ):
 
     print(f'\nGetting Insider holdings percentage signals for {tsymbol}')
 
-    inshp_buy_score = 0
-    inshp_sell_score = 0
+    inshp_dip_score = 0
     inshp_max_score = 0
 
     try:
@@ -24,9 +23,9 @@ def get_inshp_signals(tsymbol, df_summ):
     print('inshp for ', tsymbol, ': ', inshp)
 
     if (inshp > 0):
-        inshp_buy_score += 1
+        inshp_dip_score += 1
     else:
-        inshp_sell_score += 1
+        inshp_dip_score -= 1
 
     inshp_max_score += 1
 
@@ -35,9 +34,8 @@ def get_inshp_signals(tsymbol, df_summ):
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 
-    inshp_buy_rec = f'inshp_buy_score:{inshp_buy_score}/{inshp_max_score}'
-    inshp_sell_rec = f'inshp_sell_score:{inshp_sell_score}/{inshp_max_score}'
+    inshp_dip_rec = f'inshp_dip_score:{inshp_dip_score}/{inshp_max_score}'
 
-    inshp_signals = f'inshp:{inshp},{inshp_buy_rec},{inshp_sell_rec}'
+    inshp_signals = f'inshp:{inshp},{inshp_dip_rec}'
 
-    return inshp_buy_score, inshp_sell_score, inshp_max_score, inshp_signals
+    return inshp_dip_score, inshp_max_score, inshp_signals

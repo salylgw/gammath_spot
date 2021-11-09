@@ -91,8 +91,7 @@ class GUTILS:
 
         print('\nNum of subdirs: ', len(subdirs))
 
-        pattern_for_final_buy_score = re.compile(r'(final_buy_score):([-]*[0-9]*[.]*[0-9]+)')
-        pattern_for_final_sell_score = re.compile(r'(final_sell_score):([-]*[0-9]*[.]*[0-9]+)')
+        pattern_for_final_dip_score = re.compile(r'(final_dip_score):([-]*[0-9]*[.]*[0-9]+)')
 
         #Collect 1Y OLS regression fit scores for debugging
         pattern_for_1y_ols_fit_score = re.compile(r'(ols_1y_fit_score):([-]*[0-9]*[.]*[0-9]+)')
@@ -103,11 +102,13 @@ class GUTILS:
         #Pattern for note
         pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
-        df_b = pd.DataFrame(columns=['Ticker', 'final_buy_score', 'Note'], index=range(len(subdirs)))
 
-        df_s = pd.DataFrame(columns=['Ticker', 'final_sell_score', 'Note'], index=range(len(subdirs)))
+
+        df_b = pd.DataFrame(columns=['Ticker', 'final_dip_score', 'Note'], index=range(len(subdirs)))
+
 
         df_fs = pd.DataFrame(columns=['Ticker', 'ols_1y_fit_score', 'ols_fit_score'], index=range(len(subdirs)))
+
 
         i = 0
         j = 0
@@ -126,29 +127,18 @@ class GUTILS:
                         kw, note = matched_string.groups()
                         print(f'\n{kw} for {subdir.name}: {note}')
                     else:
-                        print(f'\n{kw} NOT found for {subdir}')
+                        print(f'\nNote-Pattern NOT found for {subdir}')
 
-                    matched_string = pattern_for_final_buy_score.search(content)
+                    matched_string = pattern_for_final_dip_score.search(content)
                     if (matched_string):
                         kw, val = matched_string.groups()
                         print(f'\n{kw} for {subdir.name}: {val}')
                         df_b['Ticker'][i] = f'{subdir.name}'
-                        df_b['final_buy_score'][i] = float(val)
+                        df_b['final_dip_score'][i] = float(val)
                         df_b['Note'][i] = note
                         i += 1
                     else:
-                        print(f'\n{kw} NOT found for {subdir}')
-
-                    matched_string = pattern_for_final_sell_score.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
-                        df_s['Ticker'][j] = f'{subdir.name}'
-                        df_s['final_sell_score'][j] = float(val)
-                        df_s['Note'][j] = note
-                        j += 1
-                    else:
-                        print(f'\n{kw} NOT found for {subdir}')
+                        print(f'\nFinal dip score pattern NOT found for {subdir}')
 
 
                     matched_string = pattern_for_1y_ols_fit_score.search(content)
@@ -158,7 +148,7 @@ class GUTILS:
                         df_fs['Ticker'][k] = f'{subdir.name}'
                         df_fs['ols_1y_fit_score'][k] = float(val)
                     else:
-                        print(f'\n{kw} NOT found for {subdir}')
+                        print(f'\n1Y OLS fit score pattern NOT found for {subdir}')
 
                     matched_string = pattern_for_ols_fit_score.search(content)
                     if (matched_string):
@@ -167,15 +157,14 @@ class GUTILS:
                         df_fs['Ticker'][k] = f'{subdir.name}'
                         df_fs['ols_fit_score'][k] = float(val)
                     else:
-                        print(f'\n{kw} NOT found for {subdir}')
+                        print(f'\nOLS fit pattern NOT found for {subdir}')
 
                     k += 1
                     f.close()
                 except:
                     print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
-        df_b.sort_values('final_buy_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_buy_scores.csv', index=False)
-        df_s.sort_values('final_sell_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_sell_scores.csv', index=False)
+        df_b.sort_values('final_dip_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_dip_scores.csv', index=False)
 
         #Regression fit scores Debug data
         df_fs.sort_values('Ticker').dropna(how='all').to_csv(self.Tickers_dir / 'overall_regression_fit_scores.csv', index=False)

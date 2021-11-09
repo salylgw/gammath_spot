@@ -16,8 +16,7 @@ def get_price_signals(tsymbol, df, df_summ):
     AVG_TRADING_DAYS_PER_YEAR = 252
     PRICE_PERCENT_CUTOFF = 85
 
-    price_buy_score = 0
-    price_sell_score = 0
+    price_dip_score = 0
     price_max_score = 0
     price_signals = ''
 
@@ -153,52 +152,48 @@ def get_price_signals(tsymbol, df, df_summ):
 
     if (last_falling_days_count > 0):
 
-        price_buy_score -= 1
-        price_sell_score += 1
+        price_dip_score -= 1
 
         if (last_falling_days_count >= fp_bp):
-            price_buy_score -= 2
-            price_sell_score += 2
+            price_dip_score -= 2
 
         #Checkout price wrt 50-day average, 200-day average and 52-week low
         if (fiftyDayAverage > 0):
             if (lp > fiftyDayAverage):
-                price_sell_score += 1
+                price_dip_score -= 1
 
         if (twoHundredDayAverage > 0):
             if (lp > twoHundredDayAverage):
-                price_sell_score += 1
+                price_dip_score -= 1
 
         if (yearly_highest_val > 0):
             pct_val = lp*100/yearly_highest_val
 
-            #If we are closer to 52-week high then increase the sell score; else increase the buy score
+            #If we are closer to 52-week high then indicate premium; else indicate the discount score
             if (pct_val >= PRICE_PERCENT_CUTOFF):
-                price_sell_score += 3
+                price_dip_score -= 3
 
     elif (last_rising_days_count > 0):
 
-        price_buy_score += 1
-        price_sell_score -= 1
+        price_dip_score += 1
         if (last_rising_days_count <= rp_bp):
-            price_buy_score += 2
-            price_sell_score -= 2
+            price_dip_score += 2
 
         #Checkout price wrt 50-day average, 200-day average and 52-week low
         if (fiftyDayAverage > 0):
             if (lp <= fiftyDayAverage):
-                price_buy_score += 1
+                price_dip_score += 1
 
         if (twoHundredDayAverage > 0):
             if (lp <= twoHundredDayAverage):
-                price_buy_score += 1
+                price_dip_score += 1
 
         if (yearly_lowest_val > 0):
             pct_val = yearly_lowest_val*100/lp
 
-            #If current price is not too far from 52-week low then increase buy score
+            #If current price is not too far from 52-week low then increase discount score
             if (pct_val >= PRICE_PERCENT_CUTOFF):
-                price_buy_score += 3
+                price_dip_score += 3
 
 
     price_max_score += 8
@@ -215,25 +210,22 @@ def get_price_signals(tsymbol, df, df_summ):
     #If price is in higher percentile then higher sell score
     if ((lp <= bp) or (lp >= tp)):
         if (lp <= bp):
-            price_buy_score += 2
+            price_dip_score += 2
         elif (lp >= tp):
-            price_sell_score += 2
+            price_dip_score -= 2
     else:
         if ((lp > bp) and (lp < mp)):
-            price_buy_score += 1
+            price_dip_score += 1
         elif ((lp > mp) and (lp < tp)):
             #Either buy/sell depending on overall score
-            price_buy_score += 1
-            price_sell_score += 1
-
+            print('Score not updated as it can go either way')
     price_max_score += 2
 
-    price_buy_rec = f'price_buy_score:{price_buy_score}/{price_max_score}'
-    price_sell_rec = f'price_sell_score:{price_sell_score}/{price_max_score}'
+    price_dip_rec = f'price_dip_score:{price_dip_score}/{price_max_score}'
 
     if (yearly_lowest_val > 0):
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwlh}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_dip_rec},{nftwlh}'
     else:
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_buy_rec},{price_sell_rec},{nftwlh}'
+        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_dip_rec},{nftwlh}'
     
-    return price_buy_score, price_sell_score, price_max_score, price_signals
+    return price_dip_score, price_max_score, price_signals

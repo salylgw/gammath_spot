@@ -17,8 +17,7 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
     print(f'\nGetting options signals for {tsymbol}')
 
-    options_buy_score = 0
-    options_sell_score = 0
+    options_dip_score = 0
     options_max_score = 0
     shortRatio = 0
 
@@ -69,6 +68,7 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
                     bearish_end_index = i
                 else:
                     bearish_end_index = 0
+                    print('\nDid NOT find the strike for current price of ', curr_price, 'in put option chain')
 
                 #Get total call open interest for curr price and higher
                 total_bullish_open_interest = df_calls['openInterest'][bullish_start_index:call_opts_size-1].sum()
@@ -78,17 +78,12 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
                 print('\nopen interests: bullish: ', total_bullish_open_interest, 'bearish: ', total_bearish_open_intetest)
 
-                if (total_bearish_open_intetest > 0):
-                    bc_ratio = (total_bullish_open_interest / total_bearish_open_intetest)
-                else:
-                    bc_ratio = 0
-
-                if (bc_ratio > 1):
+                if (total_bullish_open_interest > total_bearish_open_intetest):
                     print(f'\nbullish signal for {tsymbol}')
-                    options_buy_score += 4
+                    options_dip_score += 4
                 else:
                     print(f'\nbearish signal for {tsymbol}')
-                    options_sell_score += 4
+                    options_dip_score -= 4
             else:
                 print('\nOptions not supported for ', tsymbol)
 
@@ -107,23 +102,18 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
     if (shortRatio > 0):
         if (shortRatio < 3):
-            options_buy_score += 6
-            options_sell_score -= 6
+            options_dip_score += 6
         elif (shortRatio < 6):
-            options_buy_score += 4
-            options_sell_score -= 4
+            options_dip_score += 4
         elif (shortRatio < 10):
-            options_buy_score += 2
-            options_sell_score -= 2
+            options_dip_score += 2
         else:
-            options_sell_score += 6
-            options_buy_score -= 6
+            options_dip_score -= 6
 
     options_max_score += 6
 
-    options_buy_rec = f'options_buy_score:{options_buy_score}/{options_max_score}'
-    options_sell_rec = f'options_sell_score:{options_sell_score}/{options_max_score}'
-    options_signals = f'options: {options_buy_rec},{options_sell_rec},short_ratio:{shortRatio}'
+    options_dip_rec = f'options_dip_score:{options_dip_score}/{options_max_score}'
+    options_signals = f'options: short_ratio:{shortRatio},{options_dip_rec}'
     
-    return options_buy_score, options_sell_score, options_max_score, options_signals
+    return options_dip_score, options_max_score, options_signals
 

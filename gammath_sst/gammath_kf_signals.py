@@ -13,8 +13,7 @@ def get_kf_state_means(tsymbol, df):
 
     print(f'\nGetting Kalman filter signals for {tsymbol}')
 
-    kf_buy_score = 0
-    kf_sell_score = 0
+    kf_dip_score = 0
     kf_max_score = 0
     kf_signals = ''
 
@@ -144,27 +143,24 @@ def get_kf_state_means(tsymbol, df):
 
     print(f'\n KF diff from means: nd_bp:{nd_bp}, nd_mp:{nd_mp}, nd_tp:{nd_tp}, pd_bp:{pd_bp}, pd_mp:{pd_mp}, pd_tp:{pd_tp}')
 
-    #Use current diff to factor into buy/sell score
+    #Use current diff to factor into dip score
     if (curr_below_mean_count > 0):
         print('\nUsing negative diff from KF means')
 
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > nd_bp):
-            kf_buy_score += 2
-            kf_sell_score -= 2
+            kf_dip_score += 2
 
         kf_max_score += 2
 
         if (curr_diff > nd_mp):
-            kf_buy_score += 2
-            kf_sell_score -= 2
+            kf_dip_score += 2
 
         kf_max_score += 2
 
         if (curr_diff > nd_tp):
-            kf_buy_score += 3
-            kf_sell_score -= 3
+            kf_dip_score += 3
 
         kf_max_score += 3
 
@@ -174,20 +170,17 @@ def get_kf_state_means(tsymbol, df):
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > pd_bp):
-            kf_sell_score += 2
-            kf_buy_score -= 2
+            kf_dip_score -= 2
 
         kf_max_score += 2
 
         if (curr_diff > pd_mp):
-            kf_sell_score += 2
-            kf_buy_score -= 2
+            kf_dip_score -= 2
 
         kf_max_score += 2
 
         if (curr_diff > pd_tp):
-            kf_sell_score += 3
-            kf_buy_score -= 3
+            kf_dip_score -= 3
 
         kf_max_score += 3
 
@@ -227,39 +220,32 @@ def get_kf_state_means(tsymbol, df):
 
     #Compute buy/sell scores based on where current below mean count falls in 25, 50, 75 percentile
     if (curr_below_mean_count > bp):
-        kf_buy_score += 1
-        kf_sell_score -= 1
+        kf_dip_score += 1
     elif (curr_above_mean_count > bp_am):
-        kf_sell_score += 1
-        kf_buy_score -= 1
+        kf_dip_score -= 1
 
     kf_max_score += 1
 
     if (curr_below_mean_count > mp):
-        kf_buy_score += 1
-        kf_sell_score -= 1
+        kf_dip_score += 1
     elif (curr_above_mean_count > mp_am):
-        kf_sell_score += 1
-        kf_buy_score -= 1
+        kf_dip_score -= 1
 
     kf_max_score += 1
 
     if (curr_below_mean_count > tp):
-        kf_buy_score += 1
-        kf_sell_score -= 1
+        kf_dip_score += 1
     elif (curr_above_mean_count > tp_am):
-        kf_sell_score += 1
-        kf_buy_score -= 1
+        kf_dip_score -= 1
 
     kf_max_score += 1
 
-    kf_buy_rec = f'kf_buy_score:{kf_buy_score}/{kf_max_score}'
-    kf_sell_rec = f'kf_sell_score:{kf_sell_score}/{kf_max_score}'
+    kf_dip_rec = f'kf_dip_score:{kf_dip_score}/{kf_max_score}'
 
     if (curr_below_mean_count > 0):
-        kf_signals = f'KF: {kf_buy_rec},{kf_sell_rec},cbmdc: {curr_below_mean_count}, bp:{bp}, mp:{mp}, tp:{tp}, mbmdc: {kf_max_below_mean_count}, cd:{curr_diff},nd_bp:{nd_bp},nd_mp:{nd_mp},nd_tp:{nd_tp}'
+        kf_signals = f'KF: cbmdc: {curr_below_mean_count}, bp:{bp}, mp:{mp}, tp:{tp}, mbmdc: {kf_max_below_mean_count}, cd:{curr_diff},nd_bp:{nd_bp},nd_mp:{nd_mp},nd_tp:{nd_tp},{kf_dip_rec}'
     else:
-        kf_signals = f'KF: {kf_buy_rec},{kf_sell_rec},camdc: {curr_above_mean_count}, bp:{bp_am}, mp:{mp_am}, tp:{tp_am}, mamdc: {kf_max_above_mean_count}, cd:{curr_diff},pd_bp:{pd_bp},pd_mp:{pd_mp},pd_tp:{pd_tp}'
+        kf_signals = f'KF: camdc: {curr_above_mean_count}, bp:{bp_am}, mp:{mp_am}, tp:{tp_am}, mamdc: {kf_max_above_mean_count}, cd:{curr_diff},pd_bp:{pd_bp},pd_mp:{pd_mp},pd_tp:{pd_tp},{kf_dip_rec}'
 
     #return state means also to plot the charts
-    return ds_sm, kf_buy_score, kf_sell_score, kf_max_score, kf_signals
+    return ds_sm, kf_dip_score, kf_max_score, kf_signals
