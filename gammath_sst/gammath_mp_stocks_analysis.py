@@ -20,8 +20,9 @@ if __name__ == '__main__':
     #Check number of cores we have to be able to run in parallel
     core_count = mp.cpu_count()
 
-    #Use half the cores from count; Need to check portability on this
-    cores_to_use = (core_count >> 1)
+    #Need to check portability on this
+    #Might need to reduce the number cores actually used hence core_count and cores_to_use are defined separately
+    cores_to_use = core_count
 
     if (cores_to_use < 1):
         cores_to_use = 1
