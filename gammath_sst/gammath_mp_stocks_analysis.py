@@ -15,6 +15,22 @@ import sys
 
 if __name__ == '__main__':
 
+    #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
+    try:
+        #Get the watchlist file from pgm argument
+        sf_name = sys.argv[1]
+    except:
+        print('ERROR: Need watch list file name as one argument to this Program. See watchlist.csv')
+        raise ValueError('Missing watch list')
+
+    #Read the watchlist
+    try:
+        watch_list = pd.read_csv(sf_name)
+    except:
+        print('ERROR: Failed to read watchlist. See watchlist.csv for example')
+        raise ValueError('Watchlist file read failed')
+
+    #Set the start method for launching parallel processes
     mp.set_start_method('fork')
 
     #Check number of cores we have to be able to run in parallel
@@ -30,9 +46,6 @@ if __name__ == '__main__':
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
 
     proc_handles = []
-    sf_name = sys.argv[1]
-
-    watch_list = pd.read_csv(sf_name)
 
     max_tickers = len(watch_list)
 

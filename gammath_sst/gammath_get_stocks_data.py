@@ -29,7 +29,7 @@ class GSD:
         #Get data for stock ticker symbol from the internet
 
         if (len(tsymbol) == 0):
-            return None
+            raise ValueError('Invalid ticker symbol')
 
         path = self.Tickers_dir / f'{tsymbol}'
 
@@ -63,21 +63,21 @@ class GSD:
             print(f'Error while getting stock financial data for {tsymbol}')
 
         try:
-            #Get stock options data
+            #Get stock options data [NOTE: This is very slow]
             gso.get_options_data(tsymbol, ticker, path)
         except ValueError:
             print(f'Error while getting stock options data for {tsymbol}')
         except RuntimeError:
             print(f'Could not get stock options data for {tsymbol}')
 
-        #Getting calendar info is too slow.
-#       try:
-#       #Fetch calendar
-#       gsc.get_ticker_calendar(tsymbol, ticker, path)
-#       except ValueError:
-#           print(f'Error while getting stock calendar data for {tsymbol}')
-#       except RuntimeError:
-#           print(f'Could not get stock calendar data for {tsymbol}')
+       #Getting calendar info [NOTE: This is very low]
+       try:
+           #Fetch calendar
+           gsc.get_ticker_calendar(tsymbol, ticker, path)
+       except ValueError:
+           print(f'Error while getting stock calendar data for {tsymbol}')
+       except RuntimeError:
+           print(f'Could not get stock calendar data for {tsymbol}')
 
         try:
             #Get stock history

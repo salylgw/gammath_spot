@@ -11,7 +11,7 @@ import os
 
 def get_events_info(tsymbol, path):
 
-    event = ''
+    event = 'No events found'
     event_dates = []
 
     #Get the events data from existing file
