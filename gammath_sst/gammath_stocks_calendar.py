@@ -14,8 +14,6 @@ import gammath_utils as gut
 
 def get_ticker_calendar(tsymbol, ticker, path):
 
-    print(f'\nGetting calendar events for {tsymbol}')
-
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
@@ -36,20 +34,15 @@ def get_ticker_calendar(tsymbol, ticker, path):
         else:
             calendar_dont_need_fetch = False
     except:
-        print(f'\nError reading Calendar file for ticker {tsymbol} not found')
         raise RuntimeError('Error calendar data file')
 
     if not calendar_dont_need_fetch:
-        print(f'\nFetching calendar for {tsymbol}')
         try:
             stock_calendar_sheet = ticker.calendar
             if (len(stock_calendar_sheet) > 0):
                 #Save the data for reference and processing
                 stock_calendar_sheet.to_csv(path / f'{tsymbol}_calendar.csv')
-            else:
-                print(f'\nCalendar for {tsymbol} is empty')
         except:
-            print(f'\nError getting Calendar for ticker {tsymbol} not found')
             raise RuntimeError('Error getting calendar data')
 
 

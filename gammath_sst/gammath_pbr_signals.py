@@ -9,8 +9,6 @@ import pandas as pd
 
 def get_pbr_signals(tsymbol, df_summ):
 
-    print(f'\nGetting PBR signals for {tsymbol}')
-
     pbr_dip_score = 0
     pbr_max_score = 0
 
@@ -24,20 +22,16 @@ def get_pbr_signals(tsymbol, df_summ):
             if (pbr > 0):
                 pbr = round(pbr, 3)
 
-                print('PBR ratio for ', tsymbol, ': ', pbr)
-
                 #Lower PBR is better; Not giving more weight as we have analyst reco and other factors accouting for "selection" criteria
                 if (pbr < 20):
                     pbr_dip_score += 1
                 else:
                     pbr_dip_score -= 1
         else:
-            print(f'\nSummary DF for {tsymbol} is empty. PBR not found')
             raise RuntimeError('Dataframe empty')
 
     except:
         pbr = 0
-        print(f'\nPBR value not found for {tsymbol}')
 
     pbr_max_score += 1
 
@@ -45,5 +39,4 @@ def get_pbr_signals(tsymbol, df_summ):
 
     pbr_signals = f'PBR:{pbr},{pbr_dip_rec}'
 
-    print(f'\nPBR signals extracted for {tsymbol}')
     return pbr_dip_score, pbr_max_score, pbr_signals

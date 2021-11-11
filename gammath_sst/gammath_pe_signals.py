@@ -11,8 +11,6 @@ import pandas as pd
 
 def get_pe_signals(tsymbol, df_summ):
 
-    print(f'\nGetting PE signals for {tsymbol}')
-
     Tickers_dir = Path('./tickers')
 
     path = Tickers_dir
@@ -22,10 +20,7 @@ def get_pe_signals(tsymbol, df_summ):
     pe_dip_score = 0
     pe_max_score = 0
 
-    if not (path / 'SP500_SEC_PES.csv').exists():
-        print('\nStock PE info file not found for ticker ', tsymbol)
-    else:
-        print('\nSP500_SEC_PES file found')
+    if (path / 'SP500_SEC_PES.csv').exists():
         df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
 
     try:
@@ -37,20 +32,12 @@ def get_pe_signals(tsymbol, df_summ):
     avg_tpe = 0
     avg_fpe = 0
 
-    print(f'\nTPE {tsymbol}: {tpe}')
-    print(f'\nFPE {tsymbol}: {fpe}')
-
     len_df_sp = len(df_sp)
-    print('\nSP500 list size: ', len_df_sp, 'First symbol: ', df_sp['Symbol'][0])
 
     for i in range(len_df_sp):
         if (df_sp['Symbol'][i] == tsymbol):
-            print('\nFound ticker in SP500 list for ', tsymbol)
             avg_tpe = round(df_sp['LS_AVG_TPE'][i], 3)
             avg_fpe = round(df_sp['LS_AVG_FPE'][i], 3)
-
-            print('Avg TPE for ', tsymbol, 'is ', avg_tpe)
-            print('Avg FPE for ', tsymbol, 'is ', avg_fpe)
 
             #Avg TPE and FPE data needs to be authentic before we can factor it into score computation. For now just check if FPE is less or more than TPE
             #If forward PE is less than trailing PE then view this as a +ve sign
@@ -67,8 +54,6 @@ def get_pe_signals(tsymbol, df_summ):
             break
 
     if (i == (len_df_sp-1)):
-        print('\nReference PE data not found for sector and/or ticker ', tsymbol)
-
         pe_dip_score = 0
 
         #No data viewed as a -ve so have an impact on total score

@@ -10,8 +10,6 @@ import sys
 
 def score_n_signals_save(tsymbol, path, overall_dip_score, overall_max_score, overall_signals):
 
-    print(f'\nComputing final score saving signals for {tsymbol}')
-
     overall_dip_rec = f'overall_dip_score:{overall_dip_score}/{overall_max_score}'
 
     if (overall_max_score != 0):
@@ -24,7 +22,7 @@ def score_n_signals_save(tsymbol, path, overall_dip_score, overall_max_score, ov
     try:
         f = open(path / 'signal.txt', 'w')
     except:
-        print('\nError while opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
+        print('\nERROR: opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
     else:
         f.write(f'{overall_signals}\n{overall_dip_rec}\n{final_dip_score_rec}\n')
         f.close()

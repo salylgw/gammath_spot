@@ -11,8 +11,6 @@ import pandas as pd
 #Get percentage held by institutions for tsymbol
 def get_ihp_signals(tsymbol, df_summ):
 
-    print(f'\nGetting Institutional holdings percentage signals for {tsymbol}')
-
     ihp_dip_score = 0
     ihp_max_score = 0
 
@@ -21,8 +19,6 @@ def get_ihp_signals(tsymbol, df_summ):
         ihp = df_summ['heldPercentInstitutions'][0]
     except:
         raise ValueError('heldPercentInstitutions value not found')
-
-    print('ihp for ', tsymbol, ': ', ihp)
 
     #We can do checks for different levels but for now this will suffice
     if (ihp > 0):

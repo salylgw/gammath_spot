@@ -10,8 +10,6 @@ import pandas as pd
 
 def get_qbs_signals(tsymbol, path):
 
-    print(f'\nGetting Quarterly Balance Sheet signals for {tsymbol}')
-
     cash = 0
     lti = 0
     sti = 0
@@ -27,13 +25,11 @@ def get_qbs_signals(tsymbol, path):
 
     #Check if file exists and is it from another day
     if file_exists:
-        print(f'\nQuarterly balance sheet for {tsymbol} exists')
 
         #Read Quarterly balance sheet CSV
         df = pd.read_csv(path / f'{tsymbol}_qbs.csv', index_col='Unnamed: 0')
 
         if (len(df) == 0):
-            print(f'\nERROR: QBS balansheet dataframe is empty for {tsymbol}')
             raise ValueError('QBS dataframe empty')
         else:
 
@@ -52,42 +48,31 @@ def get_qbs_signals(tsymbol, path):
                             if (dfe_len >= 4):
                                 #Get the sum for last 4 quarters
                                 cash_earned_last_one_year = dfe.Earnings[(dfe_len-4):].sum()
-                            else:
-                                print(f'\nNot enough Quarterly Earnings data for {tsymbol}. Earnings quarters: {dfe_len} ')
-                        else:
-                            print(f'\nERROR: Earnings dataframe is empty for {tsymbol}')
                     except:
-                        print(f'\nQuarterly earnings not found for {tsymbol}')
                         cash_earned_last_one_year = 0
-                else:
-                    print(f'\nEarnings file not found for {tsymbol}')
             except:
-                print(f'\nCash item not found in quarterly balance sheet for {tsymbol}')
                 cash = 0
 
             try:
                 sti = df[mrqd]['Short Term Investments']
             except:
-                print(f'\nShort term investments item not found for {tsymbol}')
                 sti = 0
 
             try:
                 lti = df[mrqd]['Long Term Investments']
             except:
-                print(f'\nLong term investments item not found for {tsymbol}')
                 lti = 0
 
             try:
                 #Total shareholder equity
                 sequity = df[mrqd]['Total Stockholder Equity']
             except:
-                print(f'\nTotal shareholder equity item not found in quarterly balance sheet for {tsymbol}')
+                sequity = 0
 
             try:
                 #Long term debt
                 ldebt = df[mrqd]['Long Term Debt']
             except:
-                print(f'\nLong Term Debt item not found in quarterly balance sheet for {tsymbol}')
                 ldebt = 0
 
             #Debt to capital ratio. TBD: Need to revisit the formula
@@ -128,7 +113,6 @@ def get_qbs_signals(tsymbol, path):
             #Max score from debt data
             qbs_max_score += 1
     else:
-        print(f'\nERROR: Quarterly balance sheet for {tsymbol} does NOT exist.')
         #This will show 0/4 when no balance sheet data
         raise ValueError('QBS file doesn\'t exist')
 
@@ -136,5 +120,4 @@ def get_qbs_signals(tsymbol, path):
 
     qbs_signals = f'qbs:dtcr:{dtcr},{qbs_dip_rec}'
 
-    print(f'\nQBS signals extracted for {tsymbol}')
     return qbs_dip_score, qbs_max_score, qbs_signals

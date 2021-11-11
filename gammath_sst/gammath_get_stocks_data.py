@@ -36,13 +36,17 @@ class GSD:
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
 
-        #Fetch stocktwits page; Finish getting all data outside of yahoo
-        ggstw.get_stocktwits_ticker_info(tsymbol, path)
+        try:
+            #Fetch stocktwits page; Finish getting all data outside of yahoo
+            ggstw.get_stocktwits_ticker_info(tsymbol, path)
+        except:
+            print(f'\nERROR: Failed to get Stocktwits info for {tsymbol}')
 
         try:
             #Create Yahoo finance ticker handle
             ticker = yf.Ticker(tsymbol)
         except:
+            print(f'\nERROR: Failed to create Yahoo ticker handle for {tsymbol}')
             raise RuntimeError('Failed to create Yahoo ticker handle')
 
         try:

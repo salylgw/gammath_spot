@@ -13,8 +13,6 @@ import numpy as np
 
 def get_rsi_signals(tsymbol, df, path):
 
-    print(f'\nGetting RSI signals for {tsymbol}')
-
     RSI_TIME_PERIOD = 14
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
@@ -30,13 +28,11 @@ def get_rsi_signals(tsymbol, df, path):
 
     rsi_len = len(rsi)
     if (rsi_len <= 0):
-        print(f'\nError: Incorrect length returned in RSI for {tsymbol}')
         raise ValueError('Invalid length of RSI data')
 
     rsi_ds = rsi.describe()
     rsi_ds.to_csv(path / f'{tsymbol}_RSI_summary.csv')
     curr_rsi = rsi[rsi_len-1]
-    print('Current RSI for ', tsymbol, ' is: ', curr_rsi, '\n')
     f = open(path / f'{tsymbol}_RSI_summary.csv', 'a')
     f.write(f'curr_rsi,{curr_rsi}')
     f.close()

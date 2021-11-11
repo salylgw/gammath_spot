@@ -10,8 +10,6 @@ import pandas as pd
 
 def get_beta_signals(tsymbol, df_summ):
 
-    print(f'\nGetting beta signals for {tsymbol}')
-
     beta_dip_score = 0
     beta_max_score = 0
 
@@ -20,8 +18,6 @@ def get_beta_signals(tsymbol, df_summ):
         beta = df_summ['beta'][0]
     except:
         raise ValueError('Beta value not found')
-
-    print('Beta for ', tsymbol, ': ', beta)
 
     if (beta > 0):
         #Closer to 1 is near market and is better

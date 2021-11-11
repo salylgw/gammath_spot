@@ -13,8 +13,6 @@ import numpy as np
 
 def get_mfi_signals(tsymbol, df, path):
 
-    print(f'\nGetting MFI signals for {tsymbol}')
-
     MFI_TIME_PERIOD = 14
     MFI_OVERSOLD_LEVEL = 20
     MFI_OVERBOUGHT_LEVEL = 80
@@ -33,7 +31,6 @@ def get_mfi_signals(tsymbol, df, path):
     prices = df.Close
     prices_len = len(prices)
     if (prices_len <= 0):
-        print(f'\nError: Incorrect length of Price dataframe for {tsymbol}')
         raise ValueError('Invalid Price data for generating MFI')
     else:
         lp = prices[prices_len-1]
@@ -45,7 +42,6 @@ def get_mfi_signals(tsymbol, df, path):
         mfi_ds = mfi.describe()
         mfi_mean = mfi_ds['mean']
     except:
-        print(f'\nError: getting MFI for {tsymbol}')
         raise RuntimeError('MFI data generation failed')
 
     #Get current price direction
@@ -98,13 +94,11 @@ def get_mfi_signals(tsymbol, df, path):
 
         mfi_max_score += 3
     else:
-        print(f'\nError: MFI length is 0 for {tsymbol}')
         raise ValueError('Invalid MFI data length ')
 
     mfi_dip_rec = f'mfi_dip_score:{mfi_dip_score}/{mfi_max_score}'
 
     mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_dip_rec},{mfi_indicator}'
 
-    
     return mfi, mfi_dip_score, mfi_max_score, mfi_signals
 

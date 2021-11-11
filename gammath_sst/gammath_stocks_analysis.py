@@ -42,7 +42,6 @@ import re
 class GSA:
 
     def __init__(self):
-        print('\nGSA instantiated')
         self.Tickers_dir = Path('tickers')
         self.overall_dip_score = 0
         self.overall_max_score = 0
@@ -50,15 +49,12 @@ class GSA:
         self.note = ''
 
     def do_stock_analysis_and_compute_score(self, tsymbol):
-        print('\nGSA do_stock_analysis_and_compute_score')
 
         path = self.Tickers_dir / f'{tsymbol}'
 
         try:
             #Read Stock summary info into DataFrame.
             df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
-            print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
-            df_summ.info()
         except:
             print('\nERROR: Stock summary file not found for symbol ', tsymbol)
             return
@@ -66,8 +62,6 @@ class GSA:
         try:
             #Read CSV into DataFrame.
             df = pd.read_csv(path / f'{tsymbol}_history.csv')
-            print('DataFrame info read from CSV for symbol: ', tsymbol, ':\n')
-            df.info()
             dt = time.strftime('%x').split('/')
             df_ld = df.Date[len(df)-1]
             df_ld = df_ld.split('-')
@@ -91,7 +85,7 @@ class GSA:
             self.overall_max_score += reco_max_score
             self.reco_signals_exist = ((reco_dip_score != 0) and (reco_max_score != 0))
         except RuntimeError:
-            print('\nError while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             pe_dip_score = 0
@@ -105,7 +99,7 @@ class GSA:
                 self.overall_max_score += pe_max_score
 
         except ValueError:
-            print('\nError while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             peg_dip_score = 0
@@ -120,7 +114,7 @@ class GSA:
                 self.overall_max_score += peg_max_score
 
         except ValueError:
-            print('\nError while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             beta_dip_score = 0
@@ -135,7 +129,7 @@ class GSA:
                 self.overall_max_score += beta_max_score
 
         except ValueError:
-            print('\nError while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             pbr_dip_score = 0
@@ -150,9 +144,9 @@ class GSA:
                 self.overall_max_score += pbr_max_score
 
         except RuntimeError:
-            print('\nError while generating PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while generating PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             qbs_dip_score = 0
@@ -167,7 +161,7 @@ class GSA:
                 self.overall_max_score += qbs_max_score
 
         except ValueError:
-            print('\nError while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             ihp_dip_score = 0
@@ -182,7 +176,7 @@ class GSA:
                 self.overall_max_score += ihp_max_score
 
         except ValueError:
-            print('\nError while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             inshp_dip_score = 0
@@ -192,7 +186,7 @@ class GSA:
             #Insider Holders Percentage signals
             inshp_dip_score, inshp_max_score, inshp_signals = ginshp.get_inshp_signals(tsymbol, df_summ)
         except ValueError:
-            print('\nError while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             price_dip_score = 0
@@ -205,7 +199,7 @@ class GSA:
             self.overall_max_score += price_max_score
 
         except ValueError:
-            print('\nError generating price signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating price signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             rsi_dip_score = 0
@@ -218,9 +212,9 @@ class GSA:
             self.overall_max_score += rsi_max_score
 
         except RuntimeError:
-            print('\nError generating RSI data for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating RSI data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError generating signals from RSI data ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating signals from RSI data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             bb_dip_score = 0
@@ -233,9 +227,9 @@ class GSA:
             self.overall_max_score += bb_max_score
 
         except RuntimeError:
-            print('\nError generating Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError generating signals from Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating signals from Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             mfi_dip_score = 0
@@ -249,9 +243,9 @@ class GSA:
             self.overall_max_score += mfi_max_score
 
         except RuntimeError:
-            print('\nError generating MFI data for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating MFI data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError generating signals from MFI data ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating signals from MFI data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             stoch_dip_score = 0
@@ -265,9 +259,9 @@ class GSA:
             self.overall_max_score += stoch_max_score
 
         except RuntimeError:
-            print('\nError generating stochastics data for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating stochastics data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError generating signals from stochastics data ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating signals from stochastics data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             macd_dip_score = 0
@@ -281,9 +275,9 @@ class GSA:
             self.overall_max_score += macd_max_score
 
         except RuntimeError:
-            print('\nError generating MACD data for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating MACD data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError generating signals from MACD data ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating signals from MACD data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             kf_dip_score = 0
@@ -297,9 +291,9 @@ class GSA:
             self.overall_max_score += kf_max_score
 
         except RuntimeError:
-            print('\nError generating Kalman filter data for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating Kalman filter data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError generating signals from Kalman filter data ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating signals from Kalman filter data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             ols_dip_score = 0
@@ -313,9 +307,9 @@ class GSA:
             self.overall_max_score += ols_max_score
 
         except RuntimeError:
-            print('\nError generating OLS data for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating OLS data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
-            print('\nError generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             options_dip_score = 0
@@ -329,7 +323,7 @@ class GSA:
             self.overall_max_score += options_max_score
 
         except:
-            print('\nError while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             st_dip_score = 0
@@ -343,13 +337,13 @@ class GSA:
             self.overall_max_score += st_max_score
 
         except RuntimeError:
-            print('\nError while getting stocktwits signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting stocktwits signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             #Get events info
             events_info = gge.get_events_info(tsymbol, path)
         except:
-            print('\nError while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
             events_info = ''
 
         overall_signals = f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{events_info}\n{self.note}'
@@ -357,10 +351,9 @@ class GSA:
         try:
             gscsi.score_n_signals_save(tsymbol, path, self.overall_dip_score, self.overall_max_score, overall_signals)
         except:
-            print('\nError while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             gsc.plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, y_predictions, y1_series)
         except:
-            print('\nError while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])
-
+            print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])

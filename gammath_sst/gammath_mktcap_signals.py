@@ -11,8 +11,6 @@ import pandas as pd
 
 def get_mktcap_signals(tsymbol, df_summ):
 
-    print(f'\nGetting Market Cap signals for {tsymbol}')
-
     TRILLION_DOLLAR_MCAP = 1000000000000
 
     mktcap_buy_score = 0
@@ -20,8 +18,6 @@ def get_mktcap_signals(tsymbol, df_summ):
     mktcap_max_score = 0
 
     mktcap = df_summ['marketCap'][0]
-
-    print('\nmktcap for ', tsymbol, ': ', mktcap)
 
     #Just give an extra point to trillion dollar companies
     #When we add more weight for marketcap, we can add buy/sell scores this in levels from market cap in millions to trillions

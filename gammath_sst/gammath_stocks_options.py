@@ -17,7 +17,6 @@ import gammath_utils as gut
 def get_options_data(tsymbol, ticker, path):
 
     #Get stock info summary from the internet
-    print(f'\nGetting {tsymbol} options data.')
 
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
@@ -28,24 +27,18 @@ def get_options_data(tsymbol, ticker, path):
         file_exists = (path / f'{tsymbol}_options_dates.csv').exists()
 
         if (file_exists):
-            print(f'\nOptions dates for {tsymbol} exist. Checking it is latest')
-
             #Check if it is latest
             fstat = os.stat(path / f'{tsymbol}_options_dates.csv')
             dont_need_fetch = gut.check_if_same_day(fstat)
         else:
-            print(f'\nOptions dates for {tsymbol} exist and is from today')
             dont_need_fetch = False
 
         if (dont_need_fetch):
-            print('No need to fetch options dates from internet')
-            print(f'\nGet options dates for {tsymbol}')
             #Get the latest options expiry date
             dates_df = pd.read_csv(path / f'{tsymbol}_options_dates.csv', index_col='Unnamed: 0')
 
             option_date = dates_df.loc[0][0]
         else:
-            print('Date mismatch. Need to fetch option date from internet')
             #Read fresh data
             option_dates = ticker.options
             if (len(option_dates)):
@@ -68,33 +61,19 @@ def get_options_data(tsymbol, ticker, path):
 
         #We only need to read options data once a day
         if (not dont_need_fetch):
-            print('\nGetting option chain from internet for ', tsymbol)
-
-            print('\nNext options expiry ', tsymbol, 'is ', option_date, 'type is ', type(option_date))
-
             options = ticker.option_chain(option_date)
             options.calls.info()
             options.puts.info()
-            print('\nGot option chain for ', tsymbol)
-
-            print('\nSorting calls based on strike price')
             df_calls = options.calls.sort_values('strike')
 
             #Save the calls sorted by strike price
             df_calls.to_csv(path / f'{tsymbol}_call_{option_date}.csv')
 
-            print('\nSorting puts based on strike price')
             df_puts = options.puts.sort_values('strike')
 
             #Save the puts sorted by strike price
             df_puts.to_csv(path / f'{tsymbol}_put_{option_date}.csv')
-
-            print('\nSaved call and put data')
-        else:
-            print(f'\nOptions data already exists for {tsymbol}')
-
     except:
-        print(f'\nError getting options data for {tsymbol}')
         raise RuntimeError('No option data')
 
     return

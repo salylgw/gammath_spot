@@ -5,7 +5,6 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
-import time
 import multiprocessing as mp
 from multiprocessing import Process
 import gammath_get_stocks_data as ggsd
@@ -30,20 +29,16 @@ if __name__ == '__main__':
     if (cores_to_use < 1):
         cores_to_use = 1
 
-    print('\nNumber of logical cores: ', core_count, 'Using logical cores: ', cores_to_use)
-
-    print('\nStart Time: ', time.strftime('%x %X'), '\n')
     proc_handles = []
 
     #Get the watchlist file from pgm argument
     sf_name = sys.argv[1]
-    print(sf_name)
 
     #Read the watchlist
     try:
         watch_list = pd.read_csv(sf_name)
     except:
-        print('Failed to read watchlist')
+        print('ERROR: Failed to read watchlist')
         raise ValueError('Watchlist file read failed')
 
     max_tickers = len(watch_list)

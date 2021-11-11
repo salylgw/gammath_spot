@@ -14,8 +14,6 @@ import re
 
 def check_if_same_day(fstat):
 
-    print(f'\nChecking if same day file')
-
     fct_time = time.ctime(fstat.st_ctime).split(' ')
     dt = time.strftime('%x').split('/')
     if (fct_time[2] == ''):
@@ -34,13 +32,10 @@ def check_if_same_day(fstat):
 class GUTILS:
 
     def __init__(self):
-        print('\nGUTILS instantiated')
         self.Tickers_dir = Path('tickers')
 
 
     def get_sp500_list(self):
-
-        print(f'\nGetting list of SP500 companies')
 
         sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
 
@@ -63,7 +58,7 @@ class GUTILS:
                 #File doesn't exist/
                 dont_need_fetch = False
         except:
-            print(f'\nError checking SP500 list')
+            dont_need_fetch = False
 
         if (not dont_need_fetch):
             #Get S&P500 list from the internet.
@@ -71,16 +66,12 @@ class GUTILS:
             #No need to get entire list of dataframes. We only need first dataframe
             sp500 = pd.read_html(sp500_list_url, header=0)[0]
 
-            print('S&P500 list dataframe info:\n')
-            sp500.info()
-
             #Save the history for reference and processing
             sp500.to_csv(path / f'SP500_list.csv')
 
         return
 
     def aggregate_scores(self):
-        print('\nGUTILS aggregate_scores')
 
         #Get all the subdirs. Need to check for is_dir
         p = self.Tickers_dir
@@ -88,8 +79,6 @@ class GUTILS:
         #Somehow looks like os.is_dir isn't supported
         #Using pathlib/Path instead since is_dir is supported there
         subdirs = [x for x in p.iterdir() if x.is_dir()]
-
-        print('\nNum of subdirs: ', len(subdirs))
 
         pattern_for_final_dip_score = re.compile(r'(final_dip_score):([-]*[0-9]*[.]*[0-9]+)')
 
@@ -115,9 +104,7 @@ class GUTILS:
         k = 0
 
         for subdir in subdirs:
-            if not subdir.exists():
-                print('\nError. ', subdir, ' not found')
-            else:
+            if subdir.exists():
                 try:
                     f = open(subdir / 'signal.txt', 'r')
                     content = f.read()
@@ -125,44 +112,32 @@ class GUTILS:
                     matched_string = pattern_for_note.search(content)
                     if (matched_string):
                         kw, note = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {note}')
-                    else:
-                        print(f'\nNote-Pattern NOT found for {subdir}')
 
                     matched_string = pattern_for_final_dip_score.search(content)
                     if (matched_string):
                         kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
                         df_b['Ticker'][i] = f'{subdir.name}'
                         df_b['final_dip_score'][i] = float(val)
                         df_b['Note'][i] = note
                         i += 1
-                    else:
-                        print(f'\nFinal dip score pattern NOT found for {subdir}')
 
 
                     matched_string = pattern_for_1y_ols_fit_score.search(content)
                     if (matched_string):
                         kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
                         df_fs['Ticker'][k] = f'{subdir.name}'
                         df_fs['ols_1y_fit_score'][k] = float(val)
-                    else:
-                        print(f'\n1Y OLS fit score pattern NOT found for {subdir}')
 
                     matched_string = pattern_for_ols_fit_score.search(content)
                     if (matched_string):
                         kw, val = matched_string.groups()
-                        print(f'\n{kw} for {subdir.name}: {val}')
                         df_fs['Ticker'][k] = f'{subdir.name}'
                         df_fs['ols_fit_score'][k] = float(val)
-                    else:
-                        print(f'\nOLS fit pattern NOT found for {subdir}')
 
                     k += 1
                     f.close()
                 except:
-                    print('\nError while getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
+                    print('\nERROR: Getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
         df_b.sort_values('final_dip_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_dip_scores.csv', index=False)
 
@@ -170,8 +145,6 @@ class GUTILS:
         df_fs.sort_values('Ticker').dropna(how='all').to_csv(self.Tickers_dir / 'overall_regression_fit_scores.csv', index=False)
 
     def aggregate_pe_data(self):
-
-        print(f'\nAggregating PE data')
 
         path = self.Tickers_dir
         if not path.exists():
@@ -202,17 +175,13 @@ class GUTILS:
                 df_pe['FPE'][i] = fpe
 
             except:
-                print('\nError while getting stock PE values for ', symbol, ': ', sys.exc_info()[0])
                 df_pe['TPE'][i] = 0
                 df_pe['FPE'][i] = 0
 
             i += 1
 
-        print('DataFrame length: ', df_sp_len)
-
         #Extract unique sectors
         sectors = df_sp['GICS Sector'].drop_duplicates()
-        print('\nSectors: ', sectors)
         sector_list = []
 
         #Calculate average and save for each sector; also save sectors
@@ -222,7 +191,6 @@ class GUTILS:
 
         sector_fields = list(df_sp['GICS Sector'])
         len_sector_fields = len(sector_fields)
-        print('\nSector fields list size: ', len_sector_fields)
         tpes = list(df_pe['TPE'])
         fpes = list(df_pe['FPE'])
 
@@ -233,7 +201,6 @@ class GUTILS:
             curr_sector_fpe = 0
             curr_sector_fpe_count = 0
             start_index = i
-            print('Sector field: ', sector_fields[i], 'Sector: ', sector)
             while (sector_fields[i] == sector):
                 new_tpe = tpes[i]
                 new_fpe = fpes[i]
@@ -256,20 +223,15 @@ class GUTILS:
 
             if (curr_sector_tpe_count):
                 curr_sector_tpe_avg = curr_sector_tpe / curr_sector_tpe_count
-                print('TPE AVG: ', curr_sector_tpe_avg, 'start_index: ', start_index, 'end_index: ', end_index)
 
             if (curr_sector_fpe_count):
                 curr_sector_fpe_avg = curr_sector_fpe / curr_sector_fpe_count
-                print('FPE AVG: ', curr_sector_fpe_avg, 'start_index: ', start_index, 'end_index: ', end_index)
 
-            print(f'start index: {start_index}, end index: {end_index}')
 
             #Save average values at all indices for this sector
             df_pe['LS_AVG_TPE'][start_index:end_index] = curr_sector_tpe_avg
             df_pe['LS_AVG_FPE'][start_index:end_index] = curr_sector_fpe_avg
 
-        print(df_pe)
-        print(f'\nSector list: {sector_list}')
 
         #New data frame with columns from PE dataframe joined
         df_sp = df_sp.join(df_pe)

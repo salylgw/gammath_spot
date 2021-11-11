@@ -13,8 +13,6 @@ import numpy as np
 
 def get_macd_signals(tsymbol, df, path):
 
-    print(f'\nGetting MACD signals for {tsymbol}')
-
     MACD_FAST_PERIOD = 12
     MACD_SLOW_PERIOD = 26
     MACD_SIGNAL_PERIOD = 9
@@ -25,12 +23,10 @@ def get_macd_signals(tsymbol, df, path):
     try:
         macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
     except:
-        print(f'\nError: getting MACD for {tsymbol}')
         raise RuntimeError('MACD data generation failed')
 
     macd_len = len(macd)
     if (macd_len <= 0):
-        print(f'\nError: Incorrect length MACD data returned for {tsymbol}')
         raise ValueError('MACD data length error')
 
     #Check current MACD trend
@@ -145,27 +141,15 @@ def get_macd_signals(tsymbol, df, path):
 
     #Get percentile values for -ve trend days counts
     bnp, mnp, tnp = macd_neg_days_count_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n MACD neg days percentile: {bnp}, {mnp}, {tnp}')
 
     #Get percentile values for +ve trend days counts
     bpp, mpp, tpp = macd_pos_days_count_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n MACD pos percentile: {bpp}, {mpp}, {tpp}')
 
     #Get percentile values for -ve diff
     bnp_diff, mnp_diff, tnp_diff = macd_neg_diff_count_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n MACD neg diff percentile: {bnp_diff}, {mnp_diff}, {tnp_diff}')
 
     #Get percentile values for +ve diff
     bpp_diff, mpp_diff, tpp_diff = macd_pos_diff_count_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n MACD pos diff percentile: {bpp_diff}, {mpp_diff}, {tpp_diff}')
-
-    #Get results description
-    macd_neg_days_count_descr = macd_neg_days_count_series.describe()
-    macd_pos_days_count_descr = macd_pos_days_count_series.describe()
-
-    #Save results description for later reference
-    macd_neg_days_count_descr.to_csv(path / f'{tsymbol}_macd_neg_days_count_summary.csv')
-    macd_pos_days_count_descr.to_csv(path / f'{tsymbol}_macd_pos_days_count_summary.csv')
 
     #Buy/Sell signal moment is only a small part of the equation; No scoring on the start of the indication
 

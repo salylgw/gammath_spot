@@ -14,8 +14,6 @@ import sys
 
 def get_ticker_history(tsymbol, ticker, path):
 
-    print(f'\nGetting ticker history for {tsymbol}')
-
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
@@ -28,7 +26,6 @@ def get_ticker_history(tsymbol, ticker, path):
     except:
         raise RuntimeError('Error obtaining stock history')
 
-    print('Stock history dataframe info for ', tsymbol, ':\n')
     stock_history.info()
 
     stock_history_len = len(stock_history)
@@ -47,7 +44,6 @@ def get_ticker_history(tsymbol, ticker, path):
                 df_old = pd.read_csv(path / f'{tsymbol}_history.csv')
                 df_old_len = len(df_old)
                 if (stock_history_len < df_old_len):
-                    print(f'New stock history is shorter than older stock history for {tsymbol}. old_len: {df_old_len}, new_len: {df_len}. Using older stock history')
                     update_file = False
 
             if (update_file):
@@ -59,7 +55,6 @@ def get_ticker_history(tsymbol, ticker, path):
         except:
             raise RuntimeError('Stock history file RW error')
     else:
-        print(f'\nZero length stock history for {tsymbol}. Aborting for this ticker')
         raise ValueError('Invalid length stock history')
 
     return

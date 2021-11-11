@@ -12,8 +12,6 @@ import numpy as np
 
 def get_bollinger_bands_signals(tsymbol, df, path):
 
-    print(f'\nGetting bollinger bands signals for {tsymbol}')
-
     BBANDS_TIME_PERIOD = 14
 
     try:
@@ -29,7 +27,6 @@ def get_bollinger_bands_signals(tsymbol, df, path):
     bb_signals = ''
 
     if (bb_len <= 0):
-        print(f'\nERROR: bollinger bands length is 0 for {tsymbol}')
         bb_max_score += 10
         bb_signals = f'bollinger bands: ERROR'
         raise ValueError('Bollinger Bands call return 0 length data')

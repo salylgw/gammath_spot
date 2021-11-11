@@ -10,8 +10,6 @@ from talib import STOCH
 
 def get_stochastics_slow_signals(tsymbol, df):
 
-    print(f'\nGetting stochastics signals for {tsymbol}')
-
     STOCH_FAST_PERIOD = 14
     STOCH_SLOW_PERIOD = 3
     STOCH_OVERSOLD_LEVEL = 20
@@ -24,13 +22,11 @@ def get_stochastics_slow_signals(tsymbol, df):
     try:
         slowk, slowd = STOCH(df.High, df.Low, df.Close, fastk_period=STOCH_FAST_PERIOD, slowk_period=STOCH_SLOW_PERIOD, slowk_matype=0, slowd_period=STOCH_SLOW_PERIOD, slowd_matype=0)
     except:
-        print(f'\nError: getting Stochastics for {tsymbol}')
         raise RuntimeError('Stochastics data generation failed')
 
     stoch_len = len(slowd)
 
     if (stoch_len <= 0):
-        print(f'\nError: Incorrect length stochastics data returned for {tsymbol}')
         raise ValueError('Stochastics data length error')
 
     stoch_d_curr_val = slowd[stoch_len-1]

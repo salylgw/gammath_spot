@@ -11,8 +11,6 @@ import numpy as np
 
 def get_kf_state_means(tsymbol, df):
 
-    print(f'\nGetting Kalman filter signals for {tsymbol}')
-
     kf_dip_score = 0
     kf_max_score = 0
     kf_signals = ''
@@ -34,10 +32,6 @@ def get_kf_state_means(tsymbol, df):
         #Extract state means into PD series
         ds_sm = pd.Series(state_means.flatten())
         sm_len = len(ds_sm)
-        if (sm_len <= 0):
-            print(f'\nError: Incorrect length in KF for state means for {tsymbol}')
-    else:
-        print(f'\nError: Incorrect prices length in KF for {tsymbol}')
 
     if ((sm_len <= 0) or (prices_len <= 0)):
         raise ValueError('Incorrect length of data frame')
@@ -141,12 +135,8 @@ def get_kf_state_means(tsymbol, df):
     pd_mp = round(pd_mp, 3)
     pd_tp = round(pd_tp, 3)
 
-    print(f'\n KF diff from means: nd_bp:{nd_bp}, nd_mp:{nd_mp}, nd_tp:{nd_tp}, pd_bp:{pd_bp}, pd_mp:{pd_mp}, pd_tp:{pd_tp}')
-
     #Use current diff to factor into dip score
     if (curr_below_mean_count > 0):
-        print('\nUsing negative diff from KF means')
-
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > nd_bp):
@@ -165,8 +155,6 @@ def get_kf_state_means(tsymbol, df):
         kf_max_score += 3
 
     else:
-        print('\nUsing positive diff from KF means')
-
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff > pd_bp):
@@ -190,15 +178,11 @@ def get_kf_state_means(tsymbol, df):
     if (curr_above_mean_count > kf_max_above_mean_count):
         kf_max_above_mean_count = curr_above_mean_count
 
-    print('\nCleanup and organize counts series')
-
     kf_below_mean_count_series = kf_below_mean_count_series.dropna()
     kf_below_mean_count_series = kf_below_mean_count_series.sort_values()
 
     kf_above_mean_count_series = kf_above_mean_count_series.dropna()
     kf_above_mean_count_series = kf_above_mean_count_series.sort_values()
-
-    print('\nGet percentiles mean counts')
 
     #Get percentile values for below mean counts
     bp, mp, tp = kf_below_mean_count_series.quantile([0.25, 0.5, 0.75])
@@ -207,16 +191,12 @@ def get_kf_state_means(tsymbol, df):
     mp = round(mp, 3)
     tp = round(tp, 3)
 
-    print(f'\n KF below mean days count percentile values are {bp}, {mp}, {tp}')
-
     #Get percentile values for above mean counts
     bp_am, mp_am, tp_am = kf_above_mean_count_series.quantile([0.25, 0.5, 0.75])
 
     bp_am = round(bp_am, 3)
     mp_am = round(mp_am, 3)
     tp_am = round(tp_am, 3)
-
-    print(f'\n KF above mean days count percentile values are {bp_am}, {mp_am}, {tp_am}')
 
     #Compute buy/sell scores based on where current below mean count falls in 25, 50, 75 percentile
     if (curr_below_mean_count > bp):

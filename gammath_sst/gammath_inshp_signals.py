@@ -10,8 +10,6 @@ import pandas as pd
 
 def get_inshp_signals(tsymbol, df_summ):
 
-    print(f'\nGetting Insider holdings percentage signals for {tsymbol}')
-
     inshp_dip_score = 0
     inshp_max_score = 0
 
@@ -19,8 +17,6 @@ def get_inshp_signals(tsymbol, df_summ):
         inshp = df_summ['heldPercentInsiders'][0]
     except:
         raise ValueError('heldPercentInsiders not found')
-
-    print('inshp for ', tsymbol, ': ', inshp)
 
     if (inshp > 0):
         inshp_dip_score += 1

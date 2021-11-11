@@ -27,12 +27,10 @@ if __name__ == '__main__':
     if (cores_to_use < 1):
         cores_to_use = 1
 
-    print('\nNumber of logical cores: ', core_count, 'Using logical cores: ', cores_to_use)
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
 
     proc_handles = []
     sf_name = sys.argv[1]
-    print(sf_name)
 
     watch_list = pd.read_csv(sf_name)
 

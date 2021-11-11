@@ -11,8 +11,6 @@ import pandas as pd
 
 def get_reco_signals(tsymbol, path):
 
-    print(f'\nGetting signals out of Analysts recommendation for {tsymbol}')
-
     buy_recos = ('Above Average', 'Accumulate', 'Add', 'Buy', 'Conviction Buy', 'Gradually Accumulate', 'Long-Term Buy', 'Long-term Buy', 'Market Outperform', 'Outperform', 'Outperformer', 'Overweight', 'Positive', 'Sector Outperform', 'Strong Buy', 'Top Pick')
 
     reco_dip_score = 0
@@ -23,15 +21,12 @@ def get_reco_signals(tsymbol, path):
 
         #Check if file exists and is it from another day
         if file_exists:
-            print(f'\nAnalysts recommendations for {tsymbol} exists')
             df = pd.read_csv(path / f'{tsymbol}_reco.csv')
             len_df = len(df)
             if (len_df == 0):
-                print(f'\nERROR: Analysts recommendations dataframe is empty for {tsymbol}')
                 #This will allow doing our own fundamental analysis.
                 reco_max_score = 0
             else:
-                print(f'\nRead Analysts recommendations into dataframe for {tsymbol}')
                 #We only want recent data so get shorter of last 25% of recommendations from entire list; 25% to align with approximately quarterly updates
                 df_25p_index = len_df - int((len_df * 25) / 100)
                 if (df_25p_index < len_df):
@@ -57,7 +52,6 @@ def get_reco_signals(tsymbol, path):
 
                 #Get the percentage of +ve recommendations
                 buy_percentage = buy_count*100/total_recos
-                print(f'\nBuy count: {buy_count}, Sell count: {sell_count} for {tsymbol}. buy pct: {buy_percentage}')
 
                 #Reduce buy score and increase sell score
                 if (buy_percentage < 50):
@@ -87,8 +81,6 @@ def get_reco_signals(tsymbol, path):
                 else:
                     up_percentage = 0
 
-                print(f'\nUpgrades: {up_count}, Downgrades: {down_count} for {tsymbol}. up pct: {up_percentage}')
-
                 #More weightage to recent upgrade/downgrade compared to buy/sell reco
                 if (up_percentage < 50):
                     reco_dip_score -= 6
@@ -100,10 +92,7 @@ def get_reco_signals(tsymbol, path):
 
                 reco_max_score += 6
 
-            print(f'\nRecommendation signals extracted for {tsymbol}')
-
         else:
-            print(f'\nINFO: Quarterly recommendation sheet for {tsymbol} does NOT exist.')
             #This will show 0/10 where expert recommendations don't exist.
             reco_max_score = 0
     except:

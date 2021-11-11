@@ -21,8 +21,6 @@ import gammath_ols_signals as gols
 
 def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, ols_y_predictions, ols_y1_predictions):
 
-    print(f'\nPlotting and saving charts for {tsymbol}')
-
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
 
@@ -43,7 +41,6 @@ def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slo
         fstat = os.stat(path / f'{tsymbol}_charts.png')
 
         if (True == gut.check_if_same_day(fstat)):
-            print('No need to draw charts again for today')
             return
 
     #Draw the charts to view all at once as subplots
@@ -54,44 +51,37 @@ def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slo
     try:
         plot_data1 = pd.DataFrame({sym_str: df.Close, 'Upper Band': ub, 'Middle Band': mb, 'Lower Band': lb})
     except:
-        print(f'\nError generating BB DF for {sym_str}')
         plot_data1 = pd.DataFrame({sym_str: [0]})
 
     try:
         plot_data2 = pd.DataFrame({'RSI': rsi})
     except:
-        print(f'\nError generating RSI DF for {sym_str}')
         plot_data2 = pd.DataFrame({sym_str: [0]})
 
     try:
         #Don't need to draw the MACD histogram
         plot_data3 = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
     except:
-        print(f'\nError generating MACD DF for {sym_str}')
         plot_data3 = pd.DataFrame({sym_str: [0]})
 
     try:
         plot_data4 = pd.DataFrame({'MFI': mfi})
     except:
-        print(f'\nError generating MFI DF for {sym_str}')
         plot_data4 = pd.DataFrame({sym_str: [0]})
 
     try:
         plot_data5 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
     except:
-        print(f'\nError generating stochastic DF for {sym_str}')
         plot_data5 = pd.DataFrame({sym_str: [0]})
 
     try:
         plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': ds_sm})
     except:
-        print(f'\nError generating KF DF for {sym_str}')
         plot_data6 = pd.DataFrame({sym_str: [0]})
 
     try:
         plot_data7 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions, 'OLS_1Y': ols_y1_predictions})
     except:
-        print(f'\nError generating OLS DF for {sym_str}')
         plot_data7 = pd.DataFrame({sym_str: [0]})
 
     try:
@@ -110,5 +100,5 @@ def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slo
         plot_data7.plot(ax=axes[6], lw=1,title='OLS')
         plt.savefig(path / f'{tsymbol}_charts.png')
     except:
-        print('\nError while plotting charts for ', tsymbol, ': ', sys.exc_info()[0])
+        print('\nERROR: Plotting charts for ', tsymbol, ': ', sys.exc_info()[0])
 

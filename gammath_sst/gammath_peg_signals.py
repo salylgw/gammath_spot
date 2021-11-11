@@ -9,8 +9,6 @@ import pandas as pd
 
 def get_peg_signals(tsymbol, df_summ):
 
-    print(f'\nGetting PEG signals for {tsymbol}')
-
     peg_dip_score = 0
     peg_max_score = 0
 
@@ -18,8 +16,6 @@ def get_peg_signals(tsymbol, df_summ):
         peg = round(df_summ['pegRatio'][0], 3)
     except:
         raise ValueError('PEG value not found')
-
-    print('PEG ratio for ', tsymbol, ': ', peg)
 
     if (peg > 0):
         if (peg < 3):

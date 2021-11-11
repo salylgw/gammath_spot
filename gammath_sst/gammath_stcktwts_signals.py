@@ -14,8 +14,6 @@ STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
 def get_stocktwits_signals(tsymbol, path):
 
-    print(f'\nGetting stocktwits signals for {tsymbol}')
-
     st_dip_score = 0
     st_max_score = 0
     sentiment_change = None
@@ -41,19 +39,13 @@ def get_stocktwits_signals(tsymbol, path):
         matched_string = pattern_for_sentiment_change.search(html_page)
         if (matched_string):
             kw, val = matched_string.groups()
-            print('\nSentiment change data: ', kw, 'Val: ', val)
             sentiment_change = val
-        else:
-            print('\nSentiment change data NOT found for ticker ', tsymbol)
 
         #Find the volume change score
         matched_string = pattern_for_volume_change.search(html_page)
         if (matched_string):
             kw, val = matched_string.groups()
-            print('\Volume change data: ', kw, 'Val: ', val)
             volume_change = val
-        else:
-            print('\nVolume change data NOT found for ticker ', tsymbol)
 
         sts_change = 0
         stv_change = 0
@@ -77,7 +69,6 @@ def get_stocktwits_signals(tsymbol, path):
             st_dip_score -= 5
 
     except:
-        print('\nError while getting stocktwits html page for ', tsymbol, ': ', sys.exc_info()[0])
         raise RuntimeError('Stocktwits signal generation failed')
 
     st_max_score += 5
@@ -86,6 +77,5 @@ def get_stocktwits_signals(tsymbol, path):
 
     st_signals = f'{st_dip_rec}'
 
-    print(f'\nStocktwits signals extracted for {tsymbol}')
     return st_dip_score, st_max_score, st_signals
 

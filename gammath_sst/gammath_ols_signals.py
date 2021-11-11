@@ -13,8 +13,6 @@ from pathlib import Path
 
 def get_ols_signals(tsymbol, df, path):
 
-    print(f'\nGetting OLS signals for {tsymbol}')
-
     AVG_TRADING_DAYS_PER_YEAR = 252
 
     ols_dip_score = 0
@@ -25,7 +23,6 @@ def get_ols_signals(tsymbol, df, path):
     prices_len = len(df.Close)
 
     if (prices_len <= AVG_TRADING_DAYS_PER_YEAR):
-        print(f'\nERROR: Not enough price history for {tsymbol} to generate OLS signals')
         raise ValueError('price history too short')
 
     y_vals = np.array(df.Close)
@@ -33,7 +30,6 @@ def get_ols_signals(tsymbol, df, path):
     try:
         x_vals = sm.add_constant([x for x in range(prices_len)])
     except:
-        print(f'\nERROR: Stats models add const API failed for {tsymbol} while generating OLS signals')
         raise RuntimeError('Stats Models API failure')
 
     x_vals_len = len(x_vals)
@@ -46,21 +42,18 @@ def get_ols_signals(tsymbol, df, path):
     try:
         model_1y = sm.OLS(y_vals[(y_vals_len-index_1y):], x_vals[(x_vals_len-index_1y):]).fit()
     except:
-        print(f'\nERROR: Stats models OLS API failed for {tsymbol} while generating OLS signals')
         raise RuntimeError('Stats Models API failure')
 
     #Model last 5 years data
     try:
         model = sm.OLS(y_vals, x_vals).fit()
     except:
-        print(f'\nERROR: Stats models OLS API failed for {tsymbol} while generating OLS signals')
         raise RuntimeError('Stats Models API failure')
 
     #Get yprediction to plot the 1y OLS line along with the price chart
     try:
         y1_predictions = model_1y.predict()
     except:
-        print(f'\nERROR: Stats models OLS predict API failed for {tsymbol} while generating OLS signals')
         raise RuntimeError('Stats Models API failure')
 
     y1_predictions_len = len(y1_predictions)
@@ -69,7 +62,6 @@ def get_ols_signals(tsymbol, df, path):
     try:
         y_predictions = model.predict()
     except:
-        print(f'\nERROR: Stats models OLS predict API failed for {tsymbol} while generating OLS signals')
         raise RuntimeError('Stats Models API failure')
 
     y_predictions_len = len(y_predictions)
@@ -83,32 +75,26 @@ def get_ols_signals(tsymbol, df, path):
     #Get the 1y residual values
     resid_1y = model_1y.resid
     resid_1y_len = len(resid_1y)
-    print(f'LR OLS 1y resid len for {tsymbol} is {resid_1y_len}')
 
     #Get the 5y residual values
     resid = model.resid
     resid_len = len(resid)
-    print(f'LR OLS 5y resid len for {tsymbol} is {resid_len}')
 
     #Get the R2 value for determining goodness-of-fit for 1y OLS
     fit_score_1y = round(model_1y.rsquared, 3)
 
     #Log the 1y score for debugging
-    print(f'LR 1Y OLS model fit score for {tsymbol} is {fit_score_1y}')
 
     #Get the R2 value for determining goodness-of-fit for 5y OLS
     fit_score = round(model.rsquared, 3)
 
     #Log the score for debugging
-    print(f'LR 5Y OLS  model fit score for {tsymbol} is {fit_score}')
 
     #Slope of 1Y OLS line (just need to do y2-y1 to get the direction)
     slope_dir_1y = (y1_predictions[y1_predictions_len-1] - y1_predictions[0])
-    print(f'LR 1Y OLS  line slope for {tsymbol} is {slope_dir_1y}')
 
     #Slope of OLS line
     slope_dir_5y = (y_predictions[y_predictions_len-1] - y_predictions[0])
-    print(f'LR 5Y OLS  line slope for {tsymbol} is {slope_dir_5y}')
 
     max_1y_ndiff = 0
     max_1y_pdiff = 0
@@ -181,10 +167,8 @@ def get_ols_signals(tsymbol, df, path):
 
     #Get 1y percentile values for residuals
     bnp_1y, mnp_1y, tnp_1y = ls_1y_ndiff_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n 1Y OLS neg percentile: {bnp_1y}, {mnp_1y}, {tnp_1y}')
 
     bpp_1y, mpp_1y, tpp_1y = ls_1y_pdiff_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n 1Y OLS pos percentile: {bpp_1y}, {mpp_1y}, {tpp_1y}')
 
     if (residual_1y <= 0):
         curr_1y_diff = curr_1y_ndiff
@@ -201,7 +185,7 @@ def get_ols_signals(tsymbol, df, path):
 
     #Get info on biggest 5y diff
     if ((prices_len != y_predictions_len) or (prices_len != len(resid))):
-        print('Price data and prediction data length mismatched')
+        raise RuntimeError('Price data and prediction data length mismatched')
     else:
         for i in range(prices_len):
             residual = resid[i]
@@ -227,10 +211,8 @@ def get_ols_signals(tsymbol, df, path):
 
     #Get 5y percentile values for residuals
     bnp, mnp, tnp = ls_ndiff_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n OLS neg percentile: {bnp}, {mnp}, {tnp}')
 
     bpp, mpp, tpp = ls_pdiff_series.quantile([0.25, 0.5, 0.75])
-    print(f'\n OLS pos percentile: {bpp}, {mpp}, {tpp}')
 
     if (residual <= 0):
         curr_diff = curr_ndiff
@@ -252,8 +234,6 @@ def get_ols_signals(tsymbol, df, path):
 
     # Only check the fit if both 1Y and 5Y OLS line slope is +ve
     if ((slope_dir_1y > 0) and (slope_dir_5y > 0)):
-
-        print(f'\nOLS line slopes for 1Y and 5Y are +ve for {tsymbol}')
 
         if (fits_1y or fits_5y):
             if (fits_5y):
@@ -325,7 +305,6 @@ def get_ols_signals(tsymbol, df, path):
                     ols_dip_score -= 3
     else:
         if (slope_dir_1y > 0):
-            print(f'\nOLS line slopes for 1Y is +ve for {tsymbol}')
             if (fits_1y):
                 if (residual_1y <= 0):
                     #Below OLS line

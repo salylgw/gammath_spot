@@ -11,8 +11,6 @@ import numpy as np
 
 def get_price_signals(tsymbol, df, df_summ):
 
-    print(f'\nGetting Price signals for {tsymbol}')
-
     AVG_TRADING_DAYS_PER_YEAR = 252
     PRICE_PERCENT_CUTOFF = 85
 
@@ -23,7 +21,6 @@ def get_price_signals(tsymbol, df, df_summ):
     prices = df.Close
     prices_len = len(prices)
     if (prices_len <= 0):
-        print(f'\nError: Incorrect length of Price dataframe for {tsymbol}')
         raise ValueError('Invalid Price data for generating signals')
 
     lp = prices[prices_len-1]
@@ -114,40 +111,33 @@ def get_price_signals(tsymbol, df, df_summ):
         #50-day average
         fiftyDayAverage = df_summ['fiftyDayAverage'][0]
     except:
-        print(f'\n50-day average value not found for {tsymbol}')
         fiftyDayAverage = 0
 
     try:
         #200-day average
         twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
     except:
-        print(f'\n200-day average value not found for {tsymbol}')
         twoHundredDayAverage = 0
 
     try:
         #52-week low
         yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
     except:
-        print(f'\52-week low value not found for {tsymbol}')
         yearly_lowest_val = 0
 
     try:
         #52-week high
         yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
     except:
-        print(f'\52-week high value not found for {tsymbol}')
         yearly_highest_val = 0
 
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):
             #New 52-week low; Log it for information
             nftwlh = 'new fiftyTwoWeekLow'
-    else:
-        print('\n52-week low value not found')
 
     if (yearly_highest_val <= 0):
         #New 52-week high; Log it for information
-        print('\n52-week high value not found')
         nftwlh = 'new fiftyTwoWeekHigh'
 
     if (last_falling_days_count > 0):
@@ -216,9 +206,9 @@ def get_price_signals(tsymbol, df, df_summ):
     else:
         if ((lp > bp) and (lp < mp)):
             price_dip_score += 1
-        elif ((lp > mp) and (lp < tp)):
+#        elif ((lp > mp) and (lp < tp)):
             #Either buy/sell depending on overall score
-            print('Score not updated as it can go either way')
+
     price_max_score += 2
 
     price_dip_rec = f'price_dip_score:{price_dip_score}/{price_max_score}'
