@@ -235,28 +235,32 @@ def get_ols_signals(tsymbol, df, path):
         if (fits_5y or fits_1y):
             if (residual <= 0):
                 #Below OLS line
-                if (curr_diff > bp):
-                    ols_dip_score += 1
+                if (curr_diff < mp):
                     curr_diff_quantile_str = 'bottom quantile'
 
-                    if (curr_diff > mp):
+                if (curr_diff >= bp):
+                    ols_dip_score += 1
+
+                    if (curr_diff >= mp):
                         ols_dip_score += 1
                         curr_diff_quantile_str = 'middle quantile'
 
-                    if (curr_diff > tp):
+                    if (curr_diff >= tp):
                         ols_dip_score += 2
                         curr_diff_quantile_str = 'top quantile'
             else:
                 #Above OLS line
-                if (curr_diff > bp):
-                    ols_dip_score -= 1
+                if (curr_diff < mp):
                     curr_diff_quantile_str = 'bottom quantile'
 
-                    if (curr_diff > mp):
+                if (curr_diff >= bp):
+                    ols_dip_score -= 1
+
+                    if (curr_diff >= mp):
                         ols_dip_score -= 1
                         curr_diff_quantile_str = 'middle quantile'
 
-                        if (curr_diff > tp):
+                        if (curr_diff >= tp):
                             ols_dip_score -= 2
                             curr_diff_quantile_str = 'top quantile'
 
@@ -281,7 +285,7 @@ def get_ols_signals(tsymbol, df, path):
 
     ols_max_score += 10
 
-    if (curr_diff <= 0):
+    if (residual <= 0):
         curr_diff_sign = '-ve'
     else:
         curr_diff_sign = '+ve'

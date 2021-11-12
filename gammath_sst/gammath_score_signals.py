@@ -8,7 +8,7 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import sys
 
-def score_n_signals_save(tsymbol, path, overall_dip_score, overall_max_score, overall_signals):
+def compute_final_score_and_save_signals(tsymbol, path, overall_dip_score, overall_max_score, overall_signals):
 
     overall_dip_rec = f'overall_dip_score:{overall_dip_score}/{overall_max_score}'
 

@@ -26,8 +26,6 @@ def get_ticker_history(tsymbol, ticker, path):
     except:
         raise RuntimeError('Error obtaining stock history')
 
-    stock_history.info()
-
     stock_history_len = len(stock_history)
 
     if (stock_history_len > 0):

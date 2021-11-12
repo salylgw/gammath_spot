@@ -46,7 +46,7 @@ class GSA:
         self.overall_dip_score = 0
         self.overall_max_score = 0
         self.reco_signals_exist = False
-        self.note = ''
+        self.note = 'Notes: None'
 
     def do_stock_analysis_and_compute_score(self, tsymbol):
 
@@ -74,6 +74,7 @@ class GSA:
             print('\nERROR: Stock history file not found for ', tsymbol)
             return
 
+        #Generate and get signals based on analyst recommendation
         try:
             reco_dip_score = 0
             reco_max_score = 0 #In case there is an exception, we should do fundamental analysis
@@ -87,6 +88,22 @@ class GSA:
         except RuntimeError:
             print('\nERROR: while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Generate and get signals based on options activity
+        try:
+            options_dip_score = 0
+            options_max_score = 10
+            options_signals = ''
+
+            #Options signals
+            options_dip_score, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
+
+            self.overall_dip_score += options_dip_score
+            self.overall_max_score += options_max_score
+
+        except:
+            print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+        #Generate and get signals based on fundamental analysis (PE, PEG, Beta, PBR, Quarterly balancesheet, Institutional holdings). Use it for scoring only of analyst recommendation don't exist for us
         try:
             pe_dip_score = 0
             pe_max_score = 2
@@ -188,6 +205,7 @@ class GSA:
         except ValueError:
             print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Generate and get signals based on Price history
         try:
             price_dip_score = 0
             price_max_score = 10
@@ -201,6 +219,7 @@ class GSA:
         except ValueError:
             print('\nERROR: generating price signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Generate and get signals based on Relative Strength Index Indicator
         try:
             rsi_dip_score = 0
             rsi_max_score = 10
@@ -216,21 +235,7 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from RSI data ', tsymbol, ': ', sys.exc_info()[0])
 
-        try:
-            bb_dip_score = 0
-            bb_max_score = 10
-            bb_signals = ''
-            #Bollinger bands signals
-            ub, mb, lb, bb_dip_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
-
-            self.overall_dip_score += bb_dip_score
-            self.overall_max_score += bb_max_score
-
-        except RuntimeError:
-            print('\nERROR: generating Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
-        except ValueError:
-            print('\nERROR: generating signals from Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
-
+        #Generate and get signals based on Money Flow Index Indicator
         try:
             mfi_dip_score = 0
             mfi_max_score = 10
@@ -247,6 +252,7 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from MFI data ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Generate and get signals based on Stochastic Indicator
         try:
             stoch_dip_score = 0
             stoch_max_score = 5
@@ -263,6 +269,23 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from stochastics data ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Generate and get signals based on Bollinger Bands Indicator
+        try:
+            bb_dip_score = 0
+            bb_max_score = 10
+            bb_signals = ''
+            #Bollinger bands signals
+            ub, mb, lb, bb_dip_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
+
+            self.overall_dip_score += bb_dip_score
+            self.overall_max_score += bb_max_score
+
+        except RuntimeError:
+            print('\nERROR: generating Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
+        except ValueError:
+            print('\nERROR: generating signals from Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
+
+        #Generate and get signals based on Moving Average Convergence/Divergence Indicator
         try:
             macd_dip_score = 0
             macd_max_score = 10
@@ -279,6 +302,7 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from MACD data ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Generate and get signals based on Kalman Filter state means
         try:
             kf_dip_score = 0
             kf_max_score = 10
@@ -295,6 +319,7 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from Kalman filter data ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Generate and get signals based on Ordinary Least Squares line
         try:
             ols_dip_score = 0
             ols_max_score = 10
@@ -311,20 +336,7 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
 
-        try:
-            options_dip_score = 0
-            options_max_score = 10
-            options_signals = ''
-
-            #Options signals
-            options_dip_score, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
-
-            self.overall_dip_score += options_dip_score
-            self.overall_max_score += options_max_score
-
-        except:
-            print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
-
+        #Generate and get signals based on Stocktwits sentiment and volume change
         try:
             st_dip_score = 0
             st_max_score = 5
@@ -339,6 +351,7 @@ class GSA:
         except RuntimeError:
             print('\nERROR: while getting stocktwits signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Get info on earnings etc. to be aware before making buy/sell decision
         try:
             #Get events info
             events_info = gge.get_events_info(tsymbol, path)
@@ -346,14 +359,17 @@ class GSA:
             print('\nERROR: while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
             events_info = ''
 
+        #Augment all signals for saving in a file
         overall_signals = f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{events_info}\n{self.note}'
 
+        #Compute final score then save scores and signals
         try:
-            gscsi.score_n_signals_save(tsymbol, path, self.overall_dip_score, self.overall_max_score, overall_signals)
+            gscsi.compute_final_score_and_save_signals(tsymbol, path, self.overall_dip_score, self.overall_max_score, overall_signals)
         except:
             print('\nERROR: while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Plot and save charts for reference
         try:
-            gsc.plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, y_predictions, y1_series)
+            gsc.plot_and_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, y_predictions, y1_series)
         except:
             print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])

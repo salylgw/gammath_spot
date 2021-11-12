@@ -20,6 +20,7 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_dip_score = 0
     rsi_max_score = 0
     rsi_signals = ''
+    curr_count_quantile_str = ''
 
     try:
         rsi = RSI(df.Close, timeperiod=RSI_TIME_PERIOD)
@@ -31,29 +32,23 @@ def get_rsi_signals(tsymbol, df, path):
         raise ValueError('Invalid length of RSI data')
 
     rsi_ds = rsi.describe()
-    rsi_ds.to_csv(path / f'{tsymbol}_RSI_summary.csv')
     curr_rsi = rsi[rsi_len-1]
-    f = open(path / f'{tsymbol}_RSI_summary.csv', 'a')
-    f.write(f'curr_rsi,{curr_rsi}')
-    f.close()
     prev_rsi = rsi[rsi_len-2]
-    preprev_rsi = rsi[rsi_len-3]
 
-    if ((curr_rsi < prev_rsi) and (prev_rsi < preprev_rsi)):
+    if (curr_rsi < prev_rsi):
         rsi_direction = 'falling'
-    elif ((curr_rsi > prev_rsi) and (prev_rsi > preprev_rsi)):
+    elif (curr_rsi > prev_rsi):
         rsi_direction = 'rising'
     else:
         rsi_direction = 'direction_unclear'
 
     #Get the RSI mean for reference to check for average RSI
     rsi_mean = rsi_ds['mean']
-    if ((curr_rsi < rsi_mean) and (rsi_direction != 'falling')):
-        rsi_avg = 'below average'
-        rsi_dip_score += 4
-    elif (curr_rsi < rsi_mean):
+    if (curr_rsi < rsi_mean):
         rsi_avg = 'below average'
         rsi_dip_score += 2
+        if (rsi_direction != 'falling'):
+            rsi_dip_score += 2
     elif (curr_rsi > rsi_mean):
         rsi_avg = 'above average'
         rsi_dip_score -= 4
@@ -69,20 +64,15 @@ def get_rsi_signals(tsymbol, df, path):
     elif (curr_rsi >= RSI_OVERBOUGHT_LEVEL):
         rsi_lvl = 'overbought'
     else:
-        rsi_lvl = ''
+        rsi_lvl = 'normal'
 
     curr_oversold_count = 0
-    min_oversold_days = 0
-    max_oversold_days = 0
+    curr_overbought_count = 0
+
     avg_oversold_days = 0
 
     rsi_os_count_series = pd.Series(np.nan, pd.RangeIndex(rsi_len))
     rsi_os_count_index = 0
-
-    curr_overbought_count = 0
-    min_overbought_days = 0
-    max_overbought_days = 0
-    avg_overbought_days = 0
 
     rsi_ob_count_series = pd.Series(np.nan, pd.RangeIndex(rsi_len))
     rsi_ob_count_index = 0
@@ -99,44 +89,12 @@ def get_rsi_signals(tsymbol, df, path):
 
         if ((rsi[i] > RSI_OVERSOLD_LEVEL) and (curr_oversold_count > 0)):
             rsi_os_count_index += 1
-
-            if (min_oversold_days > 0):
-                if (min_oversold_days > curr_oversold_count):
-                    min_oversold_days = curr_oversold_count
-            elif (min_oversold_days == 0):
-                min_oversold_days = curr_oversold_count
-
-            if (max_oversold_days > 0):
-                if (max_oversold_days < curr_oversold_count):
-                    max_oversold_days = curr_oversold_count
-            elif (max_oversold_days == 0):
-                max_oversold_days = curr_oversold_count
-
             curr_oversold_count = 0
 
         if ((rsi[i] < RSI_OVERBOUGHT_LEVEL) and (curr_overbought_count > 0)):
             rsi_ob_count_index += 1
-
-            if (min_overbought_days > 0):
-                if (min_overbought_days > curr_overbought_count):
-                    min_overbought_days = curr_overbought_count
-            elif (min_overbought_days == 0):
-                min_overbought_days = curr_overbought_count
-
-            if (max_overbought_days > 0):
-                if (max_overbought_days < curr_overbought_count):
-                    max_overbought_days = curr_overbought_count
-            elif (max_overbought_days == 0):
-                max_overbought_days = curr_overbought_count
-
             curr_overbought_count = 0
 
-
-    if (curr_oversold_count > max_oversold_days):
-        max_oversold_days = curr_oversold_count
-
-    if (curr_overbought_count > max_overbought_days):
-        max_overbought_days = curr_overbought_count
 
     rsi_os_count_series = rsi_os_count_series.dropna()
     rsi_os_count_series = rsi_os_count_series.sort_values()
@@ -144,42 +102,46 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_ob_count_series = rsi_ob_count_series.dropna()
     rsi_ob_count_series = rsi_ob_count_series.sort_values()
 
-    #Get percentile values for oversold days count
-    bp, mp, tp = rsi_os_count_series.quantile([0.25, 0.5, 0.75])
 
-    bp = round(bp, 3)
-    mp = round(mp, 3)
-    tp = round(tp, 3)
+    if (curr_oversold_count > 0):
+        #Get percentile values for oversold days count
+        bp, mp, tp = rsi_os_count_series.quantile([0.25, 0.5, 0.75])
 
-    #Get percentile values for overbought days count
-    bp_ob, mp_ob, tp_ob = rsi_ob_count_series.quantile([0.25, 0.5, 0.75])
+        if (curr_oversold_count < mp):
+            curr_count_quantile_str = 'oversold day-count in bottom quantile'
 
-    bp_ob = round(bp_ob, 3)
-    mp_ob = round(mp_ob, 3)
-    tp_ob = round(tp_ob, 3)
+        if (curr_oversold_count >= bp):
+            rsi_dip_score += 1
 
-    if (curr_oversold_count >= bp):
-        rsi_dip_score += 1
-    elif (curr_overbought_count >= bp_ob):
-        rsi_dip_score -= 1
+        if (curr_oversold_count >= mp):
+            rsi_dip_score += 2
+            curr_count_quantile_str = 'oversold day-count in middle quantile'
 
-    rsi_max_score += 1
+        if (curr_oversold_count >= tp):
+            rsi_dip_score += 3
+            curr_count_quantile_str = 'oversold day-count in top quantile'
 
-    if (curr_oversold_count >= mp):
-        rsi_dip_score += 2
-    elif (curr_overbought_count >= mp_ob):
-        rsi_dip_score -= 2
+    elif (curr_overbought_count > 0):
+        #Get percentile values for overbought days count
+        bp, mp, tp = rsi_ob_count_series.quantile([0.25, 0.5, 0.75])
 
-    rsi_max_score += 2
+        if (curr_overbought_count < mp):
+            curr_count_quantile_str = 'overbought day-count in bottom quantile'
 
-    if (curr_oversold_count >= tp):
-        rsi_dip_score += 3
-    elif (curr_overbought_count >= tp_ob):
-        rsi_dip_score -= 3
+        if (curr_overbought_count >= bp):
+            rsi_dip_score -= 1
 
-    rsi_max_score += 3
+        if (curr_overbought_count >= mp):
+            rsi_dip_score -= 2
+            curr_count_quantile_str = 'overbought day-count in middle quantile'
+
+        if (curr_overbought_count >= tp):
+            rsi_dip_score -= 3
+            curr_count_quantile_str = 'overbought day-count in top quantile'
+
+    rsi_max_score += 6
 
     rsi_dip_rec = f'rsi_dip_score:{rsi_dip_score}/{rsi_max_score}'
-    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},cosd:{curr_oversold_count},mosd:{max_oversold_days},losdp:{bp},mosdp:{mp},tosdp:{tp},cobd:{curr_overbought_count},mobd:{max_overbought_days},lobdp:{bp_ob},mobdp:{mp_ob},tobdp:{tp_ob},{rsi_dip_rec}'
+    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{curr_count_quantile_str},{rsi_dip_rec}'
     
     return rsi, rsi_dip_score, rsi_max_score, rsi_signals

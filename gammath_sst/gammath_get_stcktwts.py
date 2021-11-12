@@ -15,7 +15,6 @@ def get_stocktwits_ticker_info(tsymbol, path):
     STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
     url = f'{STOCKTWITS_TICKER_ADDR}/symbol/{tsymbol}'
-    print(url)
 
     st_ticker_page_html = ''
 
@@ -30,7 +29,6 @@ def get_stocktwits_ticker_info(tsymbol, path):
             f = open(path / f'{tsymbol}_st_page.html', 'w')
             f.write(html_page)
             f.close()
-            print(f'\nStocktwits page saved for {tsymbol}')
     except:
         raise RuntimeError('stocktwits html page')
 

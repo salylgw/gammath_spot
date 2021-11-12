@@ -82,21 +82,12 @@ class GUTILS:
 
         pattern_for_final_dip_score = re.compile(r'(final_dip_score):([-]*[0-9]*[.]*[0-9]+)')
 
-        #Collect OLS regression fit scores for debugging
-        pattern_for_ols_fit_score = re.compile(r'(ols_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
         #Pattern for note
         pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
         df_b = pd.DataFrame(columns=['Ticker', 'final_dip_score', 'Note'], index=range(len(subdirs)))
 
-
-        df_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score'], index=range(len(subdirs)))
-
-
         i = 0
-        j = 0
-        k = 0
 
         for subdir in subdirs:
             if subdir.exists():
@@ -116,22 +107,12 @@ class GUTILS:
                         df_b['Note'][i] = note
                         i += 1
 
-
-                    matched_string = pattern_for_ols_fit_score.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        df_fs['Ticker'][k] = f'{subdir.name}'
-                        df_fs['ols_fit_score'][k] = float(val)
-
-                    k += 1
                     f.close()
                 except:
                     print('\nERROR: Getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
         df_b.sort_values('final_dip_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_dip_scores.csv', index=False)
 
-        #Regression fit scores Debug data
-        df_fs.sort_values('Ticker').dropna(how='all').to_csv(self.Tickers_dir / 'overall_regression_fit_scores.csv', index=False)
 
     def aggregate_pe_data(self):
 

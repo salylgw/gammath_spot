@@ -120,19 +120,21 @@ def get_kf_state_means(tsymbol, df):
 
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
-        if (curr_diff > bp):
-            kf_dip_score += 2
+        if (curr_diff < mp):
             curr_diff_quantile_str = 'bottom quantile'
+
+        if (curr_diff >= bp):
+            kf_dip_score += 2
 
         kf_max_score += 2
 
-        if (curr_diff > mp):
+        if (curr_diff >= mp):
             kf_dip_score += 2
             curr_diff_quantile_str = 'middle quantile'
 
         kf_max_score += 2
 
-        if (curr_diff > tp):
+        if (curr_diff >= tp):
             kf_dip_score += 3
             curr_diff_quantile_str = 'top quantile'
 
@@ -145,19 +147,21 @@ def get_kf_state_means(tsymbol, df):
 
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
-        if (curr_diff > bp):
-            kf_dip_score -= 2
+        if (curr_diff < mp):
             curr_diff_quantile_str = 'bottom quantile'
+
+        if (curr_diff >= bp):
+            kf_dip_score -= 2
 
         kf_max_score += 2
 
-        if (curr_diff > mp):
+        if (curr_diff >= mp):
             kf_dip_score -= 2
             curr_diff_quantile_str = 'middle quantile'
 
         kf_max_score += 2
 
-        if (curr_diff > tp):
+        if (curr_diff >= tp):
             kf_dip_score -= 3
             curr_diff_quantile_str = 'top quantile'
 
@@ -174,19 +178,21 @@ def get_kf_state_means(tsymbol, df):
         #Get percentile values for below mean counts
         bp, mp, tp = kf_below_mean_count_series.quantile([0.25, 0.5, 0.75])
 
-        if (curr_below_mean_count > bp):
-            kf_dip_score += 1
+        if (curr_below_mean_count < mp):
             curr_count_quantile_str = 'bottom quantile'
+
+        if (curr_below_mean_count >= bp):
+            kf_dip_score += 1
 
         kf_max_score += 1
 
-        if (curr_below_mean_count > mp):
+        if (curr_below_mean_count >= mp):
             kf_dip_score += 1
             curr_count_quantile_str = 'middle quantile'
 
         kf_max_score += 1
 
-        if (curr_below_mean_count > tp):
+        if (curr_below_mean_count >= tp):
             kf_dip_score += 1
             curr_count_quantile_str = 'top quantile'
 
@@ -196,19 +202,21 @@ def get_kf_state_means(tsymbol, df):
         #Get percentile values for above mean counts
         bp, mp, tp = kf_above_mean_count_series.quantile([0.25, 0.5, 0.75])
 
-        if (curr_above_mean_count > bp):
-            kf_dip_score -= 1
+        if (curr_above_mean_count < mp):
             curr_count_quantile_str = 'bottom quantile'
+
+        if (curr_above_mean_count >= bp):
+            kf_dip_score -= 1
 
         kf_max_score += 1
 
-        if (curr_above_mean_count > mp):
+        if (curr_above_mean_count >= mp):
             kf_dip_score -= 1
             curr_count_quantile_str = 'middle quantile'
 
         kf_max_score += 1
 
-        if (curr_above_mean_count > tp):
+        if (curr_above_mean_count >= tp):
             kf_dip_score -= 1
             curr_count_quantile_str = 'top quantile'
 

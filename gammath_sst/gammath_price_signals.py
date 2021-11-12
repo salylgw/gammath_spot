@@ -17,6 +17,8 @@ def get_price_signals(tsymbol, df, df_summ):
     price_dip_score = 0
     price_max_score = 0
     price_signals = ''
+    curr_count_quantile_str = ''
+    curr_price_1y_quantile_str = ''
 
     prices = df.Close
     prices_len = len(prices)
@@ -28,18 +30,7 @@ def get_price_signals(tsymbol, df, df_summ):
     #Limit to 3 digits after decimal point
     curr_price = f'curr_price: %5.3f' % lp
 
-    lpm1 = prices[prices_len-2]
-    lpm2 = prices[prices_len-3]
-
     nftwlh = ''
-
-    #No score on this; Just log it to make a decision on buy/sell by seeing falling/rising in signals data
-    if ((lp < lpm1) and (lpm1 < lpm2)):
-        price_dir = 'falling'
-    elif ((lp > lpm1) and (lpm1 > lpm2)):
-        price_dir = 'rising'
-    else:
-        price_dir = 'direction_unclear'
 
     #Get consecutive falling and rising days count
     last_falling_days_count = 0
@@ -94,19 +85,6 @@ def get_price_signals(tsymbol, df, df_summ):
     price_consec_rising_days_count_series = price_consec_rising_days_count_series.drop_duplicates()
     price_consec_rising_days_count_series = price_consec_rising_days_count_series.sort_values()
 
-    #Get percentile values
-    fp_bp, fp_mp, fp_tp = price_consec_falling_days_count_series.quantile([0.25, 0.5, 0.75])
-
-    fp_bp = round(fp_bp, 3)
-    fp_mp = round(fp_mp, 3)
-    fp_tp = round(fp_tp, 3)
-
-    rp_bp, rp_mp, rp_tp = price_consec_rising_days_count_series.quantile([0.25, 0.5, 0.75])
-
-    rp_bp = round(rp_bp, 3)
-    rp_mp = round(rp_mp, 3)
-    rp_tp = round(rp_tp, 3)
-
     try:
         #50-day average
         fiftyDayAverage = df_summ['fiftyDayAverage'][0]
@@ -141,10 +119,21 @@ def get_price_signals(tsymbol, df, df_summ):
         nftwlh = 'new fiftyTwoWeekHigh'
 
     if (last_falling_days_count > 0):
+        price_dir = 'falling'
+        #Get percentile values
+        bp, mp, tp = price_consec_falling_days_count_series.quantile([0.25, 0.5, 0.75])
+
+        if (last_falling_days_count < mp):
+            curr_count_quantile_str = 'day-count in bottom quantile'
+
+        if (last_falling_days_count < tp):
+            curr_count_quantile_str = 'day-count in middle quantile'
+        else:
+            curr_count_quantile_str = 'day-count in top quantile'
 
         price_dip_score -= 1
 
-        if (last_falling_days_count >= fp_bp):
+        if (last_falling_days_count >= bp):
             price_dip_score -= 2
 
         #Checkout price wrt 50-day average, 200-day average and 52-week low
@@ -164,9 +153,19 @@ def get_price_signals(tsymbol, df, df_summ):
                 price_dip_score -= 3
 
     elif (last_rising_days_count > 0):
+        price_dir = 'rising'
+        bp, mp, tp = price_consec_rising_days_count_series.quantile([0.25, 0.5, 0.75])
+
+        if (last_rising_days_count < mp):
+            curr_count_quantile_str = 'day-count in bottom quantile'
+
+        if (last_rising_days_count < tp):
+            curr_count_quantile_str = 'day-count in middle quantile'
+        else:
+            curr_count_quantile_str = 'day-count in top quantile'
 
         price_dip_score += 1
-        if (last_rising_days_count <= rp_bp):
+        if (last_rising_days_count <= bp):
             price_dip_score += 2
 
         #Checkout price wrt 50-day average, 200-day average and 52-week low
@@ -184,7 +183,8 @@ def get_price_signals(tsymbol, df, df_summ):
             #If current price is not too far from 52-week low then increase discount score
             if (pct_val >= PRICE_PERCENT_CUTOFF):
                 price_dip_score += 3
-
+    else:
+        price_dir = 'unclear'
 
     price_max_score += 8
 
@@ -192,9 +192,13 @@ def get_price_signals(tsymbol, df, df_summ):
     one_year_prices = df['Close'][(prices_len-AVG_TRADING_DAYS_PER_YEAR):]
     bp, mp, tp = one_year_prices.quantile([0.25, 0.5, 0.75])
 
-    bp = round(bp, 3)
-    mp = round(mp, 3)
-    tp = round(tp, 3)
+    if (lp < mp):
+        curr_price_1y_quantile_str = 'in 1Y bottom quantile'
+
+    if (lp < tp):
+        curr_price_1y_quantile_str = 'in 1Y middle quantile'
+    else:
+        curr_price_1y_quantile_str = 'in 1Y top quantile'
 
     #If price is in lower percentile then higher buy score
     #If price is in higher percentile then higher sell score
@@ -206,16 +210,11 @@ def get_price_signals(tsymbol, df, df_summ):
     else:
         if ((lp > bp) and (lp < mp)):
             price_dip_score += 1
-#        elif ((lp > mp) and (lp < tp)):
-            #Either buy/sell depending on overall score
 
     price_max_score += 2
 
     price_dip_rec = f'price_dip_score:{price_dip_score}/{price_max_score}'
 
-    if (yearly_lowest_val > 0):
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, fp_bp:{fp_bp},fp_mp:{fp_mp},fp_tp:{fp_tp},mfdc:{max_falling_days_count},{curr_price},lowest_price:{yearly_lowest_val},bp:{bp},mp:{mp},tp:{tp},{price_dip_rec},{nftwlh}'
-    else:
-        price_signals = f'price: {price_dir}, cfdc: {last_falling_days_count}, rp_bp:{rp_bp},rp_mp:{rp_mp},rp_tp:{rp_tp},mrdc:{max_rising_days_count},{curr_price},bp:{bp},mp:{mp},tp:{tp},{price_dip_rec},{nftwlh}'
-    
+    price_signals = f'price: {price_dir},{curr_count_quantile_str},{curr_price}:{curr_price_1y_quantile_str},{price_dip_rec},{nftwlh}'
+
     return price_dip_score, price_max_score, price_signals

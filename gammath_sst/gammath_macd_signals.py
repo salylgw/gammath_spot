@@ -224,9 +224,9 @@ def get_macd_signals(tsymbol, df, path):
 
     macd_buy_sell_sig_date = ''
     if (macd_trend == 'positive'):
-        macd_buy_sell_stats = f'{buy_sig_price_str},pt_days:{curr_days_in_positive},{curr_count_quantile_str},curr_diff:{curr_macd_pdiff},{curr_diff_quantile_str}'
+        macd_buy_sell_stats = f'{buy_sig_price_str},+ve_days_count in {curr_count_quantile_str},curr_diff in {curr_diff_quantile_str}'
     else:
-        macd_buy_sell_stats = f'{sell_sig_price_str},nt_days:{curr_days_in_negative},{curr_count_quantile_str},curr_diff:-{curr_macd_ndiff},{curr_diff_quantile_str}'
+        macd_buy_sell_stats = f'{sell_sig_price_str},-ve_days_count in {curr_count_quantile_str},curr_diff in {curr_diff_quantile_str}'
 
     macd_signals = f'MACD trend:{macd_trend},{macd_buy_sell_stats},{macd_dip_rec}'
     

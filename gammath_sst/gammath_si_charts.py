@@ -19,7 +19,7 @@ import gammath_kf_signals as gkf
 import gammath_ols_signals as gols
 
 
-def plot_n_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, ols_y_predictions, ols_y1_predictions):
+def plot_and_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, ols_y_predictions, ols_y1_predictions):
 
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
