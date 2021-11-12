@@ -19,6 +19,8 @@ def get_macd_signals(tsymbol, df, path):
 
     macd_dip_score = 0
     macd_max_score = 0
+    curr_count_quantile_str = ''
+    curr_diff_quantile_str = ''
 
     try:
         macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
@@ -38,14 +40,9 @@ def get_macd_signals(tsymbol, df, path):
 
     #Generally speaking, buy signal is when -ve to +ve crossover is encountered and sell signal is when +ve to -ve crossover is encountered. However, here, we are not using the buy/sell signal; instead we are using the trends and difference to get better price before the crossover is seen i.e. higher dip score during -ve trend and higher premium score during +ve trend
 
-    buy_sig = 0
     curr_days_in_positive = 0
-    max_days_in_positive = 0
     curr_macd_pdiff = 0
-    max_macd_pdiff = 0
-    sell_sig = 0
     curr_days_in_negative = 0
-    max_days_in_negative = 0
     curr_macd_ndiff = 0
     max_macd_ndiff = 0
 
@@ -64,13 +61,10 @@ def get_macd_signals(tsymbol, df, path):
     macd_pos_diff_count_series = pd.Series(np.nan, pd.RangeIndex(macd_len))
     macd_pos_diff_count_index = 0
 
-    #Maintain the count when MACD indicates -ve trend and +ve trend
+    #Maintain the count and diff when MACD indicates -ve trend and +ve trend
     for i in range(macd_len-1):
         if ((macd_histogram[i] <= 0) and (macd_histogram[i+1] > 0)):
             #Buy signal
-            buy_sig = 1
-            sell_sig = 0
-
             if (curr_days_in_negative > 0):
                 macd_neg_days_count_series[macd_neg_days_count_index] = curr_days_in_negative
                 macd_neg_days_count_index += 1
@@ -83,8 +77,6 @@ def get_macd_signals(tsymbol, df, path):
             macd_pos_diff_count_index += 1
         elif ((macd_histogram[i] >= 0) and (macd_histogram[i+1] < 0)):
             #Sell signal
-            buy_sig = 0
-            sell_sig = 1
 
             if (curr_days_in_positive > 0):
                 macd_pos_days_count_series[macd_pos_days_count_index] = curr_days_in_positive
@@ -97,8 +89,6 @@ def get_macd_signals(tsymbol, df, path):
             macd_neg_diff_count_series[macd_neg_diff_count_index] = curr_macd_ndiff
             macd_neg_diff_count_index += 1
         else:
-            buy_sig = 0
-            sell_sig = 0
             if (curr_days_in_positive != 0):
                 curr_days_in_positive += 1
                 curr_macd_pdiff = round(macd_histogram[i+1], 3)
@@ -109,22 +99,6 @@ def get_macd_signals(tsymbol, df, path):
                 curr_macd_ndiff = round(abs(macd_histogram[i+1]), 3)
                 macd_neg_diff_count_series[macd_neg_diff_count_index] = curr_macd_ndiff
                 macd_neg_diff_count_index += 1
-
-        #Maintain max days in +ve trend
-        if (max_days_in_positive < curr_days_in_positive):
-            max_days_in_positive = curr_days_in_positive
-
-        #Maintain max days in -ve trend
-        if (max_days_in_negative < curr_days_in_negative):
-            max_days_in_negative = curr_days_in_negative
-
-        #Maintain max +ve diff
-        if (max_macd_pdiff < curr_macd_pdiff):
-            max_macd_pdiff = round(curr_macd_pdiff, 3)
-
-        #Maintain max -ve diff
-        if (max_macd_ndiff < curr_macd_ndiff):
-            max_macd_ndiff = round(curr_macd_ndiff, 3)
 
     #Drop nans and sort the vals
     macd_neg_days_count_series = macd_neg_days_count_series.dropna()
@@ -139,70 +113,96 @@ def get_macd_signals(tsymbol, df, path):
     macd_pos_diff_count_series = macd_pos_diff_count_series.dropna()
     macd_pos_diff_count_series = macd_pos_diff_count_series.sort_values()
 
-    #Get percentile values for -ve trend days counts
-    bnp, mnp, tnp = macd_neg_days_count_series.quantile([0.25, 0.5, 0.75])
-
-    #Get percentile values for +ve trend days counts
-    bpp, mpp, tpp = macd_pos_days_count_series.quantile([0.25, 0.5, 0.75])
-
-    #Get percentile values for -ve diff
-    bnp_diff, mnp_diff, tnp_diff = macd_neg_diff_count_series.quantile([0.25, 0.5, 0.75])
-
-    #Get percentile values for +ve diff
-    bpp_diff, mpp_diff, tpp_diff = macd_pos_diff_count_series.quantile([0.25, 0.5, 0.75])
-
     #Buy/Sell signal moment is only a small part of the equation; No scoring on the start of the indication
 
     #Check which percentile quarter do current -ve and +ve trend days fall
     if (curr_days_in_negative > 0):
+        #Get values for -ve trend days counts at 25/50/75 percentile
+        bp, mp, tp = macd_neg_days_count_series.quantile([0.25, 0.5, 0.75])
+
+        #Get values for -ve diff at 25/50/75 percentile
+        bp_diff, mp_diff, tp_diff = macd_neg_diff_count_series.quantile([0.25, 0.5, 0.75])
+
+        if (curr_macd_ndiff < mp_diff):
+            curr_diff_quantile_str = 'bottom quantile'
+
+        if (curr_macd_ndiff >= mp_diff):
+            curr_diff_quantile_str = 'middle quantile'
+
+        if (curr_macd_ndiff >= tp_diff):
+            curr_diff_quantile_str = 'top quantile'
+
         #It has just crossed over to sell side so don't buy at least until we hit 25 percentile of -ve days
-        if (curr_days_in_negative < bnp):
+        if (curr_days_in_negative < bp):
             macd_dip_score -= 10
+            curr_count_quantile_str = 'bottom quantile'
         else:
             #Increase buy score at 25, 50 and 75 percentile crossing
-            if (curr_days_in_negative >= bnp):
+            if (curr_days_in_negative >= bp):
                 macd_dip_score += 1
+                curr_count_quantile_str = 'bottom quantile'
 
-            if (curr_days_in_negative >= mnp):
+            if (curr_days_in_negative >= mp):
                 macd_dip_score += 2
+                curr_count_quantile_str = 'middle quantile'
 
-            if (curr_days_in_negative >= tnp):
+            if (curr_days_in_negative >= tp):
                 macd_dip_score += 2
+                curr_count_quantile_str = 'top quantile'
 
             #Check which percentile quarter do current -ve and +ve diff fall
             if (curr_macd_ndiff > 0):
-                #Increase buy score at 50 and 25 percentile diffs
-                if (curr_macd_ndiff <= mnp_diff):
+
+                if (curr_macd_ndiff >= mp_diff):
                     macd_dip_score += 2
 
-                if (curr_macd_ndiff <= bnp_diff):
+                if (curr_macd_ndiff >= tp_diff):
                     macd_dip_score += 3
 
+
     elif (curr_days_in_positive > 0):
+
+        #Get percentile values for +ve trend days counts
+        bp, mp, tp = macd_pos_days_count_series.quantile([0.25, 0.5, 0.75])
+
+        #Get percentile values for +ve diff
+        bp_diff, mp_diff, tp_diff = macd_pos_diff_count_series.quantile([0.25, 0.5, 0.75])
+
+        if (curr_macd_pdiff <= mp_diff):
+            curr_diff_quantile_str = 'bottom quantile'
+
+        if (curr_macd_pdiff > mp_diff):
+            curr_diff_quantile_str = 'middle quantile'
+
+        if (curr_macd_pdiff >= tp_diff):
+            curr_diff_quantile_str = 'top quantile'
+
         #It has just crossed over to buy side so buy only until we hit 25 percentile of +ve days
-        if (curr_days_in_positive < bpp):
-            if (curr_macd_pdiff < mpp_diff):
+        if (curr_days_in_positive < bp):
+            if (curr_macd_pdiff < mp_diff):
                 macd_dip_score += 5
             else:
                 macd_dip_score -= 5
         else:
             #Increase sell score at 25, 50 and 75 percentile crossing
-            if (curr_days_in_positive >= bpp):
+            if (curr_days_in_positive >= bp):
                 macd_dip_score -= 1
+                curr_count_quantile_str = 'bottom quantile'
 
-            if (curr_days_in_positive >= mpp):
+            if (curr_days_in_positive >= mp):
                 macd_dip_score -= 2
+                curr_count_quantile_str = 'middle quantile'
 
-            if (curr_days_in_positive >= tpp):
+            if (curr_days_in_positive >= tp):
                 macd_dip_score -= 2
+                curr_count_quantile_str = 'top quantile'
 
             if (curr_macd_pdiff > 0):
-                #Increase sell score at 50 and 75 percentile crossing
 
-                if (curr_macd_pdiff >= mpp_diff):
+                if (curr_macd_pdiff > mp_diff):
                     macd_dip_score -= 2
 
-                if (curr_macd_pdiff >= tpp_diff):
+                if (curr_macd_pdiff >= tp_diff):
                     macd_dip_score -= 3
 
 
@@ -219,23 +219,14 @@ def get_macd_signals(tsymbol, df, path):
     sell_sig_price = df['Close'][last_sell_signal_index]
     sell_sig_price_str = f'sig_price:%5.3f' % df['Close'][last_sell_signal_index]
 
-    #Round off diff values to take less space while displaying
-    bnp_diff = round(bnp_diff, 3)
-    mnp_diff = round(mnp_diff, 3)
-    tnp_diff = round(tnp_diff, 3)
-
-    bpp_diff = round(bpp_diff, 3)
-    mpp_diff = round(mpp_diff, 3)
-    tpp_diff = round(tpp_diff, 3)
-
     #Format the strings to log
     macd_dip_rec = f'macd_dip_score:{macd_dip_score}/{macd_max_score}'
 
     macd_buy_sell_sig_date = ''
     if (macd_trend == 'positive'):
-        macd_buy_sell_stats = f'bsd:{macd_buy_signal_date},{buy_sig_price_str},pt_days:{curr_days_in_positive},pt_max_days:{max_days_in_positive},bpp:{bpp},mpp:{mpp},tpp:{tpp},curr_diff:{curr_macd_pdiff},max_diff:{max_macd_pdiff},bpp_diff:{bpp_diff},mpp_diff:{mpp_diff},tpp_diff:{tpp_diff}'
+        macd_buy_sell_stats = f'{buy_sig_price_str},pt_days:{curr_days_in_positive},{curr_count_quantile_str},curr_diff:{curr_macd_pdiff},{curr_diff_quantile_str}'
     else:
-        macd_buy_sell_stats = f'ssd:{macd_sell_signal_date},{sell_sig_price_str},nt_days:{curr_days_in_negative},nt_max_days:{max_days_in_negative},bnp:{bnp},mnp:{mnp},tnp:{tnp},curr_diff:-{curr_macd_ndiff},max_diff:-{max_macd_ndiff},bnp_diff:{bnp_diff},mnp_diff:{mnp_diff},tnp_diff:{tnp_diff}'
+        macd_buy_sell_stats = f'{sell_sig_price_str},nt_days:{curr_days_in_negative},{curr_count_quantile_str},curr_diff:-{curr_macd_ndiff},{curr_diff_quantile_str}'
 
     macd_signals = f'MACD trend:{macd_trend},{macd_buy_sell_stats},{macd_dip_rec}'
     

@@ -70,14 +70,13 @@ class GSD:
         except RuntimeError:
             print(f'Could not get stock options data for {tsymbol}')
 
-       #Getting calendar info [NOTE: This is very low]
-       try:
-           #Fetch calendar
-           gsc.get_ticker_calendar(tsymbol, ticker, path)
-       except ValueError:
-           print(f'Error while getting stock calendar data for {tsymbol}')
-       except RuntimeError:
-           print(f'Could not get stock calendar data for {tsymbol}')
+        try:
+            #Get calendar info [NOTE: This is very low]
+            gsc.get_ticker_calendar(tsymbol, ticker, path)
+        except ValueError:
+            print(f'Error while getting stock calendar data for {tsymbol}')
+        except RuntimeError:
+            print(f'Could not get stock calendar data for {tsymbol}')
 
         try:
             #Get stock history

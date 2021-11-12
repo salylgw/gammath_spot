@@ -15,10 +15,14 @@ def get_kf_state_means(tsymbol, df):
     kf_max_score = 0
     kf_signals = ''
 
+    curr_count_quantile_str = ''
+    curr_diff_quantile_str = ''
+
     prices = df.Close
     prices_len = len(prices)
     sm_len = 0
 
+    #Generate state means based on closing prices
     if (prices_len > 0):
         try:
             #Initialize Kalman filter with default params
@@ -43,12 +47,6 @@ def get_kf_state_means(tsymbol, df):
     #Use historical levels' comparison to current levels for computing buy/sell scores
     curr_below_mean_count = 0
     curr_above_mean_count = 0
-    min_below_mean_days = 0
-    min_above_mean_days = 0
-    max_below_mean_days = 0
-    max_above_mean_days = 0
-    avg_below_mean_days = 0
-    avg_above_mean_days = 0
 
     #init the below mean count PD series
     kf_below_mean_count_series = pd.Series(np.nan, pd.RangeIndex(sm_len))
@@ -58,8 +56,6 @@ def get_kf_state_means(tsymbol, df):
 
     kf_below_mean_count_index = 0
     kf_above_mean_count_index = 0
-    kf_max_below_mean_count = 0
-    kf_max_above_mean_count = 0
 
     kf_neg_diff_index = 0
     kf_pos_diff_index = 0
@@ -71,7 +67,7 @@ def get_kf_state_means(tsymbol, df):
     #Init the +ve diff PD series
     kf_pos_diff_series = pd.Series(np.nan, pd.RangeIndex(sm_len))
 
-    #Get historical below/above mean days stats (ignoring first 20 entries as means aren't at the desired values)
+    #Collect historical below/above mean days and diff stats (ignoring first 20 entries as means aren't at the desired values)
     for i in range(20, sm_len):
 
         price = prices[i]
@@ -92,9 +88,6 @@ def get_kf_state_means(tsymbol, df):
             if (curr_above_mean_count > 0):
                 kf_above_mean_count_series[kf_above_mean_count_index] = curr_above_mean_count
                 kf_above_mean_count_index += 1
-                if (curr_above_mean_count > kf_max_above_mean_count):
-                    kf_max_above_mean_count = curr_above_mean_count
-
                 curr_above_mean_count = 0
         else:
             #Price is above state mean
@@ -111,9 +104,6 @@ def get_kf_state_means(tsymbol, df):
             if (curr_below_mean_count > 0):
                 kf_below_mean_count_series[kf_below_mean_count_index] = curr_below_mean_count
                 kf_below_mean_count_index += 1
-                if (curr_below_mean_count > kf_max_below_mean_count):
-                    kf_max_below_mean_count = curr_below_mean_count
-
                 curr_below_mean_count = 0
 
     kf_neg_diff_series = kf_neg_diff_series.dropna()
@@ -122,61 +112,56 @@ def get_kf_state_means(tsymbol, df):
     kf_pos_diff_series = kf_pos_diff_series.dropna()
     kf_pos_diff_series = kf_pos_diff_series.sort_values()
 
-    #Get percentile values for -ve and +ve diffs
-    nd_bp, nd_mp, nd_tp = kf_neg_diff_series.quantile([0.25, 0.5, 0.75])
-    pd_bp, pd_mp, pd_tp = kf_pos_diff_series.quantile([0.25, 0.5, 0.75])
-
-    #rounding for logging purposes
-    curr_diff = round(curr_diff, 3)
-    nd_bp = round(nd_bp, 3)
-    nd_mp = round(nd_mp, 3)
-    nd_tp = round(nd_tp, 3)
-    pd_bp = round(pd_bp, 3)
-    pd_mp = round(pd_mp, 3)
-    pd_tp = round(pd_tp, 3)
-
-    #Use current diff to factor into dip score
+    #Use current diff to factor into dip score based on which quantile it falls in
     if (curr_below_mean_count > 0):
+
+        #Get values at 25/50/75 percentile for -ve diffs
+        bp, mp, tp = kf_neg_diff_series.quantile([0.25, 0.5, 0.75])
+
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
-        if (curr_diff > nd_bp):
+        if (curr_diff > bp):
             kf_dip_score += 2
+            curr_diff_quantile_str = 'bottom quantile'
 
         kf_max_score += 2
 
-        if (curr_diff > nd_mp):
+        if (curr_diff > mp):
             kf_dip_score += 2
+            curr_diff_quantile_str = 'middle quantile'
 
         kf_max_score += 2
 
-        if (curr_diff > nd_tp):
+        if (curr_diff > tp):
             kf_dip_score += 3
+            curr_diff_quantile_str = 'top quantile'
 
         kf_max_score += 3
 
     else:
+
+        #Get values at 25/50/75 percentile for +ve diffs
+        bp, mp, tp = kf_pos_diff_series.quantile([0.25, 0.5, 0.75])
+
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
-        if (curr_diff > pd_bp):
+        if (curr_diff > bp):
             kf_dip_score -= 2
+            curr_diff_quantile_str = 'bottom quantile'
 
         kf_max_score += 2
 
-        if (curr_diff > pd_mp):
+        if (curr_diff > mp):
             kf_dip_score -= 2
+            curr_diff_quantile_str = 'middle quantile'
 
         kf_max_score += 2
 
-        if (curr_diff > pd_tp):
+        if (curr_diff > tp):
             kf_dip_score -= 3
+            curr_diff_quantile_str = 'top quantile'
 
         kf_max_score += 3
-
-    if (curr_below_mean_count > kf_max_below_mean_count):
-        kf_max_below_mean_count = curr_below_mean_count
-
-    if (curr_above_mean_count > kf_max_above_mean_count):
-        kf_max_above_mean_count = curr_above_mean_count
 
     kf_below_mean_count_series = kf_below_mean_count_series.dropna()
     kf_below_mean_count_series = kf_below_mean_count_series.sort_values()
@@ -184,48 +169,57 @@ def get_kf_state_means(tsymbol, df):
     kf_above_mean_count_series = kf_above_mean_count_series.dropna()
     kf_above_mean_count_series = kf_above_mean_count_series.sort_values()
 
-    #Get percentile values for below mean counts
-    bp, mp, tp = kf_below_mean_count_series.quantile([0.25, 0.5, 0.75])
-
-    bp = round(bp, 3)
-    mp = round(mp, 3)
-    tp = round(tp, 3)
-
-    #Get percentile values for above mean counts
-    bp_am, mp_am, tp_am = kf_above_mean_count_series.quantile([0.25, 0.5, 0.75])
-
-    bp_am = round(bp_am, 3)
-    mp_am = round(mp_am, 3)
-    tp_am = round(tp_am, 3)
-
     #Compute buy/sell scores based on where current below mean count falls in 25, 50, 75 percentile
-    if (curr_below_mean_count > bp):
-        kf_dip_score += 1
-    elif (curr_above_mean_count > bp_am):
-        kf_dip_score -= 1
+    if (curr_below_mean_count > 0):
+        #Get percentile values for below mean counts
+        bp, mp, tp = kf_below_mean_count_series.quantile([0.25, 0.5, 0.75])
 
-    kf_max_score += 1
+        if (curr_below_mean_count > bp):
+            kf_dip_score += 1
+            curr_count_quantile_str = 'bottom quantile'
 
-    if (curr_below_mean_count > mp):
-        kf_dip_score += 1
-    elif (curr_above_mean_count > mp_am):
-        kf_dip_score -= 1
+        kf_max_score += 1
 
-    kf_max_score += 1
+        if (curr_below_mean_count > mp):
+            kf_dip_score += 1
+            curr_count_quantile_str = 'middle quantile'
 
-    if (curr_below_mean_count > tp):
-        kf_dip_score += 1
-    elif (curr_above_mean_count > tp_am):
-        kf_dip_score -= 1
+        kf_max_score += 1
 
-    kf_max_score += 1
+        if (curr_below_mean_count > tp):
+            kf_dip_score += 1
+            curr_count_quantile_str = 'top quantile'
+
+        kf_max_score += 1
+
+    else:
+        #Get percentile values for above mean counts
+        bp, mp, tp = kf_above_mean_count_series.quantile([0.25, 0.5, 0.75])
+
+        if (curr_above_mean_count > bp):
+            kf_dip_score -= 1
+            curr_count_quantile_str = 'bottom quantile'
+
+        kf_max_score += 1
+
+        if (curr_above_mean_count > mp):
+            kf_dip_score -= 1
+            curr_count_quantile_str = 'middle quantile'
+
+        kf_max_score += 1
+
+        if (curr_above_mean_count > tp):
+            kf_dip_score -= 1
+            curr_count_quantile_str = 'top quantile'
+
+        kf_max_score += 1
 
     kf_dip_rec = f'kf_dip_score:{kf_dip_score}/{kf_max_score}'
 
     if (curr_below_mean_count > 0):
-        kf_signals = f'KF: cbmdc: {curr_below_mean_count}, bp:{bp}, mp:{mp}, tp:{tp}, mbmdc: {kf_max_below_mean_count}, cd:{curr_diff},nd_bp:{nd_bp},nd_mp:{nd_mp},nd_tp:{nd_tp},{kf_dip_rec}'
+        kf_signals = f'KF:-ve_days:{curr_count_quantile_str},-ve_diff:{curr_diff_quantile_str},{kf_dip_rec}'
     else:
-        kf_signals = f'KF: camdc: {curr_above_mean_count}, bp:{bp_am}, mp:{mp_am}, tp:{tp_am}, mamdc: {kf_max_above_mean_count}, cd:{curr_diff},pd_bp:{pd_bp},pd_mp:{pd_mp},pd_tp:{pd_tp},{kf_dip_rec}'
+        kf_signals = f'KF:+ve_days:{curr_count_quantile_str},+ve_diff:{curr_diff_quantile_str},{kf_dip_rec}'
 
     #return state means also to plot the charts
     return ds_sm, kf_dip_score, kf_max_score, kf_signals

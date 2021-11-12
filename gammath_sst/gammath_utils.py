@@ -82,21 +82,16 @@ class GUTILS:
 
         pattern_for_final_dip_score = re.compile(r'(final_dip_score):([-]*[0-9]*[.]*[0-9]+)')
 
-        #Collect 1Y OLS regression fit scores for debugging
-        pattern_for_1y_ols_fit_score = re.compile(r'(ols_1y_fit_score):([-]*[0-9]*[.]*[0-9]+)')
-
         #Collect OLS regression fit scores for debugging
         pattern_for_ols_fit_score = re.compile(r'(ols_fit_score):([-]*[0-9]*[.]*[0-9]+)')
 
         #Pattern for note
         pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
-
-
         df_b = pd.DataFrame(columns=['Ticker', 'final_dip_score', 'Note'], index=range(len(subdirs)))
 
 
-        df_fs = pd.DataFrame(columns=['Ticker', 'ols_1y_fit_score', 'ols_fit_score'], index=range(len(subdirs)))
+        df_fs = pd.DataFrame(columns=['Ticker', 'ols_fit_score'], index=range(len(subdirs)))
 
 
         i = 0
@@ -121,12 +116,6 @@ class GUTILS:
                         df_b['Note'][i] = note
                         i += 1
 
-
-                    matched_string = pattern_for_1y_ols_fit_score.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        df_fs['Ticker'][k] = f'{subdir.name}'
-                        df_fs['ols_1y_fit_score'][k] = float(val)
 
                     matched_string = pattern_for_ols_fit_score.search(content)
                     if (matched_string):
