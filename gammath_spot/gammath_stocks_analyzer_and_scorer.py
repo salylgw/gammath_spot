@@ -26,7 +26,7 @@ import gammath_utils as gut
 import pandas as pd
 import sys
 
-if __name__ == '__main__':
+def main():
 
     #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
     try:
@@ -104,3 +104,6 @@ if __name__ == '__main__':
     gutils.aggregate_scores()
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
+
+if __name__ == '__main__':
+    main()

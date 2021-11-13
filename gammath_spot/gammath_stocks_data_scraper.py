@@ -24,12 +24,9 @@ import gammath_get_stocks_data as ggsd
 import gammath_utils as gut
 import sys
 from pathlib import Path
-import re
 import pandas as pd
-import random
 
-if __name__ == '__main__':
-
+def main():
     #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
     try:
         #Get the watchlist file from pgm argument
@@ -104,3 +101,6 @@ if __name__ == '__main__':
 
     #Aggregate and save PE data
     gutils.aggregate_pe_data()
+
+if __name__ == '__main__':
+    main()

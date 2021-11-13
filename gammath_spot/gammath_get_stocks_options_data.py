@@ -75,8 +75,6 @@ def get_options_data(tsymbol, ticker, path):
         #We only need to read options data once a day
         if (not dont_need_fetch):
             options = ticker.option_chain(option_date)
-            options.calls.info()
-            options.puts.info()
             df_calls = options.calls.sort_values('strike')
 
             #Save the calls sorted by strike price
