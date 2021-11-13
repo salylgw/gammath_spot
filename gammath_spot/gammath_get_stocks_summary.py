@@ -24,8 +24,6 @@ import pandas as pd
 import sys
 import time
 import os
-import random
-
 
 def get_ticker_summary(tsymbol, ticker, path):
 

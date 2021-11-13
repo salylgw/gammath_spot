@@ -24,13 +24,12 @@ import pandas as pd
 import sys
 import time
 import os
-import random
-import gammath_stocks_summary as gss
-import gammath_stocks_financials as gsf
-import gammath_stocks_history as gsh
-import gammath_stocks_options as gso
+import gammath_get_stocks_summary as gss
+import gammath_get_stocks_financials as gsf
+import gammath_get_stocks_history as gsh
+import gammath_get_stocks_options_data as gso
 import gammath_get_stcktwts as ggstw
-import gammath_stocks_calendar as gsc
+import gammath_get_stocks_calendar as gsc
 
 class GSD:
 

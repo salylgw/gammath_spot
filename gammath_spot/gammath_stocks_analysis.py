@@ -24,7 +24,6 @@ from datetime import datetime
 from pathlib import Path
 from talib import RSI, BBANDS, MACD, MFI, STOCH
 from matplotlib import pyplot as plt
-import gammath_stocks_history as gsh
 import gammath_price_signals as gps
 import gammath_rsi_signals as grs
 import gammath_bb_signals as gbbs
@@ -43,14 +42,13 @@ import gammath_qbs_signals as gqbs
 import gammath_pbr_signals as gpbrs
 import gammath_reco_signals as greco
 import gammath_ols_signals as gols
-import gammath_get_events as gge
+import gammath_get_stocks_events_data as gge
 import gammath_score_signals as gscsi
 import gammath_si_charts as gsc
 import sys
 import time
 import os
 import numpy as np
-import re
 
 class GSA:
 

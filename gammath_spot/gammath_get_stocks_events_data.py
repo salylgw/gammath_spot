@@ -34,13 +34,9 @@ def get_events_info(tsymbol, path):
         df = pd.read_csv(path / f'{tsymbol}_calendar.csv', index_col='Unnamed: 0')
 
         num_rows = len(df.index)
-        if (num_rows == 0):
-            print(f'\nINFO: There are no events reported for {tsymbol}')
-        else:
+        if (num_rows != 0):
             num_cols = len(df.columns)
-            if (num_cols == 0):
-                print(f'\nINFO: There is no data associated with event for {tsymbol}')
-            else:
+            if (num_cols != 0):
                 #For now only use Earnings event (happens to be the first event in the calendar)
                 event = df.index[0]
 
