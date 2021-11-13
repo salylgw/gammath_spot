@@ -100,5 +100,8 @@ def get_mfi_signals(tsymbol, df, path):
 
     mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_dip_rec},{mfi_indicator}'
 
-    return mfi, mfi_dip_score, mfi_max_score, mfi_signals
+    #Return RSI data in a dataframe for plotting charts
+    mfi_df = pd.DataFrame({'MFI': mfi})
+
+    return mfi_df, mfi_dip_score, mfi_max_score, mfi_signals
 

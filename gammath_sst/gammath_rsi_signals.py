@@ -143,5 +143,8 @@ def get_rsi_signals(tsymbol, df, path):
 
     rsi_dip_rec = f'rsi_dip_score:{rsi_dip_score}/{rsi_max_score}'
     rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{curr_count_quantile_str},{rsi_dip_rec}'
-    
-    return rsi, rsi_dip_score, rsi_max_score, rsi_signals
+
+    #Return RSI data in a dataframe for plotting charts
+    rsi_df = pd.DataFrame({'RSI': rsi})
+
+    return rsi_df, rsi_dip_score, rsi_max_score, rsi_signals

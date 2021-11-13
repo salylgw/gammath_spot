@@ -225,7 +225,7 @@ class GSA:
             rsi_max_score = 10
             rsi_signals = ''
             #Relative Strength Index signals
-            rsi, rsi_dip_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
+            rsi_df, rsi_dip_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
 
             self.overall_dip_score += rsi_dip_score
             self.overall_max_score += rsi_max_score
@@ -242,7 +242,7 @@ class GSA:
             mfi_signals = ''
 
             #MFI signals
-            mfi, mfi_dip_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
+            mfi_df, mfi_dip_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
 
             self.overall_dip_score += mfi_dip_score
             self.overall_max_score += mfi_max_score
@@ -259,7 +259,7 @@ class GSA:
             stoch_slow_signals = ''
 
             #Stochastic slow signals
-            slowk, slowd, stoch_dip_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
+            stoch_df, stoch_dip_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
 
             self.overall_dip_score += stoch_dip_score
             self.overall_max_score += stoch_max_score
@@ -275,7 +275,7 @@ class GSA:
             bb_max_score = 10
             bb_signals = ''
             #Bollinger bands signals
-            ub, mb, lb, bb_dip_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
+            bb_df, bb_dip_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
 
             self.overall_dip_score += bb_dip_score
             self.overall_max_score += bb_max_score
@@ -292,7 +292,7 @@ class GSA:
             macd_signals = ''
 
             #MACD signals
-            macd, macd_signal, macd_dip_score, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
+            macd_df, macd_dip_score, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
 
             self.overall_dip_score += macd_dip_score
             self.overall_max_score += macd_max_score
@@ -309,7 +309,7 @@ class GSA:
             kf_signals = ''
 
             #Kalman Filter signals
-            ds_sm, kf_dip_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
+            kf_df, kf_dip_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
 
             self.overall_dip_score += kf_dip_score
             self.overall_max_score += kf_max_score
@@ -326,7 +326,7 @@ class GSA:
             ols_signals = ''
 
             #Ordinary Least Squares line signals
-            y1_series, y_predictions, ols_dip_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
+            ols_df, ols_dip_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
 
             self.overall_dip_score += ols_dip_score
             self.overall_max_score += ols_max_score
@@ -370,6 +370,6 @@ class GSA:
 
         #Plot and save charts for reference
         try:
-            gsc.plot_and_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, y_predictions, y1_series)
+            gsc.plot_and_save_charts(tsymbol, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df)
         except:
             print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])

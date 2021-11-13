@@ -229,5 +229,8 @@ def get_kf_state_means(tsymbol, df):
     else:
         kf_signals = f'KF:+ve_days:{curr_count_quantile_str},+ve_diff:{curr_diff_quantile_str},{kf_dip_rec}'
 
-    #return state means also to plot the charts
-    return ds_sm, kf_dip_score, kf_max_score, kf_signals
+
+    #Return KF state means in a dataframe for plotting charts
+    kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
+
+    return kf_df, kf_dip_score, kf_max_score, kf_signals

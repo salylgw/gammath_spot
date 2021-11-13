@@ -229,5 +229,8 @@ def get_macd_signals(tsymbol, df, path):
         macd_buy_sell_stats = f'{sell_sig_price_str},-ve_days_count in {curr_count_quantile_str},curr_diff in {curr_diff_quantile_str}'
 
     macd_signals = f'MACD trend:{macd_trend},{macd_buy_sell_stats},{macd_dip_rec}'
-    
-    return macd, macd_signal, macd_dip_score, macd_max_score, macd_signals
+
+    #Return MACD lines in a dataframe for plotting charts
+    macd_df = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
+
+    return macd_df, macd_dip_score, macd_max_score, macd_signals

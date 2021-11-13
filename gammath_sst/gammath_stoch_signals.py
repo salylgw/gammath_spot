@@ -72,4 +72,7 @@ def get_stochastics_slow_signals(tsymbol, df):
 
     stoch_slow_signals = f'stochs: {stoch_lvl},slowd:{stoch_slowd},l_xovr_date:{stoch_crossover_date},{stoch_dip_rec}'
 
-    return slowk, slowd, stoch_dip_score, stoch_max_score, stoch_slow_signals
+    #Return slowk and slowd in a dataframe for plotting charts
+    stoch_df = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
+
+    return stoch_df, stoch_dip_score, stoch_max_score, stoch_slow_signals

@@ -74,4 +74,7 @@ def get_bollinger_bands_signals(tsymbol, df, path):
     bb_dip_rec = f'bb_dip_score:{bb_dip_score}/{bb_max_score}'
     bb_signals = f'bollinger bands:{bb_avg},{bb_vicinity},{bb_dip_rec}'
 
-    return ub, mb, lb, bb_dip_score, bb_max_score, bb_signals
+    #Return Bollinger bands in a dataframe for plotting charts
+    bb_df = pd.DataFrame({tsymbol: df.Close, 'Upper Band': ub, 'Middle Band': mb, 'Lower Band': lb})
+
+    return bb_df, bb_dip_score, bb_max_score, bb_signals

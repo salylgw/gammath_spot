@@ -18,8 +18,7 @@ import gammath_utils as gut
 import gammath_kf_signals as gkf
 import gammath_ols_signals as gols
 
-
-def plot_and_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, slowk, slowd, ds_sm, ols_y_predictions, ols_y1_predictions):
+def plot_and_save_charts(tsymbol, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df):
 
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
@@ -46,58 +45,20 @@ def plot_and_save_charts(tsymbol, df, ub, mb, lb, rsi, mfi, macd, macd_signal, s
     #Draw the charts to view all at once as subplots
     figure, axes = plt.subplots(nrows=7, figsize=(21, 19))
 
-    sym_str = f'{tsymbol}'
-
     try:
-        plot_data1 = pd.DataFrame({sym_str: df.Close, 'Upper Band': ub, 'Middle Band': mb, 'Lower Band': lb})
-    except:
-        plot_data1 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data2 = pd.DataFrame({'RSI': rsi})
-    except:
-        plot_data2 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        #Don't need to draw the MACD histogram
-        plot_data3 = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
-    except:
-        plot_data3 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data4 = pd.DataFrame({'MFI': mfi})
-    except:
-        plot_data4 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data5 = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
-    except:
-        plot_data5 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data6 = pd.DataFrame({sym_str: df.Close, 'Kalman Filter': ds_sm})
-    except:
-        plot_data6 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data7 = pd.DataFrame({sym_str: df.Close, 'OLS': ols_y_predictions, 'OLS_1Y': ols_y1_predictions})
-    except:
-        plot_data7 = pd.DataFrame({sym_str: [0]})
-
-    try:
-        plot_data1.plot(ax=axes[0],lw=1,title='Bollinger Bands')
-        plot_data2.plot(ax=axes[1],lw=1,title='Relative Strength Index')
+        bb_df.plot(ax=axes[0],lw=1,title='Bollinger Bands')
+        rsi_df.plot(ax=axes[1],lw=1,title='Relative Strength Index')
         axes[1].axhline(RSI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[1].axhline(RSI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-        plot_data3.plot(ax=axes[2],lw=1,title='Moving Average Convergence Divergence')
-        plot_data4.plot(ax=axes[3],lw=1,title='Money Flow Index')
+        macd_df.plot(ax=axes[2],lw=1,title='Moving Average Convergence Divergence')
+        mfi_df.plot(ax=axes[3],lw=1,title='Money Flow Index')
         axes[3].axhline(MFI_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[3].axhline(MFI_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-        plot_data5.plot(ax=axes[4],lw=1,title='Stochastic Slow')
+        stoch_df.plot(ax=axes[4],lw=1,title='Stochastic Slow')
         axes[4].axhline(STOCH_OVERBOUGHT_LEVEL,lw=1,ls='-',c='r')
         axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
-        plot_data6.plot(ax=axes[5], lw=1,title='Kalman Filter')
-        plot_data7.plot(ax=axes[6], lw=1,title='OLS')
+        kf_df.plot(ax=axes[5], lw=1,title='Kalman Filter')
+        ols_df.plot(ax=axes[6], lw=1,title='OLS')
         plt.savefig(path / f'{tsymbol}_charts.png')
     except:
         print('\nERROR: Plotting charts for ', tsymbol, ': ', sys.exc_info()[0])
