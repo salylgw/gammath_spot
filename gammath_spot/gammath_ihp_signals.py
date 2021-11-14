@@ -24,7 +24,7 @@ import pandas as pd
 #Get percentage held by institutions for tsymbol
 def get_ihp_signals(tsymbol, df_summ):
 
-    ihp_dip_score = 0
+    ihp_gscore = 0
     ihp_max_score = 0
 
     try:
@@ -36,9 +36,9 @@ def get_ihp_signals(tsymbol, df_summ):
     #We can do checks for different levels but for now this will suffice
     if (ihp > 0):
         if (ihp > 0.7):
-            ihp_dip_score += 1
+            ihp_gscore += 1
         else:
-            ihp_dip_score -= 1
+            ihp_gscore -= 1
 
     ihp_max_score += 1
 
@@ -47,8 +47,8 @@ def get_ihp_signals(tsymbol, df_summ):
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 
-    ihp_dip_rec = f'ihp_dip_score:{ihp_dip_score}/{ihp_max_score}'
+    ihp_grec = f'ihp_gscore:{ihp_gscore}/{ihp_max_score}'
 
-    ihp_signals = f'IHP:{ihp},{ihp_dip_rec}'
+    ihp_signals = f'IHP:{ihp},{ihp_grec}'
 
-    return ihp_dip_score, ihp_max_score, ihp_signals
+    return ihp_gscore, ihp_max_score, ihp_signals

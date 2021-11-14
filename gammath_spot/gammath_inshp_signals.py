@@ -23,7 +23,7 @@ import pandas as pd
 
 def get_inshp_signals(tsymbol, df_summ):
 
-    inshp_dip_score = 0
+    inshp_gscore = 0
     inshp_max_score = 0
 
     try:
@@ -32,9 +32,9 @@ def get_inshp_signals(tsymbol, df_summ):
         raise ValueError('heldPercentInsiders not found')
 
     if (inshp > 0):
-        inshp_dip_score += 1
+        inshp_gscore += 1
     else:
-        inshp_dip_score -= 1
+        inshp_gscore -= 1
 
     inshp_max_score += 1
 
@@ -43,8 +43,8 @@ def get_inshp_signals(tsymbol, df_summ):
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 
-    inshp_dip_rec = f'inshp_dip_score:{inshp_dip_score}/{inshp_max_score}'
+    inshp_grec = f'inshp_gscore:{inshp_gscore}/{inshp_max_score}'
 
-    inshp_signals = f'inshp:{inshp},{inshp_dip_rec}'
+    inshp_signals = f'inshp:{inshp},{inshp_grec}'
 
-    return inshp_dip_score, inshp_max_score, inshp_signals
+    return inshp_gscore, inshp_max_score, inshp_signals

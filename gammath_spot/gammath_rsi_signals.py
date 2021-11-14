@@ -30,7 +30,7 @@ def get_rsi_signals(tsymbol, df, path):
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
 
-    rsi_dip_score = 0
+    rsi_gscore = 0
     rsi_max_score = 0
     rsi_signals = ''
     curr_count_quantile_str = ''
@@ -59,12 +59,12 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_mean = rsi_ds['mean']
     if (curr_rsi < rsi_mean):
         rsi_avg = 'below average'
-        rsi_dip_score += 2
+        rsi_gscore += 2
         if (rsi_direction != 'falling'):
-            rsi_dip_score += 2
+            rsi_gscore += 2
     elif (curr_rsi > rsi_mean):
         rsi_avg = 'above average'
-        rsi_dip_score -= 4
+        rsi_gscore -= 4
     else:
         rsi_avg = 'average'
 
@@ -124,14 +124,14 @@ def get_rsi_signals(tsymbol, df, path):
             curr_count_quantile_str = 'oversold day-count in bottom quantile'
 
         if (curr_oversold_count >= bp):
-            rsi_dip_score += 1
+            rsi_gscore += 1
 
         if (curr_oversold_count >= mp):
-            rsi_dip_score += 2
+            rsi_gscore += 2
             curr_count_quantile_str = 'oversold day-count in middle quantile'
 
         if (curr_oversold_count >= tp):
-            rsi_dip_score += 3
+            rsi_gscore += 3
             curr_count_quantile_str = 'oversold day-count in top quantile'
 
     elif (curr_overbought_count > 0):
@@ -142,22 +142,22 @@ def get_rsi_signals(tsymbol, df, path):
             curr_count_quantile_str = 'overbought day-count in bottom quantile'
 
         if (curr_overbought_count >= bp):
-            rsi_dip_score -= 1
+            rsi_gscore -= 1
 
         if (curr_overbought_count >= mp):
-            rsi_dip_score -= 2
+            rsi_gscore -= 2
             curr_count_quantile_str = 'overbought day-count in middle quantile'
 
         if (curr_overbought_count >= tp):
-            rsi_dip_score -= 3
+            rsi_gscore -= 3
             curr_count_quantile_str = 'overbought day-count in top quantile'
 
     rsi_max_score += 6
 
-    rsi_dip_rec = f'rsi_dip_score:{rsi_dip_score}/{rsi_max_score}'
-    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{curr_count_quantile_str},{rsi_dip_rec}'
+    rsi_grec = f'rsi_gscore:{rsi_gscore}/{rsi_max_score}'
+    rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{curr_count_quantile_str},{rsi_grec}'
 
     #Return RSI data in a dataframe for plotting charts
     rsi_df = pd.DataFrame({'RSI': rsi})
 
-    return rsi_df, rsi_dip_score, rsi_max_score, rsi_signals
+    return rsi_df, rsi_gscore, rsi_max_score, rsi_signals

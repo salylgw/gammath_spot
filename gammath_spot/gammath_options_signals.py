@@ -28,7 +28,7 @@ import os
 
 def get_options_signals(tsymbol, path, curr_price, df_summ):
 
-    options_dip_score = 0
+    options_gscore = 0
     options_max_score = 0
     shortRatio = 0
 
@@ -74,9 +74,9 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
                 total_bearish_open_intetest = df_puts['openInterest'][0:bearish_end_index].sum()
 
                 if (total_bullish_open_interest > total_bearish_open_intetest):
-                    options_dip_score += 4
+                    options_gscore += 4
                 else:
-                    options_dip_score -= 4
+                    options_gscore -= 4
             else:
                 ValueError('Zero length data')
 
@@ -95,18 +95,18 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
     if (shortRatio > 0):
         if (shortRatio < 3):
-            options_dip_score += 6
+            options_gscore += 6
         elif (shortRatio < 6):
-            options_dip_score += 4
+            options_gscore += 4
         elif (shortRatio < 10):
-            options_dip_score += 2
+            options_gscore += 2
         else:
-            options_dip_score -= 6
+            options_gscore -= 6
 
     options_max_score += 6
 
-    options_dip_rec = f'options_dip_score:{options_dip_score}/{options_max_score}'
-    options_signals = f'options: short_ratio:{shortRatio},{options_dip_rec}'
+    options_grec = f'options_gscore:{options_gscore}/{options_max_score}'
+    options_signals = f'options: short_ratio:{shortRatio},{options_grec}'
     
-    return options_dip_score, options_max_score, options_signals
+    return options_gscore, options_max_score, options_signals
 

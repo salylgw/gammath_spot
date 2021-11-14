@@ -23,7 +23,7 @@ import pandas as pd
 
 def get_beta_signals(tsymbol, df_summ):
 
-    beta_dip_score = 0
+    beta_gscore = 0
     beta_max_score = 0
 
     try:
@@ -35,17 +35,17 @@ def get_beta_signals(tsymbol, df_summ):
     if (beta > 0):
         #Closer to 1 is near market and is better
         if (beta < 2):
-            beta_dip_score += 1
+            beta_gscore += 1
         else:
-            beta_dip_score -= 1
+            beta_gscore -= 1
 
     beta_max_score += 1
 
     #round it off for taking less space when displaying
     beta = round(beta, 3)
 
-    beta_dip_rec = f'beta_dip_score:{beta_dip_score}/{beta_max_score}'
+    beta_grec = f'beta_gscore:{beta_gscore}/{beta_max_score}'
 
-    beta_signals = f'BETA:{beta},{beta_dip_rec}'
+    beta_signals = f'BETA:{beta},{beta_grec}'
 
-    return beta_dip_score, beta_max_score, beta_signals
+    return beta_gscore, beta_max_score, beta_signals

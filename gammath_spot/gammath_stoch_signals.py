@@ -28,7 +28,7 @@ def get_stochastics_slow_signals(tsymbol, df):
     STOCH_OVERSOLD_LEVEL = 20
     STOCH_OVERBOUGHT_LEVEL = 80
 
-    stoch_dip_score = 0
+    stoch_gscore = 0
     stoch_max_score = 0
     stoch_slow_signals = ''
 
@@ -48,10 +48,10 @@ def get_stochastics_slow_signals(tsymbol, df):
 
     if (stoch_d_curr_val < slowd_mean):
         stoch_lvl = 'below average'
-        stoch_dip_score += 2
+        stoch_gscore += 2
     elif (stoch_d_curr_val > slowd_mean):
         stoch_lvl = 'above average'
-        stoch_dip_score -= 2
+        stoch_gscore -= 2
     else:
         stoch_lvl = 'average'
 
@@ -61,10 +61,10 @@ def get_stochastics_slow_signals(tsymbol, df):
     stoch_lvl = ''
     if (stoch_d_curr_val <= STOCH_OVERSOLD_LEVEL):
         stoch_lvl = 'oversold'
-        stoch_dip_score += 3
+        stoch_gscore += 3
     elif (stoch_d_curr_val >= STOCH_OVERBOUGHT_LEVEL):
         stoch_lvl = 'overbought'
-        stoch_dip_score -= 3
+        stoch_gscore -= 3
 
     stoch_max_score += 3
 
@@ -81,11 +81,11 @@ def get_stochastics_slow_signals(tsymbol, df):
     #Keep slowd value for reference
     stoch_slowd = round(slowd[stoch_len-1], 3)
 
-    stoch_dip_rec = f'stoch_dip_rec:{stoch_dip_score}/{stoch_max_score}'
+    stoch_grec = f'stoch_grec:{stoch_gscore}/{stoch_max_score}'
 
-    stoch_slow_signals = f'stochs: {stoch_lvl},slowd:{stoch_slowd},l_xovr_date:{stoch_crossover_date},{stoch_dip_rec}'
+    stoch_slow_signals = f'stochs: {stoch_lvl},slowd:{stoch_slowd},l_xovr_date:{stoch_crossover_date},{stoch_grec}'
 
     #Return slowk and slowd in a dataframe for plotting charts
     stoch_df = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
 
-    return stoch_df, stoch_dip_score, stoch_max_score, stoch_slow_signals
+    return stoch_df, stoch_gscore, stoch_max_score, stoch_slow_signals

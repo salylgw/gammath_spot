@@ -27,7 +27,7 @@ STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 
 def get_stocktwits_signals(tsymbol, path):
 
-    st_dip_score = 0
+    st_gscore = 0
     st_max_score = 0
     sentiment_change = None
     volume_change = None
@@ -75,20 +75,20 @@ def get_stocktwits_signals(tsymbol, path):
 
         #Token score and information logging purpose
         if ((sts_change > 0) and (stv_change > 0)):
-            st_dip_score += 5
+            st_gscore += 5
         elif (sts_change > 0):
-            st_dip_score += 2
+            st_gscore += 2
         else:
-            st_dip_score -= 5
+            st_gscore -= 5
 
     except:
         raise RuntimeError('Stocktwits signal generation failed')
 
     st_max_score += 5
 
-    st_dip_rec = f'st_sv_dip_score:{st_dip_score}/{st_max_score}'
+    st_grec = f'st_sv_gscore:{st_gscore}/{st_max_score}'
 
-    st_signals = f'{st_dip_rec}'
+    st_signals = f'{st_grec}'
 
-    return st_dip_score, st_max_score, st_signals
+    return st_gscore, st_max_score, st_signals
 

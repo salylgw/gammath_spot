@@ -28,7 +28,7 @@ def get_ols_signals(tsymbol, df, path):
 
     AVG_TRADING_DAYS_PER_YEAR = 252
 
-    ols_dip_score = 0
+    ols_gscore = 0
     ols_max_score = 0
     ols_signals = ''
     curr_diff_sign = ''
@@ -242,7 +242,7 @@ def get_ols_signals(tsymbol, df, path):
 
     if (slope_dir_1y <= 0):
         #Slope is -ve for last 1 year so no need to check fits or residuals
-        ols_dip_score -= 10
+        ols_gscore -= 10
     else:
         #Finer scoring based on percentile only when there is a fit
         if (fits_5y or fits_1y):
@@ -252,14 +252,14 @@ def get_ols_signals(tsymbol, df, path):
                     curr_diff_quantile_str = 'bottom quantile'
 
                 if (curr_diff >= bp):
-                    ols_dip_score += 1
+                    ols_gscore += 1
 
                     if (curr_diff >= mp):
-                        ols_dip_score += 1
+                        ols_gscore += 1
                         curr_diff_quantile_str = 'middle quantile'
 
                     if (curr_diff >= tp):
-                        ols_dip_score += 2
+                        ols_gscore += 2
                         curr_diff_quantile_str = 'top quantile'
             else:
                 #Above OLS line
@@ -267,33 +267,33 @@ def get_ols_signals(tsymbol, df, path):
                     curr_diff_quantile_str = 'bottom quantile'
 
                 if (curr_diff >= bp):
-                    ols_dip_score -= 1
+                    ols_gscore -= 1
 
                     if (curr_diff >= mp):
-                        ols_dip_score -= 1
+                        ols_gscore -= 1
                         curr_diff_quantile_str = 'middle quantile'
 
                         if (curr_diff >= tp):
-                            ols_dip_score -= 2
+                            ols_gscore -= 2
                             curr_diff_quantile_str = 'top quantile'
 
         if (slope_dir_5y <= 0):
             #Slope is -ve for 5y but 1y is +ve so possible sign of recovery
             if (residual <= 0):
                 #Below OLS line
-                ols_dip_score += 3
+                ols_gscore += 3
             else:
                 #Above OLS line
-                ols_dip_score -= 3
+                ols_gscore -= 3
         else:
             #Both slopes are +ve
             #Slope is -ve for 5y but 1y is +ve so possible sign of recovery
             if (residual <= 0):
                 #Below OLS line
-                ols_dip_score += 5
+                ols_gscore += 5
             else:
                 #Above OLS line
-                ols_dip_score -= 5
+                ols_gscore -= 5
 
 
     ols_max_score += 10
@@ -303,11 +303,11 @@ def get_ols_signals(tsymbol, df, path):
     else:
         curr_diff_sign = '+ve'
 
-    ols_dip_rec = f'ols_dip_rec:{ols_dip_score}/{ols_max_score}'
+    ols_grec = f'ols_grec:{ols_gscore}/{ols_max_score}'
 
-    ols_signals = f'OLS: ols_fit_score:{fit_score},1y_slope:{slope_sign_1y},5y_slope:{slope_sign_5y},curr_diff:{curr_diff_sign},{curr_diff_quantile_str},{ols_dip_rec}'
+    ols_signals = f'OLS: ols_fit_score:{fit_score},1y_slope:{slope_sign_1y},5y_slope:{slope_sign_5y},curr_diff:{curr_diff_sign},{curr_diff_quantile_str},{ols_grec}'
 
     #Return OLS lines data in a dataframe for plotting charts
     ols_df = pd.DataFrame({tsymbol: df.Close, 'OLS': y_predictions, 'OLS_1Y': y1_series})
 
-    return ols_df, ols_dip_score, ols_max_score, ols_signals
+    return ols_df, ols_gscore, ols_max_score, ols_signals

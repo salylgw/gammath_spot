@@ -22,7 +22,7 @@ import pandas as pd
 
 def get_peg_signals(tsymbol, df_summ):
 
-    peg_dip_score = 0
+    peg_gscore = 0
     peg_max_score = 0
 
     try:
@@ -32,14 +32,14 @@ def get_peg_signals(tsymbol, df_summ):
 
     if (peg > 0):
         if (peg < 3):
-            peg_dip_score += 1
+            peg_gscore += 1
         else:
-            peg_dip_score -= 1
+            peg_gscore -= 1
 
     peg_max_score += 1
 
-    peg_dip_rec = f'peg_dip_score:{peg_dip_score}/{peg_max_score}'
+    peg_grec = f'peg_gscore:{peg_gscore}/{peg_max_score}'
 
-    peg_signals = f'PEG:{peg},{peg_dip_rec}'
+    peg_signals = f'PEG:{peg},{peg_grec}'
 
-    return peg_dip_score, peg_max_score, peg_signals
+    return peg_gscore, peg_max_score, peg_signals

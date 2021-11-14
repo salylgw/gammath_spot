@@ -30,7 +30,7 @@ def get_pe_signals(tsymbol, df_summ):
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
 
-    pe_dip_score = 0
+    pe_gscore = 0
     pe_max_score = 0
 
     if (path / 'SP500_SEC_PES.csv').exists():
@@ -56,24 +56,24 @@ def get_pe_signals(tsymbol, df_summ):
             #If forward PE is less than trailing PE then view this as a +ve sign
             if ((fpe > 0) and (tpe > 0)):
                 if (fpe < tpe):
-                    pe_dip_score += 2
+                    pe_gscore += 2
                 else:
-                    pe_dip_score -= 2
+                    pe_gscore -= 2
             else:
-                pe_dip_score -= 2
+                pe_gscore -= 2
 
             pe_max_score += 2
 
             break
 
     if (i == (len_df_sp-1)):
-        pe_dip_score = 0
+        pe_gscore = 0
 
         #No data viewed as a -ve so have an impact on total score
         pe_max_score = 2
 
-    pe_dip_rec = f'pe_dip_score:{pe_dip_score}/{pe_max_score}'
+    pe_grec = f'pe_gscore:{pe_gscore}/{pe_max_score}'
 
-    pe_signals = f'PE: TPE:{tpe},ATPE:{avg_tpe},FPE:{fpe},AFPE:{avg_fpe},{pe_dip_rec}'
+    pe_signals = f'PE: TPE:{tpe},ATPE:{avg_tpe},FPE:{fpe},AFPE:{avg_fpe},{pe_grec}'
 
-    return pe_dip_score, pe_max_score, pe_signals
+    return pe_gscore, pe_max_score, pe_signals

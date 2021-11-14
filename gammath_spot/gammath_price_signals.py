@@ -27,7 +27,7 @@ def get_price_signals(tsymbol, df, df_summ):
     AVG_TRADING_DAYS_PER_YEAR = 252
     PRICE_PERCENT_CUTOFF = 85
 
-    price_dip_score = 0
+    price_gscore = 0
     price_max_score = 0
     price_signals = ''
     curr_count_quantile_str = ''
@@ -144,26 +144,26 @@ def get_price_signals(tsymbol, df, df_summ):
         else:
             curr_count_quantile_str = 'day-count in top quantile'
 
-        price_dip_score -= 1
+        price_gscore -= 1
 
         if (last_falling_days_count >= bp):
-            price_dip_score -= 2
+            price_gscore -= 2
 
         #Checkout price wrt 50-day average, 200-day average and 52-week low
         if (fiftyDayAverage > 0):
             if (lp > fiftyDayAverage):
-                price_dip_score -= 1
+                price_gscore -= 1
 
         if (twoHundredDayAverage > 0):
             if (lp > twoHundredDayAverage):
-                price_dip_score -= 1
+                price_gscore -= 1
 
         if (yearly_highest_val > 0):
             pct_val = lp*100/yearly_highest_val
 
             #If we are closer to 52-week high then indicate premium; else indicate the discount score
             if (pct_val >= PRICE_PERCENT_CUTOFF):
-                price_dip_score -= 3
+                price_gscore -= 3
 
     elif (last_rising_days_count > 0):
         price_dir = 'rising'
@@ -177,25 +177,25 @@ def get_price_signals(tsymbol, df, df_summ):
         else:
             curr_count_quantile_str = 'day-count in top quantile'
 
-        price_dip_score += 1
+        price_gscore += 1
         if (last_rising_days_count <= bp):
-            price_dip_score += 2
+            price_gscore += 2
 
         #Checkout price wrt 50-day average, 200-day average and 52-week low
         if (fiftyDayAverage > 0):
             if (lp <= fiftyDayAverage):
-                price_dip_score += 1
+                price_gscore += 1
 
         if (twoHundredDayAverage > 0):
             if (lp <= twoHundredDayAverage):
-                price_dip_score += 1
+                price_gscore += 1
 
         if (yearly_lowest_val > 0):
             pct_val = yearly_lowest_val*100/lp
 
             #If current price is not too far from 52-week low then increase discount score
             if (pct_val >= PRICE_PERCENT_CUTOFF):
-                price_dip_score += 3
+                price_gscore += 3
     else:
         price_dir = 'unclear'
 
@@ -217,17 +217,17 @@ def get_price_signals(tsymbol, df, df_summ):
     #If price is in higher percentile then higher sell score
     if ((lp <= bp) or (lp >= tp)):
         if (lp <= bp):
-            price_dip_score += 2
+            price_gscore += 2
         elif (lp >= tp):
-            price_dip_score -= 2
+            price_gscore -= 2
     else:
         if ((lp > bp) and (lp < mp)):
-            price_dip_score += 1
+            price_gscore += 1
 
     price_max_score += 2
 
-    price_dip_rec = f'price_dip_score:{price_dip_score}/{price_max_score}'
+    price_grec = f'price_gscore:{price_gscore}/{price_max_score}'
 
-    price_signals = f'price: {price_dir},{curr_count_quantile_str},{curr_price}:{curr_price_1y_quantile_str},{price_dip_rec},{nftwlh}'
+    price_signals = f'price: {price_dir},{curr_count_quantile_str},{curr_price}:{curr_price_1y_quantile_str},{price_grec},{nftwlh}'
 
-    return price_dip_score, price_max_score, price_signals
+    return price_gscore, price_max_score, price_signals

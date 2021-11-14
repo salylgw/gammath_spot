@@ -24,7 +24,7 @@ import numpy as np
 
 def get_kf_state_means(tsymbol, df):
 
-    kf_dip_score = 0
+    kf_gscore = 0
     kf_max_score = 0
     kf_signals = ''
 
@@ -137,18 +137,18 @@ def get_kf_state_means(tsymbol, df):
             curr_diff_quantile_str = 'bottom quantile'
 
         if (curr_diff >= bp):
-            kf_dip_score += 2
+            kf_gscore += 2
 
         kf_max_score += 2
 
         if (curr_diff >= mp):
-            kf_dip_score += 2
+            kf_gscore += 2
             curr_diff_quantile_str = 'middle quantile'
 
         kf_max_score += 2
 
         if (curr_diff >= tp):
-            kf_dip_score += 3
+            kf_gscore += 3
             curr_diff_quantile_str = 'top quantile'
 
         kf_max_score += 3
@@ -164,18 +164,18 @@ def get_kf_state_means(tsymbol, df):
             curr_diff_quantile_str = 'bottom quantile'
 
         if (curr_diff >= bp):
-            kf_dip_score -= 2
+            kf_gscore -= 2
 
         kf_max_score += 2
 
         if (curr_diff >= mp):
-            kf_dip_score -= 2
+            kf_gscore -= 2
             curr_diff_quantile_str = 'middle quantile'
 
         kf_max_score += 2
 
         if (curr_diff >= tp):
-            kf_dip_score -= 3
+            kf_gscore -= 3
             curr_diff_quantile_str = 'top quantile'
 
         kf_max_score += 3
@@ -195,18 +195,18 @@ def get_kf_state_means(tsymbol, df):
             curr_count_quantile_str = 'bottom quantile'
 
         if (curr_below_mean_count >= bp):
-            kf_dip_score += 1
+            kf_gscore += 1
 
         kf_max_score += 1
 
         if (curr_below_mean_count >= mp):
-            kf_dip_score += 1
+            kf_gscore += 1
             curr_count_quantile_str = 'middle quantile'
 
         kf_max_score += 1
 
         if (curr_below_mean_count >= tp):
-            kf_dip_score += 1
+            kf_gscore += 1
             curr_count_quantile_str = 'top quantile'
 
         kf_max_score += 1
@@ -219,31 +219,31 @@ def get_kf_state_means(tsymbol, df):
             curr_count_quantile_str = 'bottom quantile'
 
         if (curr_above_mean_count >= bp):
-            kf_dip_score -= 1
+            kf_gscore -= 1
 
         kf_max_score += 1
 
         if (curr_above_mean_count >= mp):
-            kf_dip_score -= 1
+            kf_gscore -= 1
             curr_count_quantile_str = 'middle quantile'
 
         kf_max_score += 1
 
         if (curr_above_mean_count >= tp):
-            kf_dip_score -= 1
+            kf_gscore -= 1
             curr_count_quantile_str = 'top quantile'
 
         kf_max_score += 1
 
-    kf_dip_rec = f'kf_dip_score:{kf_dip_score}/{kf_max_score}'
+    kf_grec = f'kf_gscore:{kf_gscore}/{kf_max_score}'
 
     if (curr_below_mean_count > 0):
-        kf_signals = f'KF:-ve_days:{curr_count_quantile_str},-ve_diff:{curr_diff_quantile_str},{kf_dip_rec}'
+        kf_signals = f'KF:-ve_days:{curr_count_quantile_str},-ve_diff:{curr_diff_quantile_str},{kf_grec}'
     else:
-        kf_signals = f'KF:+ve_days:{curr_count_quantile_str},+ve_diff:{curr_diff_quantile_str},{kf_dip_rec}'
+        kf_signals = f'KF:+ve_days:{curr_count_quantile_str},+ve_diff:{curr_diff_quantile_str},{kf_grec}'
 
 
     #Return KF state means in a dataframe for plotting charts
     kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
 
-    return kf_df, kf_dip_score, kf_max_score, kf_signals
+    return kf_df, kf_gscore, kf_max_score, kf_signals

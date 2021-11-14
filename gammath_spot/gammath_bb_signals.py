@@ -35,7 +35,7 @@ def get_bollinger_bands_signals(tsymbol, df, path):
 
     bb_len = len(mb)
 
-    bb_dip_score = 0
+    bb_gscore = 0
     bb_max_score = 0
     bb_signals = ''
 
@@ -56,38 +56,38 @@ def get_bollinger_bands_signals(tsymbol, df, path):
     if (lp < last_val_mb):
 
         bb_avg = 'below average'
-        bb_dip_score += 4
+        bb_gscore += 4
 
         if ((last_val_mb - lp) < (abs(lp - last_val_lb))):
             bb_vicinity = 'near middle band'
-            bb_dip_score += 1
+            bb_gscore += 1
         else:
             #Higher buy weights when near lower band
             bb_vicinity = 'near lower band'
-            bb_dip_score += 6
+            bb_gscore += 6
 
     elif (lp > last_val_mb):
 
         bb_avg = 'above average'
-        bb_dip_score -= 4
+        bb_gscore -= 4
 
         if ((lp - last_val_mb) < (abs(last_val_ub - lp))):
             bb_vicinity = 'near middle band'
-            bb_dip_score -= 1
+            bb_gscore -= 1
         else:
             #Higher sell weights when near upper band
             bb_vicinity = 'near upper band'
-            bb_dip_score -= 6
+            bb_gscore -= 6
     else:
         bb_avg = 'average'
         bb_vicinity = 'at middle band'
 
     bb_max_score += 10
 
-    bb_dip_rec = f'bb_dip_score:{bb_dip_score}/{bb_max_score}'
-    bb_signals = f'bollinger bands:{bb_avg},{bb_vicinity},{bb_dip_rec}'
+    bb_grec = f'bb_gscore:{bb_gscore}/{bb_max_score}'
+    bb_signals = f'bollinger bands:{bb_avg},{bb_vicinity},{bb_grec}'
 
     #Return Bollinger bands in a dataframe for plotting charts
     bb_df = pd.DataFrame({tsymbol: df.Close, 'Upper Band': ub, 'Middle Band': mb, 'Lower Band': lb})
 
-    return bb_df, bb_dip_score, bb_max_score, bb_signals
+    return bb_df, bb_gscore, bb_max_score, bb_signals

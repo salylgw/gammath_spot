@@ -30,7 +30,7 @@ def get_macd_signals(tsymbol, df, path):
     MACD_SLOW_PERIOD = 26
     MACD_SIGNAL_PERIOD = 9
 
-    macd_dip_score = 0
+    macd_gscore = 0
     macd_max_score = 0
     curr_count_quantile_str = ''
     curr_diff_quantile_str = ''
@@ -147,30 +147,30 @@ def get_macd_signals(tsymbol, df, path):
 
         #It has just crossed over to sell side so don't buy at least until we hit 25 percentile of -ve days
         if (curr_days_in_negative < bp):
-            macd_dip_score -= 10
+            macd_gscore -= 10
             curr_count_quantile_str = 'bottom quantile'
         else:
             #Increase buy score at 25, 50 and 75 percentile crossing
             if (curr_days_in_negative >= bp):
-                macd_dip_score += 1
+                macd_gscore += 1
                 curr_count_quantile_str = 'bottom quantile'
 
             if (curr_days_in_negative >= mp):
-                macd_dip_score += 2
+                macd_gscore += 2
                 curr_count_quantile_str = 'middle quantile'
 
             if (curr_days_in_negative >= tp):
-                macd_dip_score += 2
+                macd_gscore += 2
                 curr_count_quantile_str = 'top quantile'
 
             #Check which percentile quarter do current -ve and +ve diff fall
             if (curr_macd_ndiff > 0):
 
                 if (curr_macd_ndiff >= mp_diff):
-                    macd_dip_score += 2
+                    macd_gscore += 2
 
                 if (curr_macd_ndiff >= tp_diff):
-                    macd_dip_score += 3
+                    macd_gscore += 3
 
 
     elif (curr_days_in_positive > 0):
@@ -193,30 +193,30 @@ def get_macd_signals(tsymbol, df, path):
         #It has just crossed over to buy side so buy only until we hit 25 percentile of +ve days
         if (curr_days_in_positive < bp):
             if (curr_macd_pdiff < mp_diff):
-                macd_dip_score += 5
+                macd_gscore += 5
             else:
-                macd_dip_score -= 5
+                macd_gscore -= 5
         else:
             #Increase sell score at 25, 50 and 75 percentile crossing
             if (curr_days_in_positive >= bp):
-                macd_dip_score -= 1
+                macd_gscore -= 1
                 curr_count_quantile_str = 'bottom quantile'
 
             if (curr_days_in_positive >= mp):
-                macd_dip_score -= 2
+                macd_gscore -= 2
                 curr_count_quantile_str = 'middle quantile'
 
             if (curr_days_in_positive >= tp):
-                macd_dip_score -= 2
+                macd_gscore -= 2
                 curr_count_quantile_str = 'top quantile'
 
             if (curr_macd_pdiff > 0):
 
                 if (curr_macd_pdiff > mp_diff):
-                    macd_dip_score -= 2
+                    macd_gscore -= 2
 
                 if (curr_macd_pdiff >= tp_diff):
-                    macd_dip_score -= 3
+                    macd_gscore -= 3
 
 
     macd_max_score += 10
@@ -233,7 +233,7 @@ def get_macd_signals(tsymbol, df, path):
     sell_sig_price_str = f'sig_price:%5.3f' % df['Close'][last_sell_signal_index]
 
     #Format the strings to log
-    macd_dip_rec = f'macd_dip_score:{macd_dip_score}/{macd_max_score}'
+    macd_grec = f'macd_gscore:{macd_gscore}/{macd_max_score}'
 
     macd_buy_sell_sig_date = ''
     if (macd_trend == 'positive'):
@@ -241,9 +241,9 @@ def get_macd_signals(tsymbol, df, path):
     else:
         macd_buy_sell_stats = f'{sell_sig_price_str},-ve_days_count in {curr_count_quantile_str},curr_diff in {curr_diff_quantile_str}'
 
-    macd_signals = f'MACD trend:{macd_trend},{macd_buy_sell_stats},{macd_dip_rec}'
+    macd_signals = f'MACD trend:{macd_trend},{macd_buy_sell_stats},{macd_grec}'
 
     #Return MACD lines in a dataframe for plotting charts
     macd_df = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
 
-    return macd_df, macd_dip_score, macd_max_score, macd_signals
+    return macd_df, macd_gscore, macd_max_score, macd_signals

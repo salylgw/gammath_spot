@@ -30,7 +30,7 @@ def get_mfi_signals(tsymbol, df, path):
     MFI_OVERSOLD_LEVEL = 20
     MFI_OVERBOUGHT_LEVEL = 80
 
-    mfi_dip_score = 0
+    mfi_gscore = 0
     mfi_max_score = 0
     mfi_signals = ''
 
@@ -72,10 +72,10 @@ def get_mfi_signals(tsymbol, df, path):
         #Get the current MFI level compared to the mean
         if (curr_mfi < mfi_mean):
             mfi_avg = 'below average'
-            mfi_dip_score += 3
+            mfi_gscore += 3
         elif (curr_mfi > mfi_mean):
             mfi_avg = 'above average'
-            mfi_dip_score -= 3
+            mfi_gscore -= 3
         else:
             mfi_avg = 'average'
 
@@ -83,10 +83,10 @@ def get_mfi_signals(tsymbol, df, path):
 
         if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
             mfi_lvl = 'overbought'
-            mfi_dip_score -= 4
+            mfi_gscore -= 4
         elif (curr_mfi <= MFI_OVERSOLD_LEVEL):
             mfi_lvl = 'oversold'
-            mfi_dip_score += 4
+            mfi_gscore += 4
         else:
             mfi_lvl = ''
 
@@ -97,24 +97,24 @@ def get_mfi_signals(tsymbol, df, path):
             mfi_dir = 'falling'
             if (price_dir == 'rising'):
                 mfi_indicator = 'Price could start FALLING'
-                mfi_dip_score -= 3
+                mfi_gscore -= 3
         elif ((curr_mfi > lm1_mfi) and (curr_mfi <= MFI_OVERSOLD_LEVEL)):
             mfi_dir = 'rising'
             if (price_dir == 'falling'):
                 mfi_indicator = 'Price could start RISING'
-                mfi_dip_score += 3
+                mfi_gscore += 3
 
 
         mfi_max_score += 3
     else:
         raise ValueError('Invalid MFI data length ')
 
-    mfi_dip_rec = f'mfi_dip_score:{mfi_dip_score}/{mfi_max_score}'
+    mfi_grec = f'mfi_gscore:{mfi_gscore}/{mfi_max_score}'
 
-    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_dip_rec},{mfi_indicator}'
+    mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_grec},{mfi_indicator}'
 
     #Return RSI data in a dataframe for plotting charts
     mfi_df = pd.DataFrame({'MFI': mfi})
 
-    return mfi_df, mfi_dip_score, mfi_max_score, mfi_signals
+    return mfi_df, mfi_gscore, mfi_max_score, mfi_signals
 

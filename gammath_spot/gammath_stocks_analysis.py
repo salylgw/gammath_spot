@@ -54,7 +54,7 @@ class GSA:
 
     def __init__(self):
         self.Tickers_dir = Path('tickers')
-        self.overall_dip_score = 0
+        self.overall_gscore = 0
         self.overall_max_score = 0
         self.reco_signals_exist = False
         self.note = 'Notes: None'
@@ -87,28 +87,28 @@ class GSA:
 
         #Generate and get signals based on analyst recommendation
         try:
-            reco_dip_score = 0
+            reco_gscore = 0
             reco_max_score = 0 #In case there is an exception, we should do fundamental analysis
             reco_signals = ''
             #Reco signals
-            reco_dip_score, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
+            reco_gscore, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
 
-            self.overall_dip_score += reco_dip_score
+            self.overall_gscore += reco_gscore
             self.overall_max_score += reco_max_score
-            self.reco_signals_exist = ((reco_dip_score != 0) and (reco_max_score != 0))
+            self.reco_signals_exist = ((reco_gscore != 0) and (reco_max_score != 0))
         except RuntimeError:
             print('\nERROR: while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         #Generate and get signals based on options activity
         try:
-            options_dip_score = 0
+            options_gscore = 0
             options_max_score = 10
             options_signals = ''
 
             #Options signals
-            options_dip_score, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
+            options_gscore, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
 
-            self.overall_dip_score += options_dip_score
+            self.overall_gscore += options_gscore
             self.overall_max_score += options_max_score
 
         except:
@@ -116,59 +116,59 @@ class GSA:
 
         #Generate and get signals based on fundamental analysis (PE, PEG, Beta, PBR, Quarterly balancesheet, Institutional holdings). Use it for scoring only of analyst recommendation don't exist for us
         try:
-            pe_dip_score = 0
+            pe_gscore = 0
             pe_max_score = 2
             pe_signals = ''
 
             #PE signals
-            pe_dip_score, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
+            pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
             if not self.reco_signals_exist:
-                self.overall_dip_score += pe_dip_score
+                self.overall_gscore += pe_gscore
                 self.overall_max_score += pe_max_score
 
         except ValueError:
             print('\nERROR: while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            peg_dip_score = 0
+            peg_gscore = 0
             peg_max_score = 1
             peg_signals = ''
 
             #PEG signals
-            peg_dip_score, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
+            peg_gscore, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_dip_score += peg_dip_score
+                self.overall_gscore += peg_gscore
                 self.overall_max_score += peg_max_score
 
         except ValueError:
             print('\nERROR: while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            beta_dip_score = 0
+            beta_gscore = 0
             beta_max_score = 1
             beta_signals = ''
 
             #Beta signals
-            beta_dip_score, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
+            beta_gscore, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_dip_score += beta_dip_score
+                self.overall_gscore += beta_gscore
                 self.overall_max_score += beta_max_score
 
         except ValueError:
             print('\nERROR: while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            pbr_dip_score = 0
+            pbr_gscore = 0
             pbr_max_score = 1
             pbr_signals = ''
 
             #PBR signals
-            pbr_dip_score, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
+            pbr_gscore, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_dip_score += pbr_dip_score
+                self.overall_gscore += pbr_gscore
                 self.overall_max_score += pbr_max_score
 
         except RuntimeError:
@@ -177,54 +177,54 @@ class GSA:
             print('\nERROR: while getting PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            qbs_dip_score = 0
+            qbs_gscore = 0
             qbs_max_score = 4
             qbs_signals = ''
 
             #Quarterly Balance sheet signals
-            qbs_dip_score, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
+            qbs_gscore, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
 
             if not self.reco_signals_exist:
-                self.overall_dip_score += qbs_dip_score
+                self.overall_gscore += qbs_gscore
                 self.overall_max_score += qbs_max_score
 
         except ValueError:
             print('\nERROR: while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            ihp_dip_score = 0
+            ihp_gscore = 0
             ihp_max_score = 1
             ihp_signals = ''
 
             #Institutional Holders Percentage signals
-            ihp_dip_score, ihp_max_score, ihp_signals = gihp.get_ihp_signals(tsymbol, df_summ)
+            ihp_gscore, ihp_max_score, ihp_signals = gihp.get_ihp_signals(tsymbol, df_summ)
 
             if not self.reco_signals_exist:
-                self.overall_dip_score += ihp_dip_score
+                self.overall_gscore += ihp_gscore
                 self.overall_max_score += ihp_max_score
 
         except ValueError:
             print('\nERROR: while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            inshp_dip_score = 0
+            inshp_gscore = 0
             inshp_max_score = 1
             inshp_signals = ''
 
             #Insider Holders Percentage signals
-            inshp_dip_score, inshp_max_score, inshp_signals = ginshp.get_inshp_signals(tsymbol, df_summ)
+            inshp_gscore, inshp_max_score, inshp_signals = ginshp.get_inshp_signals(tsymbol, df_summ)
         except ValueError:
             print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         #Generate and get signals based on Price history
         try:
-            price_dip_score = 0
+            price_gscore = 0
             price_max_score = 10
             price_signals = ''
             #Price signals
-            price_dip_score, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
+            price_gscore, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
 
-            self.overall_dip_score += price_dip_score
+            self.overall_gscore += price_gscore
             self.overall_max_score += price_max_score
 
         except ValueError:
@@ -232,13 +232,13 @@ class GSA:
 
         #Generate and get signals based on Relative Strength Index Indicator
         try:
-            rsi_dip_score = 0
+            rsi_gscore = 0
             rsi_max_score = 10
             rsi_signals = ''
             #Relative Strength Index signals
-            rsi_df, rsi_dip_score, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
+            rsi_df, rsi_gscore, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
 
-            self.overall_dip_score += rsi_dip_score
+            self.overall_gscore += rsi_gscore
             self.overall_max_score += rsi_max_score
 
         except RuntimeError:
@@ -248,14 +248,14 @@ class GSA:
 
         #Generate and get signals based on Money Flow Index Indicator
         try:
-            mfi_dip_score = 0
+            mfi_gscore = 0
             mfi_max_score = 10
             mfi_signals = ''
 
             #MFI signals
-            mfi_df, mfi_dip_score, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
+            mfi_df, mfi_gscore, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
 
-            self.overall_dip_score += mfi_dip_score
+            self.overall_gscore += mfi_gscore
             self.overall_max_score += mfi_max_score
 
         except RuntimeError:
@@ -265,14 +265,14 @@ class GSA:
 
         #Generate and get signals based on Stochastic Indicator
         try:
-            stoch_dip_score = 0
+            stoch_gscore = 0
             stoch_max_score = 5
             stoch_slow_signals = ''
 
             #Stochastic slow signals
-            stoch_df, stoch_dip_score, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
+            stoch_df, stoch_gscore, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
 
-            self.overall_dip_score += stoch_dip_score
+            self.overall_gscore += stoch_gscore
             self.overall_max_score += stoch_max_score
 
         except RuntimeError:
@@ -282,13 +282,13 @@ class GSA:
 
         #Generate and get signals based on Bollinger Bands Indicator
         try:
-            bb_dip_score = 0
+            bb_gscore = 0
             bb_max_score = 10
             bb_signals = ''
             #Bollinger bands signals
-            bb_df, bb_dip_score, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
+            bb_df, bb_gscore, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
 
-            self.overall_dip_score += bb_dip_score
+            self.overall_gscore += bb_gscore
             self.overall_max_score += bb_max_score
 
         except RuntimeError:
@@ -298,14 +298,14 @@ class GSA:
 
         #Generate and get signals based on Moving Average Convergence/Divergence Indicator
         try:
-            macd_dip_score = 0
+            macd_gscore = 0
             macd_max_score = 10
             macd_signals = ''
 
             #MACD signals
-            macd_df, macd_dip_score, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
+            macd_df, macd_gscore, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
 
-            self.overall_dip_score += macd_dip_score
+            self.overall_gscore += macd_gscore
             self.overall_max_score += macd_max_score
 
         except RuntimeError:
@@ -315,14 +315,14 @@ class GSA:
 
         #Generate and get signals based on Kalman Filter state means
         try:
-            kf_dip_score = 0
+            kf_gscore = 0
             kf_max_score = 10
             kf_signals = ''
 
             #Kalman Filter signals
-            kf_df, kf_dip_score, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
+            kf_df, kf_gscore, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
 
-            self.overall_dip_score += kf_dip_score
+            self.overall_gscore += kf_gscore
             self.overall_max_score += kf_max_score
 
         except RuntimeError:
@@ -332,14 +332,14 @@ class GSA:
 
         #Generate and get signals based on Ordinary Least Squares line
         try:
-            ols_dip_score = 0
+            ols_gscore = 0
             ols_max_score = 10
             ols_signals = ''
 
             #Ordinary Least Squares line signals
-            ols_df, ols_dip_score, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
+            ols_df, ols_gscore, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
 
-            self.overall_dip_score += ols_dip_score
+            self.overall_gscore += ols_gscore
             self.overall_max_score += ols_max_score
 
         except RuntimeError:
@@ -349,14 +349,14 @@ class GSA:
 
         #Generate and get signals based on Stocktwits sentiment and volume change
         try:
-            st_dip_score = 0
+            st_gscore = 0
             st_max_score = 5
             st_signals = ''
 
             #StockTwits signals
-            st_dip_score, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
+            st_gscore, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
 
-            self.overall_dip_score += st_dip_score
+            self.overall_gscore += st_gscore
             self.overall_max_score += st_max_score
 
         except RuntimeError:
@@ -375,7 +375,7 @@ class GSA:
 
         #Compute final score then save scores and signals
         try:
-            gscsi.compute_final_score_and_save_signals(tsymbol, path, self.overall_dip_score, self.overall_max_score, overall_signals)
+            gscsi.compute_final_score_and_save_signals(tsymbol, path, self.overall_gscore, self.overall_max_score, overall_signals)
         except:
             print('\nERROR: while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
 

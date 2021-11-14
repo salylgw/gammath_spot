@@ -93,12 +93,12 @@ class GUTILS:
         #Using pathlib/Path instead since is_dir is supported there
         subdirs = [x for x in p.iterdir() if x.is_dir()]
 
-        pattern_for_final_dip_score = re.compile(r'(final_dip_score):([-]*[0-9]*[.]*[0-9]+)')
+        pattern_for_final_gscore = re.compile(r'(final_gscore):([-]*[0-9]*[.]*[0-9]+)')
 
         #Pattern for note
         pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
-        df_b = pd.DataFrame(columns=['Ticker', 'final_dip_score', 'Note'], index=range(len(subdirs)))
+        df_b = pd.DataFrame(columns=['Ticker', 'final_gscore', 'Note'], index=range(len(subdirs)))
 
         i = 0
 
@@ -112,11 +112,11 @@ class GUTILS:
                     if (matched_string):
                         kw, note = matched_string.groups()
 
-                    matched_string = pattern_for_final_dip_score.search(content)
+                    matched_string = pattern_for_final_gscore.search(content)
                     if (matched_string):
                         kw, val = matched_string.groups()
                         df_b['Ticker'][i] = f'{subdir.name}'
-                        df_b['final_dip_score'][i] = float(val)
+                        df_b['final_gscore'][i] = float(val)
                         df_b['Note'][i] = note
                         i += 1
 
@@ -124,7 +124,7 @@ class GUTILS:
                 except:
                     print('\nERROR: Getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
-        df_b.sort_values('final_dip_score').dropna(how='all').to_csv(self.Tickers_dir / 'overall_dip_scores.csv', index=False)
+        df_b.sort_values('final_gscore').dropna(how='all').to_csv(self.Tickers_dir / 'overall_gscores.csv', index=False)
 
 
     def aggregate_pe_data(self):

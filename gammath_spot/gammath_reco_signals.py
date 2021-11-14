@@ -26,7 +26,7 @@ def get_reco_signals(tsymbol, path):
 
     buy_recos = ('Above Average', 'Accumulate', 'Add', 'Buy', 'Conviction Buy', 'Gradually Accumulate', 'Long-Term Buy', 'Long-term Buy', 'Market Outperform', 'Outperform', 'Outperformer', 'Overweight', 'Positive', 'Sector Outperform', 'Strong Buy', 'Top Pick')
 
-    reco_dip_score = 0
+    reco_gscore = 0
     reco_max_score = 0
 
     try:
@@ -68,12 +68,12 @@ def get_reco_signals(tsymbol, path):
 
                 #Reduce buy score and increase sell score
                 if (buy_percentage < 50):
-                    reco_dip_score -= 4
+                    reco_gscore -= 4
                 else:
-                    reco_dip_score += 2
+                    reco_gscore += 2
 
                     if (buy_percentage >= 75):
-                        reco_dip_score += 2
+                        reco_gscore += 2
 
                 reco_max_score += 4
 
@@ -96,12 +96,12 @@ def get_reco_signals(tsymbol, path):
 
                 #More weightage to recent upgrade/downgrade compared to buy/sell reco
                 if (up_percentage < 50):
-                    reco_dip_score -= 6
+                    reco_gscore -= 6
                 else:
-                    reco_dip_score += 3
+                    reco_gscore += 3
 
                     if (up_percentage >= 75):
-                        reco_dip_score += 3
+                        reco_gscore += 3
 
                 reco_max_score += 6
 
@@ -112,6 +112,6 @@ def get_reco_signals(tsymbol, path):
         raise RuntimeError('Quarterly Recommendations scoring failed')
 
 
-    reco_signals = f'reco:reco_dip_score:{reco_dip_score}/{reco_max_score}'
+    reco_signals = f'reco:reco_gscore:{reco_gscore}/{reco_max_score}'
 
-    return reco_dip_score, reco_max_score, reco_signals
+    return reco_gscore, reco_max_score, reco_signals
