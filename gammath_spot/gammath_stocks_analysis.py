@@ -24,27 +24,51 @@ from datetime import datetime
 from pathlib import Path
 from talib import RSI, BBANDS, MACD, MFI, STOCH
 from matplotlib import pyplot as plt
-import gammath_price_signals as gps
-import gammath_rsi_signals as grs
-import gammath_bb_signals as gbbs
-import gammath_mfi_signals as gms
-import gammath_stoch_signals as gss
-import gammath_macd_signals as gmacd
-import gammath_stcktwts_signals as gstw
-import gammath_kf_signals as gkf
-import gammath_options_signals as gos
-import gammath_pe_signals as gpes
-import gammath_peg_signals as gpeg
-import gammath_beta_signals as gbeta
-import gammath_ihp_signals as gihp
-import gammath_inshp_signals as ginshp
-import gammath_qbs_signals as gqbs
-import gammath_pbr_signals as gpbrs
-import gammath_reco_signals as greco
-import gammath_ols_signals as gols
-import gammath_get_stocks_events_data as gge
-import gammath_score_signals as gscsi
-import gammath_si_charts as gsc
+try:
+    from gammath_spot import gammath_price_signals as gps
+    from gammath_spot import gammath_rsi_signals as grs
+    from gammath_spot import gammath_bb_signals as gbbs
+    from gammath_spot import gammath_mfi_signals as gms
+    from gammath_spot import gammath_stoch_signals as gss
+    from gammath_spot import gammath_macd_signals as gmacd
+    from gammath_spot import gammath_stcktwts_signals as gstw
+    from gammath_spot import gammath_kf_signals as gkf
+    from gammath_spot import gammath_options_signals as gos
+    from gammath_spot import gammath_pe_signals as gpes
+    from gammath_spot import gammath_peg_signals as gpeg
+    from gammath_spot import gammath_beta_signals as gbeta
+    from gammath_spot import gammath_ihp_signals as gihp
+    from gammath_spot import gammath_inshp_signals as ginshp
+    from gammath_spot import gammath_qbs_signals as gqbs
+    from gammath_spot import gammath_pbr_signals as gpbrs
+    from gammath_spot import gammath_reco_signals as greco
+    from gammath_spot import gammath_ols_signals as gols
+    from gammath_spot import gammath_get_stocks_events_data as gge
+    from gammath_spot import gammath_score_signals as gscsi
+    from gammath_spot import gammath_si_charts as gsc
+except:
+    import gammath_price_signals as gps
+    import gammath_rsi_signals as grs
+    import gammath_bb_signals as gbbs
+    import gammath_mfi_signals as gms
+    import gammath_stoch_signals as gss
+    import gammath_macd_signals as gmacd
+    import gammath_stcktwts_signals as gstw
+    import gammath_kf_signals as gkf
+    import gammath_options_signals as gos
+    import gammath_pe_signals as gpes
+    import gammath_peg_signals as gpeg
+    import gammath_beta_signals as gbeta
+    import gammath_ihp_signals as gihp
+    import gammath_inshp_signals as ginshp
+    import gammath_qbs_signals as gqbs
+    import gammath_pbr_signals as gpbrs
+    import gammath_reco_signals as greco
+    import gammath_ols_signals as gols
+    import gammath_get_stocks_events_data as gge
+    import gammath_score_signals as gscsi
+    import gammath_si_charts as gsc
+
 import sys
 import time
 import os

@@ -24,7 +24,10 @@ import pandas as pd
 import sys
 import time
 import os
-import gammath_utils as gut
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 def get_ticker_financials(tsymbol, ticker, path):
 

@@ -24,12 +24,20 @@ import pandas as pd
 import sys
 import time
 import os
-import gammath_get_stocks_summary as gss
-import gammath_get_stocks_financials as gsf
-import gammath_get_stocks_history as gsh
-import gammath_get_stocks_options_data as gso
-import gammath_get_stcktwts as ggstw
-import gammath_get_stocks_calendar as gsc
+try:
+    from gammath_spot import gammath_get_stocks_summary as gss
+    from gammath_spot import gammath_get_stocks_financials as gsf
+    from gammath_spot import gammath_get_stocks_history as gsh
+    from gammath_spot import gammath_get_stocks_options_data as gso
+    from gammath_spot import gammath_get_stcktwts as ggstw
+    from gammath_spot import gammath_get_stocks_calendar as gsc
+except:
+    import gammath_get_stocks_summary as gss
+    import gammath_get_stocks_financials as gsf
+    import gammath_get_stocks_history as gsh
+    import gammath_get_stocks_options_data as gso
+    import gammath_get_stcktwts as ggstw
+    import gammath_get_stocks_calendar as gsc
 
 class GSD:
 

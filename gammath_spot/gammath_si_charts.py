@@ -27,9 +27,14 @@ from matplotlib import pyplot as plt
 import sys
 import os
 import time
-import gammath_utils as gut
-import gammath_kf_signals as gkf
-import gammath_ols_signals as gols
+try:
+    from gammath_spot import gammath_utils as gut
+    from gammath_spot import gammath_kf_signals as gkf
+    from gammath_spot import gammath_ols_signals as gols
+except:
+    import gammath_utils as gut
+    import gammath_kf_signals as gkf
+    import gammath_ols_signals as gols
 
 def plot_and_save_charts(tsymbol, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df):
 

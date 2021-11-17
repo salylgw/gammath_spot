@@ -20,8 +20,13 @@ __copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
 
 import multiprocessing as mp
 from multiprocessing import Process
-import gammath_get_stocks_data as ggsd
-import gammath_utils as gut
+try:
+    from gammath_spot import gammath_get_stocks_data as ggsd
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_get_stocks_data as ggsd
+    import gammath_utils as gut
+
 import sys
 from pathlib import Path
 import pandas as pd
