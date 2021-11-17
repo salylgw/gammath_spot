@@ -21,7 +21,7 @@ This project uses following free tools that need to be installed (you can use pi
  2. Run: python gammath_stocks_data_scraper.py sample_watchlist.csv > log_scraper.txt
  3. Above step will save the scraper log in log_scraper.txt, creates a 'tickers' sub-directory where it saves scraped data for stocks in the watch list
  4. Run: python gammath_stocks_analyzer_and_scorer.py sample_watchlist.csv > log_scorer.txt
- 5. Above step will ave the scorer log in log_scorer.txt, analyze the stock data and computes the gScore using Gammath's algorithm
+ 5. Above step will save the scorer log in log_scorer.txt, analyze the stock data and computes the gScore using Gammath's algorithm
  6. Go to ticker sub-directory and open overall_gscores.csv in your favorite spreadsheet program or a text editor
  7. In overall_gscores.csv, you should see stocks from your watchlist arrange in ascending order of gScores. Lower values (towards -1) indicate that the tool perceives the respective stock to be trading at a premium while higher values (towards +1) indicate that the tool perceives the respective stock to be trading at a doscount
  8. There is a lot of useful information stored in tickers/*symvik* dir that can be checked for details. signal.txt shows details of the analysis results and *symbol*_charts.png shows the plotted charts

@@ -255,7 +255,7 @@ def get_ols_signals(tsymbol, df, path):
                     ols_gscore += 1
 
                     if (curr_diff >= mp):
-                        ols_gscore += 1
+                        ols_gscore += 2
                         curr_diff_quantile_str = 'middle quantile'
 
                     if (curr_diff >= tp):
@@ -270,7 +270,7 @@ def get_ols_signals(tsymbol, df, path):
                     ols_gscore -= 1
 
                     if (curr_diff >= mp):
-                        ols_gscore -= 1
+                        ols_gscore -= 2
                         curr_diff_quantile_str = 'middle quantile'
 
                         if (curr_diff >= tp):
