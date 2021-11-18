@@ -303,7 +303,7 @@ def get_ols_signals(tsymbol, df, path):
     else:
         curr_diff_sign = '+ve'
 
-    ols_grec = f'ols_grec:{ols_gscore}/{ols_max_score}'
+    ols_grec = f'ols_gscore:{ols_gscore}/{ols_max_score}'
 
     ols_signals = f'OLS: ols_fit_score:{fit_score},1y_slope:{slope_sign_1y},5y_slope:{slope_sign_5y},curr_diff:{curr_diff_sign},{curr_diff_quantile_str},{ols_grec}'
 

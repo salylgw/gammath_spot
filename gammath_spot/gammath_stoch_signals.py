@@ -81,7 +81,7 @@ def get_stochastics_slow_signals(tsymbol, df):
     #Keep slowd value for reference
     stoch_slowd = round(slowd[stoch_len-1], 3)
 
-    stoch_grec = f'stoch_grec:{stoch_gscore}/{stoch_max_score}'
+    stoch_grec = f'stoch_gscore:{stoch_gscore}/{stoch_max_score}'
 
     stoch_slow_signals = f'stochs: {stoch_lvl},slowd:{stoch_slowd},l_xovr_date:{stoch_crossover_date},{stoch_grec}'
 

@@ -32,6 +32,10 @@ from pathlib import Path
 import pandas as pd
 
 def main():
+    """
+    Main function to scrape the web and collect data necessary for analyzing and computing gScores for each stock in the provided watchlist. It saves the collected data in tickers/<ticker_symbol> director.
+    """
+
     #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
     try:
         #Get the watchlist file from pgm argument

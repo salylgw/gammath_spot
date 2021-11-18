@@ -41,4 +41,4 @@ If you run into any problem then please contact gammathworks.com via the contact
 
 
 # Happy SPOTing!
-*Note: This is a free and open source project. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact gammathworks.com indicating your area of interest and expertise</u><u></u>*
+*Note: This is a free and open source project. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact https://www.gammathworks.com indicating your area of interest and expertise</u><u></u>*
