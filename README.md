@@ -1,5 +1,5 @@
 # Gammath SPOT
-Stock Price-Opining Tool is used to determine if a stock is trading at a perceived discount or a perceived premium.
+**S**tock **P**rice-**O**pining **T**ool is used to estimate if a stock is trading at a perceived discount or a perceived premium.
 
 # How does it do that? It does this in two parts:
 1. It provides a gammath_stocks_data_scraper.py app that scrapes the web to obtain stock information necessary to run its gScore computing algorithm
@@ -27,18 +27,18 @@ pip install gammath-spot
 
 
 # HOWTO use these apps
-1. If you installed this software then run: gammath_scraper <your watchlist> > log_scraper.txt
+1. If you installed this software then run: gammath_scraper sample_watchlist.csv > log_scraper.txt
 2. If not installed but just obrained the code then go to the directory gammath_spot/gammath_spot where all the source files are and run: python gammath_stocks_data_scraper.py sample_watchlist.csv > log_scraper.txt
 3. Above step will save the scraper log in log_scraper.txt, creates a 'tickers' sub-directory where it saves scraped data for stocks in the watch list
-4. If you installed this software then run: gammath_scorer <your watchlist> > log_scorer.txt
+4. If you installed this software then run: gammath_scorer sample_watchlist.csv > log_scorer.txt
 5. If not installed but just obrained the code then go to the directory gammath_spot/gammath_spot where all the source files are and run: python gammath_stocks_analyzer_and_scorer.py sample_watchlist.csv > log_scorer.txt
 6. Above step will save the scorer log in log_scorer.txt, analyze the stock data and computes the gScore using Gammath's algorithm
 7. Go to ticker sub-directory and open overall_gscores.csv in your favorite spreadsheet program or a text editor
 8. In overall_gscores.csv, you should see stocks from your watchlist arrange in ascending order of gScores. Lower values (towards -1) indicate that the tool perceives the respective stock to be trading at a premium while higher values (towards +1) indicate that the tool perceives the respective stock to be trading at a doscount. There is a lot of useful information stored in tickers/*symvik* dir that can be checked for details. signal.txt shows details of the analysis results and *symbol*_charts.png shows the plotted charts
  
 # Report Issues
-If you run into any problem then please contact gammathworks.com via the contact us form
+If you run into any problem then please contact us using the contact page on https://www.gammathworks.com
 
 
 # Happy SPOTing!
-*Note: This is a free and open source project. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact https://www.gammathworks.com indicating your area of interest and expertise</u><u></u>*
+*Note: This version of Gammath SPOT is free and open sourced. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact https://www.gammathworks.com indicating your area of interest and expertise</u><u></u>*

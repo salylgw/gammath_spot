@@ -100,7 +100,7 @@ class GSA:
             dt = time.strftime('%x').split('/')
             df_ld = df.Date[len(df)-1]
             df_ld = df_ld.split('-')
-            if ((int(dt[0]) != int(df_ld[1])) and (int(dt[1]) != int(df_ld[2]))):
+            if ((int(dt[0]) != int(df_ld[1])) or (int(dt[1]) != int(df_ld[2]))):
                 raise ValueError('Stale price data')
         except ValueError:
             print('\nERROR: Stale price data for ', tsymbol)

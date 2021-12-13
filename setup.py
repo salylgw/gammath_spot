@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='gammath_spot',
-      version='1.1',
+      version='1.2',
       description='Stock Price-Opining Tools',
       long_description=readme(),
       long_description_content_type='text/markdown',

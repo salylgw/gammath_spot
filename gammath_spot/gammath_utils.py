@@ -107,17 +107,19 @@ class GUTILS:
                 try:
                     f = open(subdir / 'signal.txt', 'r')
                     content = f.read()
-                    note = ''
+
                     matched_string = pattern_for_note.search(content)
                     if (matched_string):
                         kw, note = matched_string.groups()
+                        df_b['Note'][i] = note
+                    else:
+                        df_b['Note'][i] = ''
 
                     matched_string = pattern_for_final_gscore.search(content)
                     if (matched_string):
                         kw, val = matched_string.groups()
                         df_b['Ticker'][i] = f'{subdir.name}'
                         df_b['final_gscore'][i] = float(val)
-                        df_b['Note'][i] = note
                         i += 1
 
                     f.close()
