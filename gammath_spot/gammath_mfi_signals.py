@@ -92,18 +92,22 @@ def get_mfi_signals(tsymbol, df, path):
 
         mfi_max_score += 4
 
-        #Look for reversal when overbought/oversold
-        if ((curr_mfi < lm1_mfi) and (curr_mfi >= MFI_OVERBOUGHT_LEVEL)):
+        if (curr_mfi < lm1_mfi):
             mfi_dir = 'falling'
-            if (price_dir == 'rising'):
-                mfi_indicator = 'Price could start FALLING'
-                mfi_gscore -= 3
-        elif ((curr_mfi > lm1_mfi) and (curr_mfi <= MFI_OVERSOLD_LEVEL)):
+            #Look for reversal when overbought/oversold
+            if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
+                if (price_dir == 'rising'):
+                    mfi_indicator = 'Price could start FALLING'
+                    mfi_gscore -= 3
+        elif (curr_mfi > lm1_mfi):
             mfi_dir = 'rising'
-            if (price_dir == 'falling'):
-                mfi_indicator = 'Price could start RISING'
-                mfi_gscore += 3
-
+            #Look for reversal when overbought/oversold
+            if (curr_mfi <= MFI_OVERSOLD_LEVEL):
+                if (price_dir == 'falling'):
+                    mfi_indicator = 'Price could start RISING'
+                    mfi_gscore += 3
+        else:
+            mfi_dir = 'flat'
 
         mfi_max_score += 3
     else:

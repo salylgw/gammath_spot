@@ -196,6 +196,9 @@ def get_macd_signals(tsymbol, df, path):
                 macd_gscore += 5
             else:
                 macd_gscore -= 5
+
+            curr_count_quantile_str = 'bottom quantile'
+
         else:
             #Increase sell score at 25, 50 and 75 percentile crossing
             if (curr_days_in_positive >= bp):

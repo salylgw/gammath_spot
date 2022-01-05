@@ -1,4 +1,4 @@
-# Gammath SPOT
+# Gammath™ SPOT
 **S**tock **P**rice-**O**pining **T**ool is used to estimate if a stock is trading at a perceived discount or a perceived premium.
 
 # How does it do that? It does this in two parts:

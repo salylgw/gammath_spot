@@ -31,6 +31,8 @@ def get_stochastics_slow_signals(tsymbol, df):
     stoch_gscore = 0
     stoch_max_score = 0
     stoch_slow_signals = ''
+    stoch_lvl = ''
+
 
     try:
         slowk, slowd = STOCH(df.High, df.Low, df.Close, fastk_period=STOCH_FAST_PERIOD, slowk_period=STOCH_SLOW_PERIOD, slowk_matype=0, slowd_period=STOCH_SLOW_PERIOD, slowd_matype=0)
@@ -58,7 +60,6 @@ def get_stochastics_slow_signals(tsymbol, df):
     stoch_max_score += 2
 
     #Check for stochastic oversold/overbought levels
-    stoch_lvl = ''
     if (stoch_d_curr_val <= STOCH_OVERSOLD_LEVEL):
         stoch_lvl = 'oversold'
         stoch_gscore += 3
