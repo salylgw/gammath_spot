@@ -37,7 +37,7 @@ pip install gammath-spot
 8. In overall_gscores.csv, you should see stocks from your watchlist arrange in ascending order of gScores. Lower values (towards -1) indicate that the tool perceives the respective stock to be trading at a premium while higher values (towards +1) indicate that the tool perceives the respective stock to be trading at a doscount. There is a lot of useful information stored in tickers/"ticker_symbol" dir that can be checked for details. signal.txt shows details of the analysis results and "ticker_symbol"_charts.png shows the plotted charts
  
 # Report Issues
-If you run into any problem then please contact us using the contact page on https://www.gammathworks.com
+If you run into any problem then please contact us using the contact page on https://www.gammathworks.com. You can also purchase technical support at https://www.gammathworks.com/plans-pricing.
 
 
 # Happy SPOTing!
