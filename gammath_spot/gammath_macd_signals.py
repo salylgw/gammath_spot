@@ -1,5 +1,5 @@
 # Author: Salyl Bhagwat, Gammath Works
-# Copyright (c) 2021, Salyl Bhagwat, Gammath Works
+# Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works
 # All Rights Reserved
 #
 # This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 __author__ = 'Salyl Bhagwat'
-__copyright__ = 'Copyright (c) 2021, Salyl Bhagwat, Gammath Works'
+__copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 from datetime import datetime
@@ -234,6 +234,11 @@ def get_macd_signals(tsymbol, df, path):
     macd_sell_signal_date = df['Date'][last_sell_signal_index]
     sell_sig_price = df['Close'][last_sell_signal_index]
     sell_sig_price_str = f'sig_price:%5.3f' % df['Close'][last_sell_signal_index]
+
+    #If current price is more than price at sell signal then flag it by setting MACD-gScore to -10
+    if (macd_trend == 'negative'):
+        if (current_price > sell_sig_price):
+            macd_gscore = -10
 
     #Format the strings to log
     macd_grec = f'macd_gscore:{macd_gscore}/{macd_max_score}'
