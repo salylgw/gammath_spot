@@ -1,5 +1,5 @@
 # Gammath™ SPOT
-**S**tock **P**rice-**O**pining **T**ool is used to estimate if a stock is trading at a perceived discount or a perceived premium.
+**S**tock **P**rice-**O**pining **T**ool is a DIY stock technical analysis tool used to estimate if a stock is trading at a perceived discount or a perceived premium.
 
 # How does it do that? It does this in two parts:
 1. It provides a `gammath_stocks_data_scraper.py` app that scrapes the web to obtain stock information necessary to run its gScore computing algorithm.
@@ -34,7 +34,7 @@ Get source code from GIT repo [https://github.com/salylgw/gammath_spot.git]
 1. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_analyzer_and_scorer.py sample_watchlist.csv > log_scorer.txt`
 1. Above step will save the scorer log in `log_scorer.txt`, analyze the stock data and computes the gScore using Gammath's algorithm.
 1. Go to `ticker/` sub-directory and open `overall_gscores.csv` in your favorite spreadsheet program or a text editor.
-1. In `overall_gscores.csv`, you should see stocks from your watchlist arrange in ascending order of gScores. Lower values (towards -1) indicate that the tool perceives the respective stock to be trading at a premium while higher values (towards +1) indicate that the tool perceives the respective stock to be trading at a doscount. There is a lot of useful information stored in `tickers/*symvik*` dir that can be checked for details. `signal.txt` shows details of the analysis results and `*symbol*_charts.png` shows the plotted charts
+1. In `overall_gscores.csv`, you should see stocks from your watchlist arrange in ascending order of gScores. Lower values (towards -1) indicate that the tool perceives the respective stock to be trading at a premium while higher values (towards +1) indicate that the tool perceives the respective stock to be trading at a doscount. There is a lot of useful information stored in `tickers/*symbol*` dir that can be checked for details. `signal.txt` shows details of the analysis results and `*symbol*_charts.png` shows the plotted charts
  
 # Report Issues
 If you run into any problem then please contact us using the <https://www.gammathworks.com> contact page. You can also purchase technical support at <https://www.gammathworks.com/plans-pricing>.
