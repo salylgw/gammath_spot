@@ -1,5 +1,5 @@
 # Gammath™ SPOT
-**S**tock **P**rice-**O**pining **T**ool is a DIY stock technical analysis tool used to estimate if a stock is trading at a perceived discount or a perceived premium.
+**S**tock **P**rice-**O**pining **T**ool is a DIY stock technical analysis tool used to analyze and compute gScore that indicates the degree at which a stock is trading at a perceived discount or a perceived premium. The gScore is then used like an indicator in making buy. sell or hold decision on the stock.
 
 # How does it do that? It does this in two parts:
 1. It provides a `gammath_stocks_data_scraper.py` app that scrapes the web to obtain stock information necessary to run its gScore computing algorithm.

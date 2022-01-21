@@ -136,10 +136,10 @@ def get_price_signals(tsymbol, df, df_summ):
         #Get percentile values
         bp, mp, tp = price_consec_falling_days_count_series.quantile([0.25, 0.5, 0.75])
 
+        #Log quantile for days count
         if (last_falling_days_count < mp):
             curr_count_quantile_str = 'day-count in bottom quantile'
-
-        if (last_falling_days_count < tp):
+        elif (last_falling_days_count < tp):
             curr_count_quantile_str = 'day-count in middle quantile'
         else:
             curr_count_quantile_str = 'day-count in top quantile'
@@ -169,10 +169,10 @@ def get_price_signals(tsymbol, df, df_summ):
         price_dir = 'rising'
         bp, mp, tp = price_consec_rising_days_count_series.quantile([0.25, 0.5, 0.75])
 
+        #Log quantile for days count
         if (last_rising_days_count < mp):
             curr_count_quantile_str = 'day-count in bottom quantile'
-
-        if (last_rising_days_count < tp):
+        elif (last_rising_days_count < tp):
             curr_count_quantile_str = 'day-count in middle quantile'
         else:
             curr_count_quantile_str = 'day-count in top quantile'
@@ -205,10 +205,10 @@ def get_price_signals(tsymbol, df, df_summ):
     one_year_prices = df['Close'][(prices_len-AVG_TRADING_DAYS_PER_YEAR):]
     bp, mp, tp = one_year_prices.quantile([0.25, 0.5, 0.75])
 
+    #Log quantile for current price in 52-week range
     if (lp < mp):
         curr_price_1y_quantile_str = 'in 1Y bottom quantile'
-
-    if (lp < tp):
+    elif (lp < tp):
         curr_price_1y_quantile_str = 'in 1Y middle quantile'
     else:
         curr_price_1y_quantile_str = 'in 1Y top quantile'
