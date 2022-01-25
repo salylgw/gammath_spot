@@ -52,7 +52,9 @@ def main():
         raise ValueError('Watchlist file read failed')
 
     #Set the start method for launching parallel processes
-    mp.set_start_method('fork')
+    #Python 3.8 onwards 'spawn' is the default method for MacOS and is supported on Linux and Windows
+    #so using it for portability. Spawn method is much slower compared to 'fork' method. If there are no unsafe changes made to this project then on MacOS and Linux this can be changed to use 'fork'
+    mp.set_start_method('spawn')
 
     #Check number of cores we have to be able to run in parallel
     core_count = mp.cpu_count()

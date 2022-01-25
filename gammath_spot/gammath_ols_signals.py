@@ -39,7 +39,8 @@ def get_ols_signals(tsymbol, df, path):
     #Get the price data for y-axis
     prices_len = len(df.Close)
 
-    if (prices_len <= AVG_TRADING_DAYS_PER_YEAR):
+    #We want at least 5 years of price history
+    if (prices_len < (AVG_TRADING_DAYS_PER_YEAR*5)):
         raise ValueError('price history too short')
 
     y_vals = np.array(df.Close)
