@@ -96,7 +96,7 @@ class GUTILS:
         pattern_for_final_gscore = re.compile(r'(final_gscore):([-]*[0-9]*[.]*[0-9]+)')
 
         #Pattern for note
-        pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
+        pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
         df_b = pd.DataFrame(columns=['Ticker', 'final_gscore', 'Note'], index=range(len(subdirs)))
 

@@ -26,7 +26,7 @@ from pathlib import Path
 
 def get_ols_signals(tsymbol, df, path):
 
-    AVG_TRADING_DAYS_PER_YEAR = 252
+    MIN_TRADING_DAYS_PER_YEAR = 249
 
     ols_gscore = 0
     ols_max_score = 0
@@ -39,8 +39,9 @@ def get_ols_signals(tsymbol, df, path):
     #Get the price data for y-axis
     prices_len = len(df.Close)
 
-    #We want at least 5 years of price history
-    if (prices_len < (AVG_TRADING_DAYS_PER_YEAR*5)):
+    #We want at least 5 years of price history for generating 5Y LS line slope
+    #OLS line slope is critical to conclude if dollar cost averaging strategy should be used
+    if (prices_len < (MIN_TRADING_DAYS_PER_YEAR*5)):
         raise ValueError('price history too short')
 
     y_vals = np.array(df.Close)
@@ -55,7 +56,7 @@ def get_ols_signals(tsymbol, df, path):
     #OLS using statsmodels API
 
     #Model last 1 year data
-    index_1y = AVG_TRADING_DAYS_PER_YEAR
+    index_1y = MIN_TRADING_DAYS_PER_YEAR
 
     try:
         model_1y = sm.OLS(y_vals[(y_vals_len-index_1y):], x_vals[(x_vals_len-index_1y):]).fit()

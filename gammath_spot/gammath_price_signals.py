@@ -24,7 +24,7 @@ import numpy as np
 
 def get_price_signals(tsymbol, df, df_summ):
 
-    AVG_TRADING_DAYS_PER_YEAR = 252
+    MIN_TRADING_DAYS_PER_YEAR = 249
     PRICE_PERCENT_CUTOFF = 85
 
     price_gscore = 0
@@ -201,8 +201,8 @@ def get_price_signals(tsymbol, df, df_summ):
 
     price_max_score += 8
 
-    #Get percentiles for 52-week prices
-    one_year_prices = df['Close'][(prices_len-AVG_TRADING_DAYS_PER_YEAR):]
+    #Get current price percentiles for most recent 52-week range
+    one_year_prices = df['Close'][(prices_len-MIN_TRADING_DAYS_PER_YEAR):]
     bp, mp, tp = one_year_prices.quantile([0.25, 0.5, 0.75])
 
     #Log quantile for current price in 52-week range

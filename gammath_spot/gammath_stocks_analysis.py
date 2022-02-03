@@ -85,6 +85,8 @@ class GSA:
 
     def do_stock_analysis_and_compute_score(self, tsymbol):
 
+        MIN_TRADING_DAYS_PER_YEAR = 249
+
         path = self.Tickers_dir / f'{tsymbol}'
 
         try:
@@ -95,18 +97,30 @@ class GSA:
             return
 
         try:
+            MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
+
             #Read CSV into DataFrame.
             df = pd.read_csv(path / f'{tsymbol}_history.csv')
+            stock_history_len = len(df)
+
+            #Analyze only if we have at least 5Y price data
+            if (stock_history_len < MIN_TRADING_DAYS_FOR_5_YEARS):
+                print(f'History doesn\'t have 5Y worth of data. Len: {stock_history_len} for {tsymbol}')
+                raise RuntimeError('Not enough price history data')
+
+            #Sometimes the price history doesn't have today's data.
+            #Following is the workaround to detect that
+            #This will show a note as an FYI (also if you ran it before market opens or on a holiday
             dt = time.strftime('%x').split('/')
-            df_ld = df.Date[len(df)-1]
+            df_ld = df.Date[stock_history_len-1]
             df_ld = df_ld.split('-')
             if ((int(dt[0]) != int(df_ld[1])) or (int(dt[1]) != int(df_ld[2]))):
                 raise ValueError('Stale price data')
         except ValueError:
             print('\nERROR: Stale price data for ', tsymbol)
-            self.note = 'Note: INVALID_STOCK_HISTORY'
+            self.note = 'Note: NO_PRICE_DATA_FROM_TODAY'
         except:
-            print('\nERROR: Stock history file not found for ', tsymbol)
+            print('\nERROR: Stock price history error for ', tsymbol)
             return
 
         #Generate and get signals based on analyst recommendation
