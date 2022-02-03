@@ -59,10 +59,10 @@ def get_ticker_history(tsymbol, ticker, path):
 
             if (update_file):
                 #Save the history for processing
-                stock_history.dropna(how='all').to_csv(path / f'{tsymbol}_history.csv')
+                stock_history.dropna(how='any').to_csv(path / f'{tsymbol}_history.csv')
             else:
                 #Save the new/original history for reference
-                stock_history.dropna(how='all').to_csv(path / f'{tsymbol}_history_orig.csv')
+                stock_history.dropna(how='any').to_csv(path / f'{tsymbol}_history_orig.csv')
         except:
             raise RuntimeError('Stock history file RW error')
     else:
