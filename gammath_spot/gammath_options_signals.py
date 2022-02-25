@@ -25,6 +25,7 @@ from datetime import datetime
 import pandas as pd
 import time
 import os
+import numpy as np
 
 def get_options_signals(tsymbol, path, curr_price, df_summ):
 
@@ -75,13 +76,17 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
                 if (total_bullish_open_interest > total_bearish_open_intetest):
                     options_gscore += 4
+                    calls_puts_string = 'Bullish'
                 else:
                     options_gscore -= 4
+                    calls_puts_string = 'Bearish'
             else:
-                ValueError('Zero length data')
+                calls_puts_string = 'No calls, puts data'
 
         except:
-            RuntimeError('\noptions data processing')
+            calls_puts_string = 'No calls, puts data'
+    else:
+        calls_puts_string = 'No calls, puts data'
 
     #Just immediate options expiry data so not putting too much weight
     options_max_score += 4
@@ -90,23 +95,29 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
     #Add weightage for buy/sell scores
     try:
         shortRatio = df_summ['shortRatio'][0]
-    except:
-        shortRatio = 0
-
-    if (shortRatio > 0):
-        if (shortRatio < 3):
-            options_gscore += 6
-        elif (shortRatio < 6):
-            options_gscore += 4
-        elif (shortRatio < 10):
-            options_gscore += 2
+        if (np.isnan(shortRatio)):
+            short_ratio_string = 'No short_ratio data'
         else:
-            options_gscore -= 6
+            short_ratio_string = f'short_ratio:{shortRatio}'
+            if (shortRatio > 0):
+                if (shortRatio < 3):
+                    options_gscore += 6
+                elif (shortRatio < 6):
+                    options_gscore += 4
+                elif (shortRatio < 10):
+                    options_gscore += 2
+                else:
+                    options_gscore -= 6
+            else:
+                options_gscore -= 6
+
+    except:
+        short_ratio_string = 'No short_ratio data'
 
     options_max_score += 6
 
     options_grec = f'options_gscore:{options_gscore}/{options_max_score}'
-    options_signals = f'options: short_ratio:{shortRatio},{options_grec}'
+    options_signals = f'options: {short_ratio_string},{calls_puts_string},{options_grec}'
     
     return options_gscore, options_max_score, options_signals
 
