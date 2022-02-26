@@ -20,6 +20,7 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 from pathlib import Path
 import pandas as pd
+import numpy as np
 
 def get_beta_signals(tsymbol, df_summ):
 
@@ -29,23 +30,25 @@ def get_beta_signals(tsymbol, df_summ):
     try:
         #Get the beta value from summary DF
         beta = df_summ['beta'][0]
-    except:
-        raise ValueError('Beta value not found')
-
-    if (beta > 0):
-        #Closer to 1 is near market and is better
-        if (beta < 2):
-            beta_gscore += 1
+        if (np.isnan(beta)):
+            beta_string = 'No beta data'
         else:
-            beta_gscore -= 1
+            #round it off for taking less space when displaying
+            beta = round(beta, 3)
+            beta_string = f'{beta}'
+            if (beta > 0):
+                #Closer to 1 is near market and is better
+                if (beta < 2):
+                    beta_gscore += 1
+                else:
+                    beta_gscore -= 1
+    except:
+        beta_string = 'No beta data'
 
     beta_max_score += 1
 
-    #round it off for taking less space when displaying
-    beta = round(beta, 3)
-
     beta_grec = f'beta_gscore:{beta_gscore}/{beta_max_score}'
 
-    beta_signals = f'BETA:{beta},{beta_grec}'
+    beta_signals = f'BETA:{beta_string},{beta_grec}'
 
     return beta_gscore, beta_max_score, beta_signals
