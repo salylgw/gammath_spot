@@ -20,6 +20,7 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 from pathlib import Path
 import pandas as pd
+import numpy as np
 
 
 def get_pe_signals(tsymbol, df_summ):
@@ -31,16 +32,45 @@ def get_pe_signals(tsymbol, df_summ):
         path.mkdir(parents=True, exist_ok=True)
 
     pe_gscore = 0
-    pe_max_score = 0
+    pe_max_score = 2
 
     if (path / 'SP500_SEC_PES.csv').exists():
         df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
 
+    tpe = 0
+    fpe = 0
+
     try:
-        tpe = round(df_summ['trailingPE'][0], 3)
-        fpe = round(df_summ['forwardPE'][0], 3)
+        tpe = df_summ['trailingPE'][0]
+        if (np.isnan(tpe)):
+            tpe_string = 'No TPE data'
+        else:
+            tpe = round(tpe, 3)
+            tpe_string = f'{tpe}'
     except:
-        raise ValueError('PE values not found')
+        tpe_string = 'No TPE data'
+
+    try:
+        fpe = df_summ['forwardPE'][0]
+        if (np.isnan(fpe)):
+            fpe_string = 'No FPE data'
+        else:
+            fpe = round(fpe, 3)
+            fpe_string = f'{fpe}'
+    except:
+        fpe_string = 'No FPE data'
+
+
+    # For now just check if FPE is less or more than TPE
+    # If forward PE is less than trailing PE then view this as a +ve sign
+    if ((fpe > 0) and (tpe > 0)):
+        if (fpe < tpe):
+            pe_gscore += 2
+        else:
+            pe_gscore -= 2
+    else:
+        pe_gscore -= 2
+
 
     avg_tpe = 0
     avg_fpe = 0
@@ -49,31 +79,38 @@ def get_pe_signals(tsymbol, df_summ):
 
     for i in range(len_df_sp):
         if (df_sp['Symbol'][i] == tsymbol):
-            avg_tpe = round(df_sp['LS_AVG_TPE'][i], 3)
-            avg_fpe = round(df_sp['LS_AVG_FPE'][i], 3)
-
-            #Avg TPE and FPE data needs to be authentic before we can factor it into score computation. For now just check if FPE is less or more than TPE
-            #If forward PE is less than trailing PE then view this as a +ve sign
-            if ((fpe > 0) and (tpe > 0)):
-                if (fpe < tpe):
-                    pe_gscore += 2
+            try:
+                avg_tpe = df_sp['LS_AVG_TPE'][i]
+                if (np.isnan(avg_tpe)):
+                    avg_tpe_string = 'No Avg TPE data'
                 else:
-                    pe_gscore -= 2
-            else:
-                pe_gscore -= 2
+                    avg_tpe = round(avg_tpe, 3)
+                    avg_tpe_string = f'{avg_tpe}'
+            except:
+                avg_tpe_string = 'No Avg TPE data'
 
-            pe_max_score += 2
+            try:
+                avg_fpe = df_sp['LS_AVG_FPE'][i]
+                if (np.isnan(avg_fpe)):
+                    avg_fpe_string = 'No Avg FPE data'
+                else:
+                    avg_fpe = round(avg_fpe, 3)
+                    avg_fpe_string = f'{avg_fpe}'
+            except:
+                avg_fpe_string = 'No Avg FPE data'
 
+            # Avg TPE and Avg FPE data needs to be authentic before we can factor it into score computation.
+            # Currently, this avg is based on very limited data and also does not include sub-sectors
+            # For now just use this for logging for later manual and rough comparison
             break
 
     if (i == (len_df_sp-1)):
-        pe_gscore = 0
+        avg_tpe_string = 'No Avg TPE data'
+        avg_fpe_string = 'No Avg FPE data'
 
-        #No data viewed as a -ve so have an impact on total score
-        pe_max_score = 2
 
     pe_grec = f'pe_gscore:{pe_gscore}/{pe_max_score}'
 
-    pe_signals = f'PE: TPE:{tpe},ATPE:{avg_tpe},FPE:{fpe},AFPE:{avg_fpe},{pe_grec}'
+    pe_signals = f'PE: TPE:{tpe_string},ATPE:{avg_tpe_string},FPE:{fpe_string},AFPE:{avg_fpe_string},{pe_grec}'
 
     return pe_gscore, pe_max_score, pe_signals
