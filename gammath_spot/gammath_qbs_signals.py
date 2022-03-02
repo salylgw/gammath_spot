@@ -20,8 +20,9 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 from pathlib import Path
 import pandas as pd
+import numpy as np
 
-def get_qbs_signals(tsymbol, path):
+def get_qbs_signals(tsymbol, path, df_summ):
 
     cash = 0
     lti = 0
@@ -33,6 +34,31 @@ def get_qbs_signals(tsymbol, path):
 
     qbs_gscore = 0
     qbs_max_score = 0
+
+    cr = 0
+    qr = 0
+
+    #Check for current ratio for debt obligation readiness
+    try:
+        cr = df_summ['currentRatio'][0]
+        if (np.isnan(cr)):
+            cr_string = 'No current ratio data'
+        else:
+            cr = round(cr, 3)
+            cr_string = f'{cr}'
+    except:
+        cr_string = 'No current ratio data'
+
+    #Check for quick ratio for debt obligation ease
+    try:
+        qr = df_summ['quickRatio'][0]
+        if (np.isnan(qr)):
+            qr_string = 'No quick ratio data'
+        else:
+            qr = round(qr, 3)
+            qr_string = f'{qr}'
+    except:
+        qr_string = 'No quick ratio data'
 
     file_exists = (path / f'{tsymbol}_qbs.csv').exists()
 
@@ -92,8 +118,8 @@ def get_qbs_signals(tsymbol, path):
             if ((ldebt > 0) and (sequity > 0)):
                 dtcr = round((ldebt / (ldebt + sequity)), 3)
 
-            #For now just check if cash earned is +ve
-            if (cash_earned_last_one_year > 0):
+            #Check if current ratio is >= 1
+            if (cr >= 1):
                 qbs_gscore += 1
             else:
                 qbs_gscore -= 1
@@ -103,11 +129,9 @@ def get_qbs_signals(tsymbol, path):
             #Add remaining cash to get an idea of cash position
             possible_remaining_cash += (cash + sti + lti)
 
-            #For now just check if there is +ve remaining cash past last year's earnings
-            if (possible_remaining_cash > cash_earned_last_one_year):
+            #Check if quick ratio >= 1
+            if (qr >= 1):
                 qbs_gscore += 1
-            else:
-                qbs_gscore -= 1
 
             qbs_max_score += 1
 
@@ -118,7 +142,7 @@ def get_qbs_signals(tsymbol, path):
 
             qbs_max_score += 1
 
-            if (ldebt > 0) and (ldebt <= 0.5):
+            if (ldebt > 0) and (dtcr <= 0.5):
                 qbs_gscore += 1
             else:
                 qbs_gscore -= 1
@@ -131,6 +155,6 @@ def get_qbs_signals(tsymbol, path):
 
     qbs_grec = f'qbs_gscore:{qbs_gscore}/{qbs_max_score}'
 
-    qbs_signals = f'qbs:dtcr:{dtcr},{qbs_grec}'
+    qbs_signals = f'qbs:dtcr:{dtcr},cr:{cr_string},qr:{qr_string},{qbs_grec}'
 
     return qbs_gscore, qbs_max_score, qbs_signals

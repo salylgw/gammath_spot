@@ -231,7 +231,7 @@ class GSA:
                 self.overall_max_score += qbs_max_score
 
             #Quarterly Balance sheet signals
-            qbs_gscore, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path)
+            qbs_gscore, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path, df_summ)
 
             if not self.reco_signals_exist:
                 self.overall_gscore += qbs_gscore
