@@ -74,6 +74,8 @@ def get_ticker_summary(tsymbol, ticker, path):
     #twoHundredDayAverage
     #shortRatio
     #pegRatio
+    #currentRatio
+    #quickRatio
     #beta
     #heldPercentInstitutions
     #heldPercentInsiders
@@ -124,6 +126,16 @@ def get_ticker_summary(tsymbol, ticker, path):
         pegRatio = 0
 
     try:
+        currentRatio = stock_summary['currentRatio']
+    except:
+        currentRatio = 0
+
+    try:
+        quickRatio = stock_summary['quickRatio']
+    except:
+        quickRatio = 0
+
+    try:
         beta = stock_summary['beta']
     except:
         beta = 0
@@ -162,7 +174,7 @@ def get_ticker_summary(tsymbol, ticker, path):
     except:
         mktcap = 0
 
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price, 'marketCap': mktcap}, index=range(1))
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'currentRatio': currentRatio, 'quickRatio': quickRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price, 'marketCap': mktcap}, index=range(1))
 
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
