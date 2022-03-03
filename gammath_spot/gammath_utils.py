@@ -222,7 +222,7 @@ class GUTILS:
         df_sp = df_sp.join(df_pe)
 
         #Drop unwanted fields
-        df_sp = df_sp.dropna(0, how='all').drop('Unnamed: 0', axis=1)
+        df_sp = df_sp.dropna(axis=0, how='all').drop('Unnamed: 0', axis=1)
 
         #Rearrange based on ticker symbol
         df_sp = df_sp.sort_values('Symbol')
