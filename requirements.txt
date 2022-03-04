@@ -1,0 +1,8 @@
+numpy
+pandas
+matplotlib
+pykalman
+statsmodels
+ta-lib
+yfinance
+
