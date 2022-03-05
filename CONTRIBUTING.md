@@ -8,7 +8,7 @@ Data scraper and Analyzer/Scorer tools work great for me and save me incredible 
 
   * Data scraper tool updates for other data sources (including international/regional data sources)
   * News sentiment analysis and scoring
-  * Fundamental analysis enhancements
+  * Fundamental analysis enhancements to use as filtering criteria
   * Backtesting
   * Price predictor
 
