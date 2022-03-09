@@ -27,6 +27,18 @@ Get source code from GIT repo [https://github.com/salylgw/gammath_spot.git]
 
 In case you run into problem while installing ta-lib then you can install it using miniconda: `conda install -c conda-forge ta-lib`
 
+# HOWTO build docker image
+ 1. Get Docker desktop (for MAC or Windows) or Docker Engine (for Linux) from [here](https://docs.docker.com/get-docker).
+ 2. Run it
+ 3. Open terminal or command prompt
+ 4. Use this [Dockerfile](https://github.com/salylgw/gammath_spot/blob/main/Dockerfile) in the directory where you want to build the image
+ 5. Run `docker build --no-cache=true --tag=gammath_spot .`
+
+# HOWTO to run containerized Gammath™ SPOT
+ 1. Run docker desktop/engine that you installed
+ 2. Open terminal or command prompt
+ 3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammath_spot /bin/bash`
+ 4. Note: You can replace the value for TZ to match your timezone
 
 # HOWTO use these apps
 1. If you installed this software then run: `gammath_scraper sample_watchlist.csv > log_scraper.txt`
