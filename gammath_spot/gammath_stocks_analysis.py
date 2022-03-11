@@ -43,6 +43,7 @@ try:
     from gammath_spot import gammath_pbr_signals as gpbrs
     from gammath_spot import gammath_reco_signals as greco
     from gammath_spot import gammath_ols_signals as gols
+#    from gammath_spot import gammath_lgstic_signals as glgst
     from gammath_spot import gammath_get_stocks_events_data as gge
     from gammath_spot import gammath_score_signals as gscsi
     from gammath_spot import gammath_si_charts as gsc
@@ -65,6 +66,7 @@ except:
     import gammath_pbr_signals as gpbrs
     import gammath_reco_signals as greco
     import gammath_ols_signals as gols
+#    import gammath_lgstic_signals as glgst
     import gammath_get_stocks_events_data as gge
     import gammath_score_signals as gscsi
     import gammath_si_charts as gsc
@@ -400,6 +402,18 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
 
+        #TBD. Just log Logistic regression signal for now
+#        try:
+#            lgst_signals = ''
+
+            #Logistic regression signals; Usage will change later
+#            lgst_signals = glgst.get_lgstic_signals(tsymbol, df, path)
+
+#        except RuntimeError:
+#            print('\nERROR: generating Logistic regression data for ', tsymbol, ': ', sys.exc_info()[0])
+#        except ValueError:
+#            print('\nERROR: generating signals from Logistic regression data ', tsymbol, ': ', sys.exc_info()[0])
+
         #Generate and get signals based on Stocktwits sentiment and volume change
         try:
             st_gscore = 0
@@ -424,6 +438,7 @@ class GSA:
             events_info = ''
 
         #Augment all signals for saving in a file
+        #TBD lgst_signals to be included for logging purposes only for now
         overall_signals = f'{price_signals}\n{rsi_signals}\n{bb_signals}\n{macd_signals}\n{kf_signals}\n{ols_signals}\n{mfi_signals}\n{stoch_slow_signals}\n{options_signals}\n{pe_signals}\n{peg_signals}\n{beta_signals}\n{ihp_signals}\n{inshp_signals}\n{qbs_signals}\n{pbr_signals}\n{reco_signals}\n{st_signals}\n{events_info}\n{self.note}'
 
         #Compute final score then save scores and signals
