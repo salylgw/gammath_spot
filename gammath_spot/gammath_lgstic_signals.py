@@ -1,7 +1,20 @@
 # Author: Salyl Bhagwat, Gammath Works
-# Copyright (c) 2021, Salyl Bhagwat, Gammath Works
+# Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works
 # All Rights Reserved
 #
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
@@ -33,7 +46,7 @@ def price_sigmoid(prices):
 
     return (prices_sigmoid)
 
-#WIP: This is just to Logistic regression API to work. Algorithm will be updated later
+#WIP: This is just to get Logistic regression API to work. Algorithm will be updated later
 def get_lgstic_signals(tsymbol, df, path):
     lgstic_signals = ''
 

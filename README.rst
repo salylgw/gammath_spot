@@ -19,7 +19,8 @@ This project uses following free tools that need to be installed (you can use pi
 4. yfinance
 5. pykalman
 6. statsmodels
-7. matplotlib
+7. sklearn (If you want to include logistic regression WIP code)
+8. matplotlib
 
 
 # WHERE to get source code without installing

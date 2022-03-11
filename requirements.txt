@@ -4,5 +4,6 @@ matplotlib
 pykalman
 statsmodels
 ta-lib
+sklearn
 yfinance
 
