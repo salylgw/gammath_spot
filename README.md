@@ -31,14 +31,19 @@ In case you run into problem while installing ta-lib then you can install it usi
 # HOWTO build docker image
  1. Get Docker desktop (for MAC or Windows) or Docker Engine (for Linux) from [here](https://docs.docker.com/get-docker).
  2. Run it
- 3. Open terminal or command prompt
+ 3. Open terminal (MAC/Linux) or Power Shell (Windows)
  4. Use this [Dockerfile](https://github.com/salylgw/gammath_spot/blob/main/Dockerfile) in the directory where you want to build the image
- 5. Run `docker build --no-cache=true --tag=gammath_spot .`
+ 5. Run `docker build --no-cache=true --tag=gammathworks/gammath_spot .`
+
+
+# HOWTO get prebuilt Gamamth™ SPOT docker image
+ 1. Repeat first three steps above
+ 2. Run `docker pull gammathworks/gammath_spot`
 
 # HOWTO to run containerized Gammath™ SPOT
  1. Run docker desktop/engine that you installed
  2. Open terminal or command prompt
- 3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammath_spot /bin/bash`
+ 3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash`
  4. Note: You can replace the value for TZ to match your timezone
 
 # HOWTO use these apps
