@@ -36,7 +36,7 @@ In case you run into problem while installing ta-lib then you can install it usi
  5. Run `docker build --no-cache=true --tag=gammathworks/gammath_spot .`
 
 
-# HOWTO get prebuilt Gamamth™ SPOT docker image
+# HOWTO get prebuilt Gammath™ SPOT docker image
  1. Repeat first three steps above
  2. Run `docker pull gammathworks/gammath_spot`
 
