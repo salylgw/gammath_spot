@@ -16,7 +16,7 @@ Data scraper and Analyzer/Scorer tools work great for me and save me incredible 
 
 **HOWTO get involved**
 
-  * To report bug(s), please use the [Issue Reporting template](hhttps://github.com/salylgw/gammath_spot/blob/main/.github/ISSUE_TEMPLATE/bug_report.md).
+  * To report bug(s), please use the [Issue Reporting template](https://github.com/salylgw/gammath_spot/blob/main/.github/ISSUE_TEMPLATE/bug_report.md).
   * To request new feature(s), please use the [Feature Request template](https://github.com/salylgw/gammath_spot/blob/main/.github/ISSUE_TEMPLATE/feature_request.md).
   * To discuss any related feature, feel free to start a discussion.
   * To get a change reviewed by collaborators, feel free to generate Pull requests.
