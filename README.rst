@@ -15,7 +15,7 @@ This project uses following free tools that need to be installed (you can use pi
 
 1. numpy
 2. pandas
-3. ta-lib (Install using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
+3. ta-lib (Install ta-lib using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
 4. yfinance
 5. pykalman
 6. statsmodels
@@ -25,13 +25,13 @@ This project uses following free tools that need to be installed (you can use pi
 
 # WHERE to get source code without installing
 
-Get source code from GIT repo [https://github.com/salylgw/gammath_spot.git]
+Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot.git`
 
 # HOWTO install
 
 `pip install gammath-spot`
 
-In case you have trouble installing ta-lib then you can install miniconda and use `conda install -c conda-forge ta-lib`
+In case you have trouble installing ta-lib then you can install miniconda and use `conda install -c conda-forge ta-lib` then run `pip install gammath-spot`
 
 
 

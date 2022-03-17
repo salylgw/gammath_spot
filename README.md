@@ -12,7 +12,7 @@ This project uses following free tools that need to be installed (you can use pi
 
 1. numpy
 1. pandas
-1. ta-lib (Install using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
+1. ta-lib (Install ta-lib using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
 1. yfinance
 1. pykalman
 1. statsmodels
@@ -21,12 +21,12 @@ This project uses following free tools that need to be installed (you can use pi
 
 
 # WHERE to get source code without installing
-Get source code from GIT repo [https://github.com/salylgw/gammath_spot.git]
+Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot.git`
 
 # HOWTO install
 `pip install gammath-spot`
 
-In case you run into problem while installing ta-lib then you can install it using miniconda: `conda install -c conda-forge ta-lib`
+In case you run into problem while installing ta-lib then you can install it using miniconda: `conda install -c conda-forge ta-lib` then run `pip install gammath-spot`
 
 # HOWTO build docker image
  1. Get Docker desktop (for MAC or Windows) or Docker Engine (for Linux) from [here](https://docs.docker.com/get-docker).
