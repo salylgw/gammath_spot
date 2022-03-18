@@ -9,7 +9,7 @@ Data scraper and Analyzer/Scorer tools work great for me and save me incredible 
   * Data scraper tool updates for other data sources (including international/regional data sources)
   * News sentiment analysis and scoring
   * Fundamental analysis enhancements to use as filtering criteria (preferably with a GUI)
-  * Backtesting
+  * Backtesting (using freely available backtesting.py Python framework)
   * Price predictor (You can use this as a [starting point](https://github.com/salylgw/gammath_spot/blob/main/gammath_spot/gammath_lgstic_signals.py) for the feature)
 
 
