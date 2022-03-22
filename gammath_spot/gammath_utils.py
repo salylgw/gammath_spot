@@ -105,7 +105,7 @@ class GUTILS:
         for subdir in subdirs:
             if subdir.exists():
                 try:
-                    f = open(subdir / 'signal.txt', 'r')
+                    f = open(subdir / f'{subdir.name}_signal.txt', 'r')
                     content = f.read()
 
                     matched_string = pattern_for_note.search(content)

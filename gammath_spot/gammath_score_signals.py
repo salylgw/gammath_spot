@@ -33,7 +33,7 @@ def compute_final_score_and_save_signals(tsymbol, path, overall_gscore, overall_
     final_gscore_rec = f'final_gscore:{final_gscore}'
 
     try:
-        f = open(path / 'signal.txt', 'w')
+        f = open(path / f'{tsymbol}_signal.txt', 'w')
     except:
         print('\nERROR: opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
     else:
