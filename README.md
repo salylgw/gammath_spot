@@ -18,7 +18,7 @@ This project uses following free tools that need to be installed (you can use pi
 1. statsmodels
 1. sklearn
 1. matplotlib
-
+1. backtesting
 
 # WHERE to get source code without installing
 Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot.git`

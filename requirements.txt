@@ -6,4 +6,5 @@ statsmodels
 ta-lib
 sklearn
 yfinance
+backtesting
 

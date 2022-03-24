@@ -21,6 +21,7 @@ This project uses following free tools that need to be installed (you can use pi
 6. statsmodels
 7. sklearn
 8. matplotlib
+9. backtesting
 
 
 # WHERE to get source code without installing
