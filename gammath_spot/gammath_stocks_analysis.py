@@ -446,6 +446,12 @@ class GSA:
         except:
             print('\nERROR: while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Create a data frame for all (micro)gScores
+        gScore_df = pd.DataFrame({'Price': round(price_gscore/price_max_score, 3), 'RSI': round(rsi_gscore/rsi_max_score, 3), 'BBANDS': round(bb_gscore/bb_max_score, 3), 'MACD': round(macd_gscore/macd_max_score, 3), 'KF': round(kf_gscore/kf_max_score, 3), 'OLS': round(ols_gscore/ols_max_score, 3), 'MFI': round(mfi_gscore/mfi_max_score, 3), 'Stoch': round(stoch_gscore/stoch_max_score, 3), 'Options': round(options_gscore/options_max_score, 3), 'PE': round(pe_gscore/pe_max_score, 3), 'PEG': round(peg_gscore/peg_max_score, 3), 'Beta': round(beta_gscore/beta_max_score, 3), 'PBR': round(pbr_gscore/pbr_max_score, 3), 'QBS': round(qbs_gscore/qbs_max_score, 3), 'IHP': round(ihp_gscore/ihp_max_score, 3), 'INSHP': round(inshp_gscore/inshp_max_score, 3), 'Reco': round(reco_gscore/reco_max_score, 3), 'SENTI': round(st_gscore/st_max_score, 3), 'Total': round(self.overall_gscore/self.overall_max_score, 3)}, index=range(1))
+
+        #Save the CSV file for later reference
+        gScore_df.to_csv(path / f'{tsymbol}_gscores.csv')
+
         #No need to draw charts for backtesting
         if not for_backtesting:
             #Plot and save charts for reference
