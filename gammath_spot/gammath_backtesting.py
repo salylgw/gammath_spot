@@ -26,6 +26,11 @@ from pathlib import Path
 import pandas as pd
 import numpy
 from backtesting import Backtest, Strategy
+import yfinance as yf
+try:
+    from gammath_spot import gammath_get_stocks_data as ggsd
+except:
+    import gammath_get_stocks_data as ggsd
 
 def getgScoresData(data):
     return numpy.array(data)
@@ -40,6 +45,33 @@ class gScoresDataAction(Strategy):
         #Just placeholder for now
         a = None
 
+class GBT:
+
+    def __init__(self):
+
+        self.Tickers_dir = Path('backtest')
+
+    def run_backtest(self, tsymbol):
+
+        gsd = ggsd.GSD()
+        gsd.get_stocks_data(tsymbol, self.Tickers_dir, True)
+
+        try:
+            path = self.Tickers_dir / f'{tsymbol}'
+
+            #Read Stock summary info into DataFrame in format necessary for Backtest
+            df = pd.read_csv(path / f'{tsymbol}_history.csv', index_col='Date', parse_dates=True)
+        except:
+            print('\nERROR: Stock history file not found for symbol ', tsymbol)
+            return
+
+        #Check API params and compatibility
+        backtest = Backtest(df, gScoresDataAction, cash=3000)
+
+        #Check API
+        bt_stats = backtest.run()
+#        print(bt_stats)
+
 #Quick experiment on backtesting module APIs for usability
 def main():
     try:
@@ -48,22 +80,8 @@ def main():
         print('ERROR: Need ticker symbol as one argument to this Program.')
         raise ValueError('Missing ticker symbol')
 
-    Tickers_dir = Path('tickers')
-    path = Tickers_dir / f'{tsymbol}'
-
-    try:
-        #Read Stock summary info into DataFrame in format necessary for Backtest
-        df = pd.read_csv(path / f'{tsymbol}_history.csv', index_col='Date', parse_dates=True)
-    except:
-        print('\nERROR: Stock history file not found for symbol ', tsymbol)
-        return
-
-    #Check API params and compatibility
-    backtest = Backtest(df, gScoresDataAction, cash=3000)
-
-    #Check API
-    bt_stats = backtest.run()
-    print(bt_stats)
+    gbt = GBT()
+    gbt.run_backtest(tsymbol)
 
 if __name__ == '__main__':
     main()

@@ -79,6 +79,9 @@ def main():
     #Instances of GSD class
     gsd_instances = []
 
+    #Set default path
+    tickers_dir = Path('tickers')
+
     #One process per ticker symbol
     #Run cores_to_use number of processes in parallel
     start_index = 0
@@ -91,7 +94,7 @@ def main():
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             gsd_instances.append(ggsd.GSD())
-            proc_handles.append(Process(target=gsd_instances[i].get_stocks_data, args=(f'{sym}',)))
+            proc_handles.append(Process(target=gsd_instances[i].get_stocks_data, args=(f'{sym}', tickers_dir, False)))
             proc_handles[i].start()
 
             max_tickers -= 1
