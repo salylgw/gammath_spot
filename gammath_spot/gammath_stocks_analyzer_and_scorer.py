@@ -30,6 +30,7 @@ except:
 
 import pandas as pd
 import sys
+from pathlib import Path
 
 def main():
     """
@@ -82,12 +83,15 @@ def main():
     #Instances of GSA class
     gsa_instances = []
 
+    #Set default path
+    tickers_dir = Path('tickers')
+
     while (max_tickers):
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             tsymbol = f'{sym}'
             gsa_instances.append(gsa.GSA())
-            proc_handles.append(Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',)))
+            proc_handles.append(Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',tickers_dir,False,)))
             proc_handles[i].start()
 
             max_tickers -= 1
@@ -111,7 +115,7 @@ def main():
     gutils = gut.GUTILS()
 
     #Aggregate all buy and sell scores
-    gutils.aggregate_scores()
+    gutils.aggregate_scores(tickers_dir)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 

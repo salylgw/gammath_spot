@@ -33,8 +33,6 @@ def get_ticker_calendar(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
-    Tickers_dir = Path('tickers')
-
     calendar_dont_need_fetch = True
 
     if not path.exists():

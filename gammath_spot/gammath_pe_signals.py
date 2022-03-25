@@ -23,19 +23,16 @@ import pandas as pd
 import numpy as np
 
 
-def get_pe_signals(tsymbol, df_summ):
-
-    Tickers_dir = Path('./tickers')
-
-    path = Tickers_dir
-    if not path.exists():
-        path.mkdir(parents=True, exist_ok=True)
+def get_pe_signals(tsymbol, df_summ, path):
 
     pe_gscore = 0
     pe_max_score = 2
 
-    if (path / 'SP500_SEC_PES.csv').exists():
-        df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
+    try:
+        if (path / 'SP500_SEC_PES.csv').exists():
+            df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
+    except:
+        raise ValueError('No PE reference file')
 
     tpe = 0
     fpe = 0

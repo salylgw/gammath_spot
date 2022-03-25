@@ -70,17 +70,17 @@ def main():
 
     max_tickers = len(watch_list)
 
+    #Set default path
+    tickers_dir = Path('tickers')
+
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
 
     #Fetch and save S&P500 list.
-    gutils.get_sp500_list()
+    gutils.get_sp500_list(tickers_dir)
 
     #Instances of GSD class
     gsd_instances = []
-
-    #Set default path
-    tickers_dir = Path('tickers')
 
     #One process per ticker symbol
     #Run cores_to_use number of processes in parallel
@@ -114,7 +114,7 @@ def main():
                 end_index += max_tickers
 
     #Aggregate and save PE data
-    gutils.aggregate_pe_data()
+    gutils.aggregate_pe_data(tickers_dir)
 
 if __name__ == '__main__':
     main()

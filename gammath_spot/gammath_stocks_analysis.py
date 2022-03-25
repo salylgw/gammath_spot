@@ -79,17 +79,16 @@ import numpy as np
 class GSA:
 
     def __init__(self):
-        self.Tickers_dir = Path('tickers')
         self.overall_gscore = 0
         self.overall_max_score = 0
         self.reco_signals_exist = False
         self.note = 'Notes: None'
 
-    def do_stock_analysis_and_compute_score(self, tsymbol):
+    def do_stock_analysis_and_compute_score(self, tsymbol, tickers_dir, for_backtesting):
 
         MIN_TRADING_DAYS_PER_YEAR = 249
 
-        path = self.Tickers_dir / f'{tsymbol}'
+        path = tickers_dir / f'{tsymbol}'
 
         try:
             #Read Stock summary info into DataFrame.
@@ -164,7 +163,7 @@ class GSA:
                 self.overall_max_score += pe_max_score
 
             #PE signals
-            pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ)
+            pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, tickers_dir)
             if not self.reco_signals_exist:
                 self.overall_gscore += pe_gscore
 
@@ -447,8 +446,10 @@ class GSA:
         except:
             print('\nERROR: while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #Plot and save charts for reference
-        try:
-            gsc.plot_and_save_charts(tsymbol, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df)
-        except:
-            print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])
+        #No need to draw charts for backtesting
+        if not for_backtesting:
+            #Plot and save charts for reference
+            try:
+                gsc.plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df)
+            except:
+                print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])

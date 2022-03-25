@@ -36,7 +36,7 @@ except:
     import gammath_kf_signals as gkf
     import gammath_ols_signals as gols
 
-def plot_and_save_charts(tsymbol, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df):
+def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df):
 
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
@@ -46,10 +46,6 @@ def plot_and_save_charts(tsymbol, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_d
 
     STOCH_OVERSOLD_LEVEL = 20
     STOCH_OVERBOUGHT_LEVEL = 80
-
-    Tickers_dir = Path('tickers')
-
-    path = Tickers_dir / f'{tsymbol}'
 
     file_exists = (path / f'{tsymbol}_charts.png').exists()
 

@@ -41,10 +41,6 @@ except:
 
 class GSD:
 
-    def __init__(self):
-
-        self.Tickers_dir = Path('tickers')
-
     def get_stocks_data(self, tsymbol, tickers_dir, for_backtesting):
 
         #Get data for stock ticker symbol from the internet

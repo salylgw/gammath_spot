@@ -37,8 +37,6 @@ def get_ticker_financials(tsymbol, ticker, path):
     MIN_DELAY_BETWEEN_BATCHES = 1
     MAX_DELAY_BETWEEN_BATCHES = 3
 
-    Tickers_dir = Path('tickers')
-
     qbs_dont_need_fetch = True
     qcf_dont_need_fetch = True
     qe_dont_need_fetch = True

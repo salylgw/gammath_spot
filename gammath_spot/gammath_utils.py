@@ -44,15 +44,10 @@ def check_if_same_day(fstat):
 
 class GUTILS:
 
-    def __init__(self):
-        self.Tickers_dir = Path('tickers')
-
-
-    def get_sp500_list(self):
+    def get_sp500_list(self, path):
 
         sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
 
-        path = self.Tickers_dir
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
 
@@ -84,10 +79,10 @@ class GUTILS:
 
         return
 
-    def aggregate_scores(self):
+    def aggregate_scores(self, path):
 
         #Get all the subdirs. Need to check for is_dir
-        p = self.Tickers_dir
+        p = path
 
         #Somehow looks like os.is_dir isn't supported
         #Using pathlib/Path instead since is_dir is supported there
@@ -126,14 +121,10 @@ class GUTILS:
                 except:
                     print('\nERROR: Getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
 
-        df_b.sort_values('final_gscore').dropna(how='all').to_csv(self.Tickers_dir / 'overall_gscores.csv', index=False)
+        df_b.sort_values('final_gscore').dropna(how='all').to_csv(path / 'overall_gscores.csv', index=False)
 
 
-    def aggregate_pe_data(self):
-
-        path = self.Tickers_dir
-        if not path.exists():
-            path.mkdir(parents=True, exist_ok=True)
+    def aggregate_pe_data(self, path):
 
         df = pd.read_csv(path / 'SP500_list.csv')
 

@@ -32,8 +32,6 @@ def get_ticker_summary(tsymbol, ticker, path):
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
-    Tickers_dir = Path('tickers')
-
     #Check if file exists and is it from another day
     file_exists = (path / f'{tsymbol}_summary.csv').exists()
 
