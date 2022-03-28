@@ -129,12 +129,18 @@ class GSA:
             reco_gscore = 0
             reco_max_score = 0 #In case there is an exception, we should do fundamental analysis
             reco_signals = ''
+            reco_final_score = 0
             #Reco signals
             reco_gscore, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
 
             self.overall_gscore += reco_gscore
             self.overall_max_score += reco_max_score
             self.reco_signals_exist = ((reco_gscore != 0) and (reco_max_score != 0))
+            if (reco_max_score > 0):
+                reco_final_score = round(reco_gscore/reco_max_score, 3)
+            else:
+                reco_final_score = 0
+
         except RuntimeError:
             print('\nERROR: while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -143,13 +149,13 @@ class GSA:
             options_gscore = 0
             options_max_score = 10
             options_signals = ''
+            options_final_score = 0
             self.overall_max_score += options_max_score
 
             #Options signals
             options_gscore, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
-
             self.overall_gscore += options_gscore
-
+            options_final_score = round(options_gscore/options_max_score, 3)
         except:
             print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -158,6 +164,7 @@ class GSA:
             pe_gscore = 0
             pe_max_score = 2
             pe_signals = ''
+            pe_final_score = 0
 
             if not self.reco_signals_exist:
                 self.overall_max_score += pe_max_score
@@ -166,6 +173,7 @@ class GSA:
             pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, tickers_dir)
             if not self.reco_signals_exist:
                 self.overall_gscore += pe_gscore
+            pe_final_score = round(pe_gscore/pe_max_score, 3)
 
         except ValueError:
             print('\nERROR: while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -174,6 +182,7 @@ class GSA:
             peg_gscore = 0
             peg_max_score = 1
             peg_signals = ''
+            peg_final_score = 0
 
             if not self.reco_signals_exist:
                 self.overall_max_score += peg_max_score
@@ -183,6 +192,7 @@ class GSA:
 
             if not self.reco_signals_exist:
                 self.overall_gscore += peg_gscore
+            peg_final_score = round(peg_gscore/peg_max_score, 3)
 
         except ValueError:
             print('\nERROR: while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -191,6 +201,7 @@ class GSA:
             beta_gscore = 0
             beta_max_score = 1
             beta_signals = ''
+            beta_final_score = 0
 
             if not self.reco_signals_exist:
                 self.overall_max_score += beta_max_score
@@ -200,7 +211,7 @@ class GSA:
 
             if not self.reco_signals_exist:
                 self.overall_gscore += beta_gscore
-
+            beta_final_score = round(beta_gscore/beta_max_score, 3)
         except ValueError:
             print('\nERROR: while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -208,6 +219,7 @@ class GSA:
             pbr_gscore = 0
             pbr_max_score = 1
             pbr_signals = ''
+            pbr_final_score = 0
 
             if not self.reco_signals_exist:
                 self.overall_max_score += pbr_max_score
@@ -217,7 +229,7 @@ class GSA:
 
             if not self.reco_signals_exist:
                 self.overall_gscore += pbr_gscore
-
+            pbr_final_score = round(pbr_gscore/pbr_max_score, 3)
         except RuntimeError:
             print('\nERROR: while generating PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -227,6 +239,7 @@ class GSA:
             qbs_gscore = 0
             qbs_max_score = 4
             qbs_signals = ''
+            qbs_final_score = 0
 
             if not self.reco_signals_exist:
                 self.overall_max_score += qbs_max_score
@@ -236,7 +249,7 @@ class GSA:
 
             if not self.reco_signals_exist:
                 self.overall_gscore += qbs_gscore
-
+            qbs_final_score = round(qbs_gscore/qbs_max_score, 3)
         except ValueError:
             print('\nERROR: while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -244,6 +257,7 @@ class GSA:
             ihp_gscore = 0
             ihp_max_score = 1
             ihp_signals = ''
+            ihp_final_score = 0
 
             if not self.reco_signals_exist:
                 self.overall_max_score += ihp_max_score
@@ -253,7 +267,7 @@ class GSA:
 
             if not self.reco_signals_exist:
                 self.overall_gscore += ihp_gscore
-
+            ihp_final_score = round(ihp_gscore/ihp_max_score, 3)
         except ValueError:
             print('\nERROR: while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -261,9 +275,11 @@ class GSA:
             inshp_gscore = 0
             inshp_max_score = 1
             inshp_signals = ''
+            inshp_final_score = 0
 
             #Insider Holders Percentage signals
             inshp_gscore, inshp_max_score, inshp_signals = ginshp.get_inshp_signals(tsymbol, df_summ)
+            inshp_final_score = round(inshp_gscore/inshp_max_score, 3)
         except ValueError:
             print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -272,13 +288,13 @@ class GSA:
             price_gscore = 0
             price_max_score = 10
             price_signals = ''
+            price_final_score = 0
             self.overall_max_score += price_max_score
 
             #Price signals
             price_gscore, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
-
             self.overall_gscore += price_gscore
-
+            price_final_score = round(price_gscore/price_max_score, 3)
         except ValueError:
             print('\nERROR: generating price signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -287,13 +303,13 @@ class GSA:
             rsi_gscore = 0
             rsi_max_score = 10
             rsi_signals = ''
+            rsi_final_score = 0
             self.overall_max_score += rsi_max_score
 
             #Relative Strength Index signals
             rsi_df, rsi_gscore, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
-
             self.overall_gscore += rsi_gscore
-
+            rsi_final_score = round(rsi_gscore/rsi_max_score, 3)
         except RuntimeError:
             print('\nERROR: generating RSI data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -304,12 +320,13 @@ class GSA:
             mfi_gscore = 0
             mfi_max_score = 10
             mfi_signals = ''
+            mfi_final_score = 0
             self.overall_max_score += mfi_max_score
 
             #MFI signals
             mfi_df, mfi_gscore, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
-
             self.overall_gscore += mfi_gscore
+            mfi_final_score = round(mfi_gscore/mfi_max_score, 3)
 
         except RuntimeError:
             print('\nERROR: generating MFI data for ', tsymbol, ': ', sys.exc_info()[0])
@@ -321,12 +338,13 @@ class GSA:
             stoch_gscore = 0
             stoch_max_score = 5
             stoch_slow_signals = ''
+            stoch_final_score = 0
             self.overall_max_score += stoch_max_score
 
             #Stochastic slow signals
             stoch_df, stoch_gscore, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
-
             self.overall_gscore += stoch_gscore
+            stoch_final_score = round(stoch_gscore/stoch_max_score, 3)
 
         except RuntimeError:
             print('\nERROR: generating stochastics data for ', tsymbol, ': ', sys.exc_info()[0])
@@ -338,12 +356,13 @@ class GSA:
             bb_gscore = 0
             bb_max_score = 10
             bb_signals = ''
+            bb_final_score = 0
             self.overall_max_score += bb_max_score
 
             #Bollinger bands signals
             bb_df, bb_gscore, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
-
             self.overall_gscore += bb_gscore
+            bb_final_score = round(bb_gscore/bb_max_score, 3)
 
         except RuntimeError:
             print('\nERROR: generating Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
@@ -355,13 +374,13 @@ class GSA:
             macd_gscore = 0
             macd_max_score = 10
             macd_signals = ''
+            macd_final_score = 0
             self.overall_max_score += macd_max_score
 
             #MACD signals
             macd_df, macd_gscore, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
-
             self.overall_gscore += macd_gscore
-
+            macd_final_score = round(macd_gscore/macd_max_score, 3)
         except RuntimeError:
             print('\nERROR: generating MACD data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -372,12 +391,13 @@ class GSA:
             kf_gscore = 0
             kf_max_score = 10
             kf_signals = ''
+            kf_final_score = 0
             self.overall_max_score += kf_max_score
 
             #Kalman Filter signals
             kf_df, kf_gscore, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
-
             self.overall_gscore += kf_gscore
+            kf_final_score = round(kf_gscore/kf_max_score, 3)
 
         except RuntimeError:
             print('\nERROR: generating Kalman filter data for ', tsymbol, ': ', sys.exc_info()[0])
@@ -389,13 +409,13 @@ class GSA:
             ols_gscore = 0
             ols_max_score = 10
             ols_signals = ''
+            ols_final_score = 0
             self.overall_max_score += ols_max_score
 
             #Ordinary Least Squares line signals
             ols_df, ols_gscore, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
-
             self.overall_gscore += ols_gscore
-
+            ols_final_score = round(ols_gscore/ols_max_score, 3)
         except RuntimeError:
             print('\nERROR: generating OLS data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -418,13 +438,13 @@ class GSA:
             st_gscore = 0
             st_max_score = 5
             st_signals = ''
+            st_final_score = 0
             self.overall_max_score += st_max_score
 
             #StockTwits signals
             st_gscore, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
-
             self.overall_gscore += st_gscore
-
+            st_final_score = round(st_gscore/st_max_score, 3)
         except RuntimeError:
             print('\nERROR: while getting stocktwits signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -446,8 +466,13 @@ class GSA:
         except:
             print('\nERROR: while computing final score and saving signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        if (self.overall_max_score > 0):
+            total_final_score = round(self.overall_gscore/self.overall_max_score, 3)
+        else:
+            total_final_score = 0
+
         #Create a data frame for all (micro)gScores
-        gScore_df = pd.DataFrame({'Price': round(price_gscore/price_max_score, 3), 'RSI': round(rsi_gscore/rsi_max_score, 3), 'BBANDS': round(bb_gscore/bb_max_score, 3), 'MACD': round(macd_gscore/macd_max_score, 3), 'KF': round(kf_gscore/kf_max_score, 3), 'OLS': round(ols_gscore/ols_max_score, 3), 'MFI': round(mfi_gscore/mfi_max_score, 3), 'Stoch': round(stoch_gscore/stoch_max_score, 3), 'Options': round(options_gscore/options_max_score, 3), 'PE': round(pe_gscore/pe_max_score, 3), 'PEG': round(peg_gscore/peg_max_score, 3), 'Beta': round(beta_gscore/beta_max_score, 3), 'PBR': round(pbr_gscore/pbr_max_score, 3), 'QBS': round(qbs_gscore/qbs_max_score, 3), 'IHP': round(ihp_gscore/ihp_max_score, 3), 'INSHP': round(inshp_gscore/inshp_max_score, 3), 'Reco': round(reco_gscore/reco_max_score, 3), 'SENTI': round(st_gscore/st_max_score, 3), 'Total': round(self.overall_gscore/self.overall_max_score, 3)}, index=range(1))
+        gScore_df = pd.DataFrame({'Price': price_final_score, 'RSI': rsi_final_score, 'BBANDS': bb_final_score, 'MACD': macd_final_score, 'KF': kf_final_score, 'OLS': ols_final_score, 'MFI': mfi_final_score, 'Stoch': stoch_final_score, 'Options': options_final_score, 'PE': pe_final_score, 'PEG': peg_final_score, 'Beta': beta_final_score, 'PBR': pbr_final_score, 'QBS': qbs_final_score, 'IHP': ihp_final_score, 'INSHP': inshp_final_score, 'Reco': reco_final_score, 'SENTI': st_final_score, 'Total': total_final_score}, index=range(1))
 
         #Save the CSV file for later reference
         gScore_df.to_csv(path / f'{tsymbol}_gscores.csv')

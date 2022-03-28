@@ -90,7 +90,7 @@ def get_reco_signals(tsymbol, path):
                 #Get the percentage of +ve recommendations
                 total_up_down_count = up_count + down_count
                 if (total_up_down_count > 0):
-                    up_percentage = (up_count*100)/(up_count + down_count)
+                    up_percentage = (up_count*100)/total_up_down_count
                 else:
                     up_percentage = 0
 
@@ -106,7 +106,7 @@ def get_reco_signals(tsymbol, path):
                 reco_max_score += 6
 
         else:
-            #This will show 0/10 where expert recommendations don't exist.
+            #This will show 0/0 where expert recommendations don't exist.
             reco_max_score = 0
     except:
         raise RuntimeError('Quarterly Recommendations scoring failed')
