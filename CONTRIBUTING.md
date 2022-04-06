@@ -6,7 +6,7 @@ The intent of making python version of Gammath™ SPOT an open source project is
 
 Data scraper and Analyzer/Scorer tools work great for me and save me incredible amount of time. However, there are some aspects that need few minutes of manual evaluation to make final buy/sell/hold decisions. To that end, I'm working on some features that we can collaborate on:
 
-  * Data scraper tool updates for other data sources (including international/regional data sources)
+  * Data scraper tool updates for other data sources (including international/regional data sources. We have seen that yfinance works for some stocks listed on exchanges outside the US but haven't tested much outside the US. sample_watchlist.csv includes an example of a stock listed in Canada)
   * News sentiment analysis and scoring
   * Fundamental analysis enhancements to use as filtering criteria (preferably with a GUI)
   * Backtesting (using freely available backtesting.py Python framework)
