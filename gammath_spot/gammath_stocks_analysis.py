@@ -100,6 +100,12 @@ class GSA:
         try:
             MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 
+            if not for_backtesting:
+                try:
+                    df = pd.read_csv(path / f'{tsymbol}_history.csv')
+                except:
+                    raise RuntimeError('No price history data')
+
             #Check stock history data frame length.
             stock_history_len = len(df)
 
