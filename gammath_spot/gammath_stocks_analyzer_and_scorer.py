@@ -90,8 +90,15 @@ def main():
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             tsymbol = f'{sym}'
+            path = tickers_dir / f'{tsymbol}'
+
+            try:
+                df_history = pd.read_csv(path / f'{tsymbol}_history.csv')
+            except:
+                df_history = pd.DataFrame()
+
             gsa_instances.append(gsa.GSA())
-            proc_handles.append(Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',tickers_dir,False,)))
+            proc_handles.append(Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',tickers_dir,df_history,False,)))
             proc_handles[i].start()
 
             max_tickers -= 1

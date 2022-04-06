@@ -84,7 +84,7 @@ class GSA:
         self.reco_signals_exist = False
         self.note = 'Notes: None'
 
-    def do_stock_analysis_and_compute_score(self, tsymbol, tickers_dir, for_backtesting):
+    def do_stock_analysis_and_compute_score(self, tsymbol, tickers_dir, df, for_backtesting):
 
         MIN_TRADING_DAYS_PER_YEAR = 249
 
@@ -100,8 +100,7 @@ class GSA:
         try:
             MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 
-            #Read CSV into DataFrame.
-            df = pd.read_csv(path / f'{tsymbol}_history.csv')
+            #Check stock history data frame length.
             stock_history_len = len(df)
 
             #Analyze only if we have at least 5Y price data
