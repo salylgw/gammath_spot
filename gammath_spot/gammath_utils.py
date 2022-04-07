@@ -88,8 +88,6 @@ class GUTILS:
         #Using pathlib/Path instead since is_dir is supported there
         subdirs = [x for x in p.iterdir() if x.is_dir()]
 
-        pattern_for_final_gscore = re.compile(r'(final_gscore):([-]*[0-9]*[.]*[0-9]+)')
-
         #Pattern for note
         pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
@@ -100,6 +98,10 @@ class GUTILS:
         for subdir in subdirs:
             if subdir.exists():
                 try:
+                    df_gscores = pd.read_csv(subdir / f'{subdir.name}_gscores.csv', index_col='Unnamed: 0')
+                    df_b['Ticker'][i] = f'{subdir.name}'
+                    df_b['final_gscore'][i] = df_gscores.Total[0]
+
                     f = open(subdir / f'{subdir.name}_signal.txt', 'r')
                     content = f.read()
 
@@ -110,13 +112,7 @@ class GUTILS:
                     else:
                         df_b['Note'][i] = ''
 
-                    matched_string = pattern_for_final_gscore.search(content)
-                    if (matched_string):
-                        kw, val = matched_string.groups()
-                        df_b['Ticker'][i] = f'{subdir.name}'
-                        df_b['final_gscore'][i] = float(val)
-                        i += 1
-
+                    i += 1
                     f.close()
                 except:
                     print('\nERROR: Getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
@@ -220,5 +216,3 @@ class GUTILS:
 
         #Save for later reference and processing
         df_sp.to_csv(path / 'SP500_SEC_PES.csv', index=False)
-
-
