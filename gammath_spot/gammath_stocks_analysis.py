@@ -297,7 +297,7 @@ class GSA:
             self.overall_max_score += price_max_score
 
             #Price signals
-            price_gscore, price_max_score, price_signals = gps.get_price_signals(tsymbol, df, df_summ)
+            price_gscore, price_max_score, price_signals = gps.get_price_signals(tsymbol, df)
             self.overall_gscore += price_gscore
             price_final_score = round(price_gscore/price_max_score, 3)
         except ValueError:

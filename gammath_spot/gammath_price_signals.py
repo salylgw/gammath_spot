@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_price_signals(tsymbol, df, df_summ):
+def get_price_signals(tsymbol, df):
 
     MIN_TRADING_DAYS_PER_YEAR = 249
     PRICE_PERCENT_CUTOFF = 85
@@ -100,25 +100,25 @@ def get_price_signals(tsymbol, df, df_summ):
 
     try:
         #50-day average
-        fiftyDayAverage = df_summ['fiftyDayAverage'][0]
+        fiftyDayAverage = df.Close[prices_len-1-50:].mean()
     except:
         fiftyDayAverage = 0
 
     try:
         #200-day average
-        twoHundredDayAverage = df_summ['twoHundredDayAverage'][0]
+        twoHundredDayAverage = df.Close[prices_len-1-200:].mean()
     except:
         twoHundredDayAverage = 0
 
     try:
         #52-week low
-        yearly_lowest_val = df_summ['fiftyTwoWeekLow'][0]
+        yearly_lowest_val = df.Low[prices_len-1-252:].min()
     except:
         yearly_lowest_val = 0
 
     try:
         #52-week high
-        yearly_highest_val = df_summ['fiftyTwoWeekHigh'][0]
+        yearly_highest_val = df.High[prices_len-1-252:].max()
     except:
         yearly_highest_val = 0
 
