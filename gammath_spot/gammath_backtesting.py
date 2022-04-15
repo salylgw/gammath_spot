@@ -76,7 +76,7 @@ class GBT:
             for i in range(index2):
                 gsa_instance = gsa.GSA()
                 df1.iloc[0:index2] = df.iloc[index1+i:index2+i]
-                df_micro_gscores = gsa_instance.do_stock_history_analysis(tsymbol, self.Tickers_dir, path, df1[0:index2], True)
+                df_micro_gscores = gsa_instance.do_stock_history_analysis(tsymbol, self.Tickers_dir, path, df1[0:index2])
 
                 #Get the columns from micro gscores df
                 if not len(df_gscores):
