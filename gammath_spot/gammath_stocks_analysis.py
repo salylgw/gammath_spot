@@ -306,8 +306,11 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from Logistic regression data ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Save the stock history specific gscore
+        total_sh_gscore = round(self.overall_gscore/self.overall_max_score, 3)
+
         #Create a data frame for all stock history specific (micro)gScores
-        sh_gScore_df = pd.DataFrame({'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score}, index=range(1))
+        sh_gScore_df = pd.DataFrame({'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'Total': total_sh_gscore}, index=range(1))
 
         return sh_gScore_df
 
