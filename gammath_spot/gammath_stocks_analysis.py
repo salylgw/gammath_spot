@@ -467,10 +467,10 @@ class GSA:
 
         return sci_gScore_df
 
-    def do_stock_analysis_and_compute_score(self, tsymbol, df, for_backtesting):
+    def do_stock_analysis_and_compute_score(self, tsymbol, df):
 
         MIN_TRADING_DAYS_PER_YEAR = 249
-
+        need_charts = False
         path = self.Tickers_dir / f'{tsymbol}'
 
         try:
@@ -483,7 +483,7 @@ class GSA:
         try:
             MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 
-            if not for_backtesting:
+            if not len(df):
                 try:
                     df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
                     df_orig_len = len(df_orig)
@@ -497,6 +497,7 @@ class GSA:
                     df = df_orig.copy()
                     df.iloc[0:MIN_TRADING_DAYS_FOR_5_YEARS] = df_orig.iloc[start_index:end_index]
                     df = df.truncate(after=MIN_TRADING_DAYS_FOR_5_YEARS-1)
+                    need_charts = True
                 except:
                     raise RuntimeError('No price history data')
 
@@ -508,18 +509,14 @@ class GSA:
                 print(f'History doesn\'t have 5Y worth of data. Len: {stock_history_len} for {tsymbol}')
                 raise RuntimeError('Not enough price history data')
 
-            if not for_backtesting:
-                #Sometimes the price history doesn't have today's data.
-                #Following is the workaround to detect that
-                #This will show a note as an FYI (also if you ran it before market opens or on a holiday)
-                dt = time.strftime('%x').split('/')
-                df_ld = df.Date[stock_history_len-1]
-                df_ld = df_ld.split('-')
-                if ((int(dt[0]) != int(df_ld[1])) or (int(dt[1]) != int(df_ld[2]))):
-                    raise ValueError('Stale price data')
-        except ValueError:
-            print('\nERROR: Stale price data for ', tsymbol)
-            self.note = 'Note: NO_PRICE_DATA_FROM_TODAY'
+            #Sometimes the price history doesn't have today's data.
+            #Following is the workaround to detect that
+            #This will show a note as an FYI (also if you ran it before market opens or on a holiday)
+            dt = time.strftime('%x').split('/')
+            df_ld = df.Date[stock_history_len-1]
+            df_ld = df_ld.split('-')
+            if ((int(dt[0]) != int(df_ld[1])) or (int(dt[1]) != int(df_ld[2]))):
+                self.note = 'Note: NO_PRICE_DATA_FROM_TODAY'
         except:
             print('\nERROR: Stock price history error for ', tsymbol)
             return
@@ -555,7 +552,7 @@ class GSA:
         gScore_df.to_csv(path / f'{tsymbol}_gscores.csv')
 
         #No need to draw charts for backtesting
-        if not for_backtesting:
+        if need_charts:
             #Plot and save charts for reference
             try:
                 gsc.plot_and_save_charts(tsymbol, path, self.bb_df, self.rsi_df, self.mfi_df, self.macd_df, self.stoch_df, self.kf_df, self.ols_df)

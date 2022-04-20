@@ -90,7 +90,7 @@ def main():
             df_history = pd.DataFrame()
 
             gsa_instances.append(gsa.GSA())
-            proc_handles.append(Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',df_history,False,)))
+            proc_handles.append(Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',df_history,)))
             proc_handles[i].start()
 
             max_tickers -= 1
