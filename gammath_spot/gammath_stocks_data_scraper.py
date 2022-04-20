@@ -33,7 +33,7 @@ import pandas as pd
 
 def main():
     """
-    Main function to scrape the web and collect data necessary for analyzing and computing gScores for each stock in the provided watchlist. It saves the collected data in tickers/<ticker_symbol> director.
+    Main function to scrape the web and collect data necessary for analyzing and computing gScores for each stock in the provided watchlist. It saves the collected data in tickers/<ticker_symbol> directory.
     """
 
     #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
@@ -70,14 +70,11 @@ def main():
 
     max_tickers = len(watch_list)
 
-    #Set default path
-    tickers_dir = Path('tickers')
-
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
 
     #Fetch and save S&P500 list.
-    gutils.get_sp500_list(tickers_dir)
+    gutils.get_sp500_list()
 
     #Instances of GSD class
     gsd_instances = []
@@ -94,7 +91,7 @@ def main():
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             gsd_instances.append(ggsd.GSD())
-            proc_handles.append(Process(target=gsd_instances[i].get_stocks_data, args=(f'{sym}', tickers_dir, False)))
+            proc_handles.append(Process(target=gsd_instances[i].get_stocks_data, args=(f'{sym}',)))
             proc_handles[i].start()
 
             max_tickers -= 1
@@ -114,7 +111,7 @@ def main():
                 end_index += max_tickers
 
     #Aggregate and save PE data
-    gutils.aggregate_pe_data(tickers_dir)
+    gutils.aggregate_pe_data()
 
 if __name__ == '__main__':
     main()

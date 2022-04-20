@@ -29,10 +29,8 @@ from backtesting import Backtest, Strategy
 import yfinance as yf
 from matplotlib import pyplot as plt
 try:
-    from gammath_spot import gammath_get_stocks_data as ggsd
     from gammath_spot import gammath_stocks_analysis as gsa
 except:
-    import gammath_get_stocks_data as ggsd
     import gammath_stocks_analysis as gsa
 
 def getgScoresData(data):
@@ -52,13 +50,11 @@ class GBT:
 
     def __init__(self):
 
-        self.Tickers_dir = Path('backtest')
+        self.Tickers_dir = Path('tickers')
         self.SH_GSCORE_MIN_DISCOUNT_LEVEL = 0.375
         self.SH_GSCORE_MIN_PREMIUM_LEVEL = -0.375
 
     def get_gscores_history(self, tsymbol):
-        gsd = ggsd.GSD()
-        gsd.get_stocks_data(tsymbol, self.Tickers_dir, True)
 
         path = self.Tickers_dir / f'{tsymbol}'
 
@@ -83,7 +79,7 @@ class GBT:
             for i in range(MIN_TRADING_DAYS_FOR_5YEARS):
                 gsa_instance = gsa.GSA()
                 df1.iloc[0:MIN_TRADING_DAYS_FOR_5YEARS] = df.iloc[initial_start_index+i:initial_end_index+i]
-                df_micro_gscores = gsa_instance.do_stock_history_analysis(tsymbol, self.Tickers_dir, path, df1[0:MIN_TRADING_DAYS_FOR_5YEARS])
+                df_micro_gscores = gsa_instance.do_stock_history_analysis(tsymbol, path, df1[0:MIN_TRADING_DAYS_FOR_5YEARS])
 
                 #Get the columns from micro gscores df
                 if not len(df_gscores):
@@ -109,9 +105,6 @@ class GBT:
             return df_gscores
 
     def run_backtest(self, tsymbol):
-
-        gsd = ggsd.GSD()
-        gsd.get_stocks_data(tsymbol, self.Tickers_dir, True)
 
         try:
             path = self.Tickers_dir / f'{tsymbol}'

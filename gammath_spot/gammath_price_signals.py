@@ -112,13 +112,13 @@ def get_price_signals(tsymbol, df):
 
     try:
         #52-week low
-        yearly_lowest_val = df.Low[prices_len-1-252:].min()
+        yearly_lowest_val = df.Low[prices_len-1-MIN_TRADING_DAYS_PER_YEAR:].min()
     except:
         yearly_lowest_val = 0
 
     try:
         #52-week high
-        yearly_highest_val = df.High[prices_len-1-252:].max()
+        yearly_highest_val = df.High[prices_len-1-MIN_TRADING_DAYS_PER_YEAR:].max()
     except:
         yearly_highest_val = 0
 

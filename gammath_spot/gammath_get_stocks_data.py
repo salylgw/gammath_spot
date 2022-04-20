@@ -40,15 +40,17 @@ except:
     import gammath_get_stocks_calendar as gsc
 
 class GSD:
+    def __init__(self):
+        self.Tickers_dir = Path('tickers')
 
-    def get_stocks_data(self, tsymbol, tickers_dir, for_backtesting):
+    def get_stocks_data(self, tsymbol):
 
         #Get data for stock ticker symbol from the internet
 
         if (len(tsymbol) == 0):
             raise ValueError('Invalid ticker symbol')
 
-        path = tickers_dir / f'{tsymbol}'
+        path = self.Tickers_dir / f'{tsymbol}'
 
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
@@ -97,7 +99,7 @@ class GSD:
 
         try:
             #Get stock history
-            result = gsh.get_ticker_history(tsymbol, ticker, path, for_backtesting)
+            result = gsh.get_ticker_history(tsymbol, ticker, path)
         except ValueError:
             print(f'\nError while getting ticker price history for {tsymbol}')
         except RuntimeError:

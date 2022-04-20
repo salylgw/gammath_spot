@@ -79,7 +79,7 @@ import numpy as np
 class GSA:
 
     def __init__(self):
-
+        self.Tickers_dir = Path('tickers')
         self.overall_gscore = 0
         self.overall_max_score = 100
         self.overall_sh_gscore = 0
@@ -196,7 +196,7 @@ class GSA:
         self.total_final_score = 0
         self.overall_signals = ''
 
-    def do_stock_history_analysis(self, tsymbol, tickers_dir, path, df):
+    def do_stock_history_analysis(self, tsymbol, path, df):
 
         #Generate and get signals based on Price history
         try:
@@ -322,7 +322,7 @@ class GSA:
 
         return sh_gScore_df
 
-    def do_stock_current_info_analysis(self, tsymbol, tickers_dir, path, df, df_summ):
+    def do_stock_current_info_analysis(self, tsymbol, path, df, df_summ):
 
         #Generate and get signals based on analyst recommendation
         try:
@@ -357,7 +357,7 @@ class GSA:
                 self.overall_sci_max_gscore += self.pe_max_score
 
             #PE signals
-            self.pe_gscore, self.pe_max_score, self.pe_signals = gpes.get_pe_signals(tsymbol, df_summ, tickers_dir)
+            self.pe_gscore, self.pe_max_score, self.pe_signals = gpes.get_pe_signals(tsymbol, df_summ, self.Tickers_dir)
             if not self.reco_signals_exist:
                 self.overall_sci_gscore += self.pe_gscore
             self.pe_final_score = round(self.pe_gscore/self.pe_max_score, 3)
@@ -467,11 +467,11 @@ class GSA:
 
         return sci_gScore_df
 
-    def do_stock_analysis_and_compute_score(self, tsymbol, tickers_dir, df, for_backtesting):
+    def do_stock_analysis_and_compute_score(self, tsymbol, df, for_backtesting):
 
         MIN_TRADING_DAYS_PER_YEAR = 249
 
-        path = tickers_dir / f'{tsymbol}'
+        path = self.Tickers_dir / f'{tsymbol}'
 
         try:
             #Read Stock summary info into DataFrame.
@@ -485,7 +485,18 @@ class GSA:
 
             if not for_backtesting:
                 try:
-                    df = pd.read_csv(path / f'{tsymbol}_history.csv')
+                    df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
+                    df_orig_len = len(df_orig)
+                    start_index = (df_orig_len - MIN_TRADING_DAYS_FOR_5_YEARS)
+                    if (start_index < 0):
+                        raise ValueError('Not enough stock history')
+
+                    end_index = df_orig_len
+
+                    #Use a different df for starting with 0-index
+                    df = df_orig.copy()
+                    df.iloc[0:MIN_TRADING_DAYS_FOR_5_YEARS] = df_orig.iloc[start_index:end_index]
+                    df = df.truncate(after=MIN_TRADING_DAYS_FOR_5_YEARS-1)
                 except:
                     raise RuntimeError('No price history data')
 
@@ -514,12 +525,12 @@ class GSA:
             return
 
         try:
-            sh_gScore_df = self.do_stock_history_analysis(tsymbol, tickers_dir, path, df)
+            sh_gScore_df = self.do_stock_history_analysis(tsymbol, path, df)
         except:
             print('\nERROR: while computing stock history specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            sci_gScore_df = self.do_stock_current_info_analysis(tsymbol, tickers_dir, path, df, df_summ)
+            sci_gScore_df = self.do_stock_current_info_analysis(tsymbol, path, df, df_summ)
         except:
             print('\nERROR: while computing stock current info specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 

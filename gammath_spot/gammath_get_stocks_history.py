@@ -25,29 +25,14 @@ from pathlib import Path
 import sys
 
 
-def get_ticker_history(tsymbol, ticker, path, for_backtesting):
+def get_ticker_history(tsymbol, ticker, path):
 
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
-    #Get summary of past 5 years history
-    end_date = datetime.today()
-    start_date = datetime(end_date.year-5, end_date.month, end_date.day)
-
     try:
-        # Get 5Y stock history based on dates
-#        stock_history = ticker.history(interval='1d', start=start_date, end=end_date, actions=True,auto_adjust=True)
-
-
-        if (for_backtesting):
-            # Get 10Y stock history using 10Y-period
-            period = '10y'
-        else:
-            # Get 5Y stock history using 5Y-period
-            period = '5y'
-
-
-        stock_history = ticker.history(period, interval='1d', actions=True,auto_adjust=True)
+        # Get 10Y stock history using 10Y-period
+        stock_history = ticker.history('10y', interval='1d', actions=True,auto_adjust=True)
     except:
         raise RuntimeError('Error obtaining stock history')
 
