@@ -31,7 +31,7 @@ import sys
 
 def main():
     """
-    Main function to analyze and compute score for each stock in the provided watchlist. For each stock, it processes the data collected by scraper app, computes the score and saves score and useful signals in tickers/<ticker_symbol>. List of all gScores is in tickers/overall_gscores.csv
+    Main function to analyze and compute stock history based gScore/micro-gScores for each stock in the provided watchlist. For each stock, it processes the data collected by scraper app, computes the stock history based gScore/micro-gScores for approximately last 5 years and saves respective gScore/micro-gScores in tickers/<ticker_symbol>/<ticker_symbol>_micro_gscores.csv
     """
 
     #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
