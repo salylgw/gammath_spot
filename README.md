@@ -1,5 +1,5 @@
 # Gammath™ SPOT
-**S**tock **P**rice-**O**pining **T**ool is a DIY stock technical analysis tool used to analyze stocks and compute gScore that indicates the degree at which a stock is trading at a perceived discount or a perceived premium. The gScore is then used like an indicator in making buy. sell or hold decision on the stock.
+**S**tock **P**rice-**O**pining **T**ool is a DIY stock technical analysis tool used to analyze stocks and compute gScore that indicates the degree at which a stock is trading at a perceived discount or a perceived premium. The gScore is then used like an indicator in making buy, sell or hold decision on the stock.
 
 # How does it do that? It does this in two parts:
 1. It provides a `gammath_stocks_data_scraper.py` app that scrapes the web to obtain stock information necessary to run its gScore computing algorithm.
@@ -49,12 +49,16 @@ In case you run into problem while installing ta-lib then you can install it usi
 # HOWTO use these apps
 1. If you installed this software then run: `gammath_scraper sample_watchlist.csv > log_scraper.txt`
 1. If not installed but just obtained the code then go to the directory gammath_spot/gammath_spot where all the source files are and run: `python gammath_stocks_data_scraper.py sample_watchlist.csv > log_scraper.txt`
-1. Above step will save the scraper log in `log_scraper.txt`, creates a `tickers/` sub-directory where it saves scraped data for stocks in the watch list
+1. Above step will save the scraper log in `log_scraper.txt`, creates a `tickers/` sub-directory where it saves scraped data for stocks in the watch list. Running the data scraper is essential before using the scorer and historian
 1. If you installed this software then run: `gammath_scorer sample_watchlist.csv > log_scorer.txt`
 1. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_analyzer_and_scorer.py sample_watchlist.csv > log_scorer.txt`
 1. Above step will save the scorer log in `log_scorer.txt`, analyze the stock data and computes the gScore using Gammath's algorithm.
 1. Go to `ticker/` sub-directory and open `overall_gscores.csv` in your favorite spreadsheet program or a text editor.
 1. In `overall_gscores.csv`, you should see stocks from your watchlist arrange in ascending order of gScores. Lower values (towards -1) indicate that the tool perceives the respective stock to be trading at a premium while higher values (towards +1) indicate that the tool perceives the respective stock to be trading at a doscount. In this file, you'll also see sh_gscore (stock history based gscore) and sci_gscore (current info based gacore) that make up the overall gscore. If you are not interested in backtesting or sub-component score then you can ignore it There is a lot of useful information stored in `tickers/*symbol*` dir that can be checked for details. `*symbol*_signal.txt` shows details of the analysis results and `*symbol*_charts.png` shows the plotted charts
+1. In case you want to collect historical gscores (for correlation, past performance, bactesting etc.) then you can do so by using the gScores historian tool. Please note that this tool is slow at the moment so limit the watchlist for this tool to few selected stocks that you have want to zoom into
+1. If you installed this software then run: `gammath_historian sample_watchlist.csv > log_historian.txt`
+1. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_gscores_historian.py sample_watchlist.csv > log_historian.txt`
+1. You can check the `tickers/"ticker_symbol"/"ticker_symbol"_micro_gscores.csv` (for stock history based micro-gScores and corresponding total gScore) and `tickers/"ticker_symbol"/`"ticker_symbol"_gscores_charts.png` that shows the plotted charts of price, overall stock history based gScore and micro-gScores
 
 # Investment blog
 If you want to see a real example of how output of this tool is being used then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).

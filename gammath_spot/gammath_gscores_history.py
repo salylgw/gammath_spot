@@ -75,7 +75,7 @@ class GSH:
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
-            #Draw the charts to view a rough sketch; Lot will change
+            #Draw the charts to get a general idea of correlations
             figure, axes = plt.subplots(nrows=10, figsize=(21, 19))
             closing_prices_df = pd.DataFrame({tsymbol: df1.Close[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             closing_prices_df.plot(ax=axes[0],lw=1,title='Stock history')

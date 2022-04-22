@@ -42,7 +42,7 @@ In case you have trouble installing ta-lib then you can install miniconda and us
     `gammath_scraper sample_watchlist.csv > log_scraper.txt`
 2. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot` where all the source files are and run:
     `python gammath_stocks_data_scraper.py sample_watchlist.csv > log_scraper.txt`
-3. Above step will save the scraper log in `log_scraper.txt`, creates a `tickers` sub-directory where it saves scraped data for stocks in the watch list
+3. Above step will save the scraper log in `log_scraper.txt`, creates a `tickers` sub-directory where it saves scraped data for stocks in the watch list. Running the data scraper is essential before using the scorer and historian
 4. If you installed this software then run:
     'gammath_scorer sample_watchlist.csv > log_scorer.txt`
 5. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot` where all the source files are and run:
@@ -50,6 +50,10 @@ In case you have trouble installing ta-lib then you can install miniconda and us
 6. Above step will save the scorer log in `log_scorer.txt`, analyze the stock data and computes the gScore using Gammath Works' algorithm
 7. Go to `ticker` sub-directory and open `overall_gscores.csv` in your favorite spreadsheet program or a text editor
 8. In `overall_gscores.csv`, you should see stocks from your watchlist arranged in ascending order of gScores. Lower values (towards -1) indicate that the tool perceives the respective stock to be trading at a premium while higher values (towards +1) indicate that the tool perceives the respective stock to be trading at a doscount. In this file, you'll also see sh_gscore (stock history based gscore) and sci_gscore (current info based gacore) that make up the overall gscore. If you are not interested in backtesting or sub-component score then you can ignore it These are the sub-components There is a lot of useful information stored in `tickers/"ticker_symbol"` dir that can be checked for details. `"ticker_symbol"_signal.txt` shows details of the analysis results and `"ticker_symbol"_charts.png` shows the plotted charts
+9. In case you want to collect stock history based historical gscores (for correlation, past performance, bactesting etc.) then you can do so by using the gScores historian tool. Please note that this tool is slow at the moment so limit the watchlist for this tool to few selected stocks that you have want to zoom into
+10. If you installed this software then run: `gammath_historian sample_watchlist.csv > log_historian.txt`
+11. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_gscores_historian.py sample_watchlist.csv > log_historian.txt`
+12. You can check the `tickers/"ticker_symbol"/"ticker_symbol"_micro_gscores.csv` (for stock history based micro-gScores and corresponding total gScore) and `tickers/"ticker_symbol"/`"ticker_symbol"_gscores_charts.png` that shows the plotted charts of price, overall stock history based gScore and micro-gScores
 
 # Investment blog
 
