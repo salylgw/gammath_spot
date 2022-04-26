@@ -34,7 +34,7 @@ class gScoresDataAction(Strategy):
 
     def init(self):
         #Just placeholder for now
-        prices = self.I(getgScoresData, self.data.Close)
+        print('Init')
 
     def next(self):
         #Just placeholder for now
@@ -50,11 +50,28 @@ class GBT:
 
     def run_backtest(self, tsymbol):
 
+        MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
         try:
             path = self.Tickers_dir / f'{tsymbol}'
 
             #Read Stock summary info into DataFrame in format necessary for Backtest
-            df = pd.read_csv(path / f'{tsymbol}_history.csv', index_col='Date', parse_dates=True)
+#            df = pd.read_csv(path / f'{tsymbol}_history.csv', index_col='Date', parse_dates=True)
+            #We only need last 5y data
+            df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
+            df_len = len(df_orig)
+            start_index = df_len - MIN_TRADING_DAYS_FOR_5_YEARS
+            if (start_index < 0):
+                raise ValueError('Not enough stock history')
+            end_index = df_len
+            df = df_orig.copy()
+            df.iloc[0:MIN_TRADING_DAYS_FOR_5_YEARS] = df_orig.iloc[start_index:end_index]
+            df = df.truncate(after=MIN_TRADING_DAYS_FOR_5_YEARS-1)
+            #Read the gscores history into dataframe
+            df_gscores_history = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+            #Generate the dataframe that has stock history and gscores history
+            df = df.join(df_gscores_history)
+            df.Date = pd.to_datetime(df['Date'])
+            df = df.set_index('Date')
         except:
             print('\nERROR: Stock history file not found for symbol ', tsymbol)
             return
@@ -76,7 +93,7 @@ def main():
         raise ValueError('Missing ticker symbol')
 
     gbt = GBT()
-#    gbt.run_backtest(tsymbol)
+    gbt.run_backtest(tsymbol)
 
 if __name__ == '__main__':
     main()
