@@ -22,16 +22,16 @@ import time
 import multiprocessing as mp
 from multiprocessing import Process
 try:
-    from gammath_spot import gammath_gscores_history as gsh
+    from gammath_spot import gammath_backtesting as gbt
 except:
-    import gammath_gscores_history as gsh
+    import gammath_backtesting as gbt
 
 import pandas as pd
 import sys
 
 def main():
     """
-    Main function to analyze and compute stock history based gScore/micro-gScores for each stock in the provided watchlist. For each stock, it processes the data collected by scraper app, computes the stock history based gScore/micro-gScores for approximately last 5 years and saves respective gScore/micro-gScores in tickers/<ticker_symbol>/<ticker_symbol>_micro_gscores.csv
+    Main function to do backtesting on provided watchlist. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years that from the gscore historian and saves the backtesting stats in respective in tickers/<ticker_symbol>/<ticker_symbol>_bt_stats.csv
     """
 
     #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
@@ -77,16 +77,16 @@ def main():
     else:
         end_index = max_tickers
 
-    #Instances of GSH class
-    gsh_instances = []
+    #Instances of GBT class
+    gbt_instances = []
 
     while (max_tickers):
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             tsymbol = f'{sym}'
 
-            gsh_instances.append(gsh.GSH())
-            proc_handles.append(Process(target=gsh_instances[i].save_gscores_history, args=(f'{sym}',)))
+            gbt_instances.append(gbt.GBT())
+            proc_handles.append(Process(target=gbt_instances[i].run_backtest, args=(f'{sym}',)))
             proc_handles[i].start()
 
             max_tickers -= 1
