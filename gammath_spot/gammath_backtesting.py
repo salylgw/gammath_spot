@@ -19,7 +19,7 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 # THIS IS WIP: DO NOT USE
-# Experimenting with backtesting framework and getting APIs to work; A lot will change later
+# Experimenting with backtesting framework and getting APIs to work
 
 import sys
 from pathlib import Path
@@ -27,26 +27,42 @@ import pandas as pd
 import numpy
 from backtesting import Backtest, Strategy
 
-def getgScoresData(data):
-    return numpy.array(data)
-
+#This is work-in-progress; DO NOT USE
+# Just getting all pieces to work before actually using a strategy
 class gScoresDataAction(Strategy):
 
     def init(self):
-        #Just placeholder for now
-        print('Init')
+        self.min_sh_premium_level = -0.375
+        self.min_sh_discount_level = 0.375
+        self.previous_close = 0
+        self.total_shares = 0
+        self.total_cost = 0
 
     def next(self):
-        #Just placeholder for now
-        a = None
+        #Following is just experiment to iterate through all data with backtesting framework
+        #Not for use as a strategy
+        #You can implement your own strategy here
+        curr_sh_gscore = self.data.Total[-1]
+        curr_closing_price = self.data.Close[-1]
+
+        if (self.previous_close):
+            if (curr_sh_gscore >= self.min_sh_discount_level):
+                if (curr_closing_price > self.previous_close):
+                    self.position.close()
+                    self.buy()
+
+            if (curr_sh_gscore <= self.min_sh_premium_level):
+                if (curr_closing_price < self.previous_close):
+                    self.position.close()
+                    self.sell()
+
+        self.previous_close = curr_closing_price
 
 class GBT:
 
     def __init__(self):
 
         self.Tickers_dir = Path('tickers')
-        self.SH_GSCORE_MIN_DISCOUNT_LEVEL = 0.375
-        self.SH_GSCORE_MIN_PREMIUM_LEVEL = -0.375
 
     def run_backtest(self, tsymbol):
 
@@ -54,8 +70,6 @@ class GBT:
         try:
             path = self.Tickers_dir / f'{tsymbol}'
 
-            #Read Stock summary info into DataFrame in format necessary for Backtest
-#            df = pd.read_csv(path / f'{tsymbol}_history.csv', index_col='Date', parse_dates=True)
             #We only need last 5y data
             df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
             df_len = len(df_orig)
@@ -77,11 +91,11 @@ class GBT:
             return
 
         #Check API params and compatibility
-        backtest = Backtest(df, gScoresDataAction, cash=3000)
+        backtest = Backtest(df, gScoresDataAction, cash=20000)
 
         #Check API
         bt_stats = backtest.run()
-#        print(bt_stats)
+        print(bt_stats)
 
 #Quick experiment on gscore APIs for usability in backtesting
 #Quick experiment on backtesting module APIs for usability
