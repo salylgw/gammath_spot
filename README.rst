@@ -1,13 +1,15 @@
 # Gammath™ SPOT
 
-Stock Price-Opining Tool is a DIY stock technical analysis tool used to analyze stocks and compute gScore that indicates the degree at which a stock is trading at a perceived discount or a perceived premium. The gScore is then used like an indicator in making buy, sell or hold decision on the stock.
+Stock Price-Opining Tool is a DIY stock technical analysis toolset used to analyze stocks and compute gScore that indicates the degree at which a stock is trading at a perceived discount or a perceived premium. The gScore is then used like an indicator in making buy, sell or hold decision on the stock. It also provides tool to generate gScore-history for correlation and tool for backtesting strategy.
 
-# How does it do that? It does this in two parts:
+# How does it do that? It does this in four parts:
 
 1. It provides a `gammath_stocks_data_scraper.py` app that scrapes the web to obtain stock information necessary to run its gScore computing algorithm
 2. It provides a `gammath_stocks_analyzer_and_scorer.py` app that analyzes the stock data saved on the local storage from step 1 and computes gscores using its algorithm to indicate perceived discount or perceived premium
 3. The gScores range between -1 and +1. gScores towards -1 indicates that the tool perceives the stock price to be at a premium while score towards +1 indicates that the tool preceives the stock price to be at a discount
-4. Both the above apps take a watchlist as an input. A sample watch list is provided in `sample_watchlist.csv` [https://github.com/salylgw/gammath_spot.git] that can be used and updated for your watchlist
+4. It provides a `gammath_stocks_gscores_historian.py` app that generates gScore and micro-gScores history for correlation. Learnings from this step can be applied in a backtesting strategy
+5. It provides a `gammath_stocks_backtesting.py` app that tests an implemented strategy and generates data to see how respective strategy did
+6. All the above apps take a watchlist as an input. A sample watch list is provided in `sample_watchlist.csv` [https://github.com/salylgw/gammath_spot.git] that can be used and updated for your watchlist
 
 # External dependencies
 
@@ -55,7 +57,7 @@ In case you have trouble installing ta-lib then you can install miniconda and us
 11. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_gscores_historian.py sample_watchlist.csv > log_historian.txt`
 12. You can check the `tickers/"ticker_symbol"/"ticker_symbol"_micro_gscores.csv` (for stock history based micro-gScores and corresponding total gScore) and `tickers/"ticker_symbol"/`"ticker_symbol"_gscores_charts.png` that shows the plotted charts of price, overall stock history based gScore and micro-gScores
 13. You can do backtesting on provided watchlist. Please refer to `gammath_spot/gammath_spot/gammath_backtesting.py` for implementing your strategy
-14. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years (that were saved from the gscore historian) and saves the backtesting stats in respective in `tickers/<ticker_symbol>/<ticker_symbol>_bt_stats.csv`
+14. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years (that were saved from the gscore historian) and saves the backtesting stats in `tickers/<ticker_symbol>/<ticker_symbol>_gtrades_stats.csv`
 
 # Investment blog
 
