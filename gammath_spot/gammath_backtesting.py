@@ -27,6 +27,7 @@ import pandas as pd
 import numpy
 from backtesting import Backtest, Strategy
 
+#Set this based on gScores history for specific stocks. This default setting is generic and may have to be tailored for specific stocks
 MIN_SH_PREMIUM_LEVEL = -0.375
 MIN_SH_DISCOUNT_LEVEL = 0.375
 
@@ -42,7 +43,6 @@ def run_basic_backtest(df, path, tsymbol):
 
     history_len = len(df)
 
-    previous_close = 0
     total_shares = 0
     total_cost = 0
     avg_price = 0
@@ -52,15 +52,17 @@ def run_basic_backtest(df, path, tsymbol):
     buy_q = 0
     marked_for_sell = False
 
-    for i in range(history_len):
+    for i in range(1, history_len):
         curr_sh_gscore = df.Total[i]
         curr_ols_gscore = df.OLS[i]
         curr_closing_price = df.Close[i]
+        previous_closing_price = df.Close[i-1]
 
         if ((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= 0))):
 
             marked_for_sell = False
-            if (((curr_closing_price < avg_price) or (not avg_price))): #Check if rising
+            if (((curr_closing_price < avg_price) or (not avg_price)) and (curr_closing_price > previous_closing_price)): #Check if lower than our avg buying price and rising
+
                 #Mimic a buy
                 buy_q = 1
 
@@ -90,9 +92,9 @@ def run_basic_backtest(df, path, tsymbol):
         if (((curr_sh_gscore <= MIN_SH_PREMIUM_LEVEL) and total_shares) or marked_for_sell):
 
             marked_for_sell = True
-            if (curr_closing_price <= df.Close[i-1]): #Check if falling
+            if (curr_closing_price < df.Close[i-1]): #Check if falling
                 total_cash = (total_shares * curr_closing_price)
-                if (total_cost <= total_cash):
+                if (total_cost < total_cash):
                     #Mimic sale
                     profit = total_cash - total_cost
                     df_transactions['Date'][transactions_count] = df.Date[i]
