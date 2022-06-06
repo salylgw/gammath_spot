@@ -184,8 +184,13 @@ class GBT:
             df = df.truncate(after=MIN_TRADING_DAYS_FOR_5_YEARS-1)
             #Read the gscores history into dataframe
             df_gscores_history = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+            #Debug code
+#            for i in range(len(df)):
+#                if (df_gscores_history.Date[i] != df.Date[i]):
+#                    raise ValueError('gScores and price history dates mismatch')
+
             #Generate the dataframe that has stock history and gscores history
-            df = df.join(df_gscores_history)
+            df = df_gscores_history.join(df.Close)
         except:
             print('\nERROR: Backtesting data initialization failed for symbol ', tsymbol)
             return
