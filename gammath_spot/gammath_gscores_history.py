@@ -36,7 +36,9 @@ class GSH:
     def __init__(self):
 
         self.Tickers_dir = Path('tickers')
+        #Default levels
         self.SH_GSCORE_MIN_DISCOUNT_LEVEL = 0.375
+        self.SH_GSCORE_NEUTRAL_LEVEL = 0
         self.SH_GSCORE_MIN_PREMIUM_LEVEL = -0.375
 
     def get_gscores_history(self, tsymbol):
@@ -75,6 +77,8 @@ class GSH:
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
+            self.SH_GSCORE_MIN_DISCOUNT_LEVEL, self.SH_GSCORE_NEUTRAL_LEVEL, self.SH_GSCORE_MIN_PREMIUM_LEVEL = df_gscores.Total.quantile([0.20, 0.5, 0.80])
+
             #Draw the charts to get a general idea of correlations
             figure, axes = plt.subplots(nrows=10, figsize=(21, 19))
             closing_prices_df = pd.DataFrame({tsymbol: df1.Close[0:MIN_TRADING_DAYS_FOR_5YEARS]})
@@ -82,6 +86,7 @@ class GSH:
             sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.Total[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             sh_gscores_df.plot(ax=axes[1],lw=1,title='Stock History based gScores')
             axes[1].axhline(self.SH_GSCORE_MIN_DISCOUNT_LEVEL,lw=1,ls='-',c='r')
+            axes[1].axhline(self.SH_GSCORE_NEUTRAL_LEVEL,lw=1,ls='-',c='r')
             axes[1].axhline(self.SH_GSCORE_MIN_PREMIUM_LEVEL,lw=1,ls='-',c='r')
             price_gscores_df = pd.DataFrame({'Price-micro-gScores': df_gscores.Price[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             price_gscores_df.plot(ax=axes[2],lw=1,title='Price micro-gScores')
