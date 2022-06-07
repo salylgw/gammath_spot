@@ -27,8 +27,9 @@ import pandas as pd
 import numpy
 from backtesting import Backtest, Strategy
 
-#Set this based on gScores history for specific stocks. This default setting is generic and may have to be tailored for specific stocks
+#Default values
 MIN_SH_PREMIUM_LEVEL = -0.375
+NEUTRAL_SH_PREMIUM_LEVEL = -0.375
 MIN_SH_DISCOUNT_LEVEL = 0.375
 
 MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
@@ -52,13 +53,17 @@ def run_basic_backtest(df, path, tsymbol):
     buy_q = 0
     marked_for_sell = False
 
+    #Use percentile levels to determine discount, neutral and premium levels
+    #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
+    MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.Total.quantile([0.20, 0.5, 0.80])
+
     for i in range(1, history_len):
         curr_sh_gscore = df.Total[i]
         curr_ols_gscore = df.OLS[i]
         curr_closing_price = df.Close[i]
         previous_closing_price = df.Close[i-1]
 
-        if ((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= 0))):
+        if ((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= NEUTRAL_SH_PREMIUM_LEVEL))):
 
             marked_for_sell = False
             if (((curr_closing_price < avg_price) or (not avg_price)) and (curr_closing_price > previous_closing_price)): #Check if lower than our avg buying price and rising
