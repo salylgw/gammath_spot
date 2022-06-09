@@ -37,10 +37,11 @@ MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 #Following is a basic example of writing your own strategy for backtesting
 #This is just provided as an example to show one of the ways to do it
 #Remeber, sell criteria is subjective. The method used here could be a way out of a position if one decides to get out; Otherwise, it is not mandatory to sell if one is confident of long-term prospects
+#It is generally expected that in reality, execution of gScore-based dollar cost averaging would be better than what is used in backtesting since this does not account of news analysis and current information. As described in the guidelines, one would check the news before making buy/sell decisions
 def run_basic_backtest(df, path, tsymbol):
 
     #Create a data frame to save the stats
-    df_transactions = pd.DataFrame(columns=['Date', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
+    df_transactions = pd.DataFrame(columns=['Date', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
 
     history_len = len(df)
 
@@ -57,18 +58,18 @@ def run_basic_backtest(df, path, tsymbol):
     #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
     MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.Total.quantile([0.20, 0.5, 0.80])
 
-    for i in range(1, history_len):
+    for i in range(2, history_len):
         curr_sh_gscore = df.Total[i]
         curr_ols_gscore = df.OLS[i]
         curr_closing_price = df.Close[i]
-        previous_closing_price = df.Close[i-1]
 
         if ((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= NEUTRAL_SH_PREMIUM_LEVEL))):
 
             marked_for_sell = False
-            if (((curr_closing_price < avg_price) or (not avg_price)) and (curr_closing_price > previous_closing_price)): #Check if lower than our avg buying price and rising
+            #Basic conservative approach; This should be customized for your own check for bottom
+            if (((curr_closing_price < avg_price) or (not avg_price)) and ((curr_closing_price > df.Close[i-1]) and curr_closing_price > df.Close[i-2])): #Check if lower than our avg buying price and rising
 
-                #Mimic a buy
+                #Mimic a buy; In reality, buy quantity can also be 0.1 if your broker support dollar based investing and fractional shares buy/sell
                 buy_q = 1
 
                 #If it is below "expected" average then buy more
@@ -122,6 +123,13 @@ def run_basic_backtest(df, path, tsymbol):
         if (total_shares):
             days_held += 1
 
+    df_sci = pd.read_csv(path / f'{tsymbol}_gscores.csv', index_col='Unnamed: 0')
+    if (df_sci.SCI_Total[0] <= 0):
+        note = f'Current_info_data_overall_negative'
+    else:
+        note = f'Current_info_data_overall_positive'
+
+    df_transactions.Notes[transactions_count-1] = note
     df_transactions = df_transactions.truncate(after=transactions_count-1)
     df_transactions.to_csv(path / f'{tsymbol}_gtrades_stats.csv')
 
