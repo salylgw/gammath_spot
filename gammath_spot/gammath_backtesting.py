@@ -41,7 +41,7 @@ MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 def run_basic_backtest(df, path, tsymbol):
 
     #Create a data frame to save the stats
-    df_transactions = pd.DataFrame(columns=['Date', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
+    df_transactions = pd.DataFrame(columns=['Date', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Last_Price', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
 
     history_len = len(df)
 
@@ -62,12 +62,13 @@ def run_basic_backtest(df, path, tsymbol):
         curr_sh_gscore = df.Total[i]
         curr_ols_gscore = df.OLS[i]
         curr_closing_price = df.Close[i]
+        prev_closing_price = df.Close[i-1]
 
         if ((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= NEUTRAL_SH_PREMIUM_LEVEL))):
 
             marked_for_sell = False
             #Basic conservative approach; This should be customized for your own check for bottom
-            if (((curr_closing_price < avg_price) or (not avg_price)) and ((curr_closing_price > df.Close[i-1]) and curr_closing_price > df.Close[i-2])): #Check if lower than our avg buying price and rising
+            if (((curr_closing_price < avg_price) or (not avg_price)) and ((curr_closing_price > prev_closing_price) and (prev_closing_price > df.Close[i-2]))): #Check if lower than our avg buying price and rising [for two concecutive days]
 
                 #Mimic a buy; In reality, buy quantity can also be 0.1 if your broker support dollar based investing and fractional shares buy/sell
                 buy_q = 1
@@ -129,8 +130,10 @@ def run_basic_backtest(df, path, tsymbol):
     else:
         note = f'Current_info_data_overall_positive'
 
-    df_transactions.Notes[transactions_count-1] = note
-    df_transactions = df_transactions.truncate(after=transactions_count-1)
+    #Show last closing price for convenience
+    df_transactions.Last_Price[transactions_count] = round(curr_closing_price, 3)
+    df_transactions.Notes[transactions_count] = note
+    df_transactions = df_transactions.truncate(after=transactions_count)
     df_transactions.to_csv(path / f'{tsymbol}_gtrades_stats.csv')
 
 #Get the main stock history based gScores
