@@ -41,7 +41,7 @@ MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 def run_basic_backtest(df, path, tsymbol):
 
     #Create a data frame to save the stats
-    df_transactions = pd.DataFrame(columns=['Date', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Last_Price', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
+    df_transactions = pd.DataFrame(columns=['Date', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
 
     history_len = len(df)
 
@@ -52,7 +52,9 @@ def run_basic_backtest(df, path, tsymbol):
     days_held = 0
     profit = 0
     buy_q = 0
+    marked_for_buy = False
     marked_for_sell = False
+    cycle = ''
 
     #Use percentile levels to determine discount, neutral and premium levels
     #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
@@ -67,6 +69,7 @@ def run_basic_backtest(df, path, tsymbol):
         if ((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= NEUTRAL_SH_PREMIUM_LEVEL))):
 
             marked_for_sell = False
+            marked_for_buy = True
             #Basic conservative approach; This should be customized for your own check for bottom
             if (((curr_closing_price < avg_price) or (not avg_price)) and ((curr_closing_price > prev_closing_price) and (prev_closing_price > df.Close[i-2]))): #Check if lower than our avg buying price and rising [for two concecutive days]
 
@@ -94,10 +97,12 @@ def run_basic_backtest(df, path, tsymbol):
                 avg_price = total_cost/total_shares
                 df_transactions['Avg_Price'][transactions_count] = round(avg_price, 3)
                 transactions_count += 1
+        else:
+            marked_for_buy = False
 
 
         if (((curr_sh_gscore <= MIN_SH_PREMIUM_LEVEL) and total_shares) or marked_for_sell):
-
+            marked_for_buy = False
             marked_for_sell = True
             if (curr_closing_price < df.Close[i-1]): #Check if falling
                 total_cash = (total_shares * curr_closing_price)
@@ -120,6 +125,8 @@ def run_basic_backtest(df, path, tsymbol):
                     profit = 0
                     total_cash = 0
                     marked_for_sell = 0
+        else:
+            marked_for_sell = False
 
         if (total_shares):
             days_held += 1
@@ -132,6 +139,16 @@ def run_basic_backtest(df, path, tsymbol):
 
     #Show last closing price for convenience
     df_transactions.Last_Price[transactions_count] = round(curr_closing_price, 3)
+
+    #Check current stage (buy/sell/hold cycle) of our strategy execution
+    if (marked_for_buy):
+        cycle = 'Buy_cycle'
+    elif (marked_for_sell):
+        cycle = 'Sell_cycle'
+    else:
+        cycle = 'Hold_cycle'
+
+    df_transactions.Stage[transactions_count] = cycle
     df_transactions.Notes[transactions_count] = note
     df_transactions = df_transactions.truncate(after=transactions_count)
     df_transactions.to_csv(path / f'{tsymbol}_gtrades_stats.csv')
