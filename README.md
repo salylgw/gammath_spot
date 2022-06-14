@@ -1,7 +1,7 @@
 # Gammath™ SPOT
 **S**tock **P**rice-**O**pining **T**ool is a DIY stock technical analysis toolset used to analyze stocks and compute gScore that indicates the degree at which a stock is trading at a perceived discount or a perceived premium. The gScore is then used like an indicator in making buy, sell or hold decision on the stock. It also provides tool to generate gScore-history for correlation and tool for backtesting strategy.
 
-# How does it do that? It does this in two parts:
+# How does it do that? It does this in four parts:
 1. It provides a `gammath_stocks_data_scraper.py` app that scrapes the web to obtain stock information necessary to run its gScore computing algorithm.
 2. It provides a `gammath_stocks_analyzer_and_scorer.py` app that analyzes the stock data saved on the local storage from step 1 and computes scores using its algorithm to indicate perceived discount or perceived premium.
 3. The gScores range between -1 and +1. gScores towards -1 indicates that the tool perceives the stock price to be at a premium while gScore towards +1 indicates that the tool preceives the stock price to be at a discount.
@@ -64,6 +64,7 @@ In case you run into problem while installing ta-lib then you can install it usi
 1. You can do backtesting on provided watchlist. If you installed this software then run: `gammath_backtester sample_watchlist.csv > log_backtester.txt`
 1. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_backtesting.py sample_watchlist.csv > log_backtester.txt`. You can update the function locally for implementing your own strategy
 1. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years (that were saved from the gscore historian) and saves the backtesting stats in `tickers/<ticker_symbol>/<ticker_symbol>_gtrades_stats.csv`
+1. You can check the backtesting stats to understand if the strategy you use worked historically and then decide whether to use that strategy or not
 
 # Investment blog
 If you want to see a real example of how output of this tool is being used then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).
