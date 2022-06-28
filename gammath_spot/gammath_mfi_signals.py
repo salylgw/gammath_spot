@@ -117,8 +117,9 @@ def get_mfi_signals(tsymbol, df, path):
 
     mfi_signals = f'mfi:{mfi_avg},{mfi_dir},{mfi_lvl},{mfi_grec},{mfi_indicator}'
 
-    #Return RSI data in a dataframe for plotting charts
+    #Return MFI data in a dataframe for plotting charts with date as index
     mfi_df = pd.DataFrame({'MFI': mfi})
+    mfi_df = mfi_df.set_index(df.Date)
 
     return mfi_df, mfi_gscore, mfi_max_score, mfi_signals
 

@@ -57,7 +57,7 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
             return
 
     #Draw the charts to view all at once as subplots
-    figure, axes = plt.subplots(nrows=7, figsize=(21, 19))
+    figure, axes = plt.subplots(nrows=7, figsize=(28, 35))
 
     try:
         bb_df.plot(ax=axes[0],lw=1,title='Bollinger Bands')

@@ -157,7 +157,8 @@ def get_rsi_signals(tsymbol, df, path):
     rsi_grec = f'rsi_gscore:{rsi_gscore}/{rsi_max_score}'
     rsi_signals = f'rsi: {rsi_avg},{rsi_lvl},{rsi_direction},{curr_count_quantile_str},{rsi_grec}'
 
-    #Return RSI data in a dataframe for plotting charts
+    #Return RSI data in a dataframe for plotting charts with date as index
     rsi_df = pd.DataFrame({'RSI': rsi})
+    rsi_df = rsi_df.set_index(df.Date)
 
     return rsi_df, rsi_gscore, rsi_max_score, rsi_signals

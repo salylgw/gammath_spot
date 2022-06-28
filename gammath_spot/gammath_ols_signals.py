@@ -309,7 +309,8 @@ def get_ols_signals(tsymbol, df, path):
 
     ols_signals = f'OLS: ols_fit_score:{fit_score},1y_slope:{slope_sign_1y},5y_slope:{slope_sign_5y},curr_diff:{curr_diff_sign},{curr_diff_quantile_str},{ols_grec}'
 
-    #Return OLS lines data in a dataframe for plotting charts
+    #Return OLS lines data in a dataframe for plotting charts with date as index
     ols_df = pd.DataFrame({tsymbol: df.Close, 'OLS': y_predictions, 'OLS_1Y': y1_series})
+    ols_df = ols_df.set_index(df.Date)
 
     return ols_df, ols_gscore, ols_max_score, ols_signals

@@ -243,7 +243,8 @@ def get_kf_state_means(tsymbol, df):
         kf_signals = f'KF:+ve_days:{curr_count_quantile_str},+ve_diff:{curr_diff_quantile_str},{kf_grec}'
 
 
-    #Return KF state means in a dataframe for plotting charts
+    #Return KF state means in a dataframe for plotting charts with date as index
     kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
+    kf_df = kf_df.set_index(df.Date)
 
     return kf_df, kf_gscore, kf_max_score, kf_signals

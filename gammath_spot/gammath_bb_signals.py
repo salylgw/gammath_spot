@@ -87,7 +87,8 @@ def get_bollinger_bands_signals(tsymbol, df, path):
     bb_grec = f'bb_gscore:{bb_gscore}/{bb_max_score}'
     bb_signals = f'bollinger bands:{bb_avg},{bb_vicinity},{bb_grec}'
 
-    #Return Bollinger bands in a dataframe for plotting charts
+    #Return Bollinger bands in a dataframe for plotting charts with date as index
     bb_df = pd.DataFrame({tsymbol: df.Close, 'Upper Band': ub, 'Middle Band': mb, 'Lower Band': lb})
+    bb_df = bb_df.set_index(df.Date)
 
     return bb_df, bb_gscore, bb_max_score, bb_signals

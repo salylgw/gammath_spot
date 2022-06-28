@@ -86,7 +86,8 @@ def get_stochastics_slow_signals(tsymbol, df):
 
     stoch_slow_signals = f'stochs: {stoch_lvl},slowd:{stoch_slowd},l_xovr_date:{stoch_crossover_date},{stoch_grec}'
 
-    #Return slowk and slowd in a dataframe for plotting charts
+    #Return slowk and slowd in a dataframe for plotting charts with date as index
     stoch_df = pd.DataFrame({'SLOWK': slowk, 'SLOWD': slowd})
+    stoch_df = stoch_df.set_index(df.Date)
 
     return stoch_df, stoch_gscore, stoch_max_score, stoch_slow_signals

@@ -251,7 +251,8 @@ def get_macd_signals(tsymbol, df, path):
 
     macd_signals = f'MACD trend:{macd_trend},{macd_buy_sell_stats},{macd_grec}'
 
-    #Return MACD lines in a dataframe for plotting charts
+    #Return MACD lines in a dataframe for plotting charts with date as index
     macd_df = pd.DataFrame({'MACD': macd, 'MACD_SIGNAL': macd_signal})
+    macd_df = macd_df.set_index(df.Date)
 
     return macd_df, macd_gscore, macd_max_score, macd_signals
