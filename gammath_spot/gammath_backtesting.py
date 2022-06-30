@@ -104,7 +104,8 @@ def run_basic_backtest(df, path, tsymbol):
         if (((curr_sh_gscore <= MIN_SH_PREMIUM_LEVEL) and total_shares) or marked_for_sell):
             marked_for_buy = False
             marked_for_sell = True
-            if (curr_closing_price < df.Close[i-1]): #Check if falling
+            #Check if falling
+            if ((curr_closing_price < prev_closing_price) and (prev_closing_price < df.Close[i-2])):
                 total_cash = (total_shares * curr_closing_price)
                 if (total_cost < total_cash):
                     #Mimic sale
