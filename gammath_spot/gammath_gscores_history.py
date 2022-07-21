@@ -80,7 +80,7 @@ class GSH:
             self.SH_GSCORE_MIN_DISCOUNT_LEVEL, self.SH_GSCORE_NEUTRAL_LEVEL, self.SH_GSCORE_MIN_PREMIUM_LEVEL = df_gscores.Total.quantile([0.20, 0.5, 0.80])
 
             #Draw the charts (along with dates) to get a general idea of correlations
-            figure, axes = plt.subplots(nrows=10, figsize=(28, 47))
+            figure, axes = plt.subplots(nrows=11, figsize=(28, 47))
 
             closing_prices_df = pd.DataFrame({tsymbol: df1.Close[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             closing_prices_df = closing_prices_df.set_index(df1.Date[0:MIN_TRADING_DAYS_FOR_5YEARS])
@@ -115,6 +115,10 @@ class GSH:
             stoch_gscores_df = pd.DataFrame({'Stoch-micro-gScores': df_gscores.Stoch[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             stoch_gscores_df = stoch_gscores_df.set_index(df_gscores.Date)
             stoch_gscores_df.plot(ax=axes[9],lw=1,title='Stoch micro-gScores')
+            nup_gscores_df = pd.DataFrame({'NU-Prob': df_gscores.NUP[0:MIN_TRADING_DAYS_FOR_5YEARS]})
+            nup_gscores_df = nup_gscores_df.set_index(df_gscores.Date)
+            nup_gscores_df.plot(ax=axes[10],lw=1,title='Next day UP Probability')
+
             plt.savefig(path / f'{tsymbol}_gscores_charts.png')
             return df_gscores
         except:

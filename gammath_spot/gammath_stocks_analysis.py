@@ -138,6 +138,7 @@ class GSA:
         self.ols_df = pd.DataFrame()
 
         self.lgst_signals = ''
+        self.nup = 0
         self.pdp = ''
 
         self.total_sh_gscore = 0
@@ -309,7 +310,7 @@ class GSA:
 
         #TBD. Price direction probability is WIP (Work-In-Progress)
         try:
-            self.pdp = gpdp.get_price_dir_probability(df)
+            self.nup, self.pdp = gpdp.get_price_dir_probability(df)
         except ValueError:
             print('\nERROR: generating next day price direction probability for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -327,7 +328,7 @@ class GSA:
         self.total_sh_gscore = round(self.overall_sh_gscore/self.overall_max_score, 3)
 
         #Create a data frame for all stock history specific (micro)gScores
-        sh_gScore_df = pd.DataFrame({'Date': df.Date[len(df)-1],'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'Total': self.total_sh_gscore}, index=range(1))
+        sh_gScore_df = pd.DataFrame({'Date': df.Date[len(df)-1],'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'Total': self.total_sh_gscore, 'NUP': self.nup}, index=range(1))
 
         return sh_gScore_df
 
@@ -556,7 +557,7 @@ class GSA:
         self.total_final_score = round(self.overall_gscore/self.overall_max_score, 3)
 
         #Create a data frame for all (micro)gScores
-        gScore_df = pd.DataFrame({'Date': df.Date[len(df)-1], 'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'Options': self.options_final_score, 'PE': self.pe_final_score, 'PEG': self.peg_final_score, 'Beta': self.beta_final_score, 'PBR': self.pbr_final_score, 'QBS': self.qbs_final_score, 'IHP': self.ihp_final_score, 'INSHP': self.inshp_final_score, 'Reco': self.reco_final_score, 'SENTI': self.st_final_score, 'SH_Total': self.total_sh_gscore, 'SCI_Total': self.total_sci_gscore, 'Total': self.total_final_score}, index=range(1))
+        gScore_df = pd.DataFrame({'Date': df.Date[len(df)-1], 'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'Options': self.options_final_score, 'PE': self.pe_final_score, 'PEG': self.peg_final_score, 'Beta': self.beta_final_score, 'PBR': self.pbr_final_score, 'QBS': self.qbs_final_score, 'IHP': self.ihp_final_score, 'INSHP': self.inshp_final_score, 'Reco': self.reco_final_score, 'SENTI': self.st_final_score, 'SH_Total': self.total_sh_gscore, 'SCI_Total': self.total_sci_gscore, 'Total': self.total_final_score, 'NUP': self.nup}, index=range(1))
 
         #Save the CSV file for later reference
         gScore_df.to_csv(path / f'{tsymbol}_gscores.csv')

@@ -20,8 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 #TBD. Price direction probability is WIP (Work-In-Progress) and untested. Please do NOT use
 
-import sys
-from pathlib import Path
 import pandas as pd
 import numpy as np
 
@@ -39,7 +37,7 @@ def get_price_dir_probability(df):
     price_consec_up_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
     price_consec_down_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
 
-    #Get historical exact number of up, down days
+    #Get historical exact number of n-days up, down days
     for i in range(1, prices_len):
         if (prices[i-1] <= prices[i]): #equal or rising
 
@@ -61,10 +59,10 @@ def get_price_dir_probability(df):
 
             last_falling_days_count += 1
 
-    overall_up_probability = round(total_up_days/prices_len, 3)
-    overall_down_probability = round(total_down_days/prices_len, 3)
+    overall_up_probability = round(total_up_days/(prices_len-1), 3)
+    overall_down_probability = round(total_down_days/(prices_len-1), 3)
 
-    #Get historical "at least" up, down counts
+    #Get historical "all n-days" up, down counts
     for i in range(1, MAX_COUNTS_LEN):
         total = 0
         for j in range(i+1, MAX_COUNTS_LEN):
@@ -86,13 +84,13 @@ def get_price_dir_probability(df):
     #Compute probabilities
     if (last_falling_days_count):
         curr_count = last_falling_days_count
-        next_down_p = round(price_consec_down_dir_counts[last_falling_days_count+1]/prices_len, 3)
+        next_down_p = round(price_consec_down_dir_counts[last_falling_days_count+1]/(prices_len-1), 3)
         next_up_p = round(1 - next_down_p, 3)
     elif (last_rising_days_count):
         curr_count = last_rising_days_count
-        next_up_p = round(price_consec_up_dir_counts[last_rising_days_count+1]/prices_len, 3)
+        next_up_p = round(price_consec_up_dir_counts[last_rising_days_count+1]/(prices_len-1), 3)
         next_down_p = round(1 - next_up_p, 3)
 
     pdp = f'Overall_PDP: UP: {overall_up_probability} DOWN: {overall_down_probability}\nNext_day_PDP: UP: {next_up_p} DOWN: {next_down_p}'
 
-    return pdp
+    return next_up_p, pdp
