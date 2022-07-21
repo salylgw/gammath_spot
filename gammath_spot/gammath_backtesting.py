@@ -58,10 +58,10 @@ def run_basic_backtest(df, path, tsymbol):
 
     #Use percentile levels to determine discount, neutral and premium levels
     #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
-    MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.Total.quantile([0.20, 0.5, 0.80])
+    MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.SH_Total.quantile([0.20, 0.5, 0.80])
 
     for i in range(2, history_len):
-        curr_sh_gscore = df.Total[i]
+        curr_sh_gscore = df.SH_Total[i]
         curr_ols_gscore = df.OLS[i]
         curr_closing_price = df.Close[i]
         prev_closing_price = df.Close[i-1]
