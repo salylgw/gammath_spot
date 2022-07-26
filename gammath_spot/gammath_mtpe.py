@@ -21,16 +21,17 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 #TBD. Moving Technical Price Estimate is WIP (Work-In-Progress) and untested. Please do NOT use
 
 import pandas as pd
-import numpy as np
 
 def get_moving_technical_price_estimate(df):
 
     MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
     prices = df.Close
     prices_len = len(prices)
+    #Get percent change per day for MIN_TRADING_DAYS_FOR_5_YEARS and get a mean of it
     mean_pct_change_per_day = prices[prices_len-MIN_TRADING_DAYS_FOR_5_YEARS:].pct_change().mean()
 
-    moving_technical_estimated_price_in_5y = (prices[prices_len-1]*mean_pct_change_per_day*MIN_TRADING_DAYS_FOR_5_YEARS)
+    #Estimate/Project price after approximately 5 years from last price based on average percentage cange per day from approximately last 5 years
+    moving_technical_estimated_price_in_5y = round((prices[prices_len-1]*mean_pct_change_per_day*MIN_TRADING_DAYS_FOR_5_YEARS), 3) #round it off to take less space in text file
 
     mtep = f'Moving Technical Estimated Price In 5Y: {moving_technical_estimated_price_in_5y}'
 
