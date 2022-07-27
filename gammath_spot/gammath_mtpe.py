@@ -35,4 +35,4 @@ def get_moving_technical_price_estimate(df):
 
     mtep = f'Moving Technical Estimated Price In 5Y: {moving_technical_estimated_price_in_5y}'
 
-    return mtep
+    return moving_technical_estimated_price_in_5y, mtep
