@@ -143,7 +143,7 @@ class GSA:
         self.nup = 0
         self.pdp = ''
         self.tpc5y = 0
-        self.mtep = ''
+        self.mtcp = ''
 
         self.total_sh_gscore = 0
 
@@ -312,17 +312,19 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
 
-        #TBD. Price direction probability is WIP (Work-In-Progress)
+        # Price direction probability (overall and next day)
         try:
+            #Get the next day probability for decision-making
             self.nup, self.pdp = gpdp.get_price_dir_probability(df)
         except ValueError:
             print('\nERROR: generating next day price direction probability for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #TBD. Moving Technical Price Estimation is WIP (Work-In-Progress)
+        # Moving Technical 5Y Price Conjecture
         try:
+            #Get 5Y price conjecture for decision-making
             self.tpc5y, self.mtcp = gmtpc.get_moving_technical_price_conjecture(df)
         except ValueError:
-            print('\nERROR: generating moving 5y technical price estimate for ', tsymbol, ': ', sys.exc_info()[0])
+            print('\nERROR: generating moving 5y technical price conjecture for ', tsymbol, ': ', sys.exc_info()[0])
 
         #TBD. Just log Logistic regression signal for now
         try:
@@ -553,8 +555,7 @@ class GSA:
 
         #Augment all signals for saving in a file
         #TBD lgst_signals to be included for logging purposes only for now
-        #TBD pdp to be included for logging purposes only for now
-        self.overall_signals = f'{self.price_signals}\n{self.rsi_signals}\n{self.bb_signals}\n{self.macd_signals}\n{self.kf_signals}\n{self.ols_signals}\n{self.mfi_signals}\n{self.stoch_slow_signals}\n{self.options_signals}\n{self.pe_signals}\n{self.peg_signals}\n{self.beta_signals}\n{self.ihp_signals}\n{self.inshp_signals}\n{self.qbs_signals}\n{self.pbr_signals}\n{self.reco_signals}\n{self.st_signals}\n{self.events_info}\n{self.note}\n{self.pdp}\n{self.mtep}\n{self.lgst_signals}'
+        self.overall_signals = f'{self.price_signals}\n{self.rsi_signals}\n{self.bb_signals}\n{self.macd_signals}\n{self.kf_signals}\n{self.ols_signals}\n{self.mfi_signals}\n{self.stoch_slow_signals}\n{self.options_signals}\n{self.pe_signals}\n{self.peg_signals}\n{self.beta_signals}\n{self.ihp_signals}\n{self.inshp_signals}\n{self.qbs_signals}\n{self.pbr_signals}\n{self.reco_signals}\n{self.st_signals}\n{self.events_info}\n{self.note}\n{self.pdp}\n{self.mtcp}\n{self.lgst_signals}'
 
         #Compute final score then save scores and signals
         self.overall_gscore = (self.overall_sh_gscore + self.overall_sci_gscore)
