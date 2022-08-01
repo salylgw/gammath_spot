@@ -45,7 +45,7 @@ try:
     from gammath_spot import gammath_ols_signals as gols
     from gammath_spot import gammath_lgstic_signals as glgst
     from gammath_spot import gammath_pdp as gpdp
-    from gammath_spot import gammath_mtpe as gmtpe
+    from gammath_spot import gammath_mtpc as gmtpc
     from gammath_spot import gammath_get_stocks_events_data as gge
     from gammath_spot import gammath_score_signals as gscsi
     from gammath_spot import gammath_si_charts as gsc
@@ -70,7 +70,7 @@ except:
     import gammath_ols_signals as gols
     import gammath_lgstic_signals as glgst
     import gammath_pdp as gpdp
-    import gammath_mtpe as gmtpe
+    import gammath_mtpc as gmtpc
     import gammath_get_stocks_events_data as gge
     import gammath_score_signals as gscsi
     import gammath_si_charts as gsc
@@ -142,7 +142,7 @@ class GSA:
         self.lgst_signals = ''
         self.nup = 0
         self.pdp = ''
-        self.tpe5y = 0
+        self.tpc5y = 0
         self.mtep = ''
 
         self.total_sh_gscore = 0
@@ -320,7 +320,7 @@ class GSA:
 
         #TBD. Moving Technical Price Estimation is WIP (Work-In-Progress)
         try:
-            self.tpe5y, self.mtep = gmtpe.get_moving_technical_price_estimate(df)
+            self.tpc5y, self.mtcp = gmtpc.get_moving_technical_price_conjecture(df)
         except ValueError:
             print('\nERROR: generating moving 5y technical price estimate for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -338,7 +338,7 @@ class GSA:
         self.total_sh_gscore = round(self.overall_sh_gscore/self.overall_max_score, 3)
 
         #Create a data frame for all stock history specific (micro)gScores
-        sh_gScore_df = pd.DataFrame({'Date': df.Date[len(df)-1],'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'SH_Total': self.total_sh_gscore, 'NUP': self.nup, 'TPE5Y': self.tpe5y}, index=range(1))
+        sh_gScore_df = pd.DataFrame({'Date': df.Date[len(df)-1],'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'SH_Total': self.total_sh_gscore, 'NUP': self.nup, 'TPC5Y': self.tpc5y}, index=range(1))
 
         return sh_gScore_df
 

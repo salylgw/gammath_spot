@@ -18,11 +18,12 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
-#TBD. Price direction probability is WIP (Work-In-Progress) and untested. Please do NOT use
+# Dynamic Price direction probability for next day
 
 import pandas as pd
 import numpy as np
 
+# Get overall Price direction probability and probability for next day
 def get_price_dir_probability(df):
 
     MAX_COUNTS_LEN = 100
@@ -37,7 +38,7 @@ def get_price_dir_probability(df):
     price_consec_up_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
     price_consec_down_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
 
-    #Get historical exact number of n-days up, down days
+    #Get historical exact number of n-days up/down days
     for i in range(1, prices_len):
         if (prices[i-1] <= prices[i]): #equal or rising
 
@@ -62,7 +63,7 @@ def get_price_dir_probability(df):
     overall_up_probability = round(total_up_days/(prices_len-1), 3)
     overall_down_probability = round(total_down_days/(prices_len-1), 3)
 
-    #Get historical "all n-days" up, down counts
+    #Get historical "all n-days" up/down counts
     for i in range(1, MAX_COUNTS_LEN):
         total = 0
         for j in range(i+1, MAX_COUNTS_LEN):

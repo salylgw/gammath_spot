@@ -18,21 +18,26 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
-#TBD. Moving Technical Price Estimate is WIP (Work-In-Progress) and untested. Please do NOT use
+# Moving Technical 5Y Price Conjecture
+# Prediction doesn't make sense without the accurate information on how the business is actually
+# doing. In the absence of that, I'm approximating based on past performance and adapting to changes
+# dynamically. Hence, I think of this as dynamic/moving price conjecture
 
 import pandas as pd
 
-def get_moving_technical_price_estimate(df):
+def get_moving_technical_price_conjecture(df):
 
     MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
     prices = df.Close
     prices_len = len(prices)
+    last_price = prices[prices_len-1]
+
     #Get percent change per day for MIN_TRADING_DAYS_FOR_5_YEARS and get a mean of it
     mean_pct_change_per_day = prices[prices_len-MIN_TRADING_DAYS_FOR_5_YEARS:].pct_change().mean()
 
-    #Estimate/Project price after approximately 5 years from last price based on average percentage cange per day from approximately last 5 years
-    moving_technical_estimated_price_in_5y = round((prices[prices_len-1]*mean_pct_change_per_day*MIN_TRADING_DAYS_FOR_5_YEARS), 3) #round it off to take less space in text file
+    #Calculated conjecture of price after approximately 5 years from last price based on average percentage change per day from approximately last 5 years
+    moving_technical_conjecture_price_in_5y = round((last_price + (last_price*mean_pct_change_per_day*MIN_TRADING_DAYS_FOR_5_YEARS)), 3) #round it off to take less space in text file
 
-    mtep = f'Moving Technical Estimated Price In 5Y: {moving_technical_estimated_price_in_5y}'
+    mtcp = f'Moving Technical Conjecture Of Price In 5Y: {moving_technical_conjecture_price_in_5y}'
 
-    return moving_technical_estimated_price_in_5y, mtep
+    return moving_technical_conjecture_price_in_5y, mtcp
