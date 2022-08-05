@@ -38,6 +38,13 @@ def get_price_dir_probability(df):
     price_consec_up_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
     price_consec_down_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
 
+
+    #The intent is to arrange these as follows:
+    # Step 1: Get "exact count" for 'i' number of up/down days
+    # Step 2: Get "at least" count for 'i' number of up/down days to show count for 'i' or more number of up/down days
+    # This way I think price_consec_up/down_dir_counts[i+1] shows count for at least one more after i-up/down days
+    # Then, price_consec_up/down_dir_counts[i+1]/total_sample seems useful
+
     #Get historical exact number of only-n-days up/down days
     for i in range(1, prices_len):
         if (prices[i-1] <= prices[i]): #equal or rising
@@ -78,17 +85,14 @@ def get_price_dir_probability(df):
 
         price_consec_down_dir_counts[i] += total
 
-    curr_count = 0
     next_up_p = 0
     next_down_p = 0
 
     #Compute probabilities with respect to overall sample with the goal being to help find up-day after multiple down-days
     if (last_falling_days_count):
-        curr_count = last_falling_days_count
         next_down_p = round(price_consec_down_dir_counts[last_falling_days_count+1]/(prices_len-1), 3)
         next_up_p = round(1 - next_down_p, 3)
     elif (last_rising_days_count):
-        curr_count = last_rising_days_count
         next_up_p = round(price_consec_up_dir_counts[last_rising_days_count+1]/(prices_len-1), 3)
         next_down_p = round(1 - next_up_p, 3)
 

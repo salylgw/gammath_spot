@@ -18,9 +18,6 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
-# THIS IS WIP: DO NOT USE
-# Experimenting with backtesting framework and getting APIs to work; A lot will change later
-
 import sys
 from pathlib import Path
 import pandas as pd
