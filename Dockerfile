@@ -22,6 +22,8 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 
 RUN conda install -c conda-forge ta-lib
 
+RUN conda install matplotlib
+
 RUN git clone https://github.com/salylgw/gammath_spot.git
 
 WORKDIR /gammath_spot/gammath_spot

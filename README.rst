@@ -22,7 +22,7 @@ This project uses following free tools that need to be installed (you can use pi
 5. pykalman
 6. statsmodels
 7. sklearn
-8. matplotlib
+8. matplotlib (Install matplotlib using miniconda in case you run into problem: `conda install matplotlib`)
 9. backtesting
 
 
