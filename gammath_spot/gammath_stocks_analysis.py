@@ -340,7 +340,8 @@ class GSA:
         self.total_sh_gscore = round(self.overall_sh_gscore/self.overall_max_score, 3)
 
         #Create a data frame for all stock history specific (micro)gScores
-        sh_gScore_df = pd.DataFrame({'Date': df.Date[len(df)-1],'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'SH_Total': self.total_sh_gscore, 'NUP': self.nup, 'TPC5Y': self.tpc5y}, index=range(1))
+        df_len = len(df)
+        sh_gScore_df = pd.DataFrame({'Date': df.Date[df_len-1], 'Close': round(df.Close[df_len-1], 3), 'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'SH_Total': self.total_sh_gscore, 'NUP': self.nup, 'TPC5Y': self.tpc5y}, index=range(1))
 
         return sh_gScore_df
 

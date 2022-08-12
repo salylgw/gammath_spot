@@ -284,6 +284,8 @@ class GBT:
         try:
             path = self.Tickers_dir / f'{tsymbol}'
 
+            #Verify that prepared data corresponds to correct timeline and values before backtesting
+
             #We only need last 5y data
             df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
             df_len = len(df_orig)
@@ -294,30 +296,30 @@ class GBT:
             df = df_orig.copy()
             df.iloc[0:MIN_TRADING_DAYS_FOR_5_YEARS] = df_orig.iloc[start_index:end_index]
             df = df.truncate(after=MIN_TRADING_DAYS_FOR_5_YEARS-1)
-            #Read the gscores history into dataframe
-            df_gscores_history = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
-            #Debug code
-#            for i in range(len(df)):
-#                if (df_gscores_history.Date[i] != df.Date[i]):
-#                    raise ValueError('gScores and price history dates mismatch')
 
-            #Generate the dataframe that has stock history and gscores history
-            df = df_gscores_history.join(df.Close)
+            #Read the prepared data (gscores history and closing price) into dataframe
+            df_gscores_history = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+
+            #Just double check data is consistent before backtesting
+            for i in range(len(df)):
+                if ((round(df_gscores_history.Close[i], 3) != round(df.Close[i], 3)) or (df_gscores_history.Date[i] != df.Date[i])):
+                    raise ValueError('gScores and price history mismatched')
+
         except:
             print('\nERROR: Backtesting data initialization failed for symbol ', tsymbol)
             return
 
 
         #You can call your own backtesting function here. Following is a basic example
-        run_basic_backtest(df, path, tsymbol, 'short_term')
-        run_basic_backtest(df, path, tsymbol, 'long_term')
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term')
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term')
 
         #Following is done to make it easier to use this with backtesting python framework
-#        df.Date = pd.to_datetime(df['Date'])
-#        df = df.set_index('Date')
+#        df_gscores_history.Date = pd.to_datetime(df_gscores_history['Date'])
+#        df_gscores_history = df_gscores_history.set_index('Date')
 
         #Instantiate Backtest
-#        backtest = Backtest(df, gScoresDataAction, cash=20000)
+#        backtest = Backtest(df_gscores_history, gScoresDataAction, cash=20000)
 
         #Back test the strategy using our dataframe
 #        bt_stats = backtest.run()
