@@ -24,6 +24,7 @@ import time
 from pathlib import Path
 import pandas as pd
 import re
+import pandas_datareader.data as pdd
 
 def check_if_same_day(fstat):
 
@@ -224,3 +225,15 @@ class GUTILS:
 
         #Save for later reference and processing
         df_sp.to_csv(path / 'SP500_SEC_PES.csv', index=False)
+
+
+    def get_sp500_closing_data(self):
+
+        path = self.Tickers_dir
+
+        try:
+            #SP500 closing data (entire range)
+            sp500_closing_data = pdd.DataReader('SP500', 'fred')
+            sp500_closing_data.to_csv(path / 'SP500_closing_data.csv')
+        except:
+            print('Get SP500 closing data failed')

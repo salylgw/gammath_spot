@@ -76,6 +76,9 @@ def main():
     #Fetch and save S&P500 list.
     gutils.get_sp500_list()
 
+    #Fetch S&P500 closing data.
+    gutils.get_sp500_closing_data()
+
     #Instances of GSD class
     gsd_instances = []
 
