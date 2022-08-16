@@ -43,6 +43,24 @@ def check_if_same_day(fstat):
     else:
         return False
 
+#Common function to generate price sigmoid
+def get_price_sigmoid(prices):
+
+    prices_len = len(prices)
+
+    #Zero-initialize the sigmoid
+    prices_sigmoid = pd.Series(0, pd.RangeIndex(prices_len))
+
+    #First element of sigmoid is set to 0; next ascending val then 1 else 0
+    for i in range(prices_len-1):
+        if (prices[i] <= prices[i+1]):
+            prices_sigmoid[i+1] = 1
+        else:
+            prices_sigmoid[i+1] = 0
+
+
+    return (prices_sigmoid)
+
 class GUTILS:
 
     def __init__(self):

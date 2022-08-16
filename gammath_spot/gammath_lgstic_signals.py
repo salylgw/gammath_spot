@@ -20,6 +20,10 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 import numpy as np
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 from sklearn.linear_model import LogisticRegression
 
 #This is a WIP. Just getting APIs to work. Lot will change in this file before it gets integrated into scoring
@@ -28,24 +32,6 @@ from sklearn.linear_model import LogisticRegression
 #    1 / (1 + np.exp(-val))
 #    return expit(vals)
 
-#Temp sigmoid for experimentation
-def price_sigmoid(prices):
-
-    prices_len = len(prices)
-
-    #Zero-initialize the sigmoid
-    prices_sigmoid = pd.Series(0, pd.RangeIndex(prices_len))
-
-    #First element of sigmoid is set to 0; next ascending val then 1 else 0
-    for i in range(prices_len-1):
-        if (prices[i] < prices[i+1]):
-            prices_sigmoid[i+1] = 1
-        else:
-            prices_sigmoid[i+1] = 0
-
-
-    return (prices_sigmoid)
-
 #WIP: This is just to get Logistic regression API to work. Algorithm will be updated later
 def get_lgstic_signals(tsymbol, df, path):
     lgstic_signals = ''
@@ -53,7 +39,7 @@ def get_lgstic_signals(tsymbol, df, path):
     prices_len = len(df.Close)
     lp = df.Close[prices_len-1]
     prices = df.Close
-    sigmoid_vals = price_sigmoid(prices)
+    sigmoid_vals = gut.get_price_sigmoid(prices)
 
     y_vals = np.array(sigmoid_vals)
     x_vals = np.array([x for x in range(prices_len)])
