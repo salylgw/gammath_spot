@@ -29,15 +29,18 @@ from sklearn.feature_selection import (mutual_info_regression, mutual_info_class
 
 def get_mi_scores(gscores):
 
+    if (len(gscores) <= 0):
+        raise ValueError('Invalid micro gscores data')
+
     #micro-gscore MI for price correlation
     mi = mutual_info_regression(gscores.drop(['Date', 'Close'], axis=1), gscores.Close)
-    mi_regressed_values = pd.Series(mi, index=gscores.columns.drop(['Date', 'Close']))
+    mi_scores_regr = pd.Series(mi, index=gscores.columns.drop(['Date', 'Close']))
 
     #Get price sigmoid
     ps = gut.get_price_sigmoid(gscores.Close)
 
     #micro-gscore MI for direction correlation
     mi = mutual_info_classif(gscores.drop(['Date', 'Close'], axis=1), ps)
-    mi_classified_values = pd.Series(mi, index=gscores.columns.drop(['Date', 'Close']))
-        
-    return mi_regressed_scores, mi_classified_scores
+    mi_scores_classif = pd.Series(mi, index=gscores.columns.drop(['Date', 'Close']))
+
+    return mi_scores_regr, mi_scores_classif
