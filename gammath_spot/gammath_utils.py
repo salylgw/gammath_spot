@@ -66,6 +66,7 @@ class GUTILS:
     def __init__(self):
 
         self.Tickers_dir = Path('tickers')
+        self.MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 
     def get_sp500_list(self):
 
@@ -244,7 +245,6 @@ class GUTILS:
         #Save for later reference and processing
         df_sp.to_csv(path / 'SP500_SEC_PES.csv', index=False)
 
-
     def get_sp500_closing_data(self):
 
         path = self.Tickers_dir
@@ -255,3 +255,18 @@ class GUTILS:
             sp500_closing_data.to_csv(path / 'SP500_closing_data.csv')
         except:
             print('Get SP500 closing data failed')
+
+    def get_sp500_5y_return_conjecture(self):
+
+        path = self.Tickers_dir
+
+        try:
+            #SP500 closing data (entire range)
+            sp500_closing_data = pd.read_csv(path / 'SP500_closing_data.csv')
+
+            #Get a 5Y return conjecture
+            pct_5y_return_conecture = sp500_closing_data.SP500.dropna().pct_change().mean()*self.MIN_TRADING_DAYS_FOR_5_YEARS*100
+
+            return round(pct_5y_return_conecture, 3)
+        except:
+            print('Get SP500 5Y return conjecture failed')
