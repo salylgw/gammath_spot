@@ -24,8 +24,12 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 import sys
 from pathlib import Path
 import pandas as pd
-import numpy
+import numpy as np
 from backtesting import Backtest, Strategy
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 #Default values
 MIN_SH_PREMIUM_LEVEL = -0.375
@@ -57,6 +61,9 @@ def run_basic_backtest(df, path, tsymbol, term):
     buy_now = False
     sell_now = False
     cycle = ''
+
+    #Instantiate GUTILS class
+    gutils = gut.GUTILS()
 
     #Use percentile levels to determine discount, neutral and premium levels
     #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
@@ -191,6 +198,15 @@ def run_basic_backtest(df, path, tsymbol, term):
                     df_transactions['Profit'][transactions_count] = round(profit, 3)
                     df_transactions['PCT'][transactions_count] = profit_pct
                     df_transactions['Days_held'][transactions_count] = days_held
+                    if (term == 'long_term'):
+
+                        #Get actual return for S&P500 for the same period
+                        actual_sp500_return = gutils.get_sp500_actual_return(df.Date[i-days_held], df.Date[i])
+
+                        if (not np.isnan(actual_sp500_return)):
+                            note = f'SP500 return for same period: {actual_sp500_return}'
+                            df_transactions.Notes[transactions_count] = note
+
                     transactions_count += 1
                     total_shares = 0
                     total_cost = 0
@@ -308,7 +324,6 @@ class GBT:
         except:
             print('\nERROR: Backtesting data initialization failed for symbol ', tsymbol)
             return
-
 
         #You can call your own backtesting function here. Following is a basic example
         run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term')
