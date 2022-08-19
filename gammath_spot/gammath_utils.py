@@ -25,6 +25,7 @@ from pathlib import Path
 import pandas as pd
 import re
 import pandas_datareader.data as pdd
+import numpy as np
 
 def check_if_same_day(fstat):
 
@@ -270,3 +271,32 @@ class GUTILS:
             return round(pct_5y_return_conecture, 3)
         except:
             print('Get SP500 5Y return conjecture failed')
+            return 0
+
+    def get_sp500_actual_return(self, start_date, end_date):
+
+        path = self.Tickers_dir
+
+        try:
+            #SP500 closing data
+            sp500_closing_data = pd.read_csv(path / 'SP500_closing_data.csv')
+            sp500_closing_data = sp500_closing_data.set_index('DATE')
+            try:
+                start_val = sp500_closing_data.SP500[start_date]
+            except:
+                print(f'Failed to get SP500 closing price data for date {start_date}')
+                return np.nan
+
+            try:
+                end_val = sp500_closing_data.SP500[end_date]
+            except:
+                print(f'Failed to get SP500 closing price data for date {end_val}')
+                return np.nan
+
+            #Get actual return percentage
+            actual_pct_return = ((end_val - start_val)*100/start_val)
+
+            return round(actual_pct_return, 3)
+        except:
+            print(f'Get SP500 actual return failed for dates {start_date} and {end_date}')
+            return np.nan
