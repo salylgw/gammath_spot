@@ -22,6 +22,7 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 from pathlib import Path
+from scipy.stats import spearmanr
 
 
 def get_ols_signals(tsymbol, df, path):
@@ -305,12 +306,22 @@ def get_ols_signals(tsymbol, df, path):
     else:
         curr_diff_sign = '+ve'
 
-    ols_grec = f'ols_gscore:{ols_gscore}/{ols_max_score}'
+    #Return OLS lines data in a dataframe for plotting charts
+    ols_df = pd.DataFrame({tsymbol: df.Close, 'OLS': y_predictions, 'OLS_1Y': y1_series})
+
+    #Get Information Coefficient using Spearman rank correlation coefficient
+    try:
+        ols_ic = round(spearmanr(ols_df.OLS.dropna(), df.Close.dropna()).correlation, 3)
+    except:
+        ols_ic = np.nan
+        #Not a fatal error. Just log it
+        print(f'Failed to compute Information Coefficient for {tsymbol} OLS')
+
+    ols_grec = f'ols_ic:{ols_ic},ols_gscore:{ols_gscore}/{ols_max_score}'
 
     ols_signals = f'OLS: ols_fit_score:{fit_score},1y_slope:{slope_sign_1y},5y_slope:{slope_sign_5y},curr_diff:{curr_diff_sign},{curr_diff_quantile_str},{ols_grec}'
 
-    #Return OLS lines data in a dataframe for plotting charts with date as index
-    ols_df = pd.DataFrame({tsymbol: df.Close, 'OLS': y_predictions, 'OLS_1Y': y1_series})
+    #Set date as index for dataframe
     ols_df = ols_df.set_index(df.Date)
 
     return ols_df, ols_gscore, ols_max_score, ols_signals

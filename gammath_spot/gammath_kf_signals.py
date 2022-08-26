@@ -21,6 +21,7 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 import pandas as pd
 from pykalman import KalmanFilter
 import numpy as np
+from scipy.stats import spearmanr
 
 def get_kf_state_means(tsymbol, df):
 
@@ -235,7 +236,18 @@ def get_kf_state_means(tsymbol, df):
 
         kf_max_score += 1
 
-    kf_grec = f'kf_gscore:{kf_gscore}/{kf_max_score}'
+    #Return KF state means in a dataframe for plotting charts
+    kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
+
+    #Get Information Coefficient using Spearman rank correlation coefficient
+    try:
+        kf_ic = round(spearmanr(kf_df['Kalman Filter'].dropna(), df.Close.dropna()).correlation, 3)
+    except:
+        kf_ic = np.nan
+        #Not a fatal error. Just log it
+        print(f'Failed to compute Information Coefficient for {tsymbol} KF')
+
+    kf_grec = f'kf_ic:{kf_ic},kf_gscore:{kf_gscore}/{kf_max_score}'
 
     if (curr_below_mean_count > 0):
         kf_signals = f'KF:-ve_days:{curr_count_quantile_str},-ve_diff:{curr_diff_quantile_str},{kf_grec}'
@@ -243,8 +255,7 @@ def get_kf_state_means(tsymbol, df):
         kf_signals = f'KF:+ve_days:{curr_count_quantile_str},+ve_diff:{curr_diff_quantile_str},{kf_grec}'
 
 
-    #Return KF state means in a dataframe for plotting charts with date as index
-    kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
+    # Set date as index
     kf_df = kf_df.set_index(df.Date)
 
     return kf_df, kf_gscore, kf_max_score, kf_signals
