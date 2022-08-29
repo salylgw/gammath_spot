@@ -45,19 +45,24 @@ def check_if_same_day(fstat):
         return False
 
 #Common function to generate price sigmoid
-def get_price_sigmoid(prices):
+#Specify 'n' days interval for checking the diff
+def get_price_sigmoid(prices, n_days_interval):
 
     prices_len = len(prices)
+    start_index = (prices_len % n_days_interval)
+    end_index = (prices_len - n_days_interval)
 
     #Zero-initialize the sigmoid
-    prices_sigmoid = pd.Series(0, pd.RangeIndex(prices_len))
+    prices_sigmoid = pd.Series(0, pd.RangeIndex((prices_len-start_index)/n_days_interval))
+    j = 1
 
     #First element of sigmoid is set to 0; next ascending val then 1 else 0
-    for i in range(prices_len-1):
-        if (prices[i] <= prices[i+1]):
-            prices_sigmoid[i+1] = 1
+    for i in range(start_index, end_index, n_days_interval):
+        if (prices[i] <= prices[i+n_days_interval]):
+            prices_sigmoid[j] = 1
         else:
-            prices_sigmoid[i+1] = 0
+            prices_sigmoid[j] = 0
+        j += 1
 
 
     return (prices_sigmoid)

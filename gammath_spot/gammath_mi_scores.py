@@ -36,8 +36,8 @@ def get_mi_scores(gscores):
     mi = mutual_info_regression(gscores.drop(['Date', 'Close'], axis=1), gscores.Close)
     mi_scores_regr = pd.Series(mi, index=gscores.columns.drop(['Date', 'Close']))
 
-    #Get price sigmoid
-    ps = gut.get_price_sigmoid(gscores.Close)
+    #Get price sigmoid (1-day interval)
+    ps = gut.get_price_sigmoid(gscores.Close, 1)
 
     #micro-gscore MI for direction correlation
     mi = mutual_info_classif(gscores.drop(['Date', 'Close'], axis=1), ps)

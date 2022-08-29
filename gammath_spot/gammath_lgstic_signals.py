@@ -39,10 +39,12 @@ def get_lgstic_signals(tsymbol, df, path):
     prices_len = len(df.Close)
     lp = df.Close[prices_len-1]
     prices = df.Close
-    sigmoid_vals = gut.get_price_sigmoid(prices)
+
+    #Get price sigmoid (1-day interval)
+    sigmoid_vals = gut.get_price_sigmoid(prices, 1)
 
     y_vals = np.array(sigmoid_vals)
-    x_vals = np.array([x for x in range(prices_len)])
+    x_vals = np.array([x for x in range(len(y_vals))])
 
     #Multiple samples for single feature
     y_vals = y_vals.reshape(-1, 1)
