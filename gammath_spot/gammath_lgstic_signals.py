@@ -24,52 +24,71 @@ try:
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_utils as gut
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.metrics import roc_auc_score
 
-#This is a WIP. Just getting APIs to work. Lot will change in this file before it gets integrated into scoring
-
-#from scipy.special import expit
-#    1 / (1 + np.exp(-val))
-#    return expit(vals)
-
-#WIP: This is just to get Logistic regression API to work. Algorithm will be updated later
+#Get UP/DOWN probabilities for next week and month
 def get_lgstic_signals(tsymbol, df, path):
+
     lgstic_signals = ''
 
     prices_len = len(df.Close)
     lp = df.Close[prices_len-1]
     prices = df.Close
 
-    #Get price sigmoid (1-day interval)
-    sigmoid_vals = gut.get_price_sigmoid(prices, 1)
+    #Get price sigmoid (approx. 1-week interval)
+    sigmoid_vals_5d = gut.get_price_sigmoid(prices, 5)
 
-    y_vals = np.array(sigmoid_vals)
-    x_vals = np.array([x for x in range(len(y_vals))])
+    y_vals_5d = np.array(sigmoid_vals_5d)
+    x_vals_5d = np.array([x for x in range(len(y_vals_5d))])
 
     #Multiple samples for single feature
-    y_vals = y_vals.reshape(-1, 1)
-    x_vals = x_vals.reshape(-1, 1)
-    y_vals = np.ravel(y_vals)
+    y_vals_5d = y_vals_5d.reshape(-1, 1)
+    x_vals_5d = x_vals_5d.reshape(-1, 1)
+    y_vals_5d = np.ravel(y_vals_5d)
 
-    #Logistic regression model
-    #WIP: experimenting with the API
-    lrm = LogisticRegression(fit_intercept=True, random_state=20, solver='liblinear', max_iter=1000, multi_class='auto').fit(x_vals, y_vals)
+    #Regularization params to pick from based on cross-validation
+    reg_params = np.logspace(-4, 4, 8)
 
-    #Get yprediction
-    y_predictions = lrm.predict(x_vals)
-    y_predictions_len = len(y_predictions)
-
-    last_yp = y_predictions[y_predictions_len-1]
+    #Logistic regression model with cross validation
+    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000, multi_class='ovr').fit(x_vals_5d, y_vals_5d)
 
     #Get y probability estimates
-    y_proba = lrm.predict_proba(x_vals)
-    y_proba_len = len(y_proba)
+    y_5d_proba = lrm.predict_proba(x_vals_5d)
+    y_5d_proba_len = len(y_5d_proba)
 
-    last_yproba = y_proba[y_proba_len-1]
+    #Get ROC area under curve for debug purposes
+    auc_5d = roc_auc_score(y_vals_5d, y_5d_proba[:, 1])
+    last_5d_yproba = y_5d_proba[y_5d_proba_len-1]
 
-    #Get goodness-of-fit score
-    fit_score = round(lrm.score(x_vals, y_vals), 3)
+    #Get accuracy score (using default scoring "accuracy score" for classification)
+    accuracy_score_5d = round(lrm.score(x_vals_5d, y_vals_5d), 3)
 
-    lgstic_signals = f'Logistic: lgstic_fit_score:{fit_score},probab_pred:{last_yproba} for labels:{lrm.classes_}'
+    #Get price sigmoid (approx. 1-month interval)
+    sigmoid_vals_20d = gut.get_price_sigmoid(prices, 20)
+
+    y_vals_20d = np.array(sigmoid_vals_20d)
+    x_vals_20d = np.array([x for x in range(len(y_vals_20d))])
+
+    #Multiple samples for single feature
+    y_vals_20d = y_vals_20d.reshape(-1, 1)
+    x_vals_20d = x_vals_20d.reshape(-1, 1)
+    y_vals_20d = np.ravel(y_vals_20d)
+
+    #Logistic regression model
+    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000, multi_class='auto').fit(x_vals_20d, y_vals_20d)
+
+    #Get y probability estimates
+    y_20d_proba = lrm.predict_proba(x_vals_20d)
+    y_20d_proba_len = len(y_20d_proba)
+
+    #Get ROC area under curve for debug purposes
+    auc_20d = roc_auc_score(y_vals_20d, y_20d_proba[:, 1])
+    last_20d_yproba = y_20d_proba[y_20d_proba_len-1]
+
+    #Get accuracy score (using default scoring "accuracy score" for classification)
+    accuracy_score_20d = round(lrm.score(x_vals_20d, y_vals_20d), 3)
+
+    lgstic_signals = f'Probability after appox. a week: UP:{round(last_5d_yproba[1], 3)}, DOWN: {round(last_5d_yproba[0], 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{round(last_20d_yproba[1], 3)}, DOWN: {round(last_20d_yproba[0], 3)},accu_score:{accuracy_score_20d}'
 
     return lgstic_signals
