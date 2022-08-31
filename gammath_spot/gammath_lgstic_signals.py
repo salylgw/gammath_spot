@@ -76,7 +76,7 @@ def get_lgstic_signals(tsymbol, df, path):
     y_vals_20d = np.ravel(y_vals_20d)
 
     #Logistic regression model
-    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000, multi_class='auto').fit(x_vals_20d, y_vals_20d)
+    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000, multi_class='ovr').fit(x_vals_20d, y_vals_20d)
 
     #Get y probability estimates
     y_20d_proba = lrm.predict_proba(x_vals_20d)
@@ -89,6 +89,6 @@ def get_lgstic_signals(tsymbol, df, path):
     #Get accuracy score (using default scoring "accuracy score" for classification)
     accuracy_score_20d = round(lrm.score(x_vals_20d, y_vals_20d), 3)
 
-    lgstic_signals = f'Probability after appox. a week: UP:{round(last_5d_yproba[1], 3)}, DOWN: {round(last_5d_yproba[0], 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{round(last_20d_yproba[1], 3)}, DOWN: {round(last_20d_yproba[0], 3)},accu_score:{accuracy_score_20d}'
+    lgstic_signals = f'Probability after approx. a week: UP:{round(last_5d_yproba[1], 3)}, DOWN: {round(last_5d_yproba[0], 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{round(last_20d_yproba[1], 3)}, DOWN: {round(last_20d_yproba[0], 3)},accu_score:{accuracy_score_20d}'
 
     return lgstic_signals
