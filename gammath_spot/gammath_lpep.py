@@ -64,7 +64,7 @@ def get_moving_price_estimate(tsymbol, path, prices):
     #Use R2 scorer
     scorer = make_scorer(r2_score)
 
-    #Search for best params
+    #Search for best params (We can use n_jobs=-1 to use all processors if we want to run it on individual stocks separately)
     model = GridSearchCV(estimator=pline, param_grid=param_grid, scoring=scorer, cv=tss)
     model.fit(x_vals, y_vals)
 
@@ -80,16 +80,35 @@ def get_moving_price_estimate(tsymbol, path, prices):
 
     #Get a pd series ready for chart
     #Leave more (twice the sample length) room for projection
-    y_predictions_series = pd.Series(np.nan, pd.RangeIndex(yp_len<<1))
+    ypp_len = yp_len<<1
+    y_predictions_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
 
     #First half with estimates. Next half with np.nan
     y_predictions_series[0:yp_len] = y_predictions
+
+    #Create a projection series. First half with np.nan. Next half with projections
+    y_projections_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
+
+    #I haven't seen a line extension function so just constructing a line for projection
+    #y = mx + c
+    #Calculate the slope
+    m = (y_predictions[yp_len-1] - y_predictions[0])/(x_vals[yp_len-1] - x_vals[0])
+
+    #Calculate the intercept
+    c = y_predictions[0]
+
+    #Calculate points for the projection line
+    for i in range(yp_len):
+        y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c)
 
     #Draw the charts
     figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
 
     #Create dataframe for plotting
-    lpe_df = pd.DataFrame({tsymbol: prices, 'Estimate': y_predictions_series})
+    lpe_df = pd.DataFrame({tsymbol: prices, 'Estimate': y_predictions_series, 'Projection': y_projections_series})
 
-    lpe_df.plot(lw=1, title='Price Estimate')
+    #Plot the chart
+    lpe_df.plot(lw=1, title='Price Estimate and Projection')
+
+    #Save it for later reference
     plt.savefig(path / f'{tsymbol}_price_estimate.png')
