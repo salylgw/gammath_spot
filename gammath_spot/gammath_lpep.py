@@ -18,6 +18,8 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
+#Linear Price Estimation and Projection
+
 #This is a Work-In-Progress. Please do not use
 
 import sys
@@ -78,7 +80,7 @@ def get_moving_price_estimate(tsymbol, path, prices):
     y_predictions = ypredict.flatten()
     yp_len = len(y_predictions)
 
-    #Get a pd series ready for chart
+    #Get a pandas series for drawing the chart
     #Leave more (twice the sample length) room for projection
     ypp_len = yp_len<<1
     y_predictions_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
@@ -86,11 +88,13 @@ def get_moving_price_estimate(tsymbol, path, prices):
     #First half with estimates. Next half with np.nan
     y_predictions_series[0:yp_len] = y_predictions
 
-    #Create a projection series. First half with np.nan. Next half with projections
-    y_projections_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
+    #Create a pandas series for projection values.
+    #First half with np.nan. Next half with projections
+    y_projections_series = pd.Series(np.nan, pd.RangeIndex(ypp_len), name='PP')
 
     #I haven't seen a line extension function so just constructing a line for projection
     #y = mx + c
+
     #Calculate the slope
     m = (y_predictions[yp_len-1] - y_predictions[0])/(x_vals[yp_len-1] - x_vals[0])
 
@@ -100,6 +104,9 @@ def get_moving_price_estimate(tsymbol, path, prices):
     #Calculate points for the projection line
     for i in range(yp_len):
         y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c)
+
+    #Save projections for later reference. We don't need non-projection np.nan
+    y_projections_series[yp_len:].to_csv(path / f'{tsymbol}_pp.csv', index=False)
 
     #Draw the charts
     figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
@@ -111,4 +118,4 @@ def get_moving_price_estimate(tsymbol, path, prices):
     lpe_df.plot(lw=1, title='Price Estimate and Projection')
 
     #Save it for later reference
-    plt.savefig(path / f'{tsymbol}_price_estimate.png')
+    plt.savefig(path / f'{tsymbol}_pep.png')
