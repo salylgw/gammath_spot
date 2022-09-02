@@ -29,8 +29,9 @@ from sklearn.model_selection import (TimeSeriesSplit, GridSearchCV)
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import SGDRegressor
 from sklearn.metrics import (r2_score, make_scorer)
+from matplotlib import pyplot as plt
 
-def get_moving_price_estimate(tsymbol, prices):
+def get_moving_price_estimate(tsymbol, path, prices):
 
     prices_len = len(prices)
 
@@ -46,7 +47,7 @@ def get_moving_price_estimate(tsymbol, prices):
     #Construct a pipeline of sequential steps/transforms and estimator
     try:
         #Need to standardize the training data for SGD
-        pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, n_iter_no_change=10))
+        pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, max_iter=100000, n_iter_no_change=10))
     except:
         raise RuntimeError('SGD pipeline creation failed')
 
@@ -58,7 +59,7 @@ def get_moving_price_estimate(tsymbol, prices):
     tss = TimeSeriesSplit(n_splits=TS_SPLITS)
 
     #Use GridSearchCV to find best params
-    param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive'), 'sgdregressor__max_iter': (100000, 1000000)}
+    param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive')}
 
     #Use R2 scorer
     scorer = make_scorer(r2_score)
@@ -72,3 +73,23 @@ def get_moving_price_estimate(tsymbol, prices):
 
     #Check the R2 score
     score = model.score(x_vals, y_vals)
+
+    #Flatten the predictions to keep it in same format as other chart data
+    y_predictions = ypredict.flatten()
+    yp_len = len(y_predictions)
+
+    #Get a pd series ready for chart
+    #Leave more (twice the sample length) room for projection
+    y_predictions_series = pd.Series(np.nan, pd.RangeIndex(yp_len<<1))
+
+    #First half with estimates. Next half with np.nan
+    y_predictions_series[0:yp_len] = y_predictions
+
+    #Draw the charts
+    figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
+
+    #Create dataframe for plotting
+    lpe_df = pd.DataFrame({tsymbol: prices, 'Estimate': y_predictions_series})
+
+    lpe_df.plot(lw=1, title='Price Estimate')
+    plt.savefig(path / f'{tsymbol}_price_estimate.png')
