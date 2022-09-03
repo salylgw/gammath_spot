@@ -33,89 +33,103 @@ from sklearn.linear_model import SGDRegressor
 from sklearn.metrics import (r2_score, make_scorer)
 from matplotlib import pyplot as plt
 
-def get_moving_price_estimate(tsymbol, path, prices):
+class GPEP:
 
-    prices_len = len(prices)
+    def __init__(self):
+        self.Tickers_dir = Path('tickers')
+        self.MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 
-    #Convert to numpy array
-    y_vals = np.array(prices)
-    x_vals = np.array([x for x in range(prices_len)])
+    def get_moving_price_estimated_projection(self, tsymbol):
 
-    #Multiple samples for single feature
-    y_vals = y_vals.reshape(-1, 1)
-    y_vals = y_vals.flatten()
-    x_vals = x_vals.reshape(-1, 1)
+        path = self.Tickers_dir / f'{tsymbol}'
+        df = pd.read_csv(path / f'{tsymbol}_history.csv')
+        start_index = (len(df) - self.MIN_TRADING_DAYS_FOR_5_YEARS)
+        df = df.truncate(before=start_index)
+        df = df.set_index(pd.RangeIndex(self.MIN_TRADING_DAYS_FOR_5_YEARS))
+        prices = df.Close
 
-    #Construct a pipeline of sequential steps/transforms and estimator
-    try:
-        #Need to standardize the training data for SGD
-        pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, max_iter=100000, n_iter_no_change=10))
-    except:
-        raise RuntimeError('SGD pipeline creation failed')
+        prices_len = len(prices)
 
-    #Number of splits for cross validation
-    #Test size needs to be at least 2 since we want to use R2 scorer
-    TS_SPLITS = 249
+        #Convert to numpy array
+        y_vals = np.array(prices)
+        x_vals = np.array([x for x in range(prices_len)])
 
-    #Use time series split for cross validation
-    tss = TimeSeriesSplit(n_splits=TS_SPLITS)
+        #Multiple samples for single feature
+        y_vals = y_vals.reshape(-1, 1)
+        y_vals = y_vals.flatten()
+        x_vals = x_vals.reshape(-1, 1)
 
-    #Use GridSearchCV to find best params
-    param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive')}
+        #Construct a pipeline of sequential steps/transforms and estimator
+        try:
+            #Need to standardize the training data for SGD
+            pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, max_iter=100000, n_iter_no_change=10))
+        except:
+            raise RuntimeError('SGD pipeline creation failed')
 
-    #Use R2 scorer
-    scorer = make_scorer(r2_score)
+        #Number of splits for cross validation
+        #Test size needs to be at least 2 since we want to use R2 scorer
+        TS_SPLITS = 249
 
-    #Search for best params (We can use n_jobs=-1 to use all processors if we want to run it on individual stocks separately)
-    model = GridSearchCV(estimator=pline, param_grid=param_grid, scoring=scorer, cv=tss)
-    model.fit(x_vals, y_vals)
+        #Use time series split for cross validation
+        tss = TimeSeriesSplit(n_splits=TS_SPLITS)
 
-    #Predict based on the selected model
-    ypredict = model.predict(x_vals)
+        #Use GridSearchCV to find best params
+        param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive')}
 
-    #Check the R2 score
-    score = model.score(x_vals, y_vals)
+        #Use R2 scorer
+        scorer = make_scorer(r2_score)
 
-    #Flatten the predictions to keep it in same format as other chart data
-    y_predictions = ypredict.flatten()
-    yp_len = len(y_predictions)
+        #Search for best params (We can use n_jobs=-1 to use all processors if we want to run it on individual stocks separately)
+        model = GridSearchCV(estimator=pline, param_grid=param_grid, scoring=scorer, cv=tss)
+        model.fit(x_vals, y_vals)
 
-    #Get a pandas series for drawing the chart
-    #Leave more (twice the sample length) room for projection
-    ypp_len = yp_len<<1
-    y_predictions_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
+        #Predict based on the selected model
+        ypredict = model.predict(x_vals)
 
-    #First half with estimates. Next half with np.nan
-    y_predictions_series[0:yp_len] = y_predictions
+        #Check the R2 score
+        score = model.score(x_vals, y_vals)
 
-    #Create a pandas series for projection values.
-    #First half with np.nan. Next half with projections
-    y_projections_series = pd.Series(np.nan, pd.RangeIndex(ypp_len), name='PP')
+        #Flatten the predictions to keep it in same format as other chart data
+        y_predictions = ypredict.flatten()
+        yp_len = len(y_predictions)
 
-    #I haven't seen a line extension function so just constructing a line for projection
-    #y = mx + c
+        #Get a pandas series for drawing the chart
+        #Leave more (twice the sample length) room for projection
+        ypp_len = yp_len<<1
+        y_predictions_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
 
-    #Calculate the slope
-    m = (y_predictions[yp_len-1] - y_predictions[0])/(x_vals[yp_len-1] - x_vals[0])
+        #First half with estimates. Next half with np.nan
+        y_predictions_series[0:yp_len] = y_predictions
 
-    #Calculate the intercept
-    c = y_predictions[0]
+        #Create a pandas series for projection values.
+        #First half with np.nan. Next half with projections
+        y_projections_series = pd.Series(np.nan, pd.RangeIndex(ypp_len), name='PP')
 
-    #Calculate points for the projection line
-    for i in range(yp_len):
-        y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c)
+        #I haven't seen a line extension function so just constructing a line for projection
+        #y = mx + c
 
-    #Save projections for later reference. We don't need non-projection np.nan
-    y_projections_series[yp_len:].to_csv(path / f'{tsymbol}_pp.csv', index=False)
+        #Calculate the slope
+        m = (y_predictions[yp_len-1] - y_predictions[0])/(x_vals[yp_len-1] - x_vals[0])
 
-    #Draw the charts
-    figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
+        #Calculate the intercept
+        c = y_predictions[0]
 
-    #Create dataframe for plotting
-    lpe_df = pd.DataFrame({tsymbol: prices, 'Estimate': y_predictions_series, 'Projection': y_projections_series})
+        #Calculate points for the projection line
+        for i in range(yp_len):
+            y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c)
 
-    #Plot the chart
-    lpe_df.plot(lw=1, title='Price Estimate and Projection')
+        #Save projections for later reference. We don't need non-projection np.nan
+        y_projections_series[yp_len:].to_csv(path / f'{tsymbol}_pp.csv', index=False)
 
-    #Save it for later reference
-    plt.savefig(path / f'{tsymbol}_pep.png')
+        #Draw the charts
+        figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
+
+        #Create dataframe for plotting
+        lpe_df = pd.DataFrame({tsymbol: prices, 'Estimate': y_predictions_series, 'Projection': y_projections_series})
+
+        #Plot the chart
+        lpe_df.plot(lw=1, title='Price Estimate and Projection')
+
+        #Save it for later reference
+        plt.savefig(path / f'{tsymbol}_pep.png')
+
