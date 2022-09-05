@@ -61,6 +61,9 @@ def get_lgstic_signals(tsymbol, df, path):
     auc_5d = roc_auc_score(y_vals_5d, y_5d_proba[:, 1])
     last_5d_yproba = y_5d_proba[y_5d_proba_len-1]
 
+    #Save "after 5 days" up probability for micro-gScore dataframe
+    a5dup = round(last_5d_yproba[1], 3)
+
     #Get accuracy score (using default scoring "accuracy score" for classification)
     accuracy_score_5d = round(lrm.score(x_vals_5d, y_vals_5d), 3)
 
@@ -86,9 +89,13 @@ def get_lgstic_signals(tsymbol, df, path):
     auc_20d = roc_auc_score(y_vals_20d, y_20d_proba[:, 1])
     last_20d_yproba = y_20d_proba[y_20d_proba_len-1]
 
+    #Save "after 20 days" up probability for micro-gScore dataframe
+    a20dup = round(last_20d_yproba[1], 3)
+
     #Get accuracy score (using default scoring "accuracy score" for classification)
     accuracy_score_20d = round(lrm.score(x_vals_20d, y_vals_20d), 3)
 
-    lgstic_signals = f'Probability after approx. a week: UP:{round(last_5d_yproba[1], 3)}, DOWN: {round(last_5d_yproba[0], 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{round(last_20d_yproba[1], 3)}, DOWN: {round(last_20d_yproba[0], 3)},accu_score:{accuracy_score_20d}'
+    #Log output for quick reference
+    lgstic_signals = f'Probability after approx. a week: UP:{a5dup}, DOWN: {round((1-a5dup), 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{a20dup}, DOWN: {round((1-a20dup), 3)},accu_score:{accuracy_score_20d}'
 
-    return lgstic_signals
+    return a5dup, a20dup, lgstic_signals

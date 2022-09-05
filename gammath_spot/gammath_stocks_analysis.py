@@ -140,6 +140,8 @@ class GSA:
         self.ols_df = pd.DataFrame()
 
         self.lgst_signals = ''
+        self.a5dup = 0
+        self.a20dup = 0
         self.nup = 0
         self.pdp = ''
         self.tpc5y = 0
@@ -326,11 +328,9 @@ class GSA:
         except ValueError:
             print('\nERROR: generating moving 5y technical price conjecture for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #TBD. Just log Logistic regression signal for now
+        # Logistic regression signals
         try:
-            #Logistic regression signals; Usage will change later
-            self.lgst_signals = glgst.get_lgstic_signals(tsymbol, df, path)
-
+            self.a5dup, self.a20dup, self.lgst_signals = glgst.get_lgstic_signals(tsymbol, df, path)
         except RuntimeError:
             print('\nERROR: generating Logistic regression data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -341,7 +341,7 @@ class GSA:
 
         #Create a data frame for all stock history specific (micro)gScores
         df_len = len(df)
-        sh_gScore_df = pd.DataFrame({'Date': df.Date[df_len-1], 'Close': round(df.Close[df_len-1], 3), 'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'SH_Total': self.total_sh_gscore, 'NUP': self.nup, 'TPC5Y': self.tpc5y}, index=range(1))
+        sh_gScore_df = pd.DataFrame({'Date': df.Date[df_len-1], 'Close': round(df.Close[df_len-1], 3), 'Price': self.price_final_score, 'RSI': self.rsi_final_score, 'BBANDS': self.bb_final_score, 'MACD': self.macd_final_score, 'KF': self.kf_final_score, 'OLS': self.ols_final_score, 'MFI': self.mfi_final_score, 'Stoch': self.stoch_final_score, 'SH_Total': self.total_sh_gscore, 'NUP': self.nup, 'A5DUP': self.a5dup, 'A20DUP': self.a20dup, 'TPC5Y': self.tpc5y}, index=range(1))
 
         return sh_gScore_df
 
