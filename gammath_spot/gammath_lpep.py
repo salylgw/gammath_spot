@@ -18,7 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
-#Linear Price Estimation and Projection
+#Linear Dynamic Price Estimation and Projection
 
 #This is a Work-In-Progress. Please do not use
 
@@ -40,12 +40,13 @@ class GPEP:
         self.MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 
     def get_moving_price_estimated_projection(self, tsymbol):
-
         path = self.Tickers_dir / f'{tsymbol}'
         df = pd.read_csv(path / f'{tsymbol}_history.csv')
-        start_index = (len(df) - self.MIN_TRADING_DAYS_FOR_5_YEARS)
-        df = df.truncate(before=start_index)
-        df = df.set_index(pd.RangeIndex(self.MIN_TRADING_DAYS_FOR_5_YEARS))
+        df_len = len(df)
+        if (df_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
+            print(f'\nInsufficent stock history length for {tsumbol}')
+            raise ValueError('Stock history length error')
+
         prices = df.Close
 
         prices_len = len(prices)
@@ -94,8 +95,8 @@ class GPEP:
         yp_len = len(y_predictions)
 
         #Get a pandas series for drawing the chart
-        #Leave more (twice the sample length) room for projection
-        ypp_len = yp_len<<1
+        #Leave room for projection (additional min 5 years length)
+        ypp_len = (yp_len + self.MIN_TRADING_DAYS_FOR_5_YEARS)
         y_predictions_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
 
         #First half with estimates. Next half with np.nan
@@ -115,8 +116,9 @@ class GPEP:
         c = y_predictions[0]
 
         #Calculate points for the projection line
-        for i in range(yp_len):
-            y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c)
+        projection_len = ypp_len-yp_len
+        for i in range(projection_len):
+            y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c) #y = mx + c
 
         #Save projections for later reference. We don't need non-projection np.nan
         y_projections_series[yp_len:].to_csv(path / f'{tsymbol}_pp.csv', index=False)
@@ -133,3 +135,13 @@ class GPEP:
         #Save it for later reference
         plt.savefig(path / f'{tsymbol}_pep.png')
 
+        try:
+            #Append the signals file
+            f = open(path / f'{tsymbol}_signal.txt', 'a')
+        except:
+            print('\nERROR: opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
+        else:
+            #Log 3 months, 1 year and 5 year projection for quick reference
+            projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+249], 3)}, {round(y_projections_series[yp_len+self.MIN_TRADING_DAYS_FOR_5_YEARS-1], 3)}'
+            f.write(projection_string)
+            f.close()
