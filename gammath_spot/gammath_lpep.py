@@ -32,6 +32,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import SGDRegressor
 from sklearn.metrics import (r2_score, make_scorer)
 from matplotlib import pyplot as plt
+from scipy.stats import spearmanr
 
 class GPEP:
 
@@ -102,6 +103,15 @@ class GPEP:
         #First half with estimates. Next half with np.nan
         y_predictions_series[0:yp_len] = y_predictions
 
+
+        try:
+            sgd_ic = round(spearmanr(y_predictions_series[0:yp_len], prices).correlation, 3)
+        except:
+            sgd_ic = np.nan
+            #Not a fatal error. Just log it
+            print(f'Failed to compute Information Coefficient for {tsymbol} SGD')
+
+
         #Create a pandas series for projection values.
         #First half with np.nan. Next half with projections
         y_projections_series = pd.Series(np.nan, pd.RangeIndex(ypp_len), name='PP')
@@ -142,6 +152,6 @@ class GPEP:
             print('\nERROR: opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
         else:
             #Log 3 months, 1 year and 5 year projection for quick reference
-            projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+249], 3)}, {round(y_projections_series[yp_len+self.MIN_TRADING_DAYS_FOR_5_YEARS-1], 3)}'
+            projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+249], 3)}, {round(y_projections_series[yp_len+self.MIN_TRADING_DAYS_FOR_5_YEARS-1], 3)}, sgd_ic:{sgd_ic}'
             f.write(projection_string)
             f.close()
