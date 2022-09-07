@@ -61,6 +61,10 @@ def run_basic_backtest(df, path, tsymbol, term):
     buy_now = False
     sell_now = False
     cycle = ''
+    note = ''
+    sp500_comp_string = ''
+    sci_note = ''
+    pp_note = ''
 
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
@@ -71,7 +75,7 @@ def run_basic_backtest(df, path, tsymbol, term):
 
     #Get the low and high percentiles for next day up/down probability
     nup_bp, nup_tp = df.NUP.quantile([0.1, 0.9])
-    ndp_tp = round(1 - nup_bp)
+    ndp_tp = round((1 - nup_bp), 3)
     last_buy_5y_price_ratio = 0
 
     for i in range(2, history_len):
@@ -204,8 +208,8 @@ def run_basic_backtest(df, path, tsymbol, term):
                         actual_sp500_return = gutils.get_sp500_actual_return(df.Date[i-days_held], df.Date[i])
 
                         if (not np.isnan(actual_sp500_return)):
-                            note = f'SP500 return for same period: {actual_sp500_return}'
-                            df_transactions.Notes[transactions_count] = note
+                            sp500_comp_string = f'vs SP500 return (same interval): {actual_sp500_return}'
+                            df_transactions.Notes[transactions_count] = sp500_comp_string
 
                     transactions_count += 1
                     total_shares = 0
@@ -216,6 +220,7 @@ def run_basic_backtest(df, path, tsymbol, term):
                     total_cash = 0
                     marked_for_sell = 0
                     sell_now = False
+                    sp500_comp_string = ''
         else:
             marked_for_sell = False
 
@@ -224,9 +229,9 @@ def run_basic_backtest(df, path, tsymbol, term):
 
     df_sci = pd.read_csv(path / f'{tsymbol}_gscores.csv', index_col='Unnamed: 0')
     if (df_sci.SCI_Total[0] <= 0):
-        note = f'Current_info_data_overall_negative'
+        sci_note = f'Current_info_data_overall_negative'
     else:
-        note = f'Current_info_data_overall_positive'
+        sci_note = f'Current_info_data_overall_positive'
 
     #Show last closing price for convenience
     df_transactions.Last_Price[transactions_count] = round(curr_closing_price, 3)
@@ -243,6 +248,14 @@ def run_basic_backtest(df, path, tsymbol, term):
         df_transactions.Days_held[transactions_count] = days_held
         df_transactions.PCT[transactions_count] = profit_pct
 
+    try:
+        pp_ds = pd.read_csv(path / f'{tsymbol}_pp.csv')
+        pp_5yr = round(pp_ds.PP[len(pp_ds)-1], 3)
+        pp_note = f'5yr price projection: {pp_5yr}'
+    except:
+        pp_note = f'Price projection tool has not been run for {tsymbol}'
+
+    note = f'{sci_note},{pp_note}'
     df_transactions.Stage[transactions_count] = cycle
     df_transactions.Notes[transactions_count] = note
     df_transactions = df_transactions.truncate(after=transactions_count)
