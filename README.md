@@ -15,6 +15,7 @@ This project uses following free tools that need to be installed (you can use pi
 
 1. numpy
 1. pandas
+1. pandas_datareader
 1. ta-lib (Install ta-lib using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
 1. yfinance
 1. pykalman

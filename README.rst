@@ -18,13 +18,14 @@ This project uses following free tools that need to be installed (you can use pi
 
 1. numpy
 2. pandas
-3. ta-lib (Install ta-lib using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
-4. yfinance
-5. pykalman
-6. statsmodels
-7. sklearn
-8. matplotlib (Install matplotlib using miniconda in case you run into problem: `conda install matplotlib`)
-9. backtesting
+3. pandas_datareader
+4. ta-lib (Install ta-lib using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
+5. yfinance
+6. pykalman
+7. statsmodels
+8. sklearn
+9. matplotlib (Install matplotlib using miniconda in case you run into problem: `conda install matplotlib`)
+10. backtesting
 
 
 # WHERE to get source code without installing
@@ -64,6 +65,7 @@ In case you have trouble installing ta-lib then you can install miniconda and us
 17. If not installed but just obtained the code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_backtesting.py sample_watchlist.csv > log_backtester.txt`. You can update the function locally for implementing your own strategy
 18. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years (that were saved from the gscore historian) and saves the backtesting stats in `tickers/<ticker_symbol>/<ticker_symbol>_gtrades_stats.csv`
 19. You can check the backtesting stats to understand if the strategy you use worked historically and then decide whether to use that strategy or not
+
 
 # Investment blog
 
