@@ -250,8 +250,11 @@ def run_basic_backtest(df, path, tsymbol, term):
 
     try:
         pp_ds = pd.read_csv(path / f'{tsymbol}_pp.csv')
+        #Extract 3m, 1y, 5y to log in backtesting results
+        pp_3m = round(pp_ds.PP[60], 3)
+        pp_1y = round(pp_ds.PP[249], 3)
         pp_5yr = round(pp_ds.PP[len(pp_ds)-1], 3)
-        pp_note = f'5yr price projection: {pp_5yr}'
+        pp_note = f'price projection[3m, 1y, 5yr]: {pp_3m}, {pp_1y}, {pp_5yr}'
     except:
         pp_note = f'Price projection tool has not been run for {tsymbol}'
 
