@@ -1,5 +1,6 @@
 numpy
 pandas
+pandas_datareader
 matplotlib
 pykalman
 statsmodels
