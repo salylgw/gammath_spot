@@ -305,3 +305,51 @@ class GUTILS:
         except:
             print(f'Get SP500 actual return failed for dates {start_date} and {end_date}')
             return np.nan
+
+    def aggregate_peps(self, symbols_list):
+
+        #Get all the subdirs. Need to check for is_dir
+        p = self.Tickers_dir
+
+        df_pep = pd.DataFrame(columns=['Ticker', 'M5YPEP', 'M5YPEP_PCT'], index=range(len(symbols_list)))
+
+        i = 0
+
+        for tsymbol in symbols_list:
+            try:
+                path = self.Tickers_dir / f'{tsymbol}'
+                try:
+                    df_pp = pd.read_csv(path / f'{tsymbol}_pp.csv')
+                except:
+                    print(f'Error opening price projection data for {tsymbol}')
+                    continue
+
+                try:
+                    df_gscores = pd.read_csv(path / f'{tsymbol}_gscores.csv')
+                except:
+                    print(f'Error opening gscores files for {tsymbol}')
+                    continue
+
+                #Get last price
+                lp = df_gscores.Close[0]
+                pp_len = len(df_pp)
+                if (pp_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
+                    print(f'Not enough projection data for {tsymbol}')
+                    continue
+
+                #Get last projection
+                m5ypep = round(df_pp.PP[pp_len-1], 3)
+
+                #Calculate the percentage return for easy comparison
+                m5ypep_pct = round((((m5ypep - lp)*100)/lp), 3)
+
+                df_pep['Ticker'][i] = f'{tsymbol}'
+                df_pep['M5YPEP'][i] = m5ypep
+                df_pep['M5YPEP_PCT'][i] = m5ypep_pct
+
+                i += 1
+            except:
+                print('\nERROR: extracting estimated projections for ', tsymbol, ': ', sys.exc_info()[0])
+
+        #Save a sorted list for convenient reference
+        df_pep.sort_values('M5YPEP_PCT').dropna(how='all').to_csv(p / 'MPEP.csv', index=False)

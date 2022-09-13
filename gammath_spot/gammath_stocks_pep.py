@@ -24,8 +24,10 @@ from multiprocessing import Process
 
 try:
     from gammath_spot import gammath_lpep as glpep
+    from gammath_spot import gammath_utils as gut
 except:
     import gammath_lpep as glpep
+    import gammath_utils as gut
 
 import pandas as pd
 import sys
@@ -81,13 +83,14 @@ def main():
 
     #Instances of GPEP class
     gpep_instances = []
+    symbols_list = []
 
     while (max_tickers):
         for i in range(start_index, end_index):
 
             sym = watch_list['Symbol'][i].strip()
             tsymbol = f'{sym}'
-
+            symbols_list.append(tsymbol)
             gpep_instances.append(glpep.GPEP())
             proc_handles.append(Process(target=gpep_instances[i].get_moving_price_estimated_projection, args=(f'{sym}',)))
             proc_handles[i].start()
@@ -107,6 +110,12 @@ def main():
                 end_index += cores_to_use
             else:
                 end_index += max_tickers
+
+    #Instantiate GUTILS class
+    gutils = gut.GUTILS()
+
+    #Aggregate all buy and sell scores
+    gutils.aggregate_peps(symbols_list)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 
