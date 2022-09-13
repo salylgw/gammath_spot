@@ -45,8 +45,9 @@ class GPEP:
         df = pd.read_csv(path / f'{tsymbol}_history.csv')
         df_len = len(df)
         if (df_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
-            print(f'\nInsufficent stock history length for {tsumbol}')
-            raise ValueError('Stock history length error')
+            #Not a fatal error. Just log it and return
+            print(f'\nInsufficent stock history length for {tsymbol}')
+            return
 
         prices = df.Close
 
