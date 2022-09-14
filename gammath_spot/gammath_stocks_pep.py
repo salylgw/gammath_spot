@@ -114,7 +114,7 @@ def main():
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
 
-    #Aggregate all buy and sell scores
+    #Aggregate a sorted list of moving 5Y estimated projected returns
     gutils.aggregate_peps(symbols_list)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')

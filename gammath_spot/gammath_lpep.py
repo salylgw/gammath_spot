@@ -20,8 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
 #Linear Dynamic Price Estimation and Projection
 
-#This is a Work-In-Progress. Please do not use
-
 import sys
 from pathlib import Path
 import pandas as pd
@@ -42,7 +40,13 @@ class GPEP:
 
     def get_moving_price_estimated_projection(self, tsymbol):
         path = self.Tickers_dir / f'{tsymbol}'
-        df = pd.read_csv(path / f'{tsymbol}_history.csv')
+        try:
+            df = pd.read_csv(path / f'{tsymbol}_history.csv')
+        except:
+            #Not a fatal error. Just log it and return
+            print(f'\nStock history file not found for {tsymbol}')
+            return
+
         df_len = len(df)
         if (df_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
             #Not a fatal error. Just log it and return
@@ -65,7 +69,7 @@ class GPEP:
         #Construct a pipeline of sequential steps/transforms and estimator
         try:
             #Need to standardize the training data for SGD
-            pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, max_iter=100000, n_iter_no_change=10))
+            pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, n_iter_no_change=10))
         except:
             raise RuntimeError('SGD pipeline creation failed')
 
@@ -77,7 +81,7 @@ class GPEP:
         tss = TimeSeriesSplit(n_splits=TS_SPLITS)
 
         #Use GridSearchCV to find best params
-        param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive')}
+        param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive'), 'sgdregressor__max_iter': (100000, 1000000)}
 
         #Use R2 scorer
         scorer = make_scorer(r2_score)

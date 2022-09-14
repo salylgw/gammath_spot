@@ -308,9 +308,7 @@ class GUTILS:
 
     def aggregate_peps(self, symbols_list):
 
-        #Get all the subdirs. Need to check for is_dir
-        p = self.Tickers_dir
-
+        #Create a dataframe to save tickers and their associated moving estimated projected 5Y returns
         df_pep = pd.DataFrame(columns=['Ticker', 'M5YPEP', 'M5YPEP_PCT'], index=range(len(symbols_list)))
 
         i = 0
@@ -351,5 +349,8 @@ class GUTILS:
             except:
                 print('\nERROR: extracting estimated projections for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #Save a sorted list for convenient reference
+        #Get all the subdirs. Need to check for is_dir
+        p = self.Tickers_dir
+
+        #Save a sorted (by return percentage) list for convenient reference
         df_pep.sort_values('M5YPEP_PCT').dropna(how='all').to_csv(p / 'MPEP.csv', index=False)
