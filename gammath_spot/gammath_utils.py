@@ -256,8 +256,10 @@ class GUTILS:
         path = self.Tickers_dir
 
         try:
-            #SP500 closing data (entire range)
-            sp500_closing_data = pdd.DataReader('SP500', 'fred')
+            #SP500 closing data (apparently, start and end defaults aren't working)
+            #Specify a start to get more data
+            sp500_closing_data = pdd.DataReader('SP500', 'fred', start='1/1/2010')
+            sp500_closing_data.columns = ['Close']
             sp500_closing_data.to_csv(path / 'SP500_closing_data.csv')
         except:
             print('Get SP500 closing data failed')
@@ -271,7 +273,7 @@ class GUTILS:
             sp500_closing_data = pd.read_csv(path / 'SP500_closing_data.csv')
 
             #Get a 5Y return conjecture
-            pct_5y_return_conecture = sp500_closing_data.SP500.dropna().pct_change().mean()*self.MIN_TRADING_DAYS_FOR_5_YEARS*100
+            pct_5y_return_conecture = sp500_closing_data.Close.dropna().pct_change().mean()*self.MIN_TRADING_DAYS_FOR_5_YEARS*100
 
             return round(pct_5y_return_conecture, 3)
         except:
@@ -287,15 +289,15 @@ class GUTILS:
             sp500_closing_data = pd.read_csv(path / 'SP500_closing_data.csv')
             sp500_closing_data = sp500_closing_data.set_index('DATE')
             try:
-                start_val = sp500_closing_data.SP500[start_date]
+                start_val = sp500_closing_data.Close[start_date]
             except:
                 print(f'Failed to get SP500 closing price data for date {start_date}')
                 return np.nan
 
             try:
-                end_val = sp500_closing_data.SP500[end_date]
+                end_val = sp500_closing_data.Close[end_date]
             except:
-                print(f'Failed to get SP500 closing price data for date {end_val}')
+                print(f'Failed to get SP500 closing price data for date {end_date}')
                 return np.nan
 
             #Get actual return percentage
