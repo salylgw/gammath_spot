@@ -265,7 +265,7 @@ class GUTILS:
             #Specify a start to get more data
             sp500_closing_data = pdd.DataReader('SP500', 'fred', start='1/1/2010')
             sp500_closing_data.columns = ['Close']
-            sp500_closing_data.to_csv(path / 'SP500_closing_data.csv')
+            sp500_closing_data.to_csv(path / 'SP500_history.csv')
         except:
             print('Get SP500 closing data failed')
 
@@ -275,7 +275,7 @@ class GUTILS:
 
         try:
             #SP500 closing data (entire range)
-            sp500_closing_data = pd.read_csv(path / 'SP500_closing_data.csv')
+            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
 
             #Get a 5Y return conjecture
             pct_5y_return_conecture = sp500_closing_data.Close.dropna().pct_change().mean()*self.MIN_TRADING_DAYS_FOR_5_YEARS*100
@@ -291,7 +291,7 @@ class GUTILS:
 
         try:
             #SP500 closing data
-            sp500_closing_data = pd.read_csv(path / 'SP500_closing_data.csv')
+            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
             sp500_closing_data = sp500_closing_data.set_index('DATE')
             try:
                 start_val = sp500_closing_data.Close[start_date]
@@ -313,10 +313,39 @@ class GUTILS:
             print(f'Get SP500 actual return failed for dates {start_date} and {end_date}')
             return np.nan
 
+    def get_5y_ppct(self, path, tsymbol):
+        try:
+            df_pp = pd.read_csv(path / f'{tsymbol}_pp.csv')
+        except:
+            print(f'Error opening price projection data for {tsymbol}')
+            raise ValueError('Price projection error')
+
+        try:
+            df = pd.read_csv(path / f'{tsymbol}_history.csv')
+        except:
+            print(f'Error opening gscores files for {tsymbol}')
+            raise ValueError('History error')
+
+        #Get last price
+        lp = df.Close[len(df)-1]
+        pp_len = len(df_pp)
+
+        if (pp_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
+            print(f'Not enough projection data for {tsymbol}')
+            raise ValueError('Not enough projection data')
+
+        #Get last projection
+        m5ypep = round(df_pp.PP[pp_len-1], 3)
+
+        #Calculate the percentage return for easy comparison
+        m5ypep_pct = round((((m5ypep - lp)*100)/lp), 3)
+
+        return m5ypep, m5ypep_pct
+
     def aggregate_peps(self, symbols_list):
 
         #Create a dataframe to save tickers and their associated moving estimated projected 5Y returns
-        df_pep = pd.DataFrame(columns=['Ticker', 'M5YPEP', 'M5YPEP_PCT'], index=range(len(symbols_list)))
+        df_pep = pd.DataFrame(columns=['Ticker', 'M5YPEP', 'M5YPEP_PCT'], index=range(len(symbols_list)+1))
 
         i = 0
 
@@ -324,29 +353,9 @@ class GUTILS:
             try:
                 path = self.Tickers_dir / f'{tsymbol}'
                 try:
-                    df_pp = pd.read_csv(path / f'{tsymbol}_pp.csv')
+                    m5ypep, m5ypep_pct = self.get_5y_ppct(path, tsymbol)
                 except:
-                    print(f'Error opening price projection data for {tsymbol}')
                     continue
-
-                try:
-                    df_gscores = pd.read_csv(path / f'{tsymbol}_gscores.csv')
-                except:
-                    print(f'Error opening gscores files for {tsymbol}')
-                    continue
-
-                #Get last price
-                lp = df_gscores.Close[0]
-                pp_len = len(df_pp)
-                if (pp_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
-                    print(f'Not enough projection data for {tsymbol}')
-                    continue
-
-                #Get last projection
-                m5ypep = round(df_pp.PP[pp_len-1], 3)
-
-                #Calculate the percentage return for easy comparison
-                m5ypep_pct = round((((m5ypep - lp)*100)/lp), 3)
 
                 df_pep['Ticker'][i] = f'{tsymbol}'
                 df_pep['M5YPEP'][i] = m5ypep
@@ -356,8 +365,18 @@ class GUTILS:
             except:
                 print('\nERROR: extracting estimated projections for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #Get all the subdirs. Need to check for is_dir
+        #Back to base dir
         p = self.Tickers_dir
+
+        tsymbol = 'SP500'
+        try:
+            m5ypep, m5ypep_pct = self.get_5y_ppct(p, tsymbol)
+        except:
+            print(f'S&P500 Price projection error')
+        else:
+            df_pep['Ticker'][i] = tsymbol
+            df_pep['M5YPEP'][i] = m5ypep
+            df_pep['M5YPEP_PCT'][i] = m5ypep_pct
 
         #Save a sorted (by return percentage) list for convenient reference
         df_pep.sort_values('M5YPEP_PCT').dropna(how='all').to_csv(p / 'MPEP.csv', index=False)
@@ -368,7 +387,7 @@ class GUTILS:
         path = self.Tickers_dir
         try:
             #SP500 closing data
-            sp500_closing_data = pd.read_csv(path / 'SP500_closing_data.csv')
+            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
         except:
             print('SP500 closing price data not found')
             return 0
