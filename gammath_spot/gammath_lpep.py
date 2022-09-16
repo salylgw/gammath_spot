@@ -33,27 +33,11 @@ from matplotlib import pyplot as plt
 from scipy.stats import spearmanr
 
 class GPEP:
-
     def __init__(self):
         self.Tickers_dir = Path('tickers')
         self.MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 
-    def get_moving_price_estimated_projection(self, tsymbol):
-        path = self.Tickers_dir / f'{tsymbol}'
-        try:
-            df = pd.read_csv(path / f'{tsymbol}_history.csv')
-        except:
-            #Not a fatal error. Just log it and return
-            print(f'\nStock history file not found for {tsymbol}')
-            return
-
-        df_len = len(df)
-        if (df_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
-            #Not a fatal error. Just log it and return
-            print(f'\nInsufficent stock history length for {tsymbol}')
-            return
-
-        prices = df.Close
+    def do_sgd_regression(self, prices, single):
 
         prices_len = len(prices)
 
@@ -69,7 +53,7 @@ class GPEP:
         #Construct a pipeline of sequential steps/transforms and estimator
         try:
             #Need to standardize the training data for SGD
-            pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, n_iter_no_change=10))
+            pline = make_pipeline(StandardScaler(), SGDRegressor(fit_intercept=True, shuffle=False, random_state=20, eta0=0.01, early_stopping=False, max_iter=1000000, n_iter_no_change=10))
         except:
             raise RuntimeError('SGD pipeline creation failed')
 
@@ -81,13 +65,18 @@ class GPEP:
         tss = TimeSeriesSplit(n_splits=TS_SPLITS)
 
         #Use GridSearchCV to find best params
-        param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive'), 'sgdregressor__max_iter': (100000, 1000000)}
+        param_grid  = {'sgdregressor__loss': ('squared_error', 'huber', 'epsilon_insensitive', 'squared_epsilon_insensitive'), 'sgdregressor__learning_rate': ('constant', 'optimal', 'invscaling', 'adaptive')}
 
         #Use R2 scorer
         scorer = make_scorer(r2_score)
 
         #Search for best params (We can use n_jobs=-1 to use all processors if we want to run it on individual stocks separately)
-        model = GridSearchCV(estimator=pline, param_grid=param_grid, scoring=scorer, cv=tss)
+        if (single == True):
+            n_jobs = -1
+        else:
+            n_jobs = None
+
+        model = GridSearchCV(estimator=pline, param_grid=param_grid, scoring=scorer, cv=tss, n_jobs=n_jobs)
         model.fit(x_vals, y_vals)
 
         #Predict based on the selected model
@@ -108,15 +97,6 @@ class GPEP:
         #First half with estimates. Next half with np.nan
         y_predictions_series[0:yp_len] = y_predictions
 
-
-        try:
-            sgd_ic = round(spearmanr(y_predictions_series[0:yp_len], prices).correlation, 3)
-        except:
-            sgd_ic = np.nan
-            #Not a fatal error. Just log it
-            print(f'Failed to compute Information Coefficient for {tsymbol} SGD')
-
-
         #Create a pandas series for projection values.
         #First half with np.nan. Next half with projections
         y_projections_series = pd.Series(np.nan, pd.RangeIndex(ypp_len), name='PP')
@@ -135,6 +115,29 @@ class GPEP:
         for i in range(projection_len):
             y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c) #y = mx + c
 
+        return y_predictions_series, y_projections_series
+
+
+    def get_moving_price_estimated_projection(self, tsymbol):
+        path = self.Tickers_dir / f'{tsymbol}'
+        try:
+            df = pd.read_csv(path / f'{tsymbol}_history.csv')
+        except:
+            #Not a fatal error. Just log it and return
+            print(f'\nStock history file not found for {tsymbol}')
+            return
+
+        df_len = len(df)
+        if (df_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
+            #Not a fatal error. Just log it and return
+            print(f'\nInsufficent stock history length for {tsymbol}')
+            return
+
+        prices = df.Close
+
+        y_predictions_series, y_projections_series = self.do_sgd_regression(prices, False)
+        yp_len = (len(y_predictions_series) - self.MIN_TRADING_DAYS_FOR_5_YEARS)
+
         #Save projections for later reference. We don't need non-projection np.nan
         y_projections_series[yp_len:].to_csv(path / f'{tsymbol}_pp.csv', index=False)
 
@@ -149,6 +152,13 @@ class GPEP:
 
         #Save it for later reference
         plt.savefig(path / f'{tsymbol}_pep.png')
+
+        try:
+            sgd_ic = round(spearmanr(y_predictions_series[0:yp_len], prices).correlation, 3)
+        except:
+            sgd_ic = np.nan
+            #Not a fatal error. Just log it
+            print(f'Failed to compute Information Coefficient for {tsymbol} SGD')
 
         try:
             #Append the signals file

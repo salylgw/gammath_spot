@@ -117,6 +117,9 @@ def main():
     #Aggregate a sorted list of moving 5Y estimated projected returns
     gutils.aggregate_peps(symbols_list)
 
+    #Generated 5Y estimated projection for S&P500
+    gutils.sp500_pep()
+
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 
 if __name__ == '__main__':
