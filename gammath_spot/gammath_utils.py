@@ -21,6 +21,7 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 import sys
 import os
 import time
+from datetime import date
 from pathlib import Path
 import pandas as pd
 import re
@@ -422,3 +423,54 @@ class GUTILS:
 
         #Save it for later reference
         plt.savefig(path / f'SP500_pep.png')
+
+    def summarize_todays_actions(self, symbols_list):
+
+        #Get today's date
+        today = date.today()
+        today_year = today.year
+        today_month = today.month
+        today_day = today.day
+
+        #Create a dataframe to save tickers and their associated actions
+        df_actions = pd.DataFrame(columns=['Ticker', 'Action', 'Price', 'Term'], index=range(len(symbols_list)<<1))
+
+        i = 0
+
+        for tsymbol in symbols_list:
+            path = self.Tickers_dir / f'{tsymbol}'
+            try:
+                bactesting_st_data = pd.read_csv(path / f'{tsymbol}_gtrades_stats_short_term.csv', index_col='Unnamed: 0')
+                bt_st_data_len = len(bactesting_st_data)
+                last_action_index = bt_st_data_len-2
+                last_action_date = bactesting_st_data.Date.iloc[last_action_index].split('-')
+                if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
+                    #Today's action
+                    df_actions['Ticker'][i] = f'{tsymbol}'
+                    df_actions['Action'][i] = bactesting_st_data.Action.iloc[last_action_index]
+                    df_actions['Price'][i] = bactesting_st_data.Price.iloc[last_action_index]
+                    df_actions['Term'][i] = 'short_term'
+                    i += 1
+            except:
+                print(f'Failed to open short-term backtesting data for {tsymbol}')
+            try:
+                bactesting_lt_data = pd.read_csv(path / f'{tsymbol}_gtrades_stats_long_term.csv', index_col='Unnamed: 0')
+                bt_lt_data_len = len(bactesting_lt_data)
+                last_action_index = bt_lt_data_len-2
+                last_action_date = bactesting_lt_data.Date.iloc[last_action_index].split('-')
+                if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
+                    #Today's action
+                    df_actions['Ticker'][i] = f'{tsymbol}'
+                    df_actions['Action'][i] = bactesting_lt_data.Action.iloc[last_action_index]
+                    df_actions['Price'][i] = bactesting_lt_data.Price.iloc[last_action_index]
+                    df_actions['Term'][i] = 'long_term'
+                    i += 1
+            except:
+                print(f'Failed to open long-term backtesting data for {tsymbol}')
+
+
+        #Back to base dir
+        p = self.Tickers_dir
+
+        #Save a sorted (by ticker symbol) list for convenient reference
+        df_actions.sort_values('Ticker').dropna(how='all').to_csv(p / 'Todays_Actions.csv', index=False)

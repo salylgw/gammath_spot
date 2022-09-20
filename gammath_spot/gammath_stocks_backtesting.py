@@ -21,10 +21,13 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 import time
 import multiprocessing as mp
 from multiprocessing import Process
+
 try:
     from gammath_spot import gammath_backtesting as gbt
+    from gammath_spot import gammath_utils as gut
 except:
     import gammath_backtesting as gbt
+    import gammath_utils as gut
 
 import pandas as pd
 import sys
@@ -79,11 +82,13 @@ def main():
 
     #Instances of GBT class
     gbt_instances = []
+    symbols_list = []
 
     while (max_tickers):
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             tsymbol = f'{sym}'
+            symbols_list.append(tsymbol)
 
             gbt_instances.append(gbt.GBT())
             proc_handles.append(Process(target=gbt_instances[i].run_backtest, args=(f'{sym}',)))
@@ -104,6 +109,12 @@ def main():
                 end_index += cores_to_use
             else:
                 end_index += max_tickers
+
+    #Instantiate GUTILS class
+    gutils = gut.GUTILS()
+
+    #Summarize today's actions
+    gutils.summarize_todays_actions(symbols_list)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 

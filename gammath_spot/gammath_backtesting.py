@@ -45,7 +45,7 @@ MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 def run_basic_backtest(df, path, tsymbol, term):
 
     #Create a data frame to save the stats
-    df_transactions = pd.DataFrame(columns=['Date', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
+    df_transactions = pd.DataFrame(columns=['Date', 'Action', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
 
     history_len = len(df)
 
@@ -137,6 +137,7 @@ def run_basic_backtest(df, path, tsymbol, term):
                 total_shares += buy_q
                 total_cost += (curr_closing_price*buy_q)
                 df_transactions['Date'][transactions_count] = df.Date[i]
+                df_transactions['Action'][transactions_count] = 'BUY'
                 df_transactions['Buy_Q'][transactions_count] = buy_q
                 df_transactions['sh_gScore'][transactions_count] = curr_sh_gscore
                 df_transactions['Price'][transactions_count] = round(curr_closing_price, 3)
@@ -195,6 +196,7 @@ def run_basic_backtest(df, path, tsymbol, term):
                 if (sell_now):
                     #Mimic sale
                     df_transactions['Date'][transactions_count] = df.Date[i]
+                    df_transactions['Action'][transactions_count] = 'SELL'
                     df_transactions['Sell_Q'][transactions_count] = total_shares
                     df_transactions['sh_gScore'][transactions_count] = curr_sh_gscore
                     df_transactions['Price'][transactions_count] = round(curr_closing_price, 3)

@@ -53,8 +53,8 @@ class GSH:
             initial_start_index = initial_end_index - MIN_TRADING_DAYS_FOR_5YEARS
 
             if (initial_start_index < 0):
-                print('\nERROR: gscores history failed for symbol ', tsymbol)
-                ValueError('Insufficient stock history')
+                print('\nInsufficient stock history for symbol ', tsymbol)
+                raise ValueError('Insufficient stock history')
 
             #Use a different df for starting with 0-index
             df1 = df.copy()
@@ -119,7 +119,7 @@ class GSH:
             plt.savefig(path / f'{tsymbol}_gscores_charts.png')
             return df_gscores
         except:
-            print('\nERROR: gscores history failed for symbol ', tsymbol)
+            print('\nERROR: gScores history failed for symbol ', tsymbol)
             return df_gscores
 
     def save_gscores_history(self, tsymbol):
