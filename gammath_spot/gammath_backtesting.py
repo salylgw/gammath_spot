@@ -44,8 +44,8 @@ MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 #It is generally expected that in reality, execution of gScore-based dollar cost averaging would be better than what is used in backtesting since this does not account of news analysis and current information that is used in decision-making. As described in the guidelines, one would check the news before making buy/sell decisions
 def run_basic_backtest(df, path, tsymbol, term):
 
-    #Create a data frame to save the stats
-    df_transactions = pd.DataFrame(columns=['Date', 'Action', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'PCT', 'Days_held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
+    #Create a data frame to save the stats and useful info to gauge the performance of the strategy
+    df_transactions = pd.DataFrame(columns=['Date', 'Action', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'RETURN_PCT', 'SP500_PCT', 'Days_held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
 
     history_len = len(df)
 
@@ -202,16 +202,16 @@ def run_basic_backtest(df, path, tsymbol, term):
                     df_transactions['Price'][transactions_count] = round(curr_closing_price, 3)
                     df_transactions['Avg_Price'][transactions_count] = round(avg_price, 3)
                     df_transactions['Profit'][transactions_count] = round(profit, 3)
-                    df_transactions['PCT'][transactions_count] = profit_pct
                     df_transactions['Days_held'][transactions_count] = days_held
-                    if (term == 'long_term'):
 
-                        #Get actual return for S&P500 for the same period
-                        actual_sp500_return = gutils.get_sp500_actual_return(df.Date[i-days_held], df.Date[i])
+                    #profit percentage
+                    df_transactions['RETURN_PCT'][transactions_count] = profit_pct
 
-                        if (not np.isnan(actual_sp500_return)):
-                            sp500_comp_string = f'vs SP500 return (same interval): {actual_sp500_return}'
-                            df_transactions.Notes[transactions_count] = sp500_comp_string
+                    #Get actual return for S&P500 for the same duration
+                    actual_sp500_return = gutils.get_sp500_actual_return(df.Date[i-days_held], df.Date[i])
+
+                    #Compare this return vs benchmark return side-by-side for same duration
+                    df_transactions['SP500_PCT'][transactions_count] = actual_sp500_return
 
                     transactions_count += 1
                     total_shares = 0
@@ -248,9 +248,10 @@ def run_basic_backtest(df, path, tsymbol, term):
 
     if (total_shares):
         df_transactions.Days_held[transactions_count] = days_held
-        df_transactions.PCT[transactions_count] = profit_pct
+        df_transactions.RETURN_PCT[transactions_count] = profit_pct
 
     try:
+        #Get projected price
         pp_ds = pd.read_csv(path / f'{tsymbol}_pp.csv')
         #Extract 3m, 1y, 5y to log in backtesting results
         pp_3m = round(pp_ds.PP[60], 3)
@@ -343,7 +344,7 @@ class GBT:
             print('\nERROR: Backtesting data initialization failed for symbol ', tsymbol)
             return
 
-        #You can call your own backtesting function here. Following is a basic example
+        #You can call your own backtesting function here. Following is one example
         run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term')
         run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term')
 
