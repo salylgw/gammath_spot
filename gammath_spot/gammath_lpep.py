@@ -151,7 +151,8 @@ class GPEP:
         lpe_df.plot(lw=1, title='Price Estimate and Projection')
 
         #Save it for later reference
-        plt.savefig(path / f'{tsymbol}_pep.png')
+        #Use PDF instead of png to save space)
+        plt.savefig(path / f'{tsymbol}_pep.pdf', format='pdf')
 
         try:
             sgd_ic = round(spearmanr(y_predictions_series[0:yp_len], prices).correlation, 3)

@@ -33,7 +33,7 @@ def get_price_dir_probability(df):
     last_rising_days_count = 0
     total_up_days = 0
     total_down_days = 0
-    
+
     #zero-initialize
     price_consec_up_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
     price_consec_down_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]

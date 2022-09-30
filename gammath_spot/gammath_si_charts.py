@@ -73,7 +73,9 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
         axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
         kf_df.plot(ax=axes[5], lw=1,title='Kalman Filter')
         ols_df.plot(ax=axes[6], lw=1,title='OLS')
-        plt.savefig(path / f'{tsymbol}_charts.png')
+
+        #Save for later reference. Use PDF instead of png to save space
+        plt.savefig(path / f'{tsymbol}_charts.pdf', format='pdf')
     except:
         print('\nERROR: Plotting charts for ', tsymbol, ': ', sys.exc_info()[0])
 

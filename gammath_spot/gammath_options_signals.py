@@ -118,6 +118,5 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
 
     options_grec = f'options_gscore:{options_gscore}/{options_max_score}'
     options_signals = f'options: {short_ratio_string},{calls_puts_string},{options_grec}'
-    
-    return options_gscore, options_max_score, options_signals
 
+    return options_gscore, options_max_score, options_signals

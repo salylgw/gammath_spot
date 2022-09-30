@@ -47,6 +47,6 @@ def get_events_info(tsymbol, path):
         print(f'\nINFO: Events file for {tsymbol} not found')
 
     events_info = f'{event}: {event_dates}'
-    
+
     return events_info
 

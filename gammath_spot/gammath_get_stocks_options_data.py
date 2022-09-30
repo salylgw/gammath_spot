@@ -91,4 +91,3 @@ def get_options_data(tsymbol, ticker, path):
         raise RuntimeError('No option data')
 
     return
-

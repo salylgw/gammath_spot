@@ -421,8 +421,8 @@ class GUTILS:
         #Plot the chart
         lpe_df.plot(lw=1, title='Price Estimate and Projection')
 
-        #Save it for later reference
-        plt.savefig(path / f'SP500_pep.png')
+        #Save it for later reference. Use PDF instead of png to save space
+        plt.savefig(path / f'SP500_pep.pdf', format='pdf')
 
     def summarize_todays_actions(self, symbols_list):
 

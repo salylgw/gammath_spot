@@ -116,7 +116,9 @@ class GSH:
             nup_gscores_df = nup_gscores_df.set_index(df_gscores.Date)
             nup_gscores_df.plot(ax=axes[10],lw=1,title='Next day UP Probability')
 
-            plt.savefig(path / f'{tsymbol}_gscores_charts.png')
+            #Save figure for later reference
+            #Use PDF instead of png to save space
+            plt.savefig(path / f'{tsymbol}_gscores_charts.pdf', format='pdf')
             return df_gscores
         except:
             print('\nERROR: gScores history failed for symbol ', tsymbol)
@@ -124,4 +126,4 @@ class GSH:
 
     def save_gscores_history(self, tsymbol):
         self.get_gscores_history(tsymbol)
-        
+
