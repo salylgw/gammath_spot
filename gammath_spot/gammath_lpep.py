@@ -31,6 +31,10 @@ from sklearn.linear_model import SGDRegressor
 from sklearn.metrics import (r2_score, make_scorer)
 from matplotlib import pyplot as plt
 from scipy.stats import spearmanr
+try:
+    from gammath_spot import gammath_tc as gtc
+except:
+    import gammath_tc as gtc
 
 class GPEP:
     def __init__(self):
@@ -171,3 +175,49 @@ class GPEP:
             projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+249], 3)}, {round(y_projections_series[yp_len+self.MIN_TRADING_DAYS_FOR_5_YEARS-1], 3)}, sgd_ic:{sgd_ic}'
             f.write(projection_string)
             f.close()
+
+        #Generate trend charts
+        try:
+            df = df.truncate(before=(df_len-self.MIN_TRADING_DAYS_FOR_5_YEARS)).reset_index().drop('index', axis=1)
+            gtc.generate_trend_charts(tsymbol, df, path)
+        except:
+            print('\nERROR: while generating trend charts for ', tsymbol, ': ', sys.exc_info()[0])
+
+    def sp500_pep(self):
+
+        #SP500-specific files are in ticker dir
+        path = self.Tickers_dir
+        try:
+            #SP500 closing data
+            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
+        except:
+            print('SP500 closing price data not found')
+            return 0
+        else:
+            #Drop nans
+            prices = sp500_closing_data.Close.dropna()
+
+        #Get the prediction and projection series
+        #S&P500 values will take too many iterations to converge
+        #dividing all values by 10 and then multiplying all results by 10 to avoid his problem
+        y_predictions_series, y_projections_series = self.do_sgd_regression(prices/10, True)
+        y_predictions_series = y_predictions_series*10
+        y_projections_series = y_projections_series*10
+
+        #Actual length of the estimates/prediction
+        yp_len = (len(y_predictions_series) - self.MIN_TRADING_DAYS_FOR_5_YEARS)
+
+        #Save projections for later reference. We don't need non-projection np.nan
+        y_projections_series[yp_len:].to_csv(path / f'SP500_pp.csv', index=False)
+
+        #Draw the charts
+        figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
+
+        #Create dataframe for plotting
+        lpe_df = pd.DataFrame({'SP500': prices, 'Estimate': y_predictions_series, 'Projection': y_projections_series})
+
+        #Plot the chart
+        lpe_df.plot(lw=1, title='Price Estimate and Projection')
+
+        #Save it for later reference. Use PDF instead of png to save space
+        plt.savefig(path / f'SP500_pep.pdf', format='pdf')

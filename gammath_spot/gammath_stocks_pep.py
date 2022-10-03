@@ -115,7 +115,8 @@ def main():
     gutils = gut.GUTILS()
 
     #Generate 5Y estimated projection for S&P500
-    gutils.sp500_pep()
+    gpep = glpep.GPEP()
+    gpep.sp500_pep()
 
     #Aggregate a sorted list of moving 5Y estimated projected returns
     gutils.aggregate_peps(symbols_list)

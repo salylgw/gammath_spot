@@ -28,10 +28,6 @@ import re
 import pandas_datareader.data as pdd
 import numpy as np
 from matplotlib import pyplot as plt
-try:
-    from gammath_spot import gammath_lpep as glpep
-except:
-    import gammath_lpep as glpep
 
 def check_if_same_day(fstat):
 
@@ -382,47 +378,6 @@ class GUTILS:
         #Save a sorted (by return percentage) list for convenient reference
         df_pep.sort_values('M5YPEP_PCT').dropna(how='all').to_csv(p / 'MPEP.csv', index=False)
 
-    def sp500_pep(self):
-
-        #SP500-specific files are in ticker dir
-        path = self.Tickers_dir
-        try:
-            #SP500 closing data
-            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
-        except:
-            print('SP500 closing price data not found')
-            return 0
-        else:
-            #Drop nans
-            prices = sp500_closing_data.Close.dropna()
-
-        #Instantiate GPEP class
-        pep = glpep.GPEP()
-
-        #Get the prediction and projection series
-        #S&P500 values will take too many iterations to converge
-        #dividing all values by 10 and then multiplying all results by 10 to avoid his problem
-        y_predictions_series, y_projections_series = pep.do_sgd_regression(prices/10, True)
-        y_predictions_series = y_predictions_series*10
-        y_projections_series = y_projections_series*10
-
-        #Actual length of the estimates/prediction
-        yp_len = (len(y_predictions_series) - self.MIN_TRADING_DAYS_FOR_5_YEARS)
-
-        #Save projections for later reference. We don't need non-projection np.nan
-        y_projections_series[yp_len:].to_csv(path / f'SP500_pp.csv', index=False)
-
-        #Draw the charts
-        figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
-
-        #Create dataframe for plotting
-        lpe_df = pd.DataFrame({'SP500': prices, 'Estimate': y_predictions_series, 'Projection': y_projections_series})
-
-        #Plot the chart
-        lpe_df.plot(lw=1, title='Price Estimate and Projection')
-
-        #Save it for later reference. Use PDF instead of png to save space
-        plt.savefig(path / f'SP500_pep.pdf', format='pdf')
 
     def summarize_todays_actions(self, symbols_list):
 
