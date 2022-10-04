@@ -537,7 +537,11 @@ class GSA:
             #This will show a note as an FYI (also if you ran it before market opens or on a holiday)
             dt = time.strftime('%x').split('/')
             df_ld = df.Date[stock_history_len-1]
-            df_ld = df_ld.split('-')
+            #Date field format appears to have changed. Following is t accomodate that
+            #We only want the date part
+            df_ld = df_ld.split(' ')
+            #Get year, month, date
+            df_ld = df_ld[0].split('-')
             if ((int(dt[0]) != int(df_ld[1])) or (int(dt[1]) != int(df_ld[2]))):
                 self.note = 'Note: NO_PRICE_DATA_FROM_TODAY'
         except:
