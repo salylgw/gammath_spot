@@ -208,7 +208,9 @@ def run_basic_backtest(df, path, tsymbol, term):
                     df_transactions['RETURN_PCT'][transactions_count] = profit_pct
 
                     #Get actual return for S&P500 for the same duration
-                    actual_sp500_return = gutils.get_sp500_actual_return(df.Date[i-days_held], df.Date[i])
+                    start_date = df.Date[i-days_held].split(' ')[0]
+                    end_date = df.Date[i].split(' ')[0]
+                    actual_sp500_return = gutils.get_sp500_actual_return(start_date, end_date)
 
                     #Compare this return vs benchmark return side-by-side for same duration
                     df_transactions['SP500_PCT'][transactions_count] = actual_sp500_return
