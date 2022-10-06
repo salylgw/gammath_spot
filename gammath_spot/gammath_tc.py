@@ -233,6 +233,7 @@ def generate_trend_charts(tsymbol, df, path):
     #Generate x-axis
     x_vals = np.array([x for x in range(df_len)])
 
+    #Low line
     start_index = (len(df_lows)-1)
     end_index = 0
     step = -1
@@ -242,7 +243,6 @@ def generate_trend_charts(tsymbol, df, path):
     start_point = lp2_index
     start_value = lp2
 
-    #Low line
     for i in range(start_index, end_index, step):
         lp2 = df_lows.Close[i]
         lp2_index = df_lows.OI[i]
@@ -329,6 +329,11 @@ def generate_trend_charts(tsymbol, df, path):
     for j in range(start_point, (df_len)):
         y_low_series[j] = ((low_slope*j) + low_line_c)
 
+    #Keep coordinates to annotate the chart
+    current_support_level_y = y_low_series[df_len-1]
+    current_support_level_x = (df_len-1)
+
+    #High line
     start_index = (len(df_highs)-1)
     end_index = 0
     step = -1
@@ -338,7 +343,6 @@ def generate_trend_charts(tsymbol, df, path):
     start_point = hp2_index
     start_value = hp2
 
-    #High line
     for i in range(start_index, end_index, step):
         hp2 = df_highs.Close[i]
         hp2_index = df_highs.OI[i]
@@ -421,6 +425,9 @@ def generate_trend_charts(tsymbol, df, path):
     for j in range(start_point, (df_len)):
         y_high_series[j] = ((high_slope*j) + high_line_c)
 
+    #Keep coordinates to annotate the chart
+    current_resistance_level_y = y_high_series[df_len-1]
+    current_resistance_level_x = (df_len-1)
 
     #Generate instantaneous trendline using Hilbert transform
     trendline = HT_TRENDLINE(df.Close)
@@ -441,6 +448,9 @@ def generate_trend_charts(tsymbol, df, path):
 
     plt.title('Current Approx. Moving Support and Resistance levels')
     plt.legend()
+
+    plt.annotate(f'{round(current_support_level_y, 3)}', xy=(current_support_level_x, current_support_level_y), xytext=((current_support_level_x+5), current_support_level_y))
+    plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=((current_resistance_level_x+5), current_resistance_level_y))
 
     #Save it for later reference (Use PDF instead of png to save space)
     plt.savefig(path / f'{tsymbol}_tc.pdf', format='pdf')
