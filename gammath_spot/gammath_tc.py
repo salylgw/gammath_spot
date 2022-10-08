@@ -27,184 +27,107 @@ from talib import HT_TRENDLINE
 #This is experimental and Work-In-Progress
 #Please do not use yet
 
-def get_monthly_lows_and_highs(df):
-    MAX_COUNTS_LEN = 100
+def get_weekly_lows_and_highs(df):
     MONTHLY_TRADING_DAYS = 21
     WEEKLY_TRADING_DAYS = 5
 
     df_len = len(df)
 
-    #Monthly Lows
-    df_lows = pd.DataFrame(columns=['OI', 'Date', 'Close'], index=pd.RangeIndex(MAX_COUNTS_LEN))
-    df_highs = pd.DataFrame(columns=['OI', 'Date', 'Close'], index=pd.RangeIndex(MAX_COUNTS_LEN))
-
-    df_lows_count = 0
-    df_highs_count = 0
-
-    end_index = (df_len - MONTHLY_TRADING_DAYS)
-    i = 0
-    curr_lowest = df.Close[i]
-    prev_lowest_val_index = 0
+    #Lows
+    start_index = (df_len-1)
+    end_index = 0
+    i = start_index
+    curr_lowest = 0
+    prev_lowest_val_index = -1
     curr_lowest_val_index = i
-    while (i < end_index):
+    weekly_low_indices = []
+    while (i >= end_index):
         price = df.Close[i]
-
         if ((not curr_lowest) or (curr_lowest > price)):
             curr_lowest = price
             curr_lowest_val_index = i
 
-        month_boundary = ((i % MONTHLY_TRADING_DAYS) == 0)
-        last_index = (i == (end_index-1))
-
-        if (month_boundary and (not last_index)):
-            #Get lowest on this line to avoid a point that is end-of-month but not really lowest on line
-            while ((curr_lowest > df.Close[i+1]) and (i > (end_index-1))):
-                i += 1
-                curr_lowest = df.Close[i]
-                curr_lowsest_val_index = i
-
-        #Only need to update check for last index
-        last_index = (i == (end_index-1))
-
-        if ((month_boundary or last_index) and (prev_lowest_val_index != curr_lowest_val_index)):
-            df_lows.OI[df_lows_count] = curr_lowest_val_index
-            df_lows.Date[df_lows_count] = df.Date[curr_lowest_val_index]
-            df_lows.Close[df_lows_count] = df.Close[curr_lowest_val_index]
-            prev_lowest_val_index = curr_lowest_val_index
-            df_lows_count += 1
-            curr_lowest = 0
-
-        i += 1
-
-    #Monthly Highs
-    end_index = (df_len - MONTHLY_TRADING_DAYS)
-    i = 0
-    curr_highest = df.Close[i]
-    prev_highest_val_index = 0
-    curr_highest_val_index = i
-    while (i < end_index):
-        price = df.Close[i]
-
-        if ((not curr_highest) or (curr_highest < price)):
-            curr_highest = price
-            curr_highest_val_index = i
-
-        month_boundary = ((i % MONTHLY_TRADING_DAYS) == 0)
-        last_index = (i == (end_index-1))
-
-        if (month_boundary and (not last_index)):
-            #Get highest on this line to avoid a point that is end-of-month but not really highest on line
-            while ((curr_highest < df.Close[i+1]) and (i > (end_index-1))):
-                i += 1
-                curr_highest = df.Close[i]
-                curr_highest_val_index = i
-
-        #Only need to update check for last index
-        last_index = (i == (end_index-1))
-
-        if ((month_boundary or last_index) and (prev_highest_val_index != curr_highest_val_index)):
-            df_highs.OI[df_highs_count] = curr_highest_val_index
-            df_highs.Date[df_highs_count] = df.Date[curr_highest_val_index]
-            df_highs.Close[df_highs_count] = df.Close[curr_highest_val_index]
-            prev_highest_val_index = curr_highest_val_index
-            df_highs_count += 1
-            curr_highest = 0
-
-        i += 1
-
-
-    #Last month
-    #Lows
-    #Look between end to month boundary
-
-    start_index = (df_len-1)
-    end_index = (start_index-MONTHLY_TRADING_DAYS)
-    i = start_index
-    curr_lowest = df.Close[i]
-    prev_lowest_val_index = 0
-    curr_lowest_val_index = i
-    last_month_low_indices = []
-    while (i > end_index):
-        price = df.Close[i]
-        if (curr_lowest > price):
-            curr_lowest = price
-            curr_lowest_val_index = i
-
-        if ((not (i % WEEKLY_TRADING_DAYS)) or (i == (end_index+1))):
-            while ((curr_lowest > df.Close[i-1]) and (i > (end_index + 1))):
-                i -= 1
-                curr_lowest = df.Close[i]
-                curr_lowest_val_index = i
+        if (not (i % WEEKLY_TRADING_DAYS)):
+            if (i > end_index):
+                while ((i > end_index) and (curr_lowest > df.Close[i-1])):
+                    i -= 1
+                    curr_lowest = df.Close[i]
+                    curr_lowest_val_index = i
 
             if (prev_lowest_val_index != curr_lowest_val_index):
-                last_month_low_indices.append(curr_lowest_val_index)
+                weekly_low_indices.append(curr_lowest_val_index)
                 prev_lowest_val_index = curr_lowest_val_index
+                curr_lowest = 0
 
         i -= 1
 
-    #Last month
-    #Highs
-    #Look between end to month boundary
+    #Save weekly lows in a data frame
+    lmli_len = len(weekly_low_indices)
+    df_lows = pd.DataFrame(columns=['OI', 'Date', 'Close'], index=pd.RangeIndex(lmli_len))
+    df_lows_count = 0
 
-    start_index = (df_len-1)
-    end_index = (start_index-MONTHLY_TRADING_DAYS)
-    i = start_index
-    curr_highest = df.Close[i]
-    prev_highest_val_index = 0
-    curr_highest_val_index = i
-    last_month_high_indices = []
-    while (i > end_index):
-        price = df.Close[i]
-        if (curr_highest < price):
-            curr_highest = price
-            curr_highest_val_index = i
-
-        if ((not (i % WEEKLY_TRADING_DAYS)) or (i == (end_index+1))):
-            while ((curr_highest < df.Close[i-1]) and (i > (end_index + 1))):
-                i -= 1
-                curr_highest = df.Close[i]
-                curr_highest_val_index = i
-
-            if (prev_highest_val_index != curr_highest_val_index):
-                last_month_high_indices.append(curr_highest_val_index)
-                prev_highest_val_index = curr_highest_val_index
-
-        i -= 1
-
-
-    #Rearrange in correct order
-    lmli_len = len(last_month_low_indices)
+    #Save it in correct order
     if (lmli_len):
         start_index = (lmli_len-1)
         end_index = 0
         i = start_index
         while (i >= end_index):
-            df_lows.OI[df_lows_count] = last_month_low_indices[i]
-            df_lows.Date[df_lows_count] = df.Date[last_month_low_indices[i]]
-            df_lows.Close[df_lows_count] = df.Close[last_month_low_indices[i]]
+            df_lows.OI[df_lows_count] = weekly_low_indices[i]
+            df_lows.Date[df_lows_count] = df.Date[weekly_low_indices[i]]
+            df_lows.Close[df_lows_count] = df.Close[weekly_low_indices[i]]
             df_lows_count += 1
             i -= 1
 
-    #Rearrange in correct order
-    lmhi_len = len(last_month_high_indices)
+    #Highs
+    start_index = (df_len-1)
+    end_index = 0
+    i = start_index
+    curr_highest = 0
+    prev_highest_val_index = -1
+    curr_highest_val_index = i
+    weekly_high_indices = []
+    while (i >= end_index):
+        price = df.Close[i]
+        if ((not curr_highest) or (curr_highest < price)):
+            curr_highest = price
+            curr_highest_val_index = i
+
+        if (not (i % WEEKLY_TRADING_DAYS)):
+            if (i > end_index):
+                while ((i > end_index) and (curr_highest < df.Close[i-1])):
+                    i -= 1
+                    curr_highest = df.Close[i]
+                    curr_highest_val_index = i
+
+            if (prev_highest_val_index != curr_highest_val_index):
+                weekly_high_indices.append(curr_highest_val_index)
+                prev_highest_val_index = curr_highest_val_index
+                curr_highest = 0
+
+        i -= 1
+
+    #Save weekly highs in a dataframe
+    lmhi_len = len(weekly_high_indices)
+    df_highs = pd.DataFrame(columns=['OI', 'Date', 'Close'], index=pd.RangeIndex(lmhi_len))
+    df_highs_count = 0
+
+    #Save it in correct order
     if (lmhi_len):
         start_index = (lmhi_len-1)
         end_index = 0
         i = start_index
         while (i >= end_index):
-            df_highs.OI[df_highs_count] = last_month_high_indices[i]
-            df_highs.Date[df_highs_count] = df.Date[last_month_high_indices[i]]
-            df_highs.Close[df_highs_count] = df.Close[last_month_high_indices[i]]
+            df_highs.OI[df_highs_count] = weekly_high_indices[i]
+            df_highs.Date[df_highs_count] = df.Date[weekly_high_indices[i]]
+            df_highs.Close[df_highs_count] = df.Close[weekly_high_indices[i]]
             df_highs_count += 1
             i -= 1
 
-    #Remove extra rows
-    df_lows = df_lows.truncate(after=(df_lows_count-1))
-    df_highs = df_highs.truncate(after=(df_highs_count-1))
 
     return df_lows, df_highs
 
 #Generate charts showing moving trends
+#Trendline and current estimated moving support and resistance level
 def generate_trend_charts(tsymbol, df, path):
     df_len=len(df)
 
@@ -214,8 +137,8 @@ def generate_trend_charts(tsymbol, df, path):
     #last price
     lcp = df.Close[df_len-1]
 
-    #Get lows and highs for each month
-    df_lows, df_highs = get_monthly_lows_and_highs(df)
+    #Get lows and highs for each week
+    df_lows, df_highs = get_weekly_lows_and_highs(df)
 
     low_slope = 0
     high_slope = 0
@@ -227,13 +150,14 @@ def generate_trend_charts(tsymbol, df, path):
     curr_highest = lcp
 
     #Create a series to save the points
+    #We want to draw it alongside closing prices so keep it same length
     y_low_series = pd.Series(np.nan, pd.RangeIndex(df_len))
     y_high_series = pd.Series(np.nan, pd.RangeIndex(df_len))
 
     #Generate x-axis
     x_vals = np.array([x for x in range(df_len)])
 
-    #Low line
+    #Support line
     start_index = (len(df_lows)-1)
     end_index = 0
     step = -1
@@ -260,6 +184,38 @@ def generate_trend_charts(tsymbol, df, path):
 
         #project y-value for last x-value
         lp = ((low_slope*(df_len-1)) + low_line_c)
+
+        #Check if any of these points are relevant
+        if ((lcp > lp) or (lcp > lp1) or (lcp > lp2)):
+            #At least one of them is relevant. Double check for lowest after lp1_index and before lp2_index
+            interim_lowest_val_index = (lp2_index-1)
+            interim_lowest = df.Close[interim_lowest_val_index]
+            j = (interim_lowest_val_index-1)
+            while (j > lp1_index):
+                val = df.Close[j]
+                if (interim_lowest > val):
+                    interim_lowest = val
+                    interim_lowest_val_index = j
+                j -= 1
+
+            if (interim_lowest < lp1):
+                #Replace lp1
+                lp1 = interim_lowest
+                lp1_index = interim_lowest_val_index
+
+                #Recalculate slope and intercept
+                #Calculate slope for line connecting lp1 and lp2
+                if (lp1_index == lp2_index):
+                    low_slope = 0
+                else:
+                    low_slope = (lp2 - lp1)/(x_vals[lp2_index] - x_vals[lp1_index])
+
+                #Calculate the intercept
+                low_line_c = (lp2 - (low_slope*x_vals[lp2_index]))
+
+                #project y-value for last x-value
+                lp = ((low_slope*(df_len-1)) + low_line_c)
+
 
         #Checks to decide which points to use
         diff_2p = (lcp - lp)
@@ -301,25 +257,21 @@ def generate_trend_charts(tsymbol, df, path):
 
         break
 
-    #We have a slant line that is possibly far from last price
-    #Check if there is a better flat line
+    #If this is a slant line, check if it is "too" far from last price
     if (low_slope and (lcp < lp1) and (lcp < lp2)):
-        #Start from lp2_index
+        #Check if there is a better flat line
+        #Start checking from lp2
         i = lp2_index
         while (i>=0):
             #We want the val to be less than last price
             if (df.Close[i] < lcp):
-                #Make sure it is lowest in this leg
-                while ((i > 0) and (df.Close[i-1] < df.Close[i])):
-                    i -= 1
-
                 if (diff_2p > (lcp-df.Close[i])):
                     #Our line is farther so pick this point for flat line
                     low_slope = 0
                     #Use these coordinates
                     start_value = df.Close[i]
                     start_point = i
-                    break
+                break
             i -= 1
 
     #Calculate intercept based on which points we picked
@@ -361,6 +313,37 @@ def generate_trend_charts(tsymbol, df, path):
         #project y-value for last x-value
         lp = ((high_slope*(df_len-1)) + high_line_c)
 
+        #Check if any of these points are relevant
+        if ((lcp < lp) or (lcp < hp1) or (lcp < hp2)):
+            #If we have found relevant point(s) then double check for highest after hp1_index and before hp2_index
+            interim_highest_val_index = (hp2_index-1)
+            interim_highest = df.Close[interim_highest_val_index]
+            j = (interim_highest_val_index-1)
+            while (j > hp1_index):
+                val = df.Close[j]
+                if (interim_highest < val):
+                    interim_highest = val
+                    interim_highest_val_index = j
+                j -= 1
+
+            if (interim_highest > hp1):
+                #Replace hp1
+                hp1 = interim_highest
+                hp1_index = interim_highest_val_index
+
+                #Recalculate slope and intercept
+                #Calculate slope for line connecting hp1 and hp2
+                if (hp1_index == hp2_index):
+                    high_slope = 0
+                else:
+                    high_slope = (hp2 - hp1)/(x_vals[hp2_index] - x_vals[hp1_index])
+
+                #Calculate the intercept
+                high_line_c = (hp2 - (high_slope*x_vals[hp2_index]))
+
+                #project y-value for last x-value
+                lp = ((high_slope*(df_len-1)) + high_line_c)
+
         #Checks to decide which points to use
         diff_2p = (lp - lcp)
         diff_hp2 = (hp2 - lcp)
@@ -373,7 +356,7 @@ def generate_trend_charts(tsymbol, df, path):
             if (lcp < hp2):
                 if (diff_hp2 < diff_2p): #Check if we should use hp2 instead
                     #Use hp2 line
-                    low_slope = 0
+                    high_slope = 0
                     start_point = hp2_index
                     start_value = hp2
         else: #Check if hp1 or hp2 can be used
@@ -399,23 +382,22 @@ def generate_trend_charts(tsymbol, df, path):
 
         break
 
-    #We have a slant line that is possibly far from last price
-    #Check if there is a better flat line
+
+    #If this is a slant line, check if it is "too" far from last price
     if (high_slope and (lcp > hp1) and (lcp > hp2)):
-        #Start from hp2_index
+        #Check if there is a better flat line
+        #Start checking from hp2
         i = hp2_index
         while (i>=0):
             #We want the val to be more than last price
             if (df.Close[i] > lcp):
-                while ((i > 0) and (df.Close[i-1] > df.Close[i])):
-                    i -= 1
                 if (diff_2p > (df.Close[i]-lcp)):
                     #Our line is farther so pick this point for flat line
                     high_slope = 0
                     #Use these coordinates
                     start_value = df.Close[i]
                     start_point = i
-                    break
+                break
             i -= 1
 
     #Calculate intercept based on which points we picked
@@ -449,9 +431,27 @@ def generate_trend_charts(tsymbol, df, path):
     plt.title('Current Approx. Moving Support and Resistance levels')
     plt.legend()
 
-    plt.annotate(f'{round(current_support_level_y, 3)}', xy=(current_support_level_x, current_support_level_y), xytext=((current_support_level_x+5), current_support_level_y))
-    plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=((current_resistance_level_x+5), current_resistance_level_y))
+    #We should keep some distance between annotations to avoid writing over each other
+    #However, the distance seems to depend on other factors that will be revisited later
 
-    #Save it for later reference (Use PDF instead of png to save space)
+    #Support level
+    plt.annotate(f'{round(current_support_level_y, 3)}', xy=(current_support_level_x, current_support_level_y), xytext=(current_support_level_x, current_support_level_y))
+    #Last price
+    plt.annotate(f'{round(lcp, 3)}', xy=((df_len-1), lcp), xytext=((df_len-1), lcp))
+    #Resistance level
+    plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=(current_resistance_level_x, current_resistance_level_y))
+
+    #Save trend charts for later reference (Use PDF instead of png to save space)
     plt.savefig(path / f'{tsymbol}_tc.pdf', format='pdf')
+
+    try:
+        #Append the signals file
+        f = open(path / f'{tsymbol}_signal.txt', 'a')
+    except:
+        print('\nERROR: opening signal file after generating trend charts for ', tsymbol, ': ', sys.exc_info()[0])
+    else:
+        #Log support and resistance level for later reference
+        support_resistance_string = f'\nCurrent Approx. Moving Support level: {round(current_support_level_y, 3)}\nCurrent Approx. Moving Resistance level: {round(current_resistance_level_y, 3)}'
+        f.write(support_resistance_string)
+        f.close()
 
