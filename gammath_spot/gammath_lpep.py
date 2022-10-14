@@ -179,7 +179,8 @@ class GPEP:
         #Generate trend charts
         try:
             df = df.truncate(before=(df_len-self.MIN_TRADING_DAYS_FOR_5_YEARS)).reset_index().drop('index', axis=1)
-            gtc.generate_trend_charts(tsymbol, df, path)
+            gtrends = gtc.GTRENDS()
+            gtrends.generate_trend_charts(tsymbol, df, path)
         except:
             print('\nERROR: while generating trend charts for ', tsymbol, ': ', sys.exc_info()[0])
 
