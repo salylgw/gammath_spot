@@ -133,9 +133,9 @@ class GUTILS:
                 try:
                     df_gscores = pd.read_csv(subdir / f'{subdir.name}_gscores.csv', index_col='Unnamed: 0')
                     df_b['Ticker'][i] = f'{subdir.name}'
-                    df_b['sh_gscore'][i] = df_gscores.SH_Total[0]
-                    df_b['sci_gscore'][i] = df_gscores.SCI_Total[0]
-                    df_b['final_gscore'][i] = df_gscores.Total[0]
+                    df_b['sh_gscore'][i] = df_gscores.SH_gScore[0]
+                    df_b['sci_gscore'][i] = df_gscores.SCI_gScore[0]
+                    df_b['final_gscore'][i] = df_gscores.gScore[0]
 
                     f = open(subdir / f'{subdir.name}_signal.txt', 'r')
                     content = f.read()

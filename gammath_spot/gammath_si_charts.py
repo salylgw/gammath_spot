@@ -28,11 +28,9 @@ import sys
 import os
 import time
 try:
-    from gammath_spot import gammath_utils as gut
     from gammath_spot import gammath_kf_signals as gkf
     from gammath_spot import gammath_ols_signals as gols
 except:
-    import gammath_utils as gut
     import gammath_kf_signals as gkf
     import gammath_ols_signals as gols
 
@@ -46,15 +44,6 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
 
     STOCH_OVERSOLD_LEVEL = 20
     STOCH_OVERBOUGHT_LEVEL = 80
-
-    file_exists = (path / f'{tsymbol}_charts.png').exists()
-
-    #Check if file exists and is it from another day
-    if file_exists:
-        fstat = os.stat(path / f'{tsymbol}_charts.png')
-
-        if (True == gut.check_if_same_day(fstat)):
-            return
 
     #Draw the charts to view all at once as subplots
     figure, axes = plt.subplots(nrows=7, figsize=(28, 35))

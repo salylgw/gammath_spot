@@ -71,7 +71,7 @@ def run_basic_backtest(df, path, tsymbol, term):
 
     #Use percentile levels to determine discount, neutral and premium levels
     #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
-    MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.SH_Total.quantile([0.20, 0.5, 0.80])
+    MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.SH_gScore.quantile([0.20, 0.5, 0.80])
 
     #Get the low and high percentiles for next day up/down probability
     nup_bp, nup_tp = df.NUP.quantile([0.1, 0.9])
@@ -79,7 +79,7 @@ def run_basic_backtest(df, path, tsymbol, term):
     last_buy_5y_price_ratio = 0
 
     for i in range(2, history_len):
-        curr_sh_gscore = df.SH_Total[i]
+        curr_sh_gscore = df.SH_gScore[i]
         curr_kf_gscore = df.KF[i]
         curr_ols_gscore = df.OLS[i]
         curr_macd_gscore = df.MACD[i]
@@ -232,7 +232,7 @@ def run_basic_backtest(df, path, tsymbol, term):
             days_held += 1
 
     df_sci = pd.read_csv(path / f'{tsymbol}_gscores.csv', index_col='Unnamed: 0')
-    if (df_sci.SCI_Total[0] <= 0):
+    if (df_sci.SCI_gScore[0] <= 0):
         sci_note = f'Current_info_data_overall_negative'
     else:
         sci_note = f'Current_info_data_overall_positive'

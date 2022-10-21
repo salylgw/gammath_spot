@@ -10,7 +10,6 @@ Data scraper and Analyzer/Scorer tools work great for me and save me incredible 
   * News sentiment analysis and scoring (using tools such as Natural Language Tool Kit, Spacy, Textblob etc.)
   * Fundamental analysis enhancements to use as filtering criteria (preferably with a GUI)
   * Optimize the historian tool
-  * Price predictor (You can use this as a [starting point](https://github.com/salylgw/gammath_spot/blob/main/gammath_spot/gammath_lgstic_signals.py) for the feature)
 
 
 

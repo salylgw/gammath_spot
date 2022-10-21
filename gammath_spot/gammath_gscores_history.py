@@ -63,7 +63,7 @@ class GSH:
             for i in range(MIN_TRADING_DAYS_FOR_5YEARS):
                 gsa_instance = gsa.GSA()
                 df1.iloc[0:MIN_TRADING_DAYS_FOR_5YEARS] = df.iloc[initial_start_index+i:initial_end_index+i]
-                df_micro_gscores = gsa_instance.do_stock_history_analysis(tsymbol, path, df1[0:MIN_TRADING_DAYS_FOR_5YEARS])
+                df_micro_gscores = gsa_instance.do_stock_history_analysis(tsymbol, path, df1[0:MIN_TRADING_DAYS_FOR_5YEARS], False)
 
                 #Get the columns from micro gscores df
                 if not len(df_gscores):
@@ -74,7 +74,7 @@ class GSH:
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
-            self.SH_GSCORE_MIN_DISCOUNT_LEVEL, self.SH_GSCORE_NEUTRAL_LEVEL, self.SH_GSCORE_MIN_PREMIUM_LEVEL = df_gscores.SH_Total.quantile([0.20, 0.5, 0.80])
+            self.SH_GSCORE_MIN_DISCOUNT_LEVEL, self.SH_GSCORE_NEUTRAL_LEVEL, self.SH_GSCORE_MIN_PREMIUM_LEVEL = df_gscores.SH_gScore.quantile([0.20, 0.5, 0.80])
 
             #Draw the charts (along with dates) to get a general idea of correlations
             figure, axes = plt.subplots(nrows=11, figsize=(28, 47))
@@ -82,7 +82,7 @@ class GSH:
             closing_prices_df = pd.DataFrame({tsymbol: df1.Close[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             closing_prices_df = closing_prices_df.set_index(df1.Date[0:MIN_TRADING_DAYS_FOR_5YEARS])
             closing_prices_df.plot(ax=axes[0],lw=1,title='Stock history')
-            sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.SH_Total[0:MIN_TRADING_DAYS_FOR_5YEARS]})
+            sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.SH_gScore[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             sh_gscores_df = sh_gscores_df.set_index(df_gscores.Date)
             sh_gscores_df.plot(ax=axes[1],lw=1,title='Stock History based gScores')
             axes[1].axhline(self.SH_GSCORE_MIN_DISCOUNT_LEVEL,lw=1,ls='-',c='r')

@@ -22,14 +22,15 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
-from talib import HT_TRENDLINE
 
-#This is experimental and Work-In-Progress
-#Please do not use yet
+#Estimate support and resistance lines
+
 class GTRENDS:
     def __init__(self):
         self.Tickers_dir = Path('tickers')
         self.WEEKLY_TRADING_DAYS = 5
+        self.y_support_series = pd.Series(dtype='float64')
+        self.y_resistance_series = pd.Series(dtype='float64')
 
     #Get weekly lows and higs
     def get_weekly_lows_and_highs(self, df):
@@ -286,8 +287,52 @@ class GTRENDS:
 
         return hp1_index, hp2_index, resistance_line_slope, resistance_line_c
 
+    #Plot charts
+    def draw_trend_charts(self, tsymbol, path, df, sr_df):
+
+        #Extract data
+        df_len = len(df)
+        x_vals = np.array([x for x in range(df_len)])
+        lcp = df.Close[df_len-1]
+        current_support_level_y = sr_df['CS_Y'][0]
+        current_support_level_x = sr_df['CS_X'][0]
+        current_resistance_level_y = sr_df['CR_Y'][0]
+        current_resistance_level_x = sr_df['CR_X'][0]
+
+        #Draw the charts
+        figure, axes = plt.subplots(nrows=1, figsize=(14, 10))
+
+        #Need different widths for support/resistance lines compared to prices line
+        plt.plot(x_vals, df.Close, lw=0.5, ls='-.', label=tsymbol)
+        plt.plot(x_vals, self.y_support_series, lw=1, c='g', label='Current Approx. Moving Support Line')
+        plt.plot(x_vals, self.y_resistance_series, lw=1, c='r', label='Current Approx. Moving Resistance Line')
+
+        #Title for the chart
+        plt.title('Current Approx. Moving Support and Resistance levels')
+
+        #Need legend in the chart
+        plt.legend()
+
+        #We should keep some distance between annotations to avoid writing over each other
+        #However, the distance seems to get disproportionate so needs to be revisited later
+        #(TBD: distance between annotations)
+
+        #Support level
+        plt.annotate(f'{round(current_support_level_y, 3)}', xy=(current_support_level_x, current_support_level_y), xytext=(current_support_level_x, current_support_level_y))
+
+        #Last price
+        plt.annotate(f'{round(lcp, 3)}', xy=((df_len-1), lcp), xytext=((df_len-1), lcp))
+
+        #Resistance level
+        plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=(current_resistance_level_x, current_resistance_level_y))
+
+        #Save trend charts for later reference (Use PDF instead of png to save space)
+        plt.savefig(path / f'{tsymbol}_tc.pdf', format='pdf')
+
     #Compute current estimated moving support and resistance level
-    def compute_support_and_resistance_levels(self, df):
+    def compute_support_and_resistance_levels(self, tsymbol, path, df, need_charts):
+
+        #Get stock history length
         df_len=len(df)
 
         start_index = 0
@@ -310,8 +355,8 @@ class GTRENDS:
 
         #Create a series to save the points
         #We want to draw it alongside closing prices so keeping it same length
-        y_support_series = pd.Series(np.nan, pd.RangeIndex(df_len))
-        y_resistance_series = pd.Series(np.nan, pd.RangeIndex(df_len))
+        self.y_support_series = pd.Series(np.nan, pd.RangeIndex(df_len))
+        self.y_resistance_series = pd.Series(np.nan, pd.RangeIndex(df_len))
 
         #Generate x-axis
         x_vals = np.array([x for x in range(df_len)])
@@ -441,10 +486,10 @@ class GTRENDS:
 
         #Calculate points for drawing the line
         for j in range(start_point, (df_len)):
-            y_support_series[j] = ((support_line_slope*j) + support_line_c)
+            self.y_support_series[j] = ((support_line_slope*j) + support_line_c)
 
         #Keep coordinates to annotate the chart
-        current_support_level_y = y_support_series[df_len-1]
+        current_support_level_y = self.y_support_series[df_len-1]
         current_support_level_x = (df_len-1)
 
         #Resistance line
@@ -572,101 +617,24 @@ class GTRENDS:
 
         #Calculate points for drawing the line
         for j in range(start_point, (df_len)):
-            y_resistance_series[j] = ((resistance_line_slope*j) + resistance_line_c)
+            self.y_resistance_series[j] = ((resistance_line_slope*j) + resistance_line_c)
 
         #Keep coordinates to annotate the chart
-        current_resistance_level_y = y_resistance_series[df_len-1]
+        current_resistance_level_y = self.y_resistance_series[df_len-1]
         current_resistance_level_x = (df_len-1)
 
         #Create a dataframe for support and resistance data for different uses
-        sr_df = pd.DataFrame(columns=['CS_Y', 'CS_X', 'SLS', 'CR_Y', 'CR_X', 'RLS'], index=range(1))
-        sr_df['CS_Y'][0] = current_support_level_y
+        sr_df = pd.DataFrame(columns=['CS_Y', 'PDSL', 'CSDD', 'SLS', 'CS_X', 'CR_Y', 'RLS', 'PDRL', 'CRDD', 'CR_X'], index=range(1))
+        sr_df['CS_Y'][0] = round(current_support_level_y, 3)
+        sr_df['PDSL'][0] = round(((lcp - current_support_level_y)*100)/current_support_level_y, 3)
+        sr_df['SLS'][0] = round(support_line_slope, 3)
         sr_df['CS_X'][0] = current_support_level_x
-        sr_df['SLS'][0] = support_line_slope
-        sr_df['CR_Y'][0] = current_resistance_level_y
+        sr_df['CR_Y'][0] = round(current_resistance_level_y, 3)
+        sr_df['RLS'][0] = round(resistance_line_slope, 3)
+        sr_df['PDRL'][0] = round(((current_resistance_level_y - lcp)*100)/current_resistance_level_y, 3)
         sr_df['CR_X'][0] = current_resistance_level_x
-        sr_df['RLS'][0] = resistance_line_slope
 
-        return y_support_series, y_resistance_series, sr_df
+        if need_charts:
+            self.draw_trend_charts(tsymbol, path, df, sr_df)
 
-    #Generate charts showing moving trends
-    def generate_trend_charts(self, tsymbol, df, path):
-
-        #Generate instantaneous trendline using Hilbert transform
-        trendline = HT_TRENDLINE(df.Close)
-
-        #Save the data frame for drawing charts
-        df_trendline = pd.DataFrame({tsymbol: df.Close, 'Trend line': trendline})
-
-        #Get support and resistance level
-        y_support_series, y_resistance_series, sr_df = self.compute_support_and_resistance_levels(df)
-
-        self.draw_trend_charts(tsymbol, path, df, df_trendline, y_support_series, y_resistance_series, sr_df)
-
-        #Update signals file for convenient reference
-        self.update_signals_with_trends_data(tsymbol, path, sr_df)
-
-    #Add support and resistance data points to signals file
-    def update_signals_with_trends_data(self, tsymbol, path, sr_df):
-
-        #Extract data
-        current_support_level_y = sr_df['CS_Y'][0]
-        support_line_slope = sr_df['SLS'][0]
-        current_resistance_level_y = sr_df['CR_Y'][0]
-        resistance_line_slope = sr_df['RLS'][0]
-
-        try:
-            #Append the signals file
-            f = open(path / f'{tsymbol}_signal.txt', 'a')
-        except:
-            print('\nERROR: opening signal file after generating trend charts for ', tsymbol, ': ', sys.exc_info()[0])
-        else:
-            #Log support and resistance level for convenient reference
-            support_resistance_string = f'\nCurrent Approx. Moving Support level: {round(current_support_level_y, 3)},support_line_slope:{round(support_line_slope, 3)},Current Approx. Moving Resistance level: {round(current_resistance_level_y, 3)},resistance_line_slope:{round(resistance_line_slope, 3)}'
-            f.write(support_resistance_string)
-            f.close()
-
-    #Plot charts
-    def draw_trend_charts(self, tsymbol, path, df, df_trendline, y_support_series, y_resistance_series, sr_df):
-
-        #Extract data
-        df_len = len(df)
-        x_vals = np.array([x for x in range(df_len)])
-        lcp = df.Close[df_len-1]
-        current_support_level_y = sr_df['CS_Y'][0]
-        current_support_level_x = sr_df['CS_X'][0]
-        current_resistance_level_y = sr_df['CR_Y'][0]
-        current_resistance_level_x = sr_df['CR_X'][0]
-
-        #Draw the charts
-        figure, axes = plt.subplots(nrows=2, figsize=(28, 14))
-
-        #Plot the chart
-        df_trendline.plot(ax=axes[0],lw=1,title='Instantaneous Trendline')
-
-        #Need different widths for support/resistance lines compared to prices line
-        plt.plot(x_vals, df.Close, lw=0.5, ls='-.', c='b', label=tsymbol)
-        plt.plot(x_vals, y_support_series, lw=1, c='g', label='Current Approx. Moving Support Line')
-        plt.plot(x_vals, y_resistance_series, lw=1, c='r', label='Current Approx. Moving Resistance Line')
-
-        #Title for the chart
-        plt.title('Current Approx. Moving Support and Resistance levels')
-
-        #Need legend in the chart
-        plt.legend()
-
-        #We should keep some distance between annotations to avoid writing over each other
-        #However, the distance seems to get disproportionate so needs to be revisited later
-        #(TBD: distance between annotations)
-
-        #Support level
-        plt.annotate(f'{round(current_support_level_y, 3)}', xy=(current_support_level_x, current_support_level_y), xytext=(current_support_level_x, current_support_level_y))
-
-        #Last price
-        plt.annotate(f'{round(lcp, 3)}', xy=((df_len-1), lcp), xytext=((df_len-1), lcp))
-
-        #Resistance level
-        plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=(current_resistance_level_x, current_resistance_level_y))
-
-        #Save trend charts for later reference (Use PDF instead of png to save space)
-        plt.savefig(path / f'{tsymbol}_tc.pdf', format='pdf')
+        return sr_df
