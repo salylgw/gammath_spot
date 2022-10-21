@@ -47,7 +47,6 @@ try:
     from gammath_spot import gammath_pdp as gpdp
     from gammath_spot import gammath_mtpc as gmtpc
     from gammath_spot import gammath_get_stocks_events_data as gge
-    from gammath_spot import gammath_score_signals as gscsi
     from gammath_spot import gammath_si_charts as gsc
     from gammath_spot import gammath_tc as gtc
 except:
@@ -73,7 +72,6 @@ except:
     import gammath_pdp as gpdp
     import gammath_mtpc as gmtpc
     import gammath_get_stocks_events_data as gge
-    import gammath_score_signals as gscsi
     import gammath_si_charts as gsc
     import gammath_tc as gtc
 
