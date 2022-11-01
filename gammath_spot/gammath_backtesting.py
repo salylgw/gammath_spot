@@ -55,6 +55,7 @@ def run_basic_backtest(df, path, tsymbol, term):
     transactions_count = 0
     days_held = 0
     profit = 0
+    profit_pct = 0
     buy_q = 0
     marked_for_buy = False
     marked_for_sell = False
@@ -149,16 +150,16 @@ def run_basic_backtest(df, path, tsymbol, term):
             marked_for_buy = False
             buy_now = False
 
+        if (total_shares):
+            total_cash = (total_shares * curr_closing_price)
+            profit = (total_cash - total_cost)
+            profit_pct = round(((profit*100)/total_cost), 3)
 
         #Check for premium level
         if (((curr_sh_gscore <= MIN_SH_PREMIUM_LEVEL) and total_shares) or marked_for_sell):
             marked_for_buy = False
             marked_for_sell = True
             sell_now = False
-
-            total_cash = (total_shares * curr_closing_price)
-            profit = total_cash - total_cost
-            profit_pct = round(((profit*100)/total_cost), 3)
 
             #Check if in profit
             if (total_cost < total_cash):
