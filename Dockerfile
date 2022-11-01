@@ -24,6 +24,8 @@ RUN conda install -c conda-forge ta-lib
 
 RUN conda install matplotlib
 
+RUN conda install statsmodels
+
 RUN git clone https://github.com/salylgw/gammath_spot.git
 
 WORKDIR /gammath_spot/gammath_spot
