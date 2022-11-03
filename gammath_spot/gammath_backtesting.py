@@ -28,8 +28,10 @@ import numpy as np
 from backtesting import Backtest, Strategy
 try:
     from gammath_spot import gammath_utils as gut
+    from gammath_spot import gammath_mi_scores as gmis
 except:
     import gammath_utils as gut
+    import gammath_mi_scores as gmis
 
 #Default values
 MIN_SH_PREMIUM_LEVEL = -0.375
@@ -37,23 +39,28 @@ NEUTRAL_SH_PREMIUM_LEVEL = -0.375
 MIN_SH_DISCOUNT_LEVEL = 0.375
 
 MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
+MAX_BUY_STEP = 10
+
 
 #Following is a basic example of writing your own strategy for backtesting
-#This is just provided as an example to show one of the ways to do it
+#This is provided as an example to show one of the ways to do it
 #Remember, sell criteria is subjective. The methods shown here could be a way out of a position if one decides to get out; It is not meant to be mandatory sell decision. If one is confident of long-term prospects and if the stock does actually do well then perhaps buy and hold might turn out to be the best strategy
-#It is generally expected that in reality, execution of gScore-based dollar cost averaging would be better than what is used in backtesting since this does not account of news analysis and current information that is used in decision-making. As described in the guidelines, one would check the news before making buy/sell decisions
-def run_basic_backtest(df, path, tsymbol, term):
+#It is generally expected that in reality, execution of gScore-based dollar cost averaging would be better than what is used in backtesting since this does not account for news analysis and current information that is used in decision-making. As described in the guidelines, one would check the news before making buy/sell decisions
+def run_basic_backtest(df, path, tsymbol, term, max_cash):
 
-    #Create a data frame to save the stats and useful info to gauge the performance of the strategy
+    #Create a data frame to save the stats and useful info to measure the performance of the strategy
     df_transactions = pd.DataFrame(columns=['Date', 'Action', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'RETURN_PCT', 'SP500_PCT', 'Days_held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
 
     history_len = len(df)
 
     total_shares = 0
     total_cost = 0
+    total_cash = 0
+    remaining_cash = max_cash
     avg_price = 0
     transactions_count = 0
     days_held = 0
+    num_years = 0
     profit = 0
     profit_pct = 0
     buy_q = 0
@@ -67,8 +74,21 @@ def run_basic_backtest(df, path, tsymbol, term):
     sci_note = ''
     pp_note = ''
 
+    #Conservative strategy is assumed to work historically
+    strategy_note = f'Strategy worked historically'
+
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
+
+    use_a20dup = True
+
+    #Check which of 5-/20-day probability correlates better with price
+    try:
+        mi_scores_regr, mi_scores_classif = gmis.get_mi_scores(df)
+        if (mi_scores_regr.A5DUP > mi_scores_regr.A20DUP):
+            use_a20dup = False
+    except:
+        print('\nERROR: MI scores for symbol ', tsymbol, ': ', sys.exc_info()[0])
 
     #Use percentile levels to determine discount, neutral and premium levels
     #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
@@ -76,22 +96,78 @@ def run_basic_backtest(df, path, tsymbol, term):
 
     #Get the low and high percentiles for next day up/down probability
     nup_bp, nup_tp = df.NUP.quantile([0.1, 0.9])
+    ndp_bp = round((1 - nup_tp), 3)
     ndp_tp = round((1 - nup_bp), 3)
     last_buy_5y_price_ratio = 0
 
+    if (use_a20dup):
+        #Get 20-day probability percentiles
+        ndup_bp, ndup_mp, ndup_tp = df.A20DUP.quantile([0.25, 0.5, 0.75])
+    else:
+        #Get 5-day probability percentiles
+        ndup_bp, ndup_mp, ndup_tp = df.A5DUP.quantile([0.25, 0.5, 0.75])
+
+    #Get support price diff pct percentiles
+    supp_bp, supp_mp, supp_tp = df.PDSL.quantile([0.25, 0.5, 0.75])
+
+    #Get resistance price diff pct percentiles
+    res_bp, res_mp, res_tp = df.PDRL.quantile([0.25, 0.5, 0.75])
+
+    curr_supp_days = 0
+    curr_res_days = 0
+
     for i in range(2, history_len):
         curr_sh_gscore = df.SH_gScore[i]
-        curr_kf_gscore = df.KF[i]
-        curr_ols_gscore = df.OLS[i]
         curr_macd_gscore = df.MACD[i]
         curr_mfi_gscore = df.MFI[i]
         prev_closing_price = df.Close[i-1]
         curr_closing_price = df.Close[i]
         prev_nup = df.NUP[i-1]
-        curr_nup = df.NUP[i]
-        curr_ndp = round(1 - curr_nup, 3)
         prev_ndp = round(1- prev_nup, 3)
         curr_tpc5y = df.TPC5Y[i]
+        prev_support_line_slope = df.SLS[i-1]
+        curr_support_line_slope = df.SLS[i]
+        prev_resistance_line_slope = df.RLS[i-1]
+        curr_resistance_line_slope = df.RLS[i]
+        curr_pdsl = df.PDSL[i]
+        curr_pdrl = df.PDRL[i]
+        prev_support_level = df.CSL[i-1]
+        curr_support_level = df.CSL[i]
+        prev_resistance_level = df.CRL[i-1]
+        curr_resistance_level = df.CRL[i]
+
+        if (use_a20dup):
+            prev_ndup = df.A20DUP[i-1]
+            curr_ndup = df.A20DUP[i]
+        else:
+            prev_ndup = df.A5DUP[i-1]
+            curr_ndup = df.A5DUP[i]
+
+        #Get number of days in current support level
+        #Could be used in decision making
+        if (prev_support_level != curr_support_level):
+            if (curr_support_line_slope and (prev_support_line_slope == curr_support_line_slope)):
+                curr_supp_days += 1
+            else:
+                curr_supp_days = 1
+        else:
+            curr_supp_days += 1
+
+        #Get number of days in current resistance level
+        #Could be used in decision making
+        if (prev_resistance_level != curr_resistance_level):
+            if (curr_resistance_line_slope and (prev_resistance_line_slope == curr_resistance_line_slope)):
+                curr_res_days += 1
+            else:
+                curr_res_days = 1
+        else:
+            curr_res_days += 1
+
+        #Check if n-day up probability is rising or falling (approximately)
+        if (prev_ndup > curr_ndup):
+            rising_ndup = False
+        elif (prev_ndup < curr_ndup):
+            rising_ndup = True
 
         #Use this ratio to compare
         curr_5y_price_ratio = (curr_tpc5y/curr_closing_price)
@@ -107,34 +183,47 @@ def run_basic_backtest(df, path, tsymbol, term):
             #Check if rising for at least a day
             single_day_rising = (curr_closing_price > prev_closing_price)
 
-            # We only want to buy when price is is below our current average price
+            #Check if rising for two concecutive days
+            consec_two_days_rising = (single_day_rising and (prev_closing_price > df.Close[i-2]))
+
+            #Check if rising after multi-day drop
+            rise_after_multi_day_drop = ((prev_nup >= nup_tp) and (single_day_rising))
+
+            # We only want to buy when price is below our current average price
             if (total_shares and (curr_closing_price > avg_price)):
                 buy_now = False
-            else:
-                if (term == 'short_term'):
-                    #Check if rising for two concecutive days
-                    consec_two_days_rising = (single_day_rising and (prev_closing_price > df.Close[i-2]))
-                    if (consec_two_days_rising):
-                        # For short-term, we want to buy when we see two consecutive up days
+            elif ((curr_support_line_slope >= 0) and (curr_resistance_line_slope >= 0)):
+                if (rise_after_multi_day_drop):
+                    #We are looking for quick rebound after not a huge fall
+                    if ((curr_pdsl < supp_mp) and (curr_pdrl < res_mp)):
                         buy_now = True
-                elif (term == 'long_term'):
-                    #For long-term, we want to buy on up day that follows multiple down days (we look at previous day's next day up probability to gauge that)
-                    # If we are buying for long-term, check for reasonable 5Y return conjecture
-                    if ((prev_nup >= nup_tp) and (single_day_rising) and (curr_5y_price_ratio >= 1.5)):
+                elif (consec_two_days_rising):
+                    if (rising_ndup):
                         buy_now = True
-                        #Save this for comparison for sell-side check
-                        last_buy_5y_price_ratio = curr_5y_price_ratio
 
             if (buy_now):
-                buy_q += 1
+                if ((curr_macd_gscore > 0) and (curr_mfi_gscore > 0)):
 
-                if ((curr_ols_gscore >= 0.5) and (curr_kf_gscore >= 0.5) and (curr_macd_gscore >= 0.5) and (curr_mfi_gscore >= 0.3)):
-                    buy_q += 1
+                    #Buy quantity is managed better when news analysis is done
+                    #This is a conservative approach in the absence of that just
+                    if (remaining_cash >= curr_closing_price):
+                        if (total_shares):
+                            buy_q = min(MAX_BUY_STEP, remaining_cash//curr_closing_price)
+                        else:
+                            buy_q = 1
 
-                if ((curr_ols_gscore == 1.0) and (curr_kf_gscore >= 0.9) and (curr_macd_gscore == 1.0) and (curr_mfi_gscore >= 0.7)):
-                    buy_q += 1
+                        #Update remaining cash
+                        remaining_cash -= (buy_q*curr_closing_price)
+                    else:
+                        buy_q = 0
+                        strategy_note = f'Strategy did NOT always work historically'
+
+                #Save this for comparison during sell-side check
+                last_buy_5y_price_ratio = curr_5y_price_ratio
+
 
             if (buy_q):
+                #Mimic a buy order
                 total_shares += buy_q
                 total_cost += (curr_closing_price*buy_q)
                 df_transactions['Date'][transactions_count] = df.Date[i]
@@ -150,52 +239,59 @@ def run_basic_backtest(df, path, tsymbol, term):
             marked_for_buy = False
             buy_now = False
 
+
         if (total_shares):
+            #Check ongoing return
             total_cash = (total_shares * curr_closing_price)
             profit = (total_cash - total_cost)
             profit_pct = round(((profit*100)/total_cost), 3)
+
+        #Check if price has fallen for one day
+        single_day_falling = (curr_closing_price < prev_closing_price)
+
+        #Check if price has fallen for two consecutive days
+        consec_two_days_falling = (single_day_falling and (prev_closing_price < df.Close[i-2]))
+
+        #Check if price fell after multi-day rise
+        fall_after_multi_day_rise = ((prev_ndp >= ndp_tp) and single_day_falling)
 
         #Check for premium level
         if (((curr_sh_gscore <= MIN_SH_PREMIUM_LEVEL) and total_shares) or marked_for_sell):
             marked_for_buy = False
             marked_for_sell = True
             sell_now = False
-
             #Check if in profit
             if (total_cost < total_cash):
-                #Check if price has fallen for two consecutive days
-                consec_two_days_falling = ((curr_closing_price < prev_closing_price) and (prev_closing_price < df.Close[i-2]))
-
-                #Check if falling for two consecutive days
-                if (consec_two_days_falling):
+                #Check if falling after a multi-day run or fallen for two consecutive days
+                if ((fall_after_multi_day_rise or consec_two_days_falling) and (curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)):
                     if (term == 'short_term'):
-                        #For short-term: just sell
-                        sell_now = True
+                        #For short-term: just sell if not too close to support line
+                        if (curr_pdsl > supp_mp):
+                            sell_now = True
                     elif (term == 'long_term'):
                         #For long-term, we need more checks
-                        sell_now = False
-
-                        #If we already doubled then just sell irrespective of holding period
-                        if (profit_pct > 100):
-                            sell_now = True
-                        elif ((curr_5y_price_ratio < 2) and (curr_5y_price_ratio < last_buy_5y_price_ratio)):
-                            #If it doesn't seem to be doubling in 5 years and if our buy-time 5y price ratio is higher than current 5y price ratio then sell
-                            sell_now = True
-                        else:
-                            #If it is < 5% then it is perhaps not going very far
-                            if (profit_pct < 5):
+                        if (curr_pdrl < res_mp): #Check not too much room to rise
+                            #If we already doubled then just sell irrespective of holding period
+                            if (profit_pct > 100):
+                                sell_now = True
+                            elif ((curr_5y_price_ratio < 2) and (curr_5y_price_ratio < last_buy_5y_price_ratio)):
+                                #If it doesn't seem to be doubling in 5 years and if our buy-time 5y price ratio is higher than current 5y price ratio then sell
                                 sell_now = True
                             else:
-                                #Check number of years we've been holding
-                                num_years = days_held/249
-                                # we tend to give it at least 3 years to perform
-                                if (num_years >= 3):
-                                    # If it is not showing at least 20% return per year then sell
-                                    if (profit_pct < (num_years*20)):
-                                        sell_now = True
+                                #If it is < 5% then it is perhaps not going very far
+                                if (profit_pct < 5):
+                                    sell_now = True
+                                else:
+                                    #Check number of years we've been holding
+                                    num_years = days_held/249
+                                    # we tend to give it at least 3 years to perform
+                                    if (num_years >= 3):
+                                        # If it is not showing at least 20% return per year then sell
+                                        if (profit_pct < (num_years*20)):
+                                            sell_now = True
 
                 if (sell_now):
-                    #Mimic sale
+                    #Mimic a sell order
                     df_transactions['Date'][transactions_count] = df.Date[i]
                     df_transactions['Action'][transactions_count] = 'SELL'
                     df_transactions['Sell_Q'][transactions_count] = total_shares
@@ -215,7 +311,6 @@ def run_basic_backtest(df, path, tsymbol, term):
 
                     #Compare this return vs benchmark return side-by-side for same duration
                     df_transactions['SP500_PCT'][transactions_count] = actual_sp500_return
-
                     transactions_count += 1
                     total_shares = 0
                     total_cost = 0
@@ -223,6 +318,7 @@ def run_basic_backtest(df, path, tsymbol, term):
                     avg_price = 0
                     profit = 0
                     total_cash = 0
+                    remaining_cash = max_cash
                     marked_for_sell = 0
                     sell_now = False
                     sp500_comp_string = ''
@@ -232,6 +328,8 @@ def run_basic_backtest(df, path, tsymbol, term):
         if (total_shares):
             days_held += 1
 
+
+    #Add note for current info as it shows current environment is deemed +ve or -ve
     df_sci = pd.read_csv(path / f'{tsymbol}_gscores.csv', index_col='Unnamed: 0')
     if (df_sci.SCI_gScore[0] <= 0):
         sci_note = f'Current_info_data_overall_negative'
@@ -264,10 +362,14 @@ def run_basic_backtest(df, path, tsymbol, term):
     except:
         pp_note = f'Price projection tool has not been run for {tsymbol}'
 
-    note = f'{sci_note},{pp_note}'
+    #Update notes that can be used for better decision making
+    #i.e Current info, price projection summary and if this strategy has worked historically or not
+    note = f'{sci_note},{pp_note},{strategy_note}'
     df_transactions.Stage[transactions_count] = cycle
     df_transactions.Notes[transactions_count] = note
     df_transactions = df_transactions.truncate(after=transactions_count)
+
+    #Save for later reference
     df_transactions.to_csv(path / f'{tsymbol}_gtrades_stats_{term}.csv')
 
 #Get the main stock history based gScores
@@ -348,8 +450,8 @@ class GBT:
             return
 
         #You can call your own backtesting function here. Following is one example
-        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term')
-        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term')
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term', 10000)
 
         #Following is done to make it easier to use this with backtesting python framework
 #        df_gscores_history.Date = pd.to_datetime(df_gscores_history['Date'])
