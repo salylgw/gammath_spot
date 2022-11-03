@@ -280,7 +280,7 @@ class GSA:
 
         #Create a data frame for all stock history specific (micro)gScores
         df_len = len(df)
-        sh_gScore_df = pd.DataFrame({'Date': df.Date[df_len-1], 'Close': round(df.Close[df_len-1], 3), 'Price': price_final_score, 'RSI': rsi_final_score, 'BBANDS': bb_final_score, 'MACD': macd_final_score, 'KF': kf_final_score, 'OLS': ols_final_score, 'MFI': mfi_final_score, 'Stoch': stoch_final_score, 'SH_gScore': round((self.overall_sh_gscore/10), 3), 'NUP': nup, 'A5DUP': a5dup, 'A20DUP': a20dup, 'TPC5Y': tpc5y, 'CSL': current_support_level_y, 'SLS': support_line_slope, 'PDSL': pdsl, 'CRL': current_resistance_level_y, 'RLS': resistance_line_slope, 'PDRL': pdrl}, index=range(1))
+        sh_gScore_df = pd.DataFrame({'Date': df.Date[df_len-1].split(' ')[0], 'Close': round(df.Close[df_len-1], 3), 'Price': price_final_score, 'RSI': rsi_final_score, 'BBANDS': bb_final_score, 'MACD': macd_final_score, 'KF': kf_final_score, 'OLS': ols_final_score, 'MFI': mfi_final_score, 'Stoch': stoch_final_score, 'SH_gScore': round((self.overall_sh_gscore/10), 3), 'NUP': nup, 'A5DUP': a5dup, 'A20DUP': a20dup, 'TPC5Y': tpc5y, 'CSL': current_support_level_y, 'SLS': support_line_slope, 'PDSL': pdsl, 'CRL': current_resistance_level_y, 'RLS': resistance_line_slope, 'PDRL': pdrl}, index=range(1))
 
         #No need to draw charts for backtesting
         if need_charts:

@@ -226,7 +226,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                 #Mimic a buy order
                 total_shares += buy_q
                 total_cost += (curr_closing_price*buy_q)
-                df_transactions['Date'][transactions_count] = df.Date[i]
+                df_transactions['Date'][transactions_count] = df.Date[i].split(' ')[0]
                 df_transactions['Action'][transactions_count] = 'BUY'
                 df_transactions['Buy_Q'][transactions_count] = buy_q
                 df_transactions['sh_gScore'][transactions_count] = curr_sh_gscore
@@ -292,7 +292,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
 
                 if (sell_now):
                     #Mimic a sell order
-                    df_transactions['Date'][transactions_count] = df.Date[i]
+                    df_transactions['Date'][transactions_count] = df.Date[i].split(' ')[0]
                     df_transactions['Action'][transactions_count] = 'SELL'
                     df_transactions['Sell_Q'][transactions_count] = total_shares
                     df_transactions['sh_gScore'][transactions_count] = curr_sh_gscore
@@ -442,7 +442,7 @@ class GBT:
 
             #Just double check data is consistent before backtesting
             for i in range(len(df)):
-                if ((round(df_gscores_history.Close[i], 3) != round(df.Close[i], 3)) or (df_gscores_history.Date[i] != df.Date[i])):
+                if ((round(df_gscores_history.Close[i], 3) != round(df.Close[i], 3)) or (df_gscores_history.Date[i] != df.Date[i].split(' ')[0])):
                     raise ValueError('gScores and price history mismatched')
 
         except:
