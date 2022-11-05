@@ -49,7 +49,7 @@ MAX_BUY_STEP = 10
 def run_basic_backtest(df, path, tsymbol, term, max_cash):
 
     #Create a data frame to save the stats and useful info to measure the performance of the strategy
-    df_transactions = pd.DataFrame(columns=['Date', 'Action', 'Buy_Q', 'Sell_Q', 'sh_gScore', 'Price', 'Avg_Price', 'Profit', 'RETURN_PCT', 'SP500_PCT', 'Days_held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
+    df_transactions = pd.DataFrame(columns=['Date', 'Price', 'Action', 'Quantity', 'Avg_Price', 'Profit', 'Return_Pct', 'SP500_Pct', 'Days_Held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
 
     history_len = len(df)
 
@@ -75,7 +75,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
     pp_note = ''
 
     #Conservative strategy is assumed to work historically
-    strategy_note = f'Strategy worked historically'
+    strategy_note = f'Strategy worked historically (approx. last 5 years)'
 
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
@@ -216,7 +216,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                         remaining_cash -= (buy_q*curr_closing_price)
                     else:
                         buy_q = 0
-                        strategy_note = f'Strategy did NOT always work historically'
+                        strategy_note = f'Strategy did NOT always work historically (approx. last 5 years)'
 
                 #Save this for comparison during sell-side check
                 last_buy_5y_price_ratio = curr_5y_price_ratio
@@ -227,10 +227,9 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                 total_shares += buy_q
                 total_cost += (curr_closing_price*buy_q)
                 df_transactions['Date'][transactions_count] = df.Date[i].split(' ')[0]
-                df_transactions['Action'][transactions_count] = 'BUY'
-                df_transactions['Buy_Q'][transactions_count] = buy_q
-                df_transactions['sh_gScore'][transactions_count] = curr_sh_gscore
                 df_transactions['Price'][transactions_count] = round(curr_closing_price, 3)
+                df_transactions['Action'][transactions_count] = 'BUY'
+                df_transactions['Quantity'][transactions_count] = buy_q
                 avg_price = total_cost/total_shares
                 df_transactions['Avg_Price'][transactions_count] = round(avg_price, 3)
                 transactions_count += 1
@@ -293,16 +292,15 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                 if (sell_now):
                     #Mimic a sell order
                     df_transactions['Date'][transactions_count] = df.Date[i].split(' ')[0]
-                    df_transactions['Action'][transactions_count] = 'SELL'
-                    df_transactions['Sell_Q'][transactions_count] = total_shares
-                    df_transactions['sh_gScore'][transactions_count] = curr_sh_gscore
                     df_transactions['Price'][transactions_count] = round(curr_closing_price, 3)
+                    df_transactions['Action'][transactions_count] = 'SELL'
+                    df_transactions['Quantity'][transactions_count] = total_shares
                     df_transactions['Avg_Price'][transactions_count] = round(avg_price, 3)
                     df_transactions['Profit'][transactions_count] = round(profit, 3)
-                    df_transactions['Days_held'][transactions_count] = days_held
+                    df_transactions['Days_Held'][transactions_count] = days_held
 
                     #profit percentage
-                    df_transactions['RETURN_PCT'][transactions_count] = profit_pct
+                    df_transactions['Return_Pct'][transactions_count] = profit_pct
 
                     #Get actual return for S&P500 for the same duration
                     start_date = df.Date[i-days_held].split(' ')[0]
@@ -310,7 +308,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                     actual_sp500_return = gutils.get_sp500_actual_return(start_date, end_date)
 
                     #Compare this return vs benchmark return side-by-side for same duration
-                    df_transactions['SP500_PCT'][transactions_count] = actual_sp500_return
+                    df_transactions['SP500_Pct'][transactions_count] = actual_sp500_return
                     transactions_count += 1
                     total_shares = 0
                     total_cost = 0
@@ -348,8 +346,8 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
         cycle = 'Hold_cycle'
 
     if (total_shares):
-        df_transactions.Days_held[transactions_count] = days_held
-        df_transactions.RETURN_PCT[transactions_count] = profit_pct
+        df_transactions.Days_Held[transactions_count] = days_held
+        df_transactions.Return_Pct[transactions_count] = profit_pct
 
     try:
         #Get projected price

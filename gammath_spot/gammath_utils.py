@@ -388,7 +388,7 @@ class GUTILS:
         today_day = today.day
 
         #Create a dataframe to save tickers and their associated actions
-        df_actions = pd.DataFrame(columns=['Ticker', 'Action', 'Price', 'Term'], index=range(len(symbols_list)<<1))
+        df_actions = pd.DataFrame(columns=['Ticker', 'Price', 'Action', 'Quantity', 'Term'], index=range(len(symbols_list)<<1))
 
         i = 0
 
@@ -402,8 +402,9 @@ class GUTILS:
                 if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
                     #Today's action
                     df_actions['Ticker'][i] = f'{tsymbol}'
-                    df_actions['Action'][i] = bactesting_st_data.Action.iloc[last_action_index]
                     df_actions['Price'][i] = bactesting_st_data.Price.iloc[last_action_index]
+                    df_actions['Action'][i] = bactesting_st_data.Action.iloc[last_action_index]
+                    df_actions['Quantity'][i] = bactesting_st_data.Quantity.iloc[last_action_index]
                     df_actions['Term'][i] = 'short_term'
                     i += 1
             except:
@@ -416,8 +417,9 @@ class GUTILS:
                 if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
                     #Today's action
                     df_actions['Ticker'][i] = f'{tsymbol}'
-                    df_actions['Action'][i] = bactesting_lt_data.Action.iloc[last_action_index]
                     df_actions['Price'][i] = bactesting_lt_data.Price.iloc[last_action_index]
+                    df_actions['Action'][i] = bactesting_lt_data.Action.iloc[last_action_index]
+                    df_actions['Quantity'][i] = bactesting_lt_data.Quantity.iloc[last_action_index]
                     df_actions['Term'][i] = 'long_term'
                     i += 1
             except:
