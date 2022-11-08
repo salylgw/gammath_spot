@@ -24,7 +24,7 @@ This project uses following free tools that need to be installed (you can use pi
 5. yfinance
 6. pykalman
 7. statsmodels (Install statsmodels using miniconda in case you run into problems: `conda install statsmodels`)
-8. sklearn
+8. scikit-learn
 9. matplotlib (Install matplotlib using miniconda in case you run into problem: `conda install matplotlib`)
 10. backtesting
 

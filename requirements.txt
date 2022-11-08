@@ -5,7 +5,7 @@ matplotlib
 pykalman
 statsmodels
 ta-lib
-sklearn
+scikit-learn
 yfinance
 backtesting
 
