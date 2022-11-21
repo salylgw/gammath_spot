@@ -27,6 +27,9 @@ This project uses following free tools that need to be installed (you can use pi
 
 
 # HOWTO install
+
+If you are not familiar with python then you can use prebuilt docker image described in section "HOWTO get prebuilt docker image" below.
+
 `pip install gammath-spot`
 
 In case you run into installation problem(s) then use the alternative installation method(s) mentioned above and then run `pip install gammath-spot`
@@ -76,6 +79,17 @@ Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot
 1. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years (that were saved from the gscore historian) and saves the backtesting stats in `tickers/<ticker_symbol>/<ticker_symbol>_gtrades_stats.csv`
 1. You can check the backtesting stats to understand if the strategy you use worked historically and then decide whether to use that strategy or not. A sorted list of "Today's Actions" summary associated with default backtested strategy is saved in `tickers/Todays_Actions.csv`
 
+# HOWTO to get Gammath™ SPOT data from Docker desktop to your PC/MAC
+1. Run docker desktop
+1. Click on "Volumes"
+1. Click on the Volume name
+1. Click on Data
+1. Scroll down to see tickers directory
+1. Move the cursor to tickers. Notice the three dots on the right. Click on it
+1. Click on "Save as"
+1. Click on Save
+1. Unzip the tickers.zip file
+1. You should be able to view files using your favorite programs (e.g. Excel, Acrobat etc)
 
 # Investment blog
 If you want to see a real example of how output of this tool is being used then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).

@@ -1,6 +1,6 @@
 Author: Salyl Bhagwat
 
 Contributors (In the order of appearance):
-Michael McMahon (readme.md updates)
-Louis Palanki (Constructive discussions and issue reporting)
+Michael McMahon
+Louis Palanki
 

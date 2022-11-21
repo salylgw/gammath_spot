@@ -10,6 +10,7 @@ It is November 2022 and all the features necessary for SPOT proof-of-concept are
   * News sentiment analysis and scoring (using tools such as Natural Language Tool Kit, Spacy, Textblob etc.) needs to be implemented
   * Fundamental analysis enhancements to use as filtering criteria (preferably with a GUI)
   * Optimize the historian tool
+  * Even though I've containerized SPOT, it needs to be made easy to use for users who are not familiar with Python environment
   * Any improvements (new features, bug fixes [if any], documentation, optimizations etc.)
 
 
