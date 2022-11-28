@@ -79,6 +79,16 @@ class GSH:
             #Draw the charts (along with dates) to get a general idea of correlations
             figure, axes = plt.subplots(nrows=11, figsize=(28, 47))
 
+            #Get DPI for the figure
+            charts_dpi = figure.get_dpi()
+
+            #Get the width and height in pixels
+            charts_pw = figure.get_figwidth() * charts_dpi
+            charts_ph = figure.get_figheight() * charts_dpi
+
+            #Read the logo
+            logo_data = plt.imread('../logo.png')
+
             closing_prices_df = pd.DataFrame({tsymbol: df1.Close[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             closing_prices_df = closing_prices_df.set_index(df1.Date[0:MIN_TRADING_DAYS_FOR_5YEARS])
             closing_prices_df.plot(ax=axes[0],lw=1,title='Stock history')
@@ -115,6 +125,9 @@ class GSH:
             nup_gscores_df = pd.DataFrame({'NU-Prob': df_gscores.NUP[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             nup_gscores_df = nup_gscores_df.set_index(df_gscores.Date)
             nup_gscores_df.plot(ax=axes[10],lw=1,title='Next day UP Probability')
+
+            #Attach logo to the figure
+            plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
 
             #Save figure for later reference
             #Use PDF instead of png to save space

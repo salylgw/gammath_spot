@@ -144,11 +144,17 @@ class GPEP:
         #Draw the charts
         figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
 
+        #Read the logo
+        logo_data = plt.imread('../logo.png')
+
         #Create dataframe for plotting
         lpe_df = pd.DataFrame({tsymbol: prices, 'Estimate': y_predictions_series, 'Projection': y_projections_series})
 
         #Plot the chart
         lpe_df.plot(lw=1, title='Price Estimate and Projection')
+
+        #Attach the logo to the figure
+        plt.figimage(logo_data)
 
         #Save it for later reference
         #Use PDF instead of png to save space)
@@ -203,11 +209,17 @@ class GPEP:
         #Draw the charts
         figure, axes = plt.subplots(nrows=1, figsize=(28, 47))
 
+        #Read the logo
+        logo_data = plt.imread('../logo.png')
+
         #Create dataframe for plotting
         lpe_df = pd.DataFrame({'SP500': prices, 'Estimate': y_predictions_series, 'Projection': y_projections_series})
 
         #Plot the chart
         lpe_df.plot(lw=1, title='Price Estimate and Projection')
+
+        #Attach the logo to the image
+        plt.figimage(logo_data)
 
         #Save it for later reference. Use PDF instead of png to save space
         plt.savefig(path / f'SP500_pep.pdf', format='pdf')

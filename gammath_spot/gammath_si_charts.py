@@ -48,6 +48,16 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
     #Draw the charts to view all at once as subplots
     figure, axes = plt.subplots(nrows=7, figsize=(28, 35))
 
+    #Get DPI for the figure
+    charts_dpi = figure.get_dpi()
+
+    #Get the width and height in pixels for the figure
+    charts_pw = figure.get_figwidth() * charts_dpi
+    charts_ph = figure.get_figheight() * charts_dpi
+
+    #Read the logo image
+    logo_data = plt.imread('../logo.png')
+
     try:
         bb_df.plot(ax=axes[0],lw=1,title='Bollinger Bands')
         rsi_df.plot(ax=axes[1],lw=1,title='Relative Strength Index')
@@ -62,6 +72,9 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
         axes[4].axhline(STOCH_OVERSOLD_LEVEL,lw=1,ls='-',c='r')
         kf_df.plot(ax=axes[5], lw=1,title='Kalman Filter')
         ols_df.plot(ax=axes[6], lw=1,title='OLS')
+
+        #Attach the logo to figure
+        plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
 
         #Save for later reference. Use PDF instead of png to save space
         plt.savefig(path / f'{tsymbol}_charts.pdf', format='pdf')

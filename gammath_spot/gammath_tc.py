@@ -302,6 +302,16 @@ class GTRENDS:
         #Draw the charts
         figure, axes = plt.subplots(nrows=1, figsize=(14, 10))
 
+        #Get DPI for the figure
+        charts_dpi = figure.get_dpi()
+
+        #Get the width and height in pixels for the figure
+        charts_pw = figure.get_figwidth() * charts_dpi
+        charts_ph = figure.get_figheight() * charts_dpi
+
+        #Read the log image
+        logo_data = plt.imread('../logo.png')
+
         #Need different widths for support/resistance lines compared to prices line
         plt.plot(x_vals, df.Close, lw=0.5, ls='-.', label=tsymbol)
         plt.plot(x_vals, self.y_support_series, lw=1, c='g', label='Current Approx. Moving Support Line')
@@ -325,6 +335,9 @@ class GTRENDS:
 
         #Resistance level
         plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=(current_resistance_level_x, current_resistance_level_y))
+
+        #Attach logo to the figure
+        plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
 
         #Save trend charts for later reference (Use PDF instead of png to save space)
         plt.savefig(path / f'{tsymbol}_tc.pdf', format='pdf')
