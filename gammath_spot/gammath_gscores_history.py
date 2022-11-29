@@ -86,8 +86,13 @@ class GSH:
             charts_pw = figure.get_figwidth() * charts_dpi
             charts_ph = figure.get_figheight() * charts_dpi
 
-            #Read the logo
-            logo_data = plt.imread('../logo.png')
+            logo_file_found = True
+
+            try:
+                #Read the logo
+                logo_data = plt.imread('../logo.png')
+            except:
+                logo_file_found = False
 
             closing_prices_df = pd.DataFrame({tsymbol: df1.Close[0:MIN_TRADING_DAYS_FOR_5YEARS]})
             closing_prices_df = closing_prices_df.set_index(df1.Date[0:MIN_TRADING_DAYS_FOR_5YEARS])
@@ -126,8 +131,9 @@ class GSH:
             nup_gscores_df = nup_gscores_df.set_index(df_gscores.Date)
             nup_gscores_df.plot(ax=axes[10],lw=1,title='Next day UP Probability')
 
-            #Attach logo to the figure
-            plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
+            if (logo_file_found):
+                #Attach logo to the figure
+                plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
 
             #Save figure for later reference
             #Use PDF instead of png to save space
