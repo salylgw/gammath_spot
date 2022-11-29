@@ -328,18 +328,19 @@ class GTRENDS:
         #Need legend in the chart
         plt.legend()
 
-        #We should keep some distance between annotations to avoid writing over each other
-        #However, the distance seems to get disproportionate so needs to be revisited later
-        #(TBD: distance between annotations)
+        #We need to keep some distance between annotations to avoid overlap when
+        #points are too close to each other. However, the distance seems to get
+        #disproportionate.
+        #Using arrowprops to clarify which text corresponds to which point
 
         #Support level
-        plt.annotate(f'{round(current_support_level_y, 3)}', xy=(current_support_level_x, current_support_level_y), xytext=(current_support_level_x, current_support_level_y))
+        plt.annotate(f'{round(current_support_level_y, 3)}', xy=(current_support_level_x, current_support_level_y), xytext=(current_support_level_x, (current_support_level_y-10)), arrowprops=dict(arrowstyle="->"))
 
         #Last price
-        plt.annotate(f'{round(lcp, 3)}', xy=((df_len-1), lcp), xytext=((df_len-1), lcp))
+        plt.annotate(f'{round(lcp, 3)}', xy=((df_len-1), lcp), xytext=((df_len-1)+10, lcp), arrowprops=dict(arrowstyle="->"))
 
         #Resistance level
-        plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=(current_resistance_level_x, current_resistance_level_y))
+        plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=(current_resistance_level_x, (current_resistance_level_y+10)), arrowprops=dict(arrowstyle="->"))
 
         if (logo_file_found):
             #Attach logo to the figure
