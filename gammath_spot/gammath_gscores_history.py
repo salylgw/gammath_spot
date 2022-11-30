@@ -23,6 +23,7 @@ from pathlib import Path
 import pandas as pd
 import numpy
 from matplotlib import pyplot as plt
+import os
 try:
     from gammath_spot import gammath_stocks_analysis as gsa
 except:
@@ -89,8 +90,14 @@ class GSH:
             logo_file_found = True
 
             try:
+                #Get the path of the program/package
+                pgm_dir_path, fn = os.path.split(__file__)
+
+                #Append the data dir
+                pgm_data_path = os.path.join(pgm_dir_path, 'data')
+
                 #Read the logo
-                logo_data = plt.imread('../logo.png')
+                logo_data = plt.imread(f'{pgm_data_path}/logo.png')
             except:
                 logo_file_found = False
 

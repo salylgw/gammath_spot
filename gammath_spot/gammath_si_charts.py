@@ -58,8 +58,14 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
     logo_file_found = True
 
     try:
-        #Read the logo image
-        logo_data = plt.imread('../logo.png')
+        #Get the path of program/package
+        pgm_dir_path, fn = os.path.split(__file__)
+
+        #Append the data dir
+        pgm_data_path = os.path.join(pgm_dir_path, 'data')
+
+        #Read the logo
+        logo_data = plt.imread(f'{pgm_data_path}/logo.png')
     except:
         logo_file_found = False
 

@@ -21,6 +21,7 @@ __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 #Linear Dynamic Price Estimation and Projection
 
 import sys
+import os
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -147,8 +148,14 @@ class GPEP:
         logo_file_found = True
 
         try:
+            #Get the path of program/package
+            pgm_dir_path, fn = os.path.split(__file__)
+
+            #Append the data dir
+            pgm_data_path = os.path.join(pgm_dir_path, 'data')
+
             #Read the logo
-            logo_data = plt.imread('../logo.png')
+            logo_data = plt.imread(f'{pgm_data_path}/logo.png')
         except:
             logo_file_found = False
 
@@ -219,8 +226,14 @@ class GPEP:
         logo_file_found = True
 
         try:
+            #Get the path of program/package
+            pgm_dir_path, fn = os.path.split(__file__)
+
+            #Append the data dir
+            pgm_data_path = os.path.join(pgm_dir_path, 'data')
+
             #Read the logo
-            logo_data = plt.imread('../logo.png')
+            logo_data = plt.imread(f'{pgm_data_path}/logo.png')
         except:
             logo_file_found = False
 

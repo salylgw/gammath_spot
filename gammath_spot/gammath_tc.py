@@ -18,6 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
 
+import os
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -312,8 +313,14 @@ class GTRENDS:
         logo_file_found = True
 
         try:
-            #Read the log image
-            logo_data = plt.imread('../logo.png')
+            #Get the path of program/package
+            pgm_dir_path, fn = os.path.split(__file__)
+
+            #Append the data dir
+            pgm_data_path = os.path.join(pgm_dir_path, 'data')
+
+            #Read the logo
+            logo_data = plt.imread(f'{pgm_data_path}/logo.png')
         except:
             logo_file_found = False
 
