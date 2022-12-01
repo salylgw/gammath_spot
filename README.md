@@ -1,5 +1,5 @@
 
-![Alt text](https://raw.githubusercontent.com/salylgw/gammath_spot/main/logo.png)
+![Alt text](https://raw.githubusercontent.com/salylgw/gammath_spot/main/gammath_spot/data/logo.png)
 
 # Gammath™ SPOT
 **S**tock **P**rice-**O**pining **T**ool is a DIY stock technical analysis toolset used to analyze stocks and compute gScore that indicates the degree at which a stock is trading at a perceived discount or a perceived premium. The gScore is then used like an indicator in making buy, sell or hold decision on the stock. It also provides a tool to generate price projection, a tool to generate gScore-history for correlation and a tool for backtesting strategy.
