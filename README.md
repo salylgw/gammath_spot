@@ -31,7 +31,7 @@ This project uses following free tools that need to be installed (you can use pi
 
 # HOWTO install
 
-If you are not familiar with python then you can use prebuilt docker image described in section "HOWTO get prebuilt docker image" below.
+If you are not familiar with python then you can use prebuilt docker image. Please see the installation [video](https://youtu.be/ORe1pMv_o20).
 
 `pip install gammath-spot`
 
