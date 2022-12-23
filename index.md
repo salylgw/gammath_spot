@@ -31,7 +31,7 @@ This project uses following free tools that need to be installed (you can use pi
 
 # HOWTO install
 
-If you are not familiar with python then you can use prebuilt docker image described in section "HOWTO get prebuilt docker image" below.
+If you are not familiar with python then you can use prebuilt docker image. Please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
 
 `pip install gammath-spot`
 
@@ -97,9 +97,8 @@ Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot
 # Investment blog
 If you want to see a real example of how output of this tool is being used then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).
  
-# Report Issues
-If you run into any problem then please contact us using the <https://www.gammathworks.com> contact page. You can also purchase technical support at <https://www.gammathworks.com/plans-pricing>.
-
+# Questions
+If you have any questions, then please contact me using this [form](https://www.gammathworks.com/contact).
 
 # Happy SPOTing!
 *Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact us using the <https://www.gammathworks.com> contact page indicating your area of interest and expertise</u><u></u>*
