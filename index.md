@@ -100,5 +100,6 @@ If you want to see a real example of how output of this tool is being used then 
 # Questions
 If you have any questions, then please contact me using this [form](https://www.gammathworks.com/contact).
 
+
 # Happy SPOTing!
-*Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact us using the <https://www.gammathworks.com> contact page indicating your area of interest and expertise</u><u></u>*
+*Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact me using this [form](https://www.gammathworks.com/contact) indicating your area of interest and expertise</u><u></u>*
