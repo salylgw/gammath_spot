@@ -1,5 +1,5 @@
 # Author: Salyl Bhagwat, Gammath Works
-# Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works
+# Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works
 # All Rights Reserved
 #
 # This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 __author__ = 'Salyl Bhagwat'
-__copyright__ = 'Copyright (c) 2021-2022, Salyl Bhagwat, Gammath Works'
+__copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 from pykalman import KalmanFilter
