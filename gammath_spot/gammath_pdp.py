@@ -25,10 +25,11 @@ import numpy as np
 
 # Get overall Price direction probability and probability for next day with respect to overall sample
 def get_price_dir_probability(df):
-
-    MAX_COUNTS_LEN = 100
     prices = df.Close
     prices_len = len(prices)
+
+    #Can't assume how many consecutive days a stock will go up or down so use full length
+    MAX_COUNTS_LEN = prices_len
     last_falling_days_count = 0
     last_rising_days_count = 0
     total_up_days = 0
@@ -37,7 +38,6 @@ def get_price_dir_probability(df):
     #zero-initialize
     price_consec_up_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
     price_consec_down_dir_counts = [0 for x in range(MAX_COUNTS_LEN)]
-
 
     #The intent is to arrange these as follows:
     # Step 1: Get "exact count" for 'i' number of up/down days
@@ -67,6 +67,7 @@ def get_price_dir_probability(df):
 
             last_falling_days_count += 1
 
+    #Get overall up/down probability
     overall_up_probability = round(total_up_days/(prices_len-1), 3)
     overall_down_probability = round(total_down_days/(prices_len-1), 3)
 
@@ -88,13 +89,16 @@ def get_price_dir_probability(df):
     next_up_p = 0
     next_down_p = 0
 
-    #Compute probabilities with respect to overall sample with the goal being to help find up-day after multiple down-days
-    if (last_falling_days_count):
-        next_down_p = round(price_consec_down_dir_counts[last_falling_days_count+1]/(prices_len-1), 3)
-        next_up_p = round(1 - next_down_p, 3)
-    elif (last_rising_days_count):
-        next_up_p = round(price_consec_up_dir_counts[last_rising_days_count+1]/(prices_len-1), 3)
-        next_down_p = round(1 - next_up_p, 3)
+    try:
+        #Compute probabilities with respect to overall sample with the goal being to help find up-day after multiple down-days
+        if (last_falling_days_count):
+            next_down_p = round(price_consec_down_dir_counts[last_falling_days_count+1]/(prices_len-1), 3)
+            next_up_p = round(1 - next_down_p, 3)
+        elif (last_rising_days_count):
+            next_up_p = round(price_consec_up_dir_counts[last_rising_days_count+1]/(prices_len-1), 3)
+            next_down_p = round(1 - next_up_p, 3)
+    except:
+        print('\nError while generating price dir probability for ', tsymbol, ': ', sys.exc_info()[0])
 
     pdp = f'Overall_PDP: UP: {overall_up_probability} DOWN: {overall_down_probability}\nNext_day_PDP: UP: {next_up_p} DOWN: {next_down_p}'
 
