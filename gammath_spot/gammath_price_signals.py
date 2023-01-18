@@ -20,11 +20,15 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 import numpy as np
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 
 def get_price_signals(tsymbol, df):
+    mtdpy, mtd5y = gut.get_min_trading_days()
 
-    MIN_TRADING_DAYS_PER_YEAR = 249
     PRICE_PERCENT_CUTOFF = 85
 
     price_gscore = 0
@@ -112,13 +116,13 @@ def get_price_signals(tsymbol, df):
 
     try:
         #52-week low
-        yearly_lowest_val = df.Low[prices_len-1-MIN_TRADING_DAYS_PER_YEAR:].min()
+        yearly_lowest_val = df.Low[prices_len-1-mtdpy:].min()
     except:
         yearly_lowest_val = 0
 
     try:
         #52-week high
-        yearly_highest_val = df.High[prices_len-1-MIN_TRADING_DAYS_PER_YEAR:].max()
+        yearly_highest_val = df.High[prices_len-1-mtdpy:].max()
     except:
         yearly_highest_val = 0
 
@@ -202,7 +206,7 @@ def get_price_signals(tsymbol, df):
     price_max_score += 8
 
     #Get current price percentiles for most recent 52-week range
-    one_year_prices = df['Close'][(prices_len-MIN_TRADING_DAYS_PER_YEAR):]
+    one_year_prices = df['Close'][(prices_len-mtdpy):]
     bp, mp, tp = one_year_prices.quantile([0.25, 0.5, 0.75])
 
     #Log quantile for current price in 52-week range

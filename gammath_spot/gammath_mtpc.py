@@ -24,19 +24,24 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 # dynamically. Hence, I think of this as dynamic/moving price conjecture
 
 import pandas as pd
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 def get_moving_technical_price_conjecture(df):
 
-    MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
+    mtdpy, mtd5y = gut.get_min_trading_days()
+
     prices = df.Close
     prices_len = len(prices)
     last_price = prices[prices_len-1]
 
-    #Get percent change per day for MIN_TRADING_DAYS_FOR_5_YEARS and get a mean of it
-    mean_pct_change_per_day = prices[prices_len-MIN_TRADING_DAYS_FOR_5_YEARS:].pct_change().mean()
+    #Get percent change per day for mtd5y and get a mean of it
+    mean_pct_change_per_day = prices[prices_len-mtd5y:].pct_change().mean()
 
     #Calculated conjecture of price after approximately 5 years from last price based on average percentage change per day from approximately last 5 years
-    moving_technical_conjecture_price_in_5y = round((last_price + (last_price*mean_pct_change_per_day*MIN_TRADING_DAYS_FOR_5_YEARS)), 3) #round it off to take less space in text file
+    moving_technical_conjecture_price_in_5y = round((last_price + (last_price*mean_pct_change_per_day*mtd5y)), 3) #round it off to take less space in text file
 
     mtcp = f'Moving Technical Conjecture Of Price In 5Y: {moving_technical_conjecture_price_in_5y}'
 

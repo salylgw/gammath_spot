@@ -49,6 +49,7 @@ try:
     from gammath_spot import gammath_get_stocks_events_data as gge
     from gammath_spot import gammath_si_charts as gsc
     from gammath_spot import gammath_tc as gtc
+    from gammath_spot import gammath_utils as gut
 except:
     import gammath_price_signals as gps
     import gammath_rsi_signals as grs
@@ -74,6 +75,7 @@ except:
     import gammath_get_stocks_events_data as gge
     import gammath_si_charts as gsc
     import gammath_tc as gtc
+    import gammath_utils as gut
 
 import sys
 import time
@@ -476,7 +478,7 @@ class GSA:
 
     def do_stock_analysis_and_compute_score(self, tsymbol, df):
 
-        MIN_TRADING_DAYS_PER_YEAR = 249
+        mtdpy, mtd5y = gut.get_min_trading_days()
         path = self.Tickers_dir / f'{tsymbol}'
         sh_gScore_df = pd.DataFrame()
         sci_gScore_df = pd.DataFrame()
@@ -490,13 +492,11 @@ class GSA:
             return
 
         try:
-            MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
-
             if not len(df):
                 try:
                     df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
                     df_orig_len = len(df_orig)
-                    start_index = (df_orig_len - MIN_TRADING_DAYS_FOR_5_YEARS)
+                    start_index = (df_orig_len - mtd5y)
                     if (start_index < 0):
                         raise ValueError('Not enough stock history')
 
@@ -504,8 +504,8 @@ class GSA:
 
                     #Use a different df for starting with 0-index
                     df = df_orig.copy()
-                    df.iloc[0:MIN_TRADING_DAYS_FOR_5_YEARS] = df_orig.iloc[start_index:end_index]
-                    df = df.truncate(after=MIN_TRADING_DAYS_FOR_5_YEARS-1)
+                    df.iloc[0:mtd5y] = df_orig.iloc[start_index:end_index]
+                    df = df.truncate(after=mtd5y-1)
                 except:
                     raise RuntimeError('No price history data')
 
@@ -513,7 +513,7 @@ class GSA:
             stock_history_len = len(df)
 
             #Analyze only if we have at least 5Y price data
-            if (stock_history_len < MIN_TRADING_DAYS_FOR_5_YEARS):
+            if (stock_history_len < mtd5y):
                 print(f'History doesn\'t have 5Y worth of data. Len: {stock_history_len} for {tsymbol}')
                 raise RuntimeError('Not enough price history data')
 

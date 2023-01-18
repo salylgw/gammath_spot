@@ -29,6 +29,16 @@ import pandas_datareader.data as pdd
 import numpy as np
 from matplotlib import pyplot as plt
 
+#Number of trading days varies across the globe.
+#Some stock exchanges are closed more than US stocks exchanges.
+#As a result, setting the minimum to 239 to accomodate stock exchanges
+#in multiple geographical areas
+MIN_TRADING_DAYS_PER_YEAR = 239
+MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
+
+def get_min_trading_days():
+    return MIN_TRADING_DAYS_PER_YEAR, MIN_TRADING_DAYS_FOR_5_YEARS
+
 def check_if_same_day(fstat):
 
     fct_time = time.ctime(fstat.st_ctime).split(' ')
@@ -74,7 +84,6 @@ class GUTILS:
     def __init__(self):
 
         self.Tickers_dir = Path('tickers')
-        self.MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 
     def get_sp500_list(self):
 
@@ -269,13 +278,14 @@ class GUTILS:
     def get_sp500_5y_return_conjecture(self):
 
         path = self.Tickers_dir
+        mtdpy, mtd5y = get_min_trading_days()
 
         try:
             #SP500 closing data (entire range)
             sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
 
             #Get a 5Y return conjecture
-            pct_5y_return_conecture = sp500_closing_data.Close.dropna().pct_change().mean()*self.MIN_TRADING_DAYS_FOR_5_YEARS*100
+            pct_5y_return_conecture = sp500_closing_data.Close.dropna().pct_change().mean()*mtd5y*100
 
             return round(pct_5y_return_conecture, 3)
         except:
@@ -311,6 +321,7 @@ class GUTILS:
             return np.nan
 
     def get_5y_ppct(self, path, tsymbol):
+        mtdpy, mtd5y = get_min_trading_days()
         try:
             df_pp = pd.read_csv(path / f'{tsymbol}_pp.csv')
         except:
@@ -327,7 +338,7 @@ class GUTILS:
         lp = df.Close[len(df)-1]
         pp_len = len(df_pp)
 
-        if (pp_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
+        if (pp_len < mtd5y):
             print(f'Not enough projection data for {tsymbol}')
             raise ValueError('Not enough projection data')
 

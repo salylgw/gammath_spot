@@ -32,14 +32,18 @@ from sklearn.linear_model import SGDRegressor
 from sklearn.metrics import (r2_score, make_scorer)
 from matplotlib import pyplot as plt
 from scipy.stats import spearmanr
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 class GPEP:
     def __init__(self):
         self.Tickers_dir = Path('tickers')
-        self.MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 
     def do_sgd_regression(self, prices, single):
 
+        mtdpy, mtd5y = gut.get_min_trading_days()
         prices_len = len(prices)
 
         #Convert to numpy array
@@ -60,7 +64,7 @@ class GPEP:
 
         #Number of splits for cross validation
         #Test size needs to be at least 2 since we want to use R2 scorer
-        TS_SPLITS = 249
+        TS_SPLITS = mtdpy
 
         #Use time series split for cross validation
         tss = TimeSeriesSplit(n_splits=TS_SPLITS)
@@ -92,7 +96,7 @@ class GPEP:
 
         #Get a pandas series for drawing the chart
         #Leave room for projection (additional min 5 years length)
-        ypp_len = (yp_len + self.MIN_TRADING_DAYS_FOR_5_YEARS)
+        ypp_len = (yp_len + mtd5y)
         y_predictions_series = pd.Series(np.nan, pd.RangeIndex(ypp_len))
 
         #First half with estimates. Next half with np.nan
@@ -120,7 +124,10 @@ class GPEP:
 
 
     def get_moving_price_estimated_projection(self, tsymbol):
+        mtdpy, mtd5y = gut.get_min_trading_days()
+
         path = self.Tickers_dir / f'{tsymbol}'
+
         try:
             df = pd.read_csv(path / f'{tsymbol}_history.csv')
         except:
@@ -129,7 +136,7 @@ class GPEP:
             return
 
         df_len = len(df)
-        if (df_len < self.MIN_TRADING_DAYS_FOR_5_YEARS):
+        if (df_len < mtd5y):
             #Not a fatal error. Just log it and return
             print(f'\nInsufficent stock history length for {tsymbol}')
             return
@@ -137,7 +144,7 @@ class GPEP:
         prices = df.Close
 
         y_predictions_series, y_projections_series = self.do_sgd_regression(prices, False)
-        yp_len = (len(y_predictions_series) - self.MIN_TRADING_DAYS_FOR_5_YEARS)
+        yp_len = (len(y_predictions_series) - mtd5y)
 
         #Save projections for later reference. We don't need non-projection np.nan
         y_projections_series[yp_len:].to_csv(path / f'{tsymbol}_pp.csv', index=False)
@@ -188,12 +195,14 @@ class GPEP:
             print('\nERROR: opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
         else:
             #Log 3 months, 1 year and 5 year projection for quick reference
-            projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+249], 3)}, {round(y_projections_series[yp_len+self.MIN_TRADING_DAYS_FOR_5_YEARS-1], 3)}, sgd_ic:{sgd_ic}'
+            projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+mtdpy], 3)}, {round(y_projections_series[yp_len+mtd5y-1], 3)}, sgd_ic:{sgd_ic}'
             f.write(projection_string)
             f.close()
 
 
     def sp500_pep(self):
+
+        mtdpy, mtd5y = gut.get_min_trading_days()
 
         #SP500-specific files are in ticker dir
         path = self.Tickers_dir
@@ -215,7 +224,7 @@ class GPEP:
         y_projections_series = y_projections_series*10
 
         #Actual length of the estimates/prediction
-        yp_len = (len(y_predictions_series) - self.MIN_TRADING_DAYS_FOR_5_YEARS)
+        yp_len = (len(y_predictions_series) - mtd5y)
 
         #Save projections for later reference. We don't need non-projection np.nan
         y_projections_series[yp_len:].to_csv(path / f'SP500_pp.csv', index=False)

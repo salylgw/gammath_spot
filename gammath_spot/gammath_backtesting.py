@@ -38,7 +38,6 @@ MIN_SH_PREMIUM_LEVEL = -0.375
 NEUTRAL_SH_PREMIUM_LEVEL = -0.375
 MIN_SH_DISCOUNT_LEVEL = 0.375
 
-MIN_TRADING_DAYS_FOR_5_YEARS = 249*5
 MAX_BUY_STEP = 10
 
 
@@ -48,8 +47,10 @@ MAX_BUY_STEP = 10
 #It is generally expected that in reality, execution of gScore-based dollar cost averaging would be better than what is used in backtesting since this does not account for news analysis and current information that is used in decision-making. As described in the guidelines, one would check the news before making buy/sell decisions
 def run_basic_backtest(df, path, tsymbol, term, max_cash):
 
+    mtdpy, mtd5y = gut.get_min_trading_days()
+
     #Create a data frame to save the stats and useful info to measure the performance of the strategy
-    df_transactions = pd.DataFrame(columns=['Date', 'Price', 'Action', 'Quantity', 'Avg_Price', 'Profit', 'Return_Pct', 'SP500_Pct', 'Days_Held', 'Last_Price', 'Stage', 'Notes'], index=range(MIN_TRADING_DAYS_FOR_5_YEARS))
+    df_transactions = pd.DataFrame(columns=['Date', 'Price', 'Action', 'Quantity', 'Avg_Price', 'Profit', 'Return_Pct', 'SP500_Pct', 'Days_Held', 'Last_Price', 'Stage', 'Notes'], index=range(mtd5y))
 
     history_len = len(df)
 
@@ -281,8 +282,8 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                                 if (profit_pct < 5):
                                     sell_now = True
                                 else:
-                                    #Check number of years we've been holding
-                                    num_years = days_held/249
+                                    #Check approx. number of years we've been holding
+                                    num_years = days_held/mtdpy
                                     # we tend to give it at least 3 years to perform
                                     if (num_years >= 3):
                                         # If it is not showing at least 20% return per year then sell
@@ -354,7 +355,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
         pp_ds = pd.read_csv(path / f'{tsymbol}_pp.csv')
         #Extract 3m, 1y, 5y to log in backtesting results
         pp_3m = round(pp_ds.PP[60], 3)
-        pp_1y = round(pp_ds.PP[249], 3)
+        pp_1y = round(pp_ds.PP[mtdpy], 3)
         pp_5yr = round(pp_ds.PP[len(pp_ds)-1], 3)
         pp_note = f'price projection[3m, 1y, 5yr]: {pp_3m}, {pp_1y}, {pp_5yr}'
     except:
@@ -419,6 +420,8 @@ class GBT:
 
     def run_backtest(self, tsymbol):
 
+        mtdpy, mtd5y = gut.get_min_trading_days()
+
         try:
             path = self.Tickers_dir / f'{tsymbol}'
 
@@ -427,13 +430,13 @@ class GBT:
             #We only need last 5y data
             df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
             df_len = len(df_orig)
-            start_index = df_len - MIN_TRADING_DAYS_FOR_5_YEARS
+            start_index = (df_len - mtd5y)
             if (start_index < 0):
                 raise ValueError('Not enough stock history')
             end_index = df_len
             df = df_orig.copy()
-            df.iloc[0:MIN_TRADING_DAYS_FOR_5_YEARS] = df_orig.iloc[start_index:end_index]
-            df = df.truncate(after=MIN_TRADING_DAYS_FOR_5_YEARS-1)
+            df.iloc[0:mtd5y] = df_orig.iloc[start_index:end_index]
+            df = df.truncate(after=mtd5y-1)
 
             #Read the prepared data (gscores history and closing price) into dataframe
             df_gscores_history = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
