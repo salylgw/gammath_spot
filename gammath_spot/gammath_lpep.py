@@ -50,6 +50,20 @@ class GPEP:
         y_vals = np.array(prices)
         x_vals = np.array([x for x in range(prices_len)])
 
+        #High prices take too many iterations to converge.
+        #For approximate estimates, I'm dividing and multiplying by a fsctor (before and after respectively) to get a ballpark figure in reasonable time
+        mean_price_unit = ((prices.mean())/1000)
+        if (mean_price_unit < 1):
+            factor = 1
+        elif (mean_price_unit < 10):
+            factor = 10
+        elif (mean_price_unit < 100):
+            factor = 100
+        elif (mean_price_unit < 1000):
+            factor = 1000
+
+        y_vals = (y_vals/factor)
+
         #Multiple samples for single feature
         y_vals = y_vals.reshape(-1, 1)
         y_vals = y_vals.flatten()
@@ -120,6 +134,9 @@ class GPEP:
         for i in range(projection_len):
             y_projections_series[yp_len+i] = ((m*(yp_len+i)) + c) #y = mx + c
 
+        y_predictions_series *= factor
+        y_projections_series *= factor
+
         return y_predictions_series, y_projections_series
 
 
@@ -144,6 +161,8 @@ class GPEP:
         prices = df.Close
 
         y_predictions_series, y_projections_series = self.do_sgd_regression(prices, False)
+
+        #Actual length of the estimates/prediction
         yp_len = (len(y_predictions_series) - mtd5y)
 
         #Save projections for later reference. We don't need non-projection np.nan
@@ -217,11 +236,7 @@ class GPEP:
             prices = sp500_closing_data.Close.dropna()
 
         #Get the prediction and projection series
-        #S&P500 values will take too many iterations to converge
-        #dividing all values by 10 and then multiplying all results by 10 to avoid his problem
-        y_predictions_series, y_projections_series = self.do_sgd_regression(prices/10, True)
-        y_predictions_series = y_predictions_series*10
-        y_projections_series = y_projections_series*10
+        y_predictions_series, y_projections_series = self.do_sgd_regression(prices, True)
 
         #Actual length of the estimates/prediction
         yp_len = (len(y_predictions_series) - mtd5y)
