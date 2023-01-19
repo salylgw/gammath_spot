@@ -34,10 +34,7 @@ except:
     import gammath_mi_scores as gmis
 
 #Default values
-MIN_SH_PREMIUM_LEVEL = -0.375
-NEUTRAL_SH_PREMIUM_LEVEL = -0.375
-MIN_SH_DISCOUNT_LEVEL = 0.375
-
+MAX_BREAKEVEN_ATTEMPTS = 10
 MAX_BUY_STEP = 10
 
 
@@ -74,9 +71,15 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
     sp500_comp_string = ''
     sci_note = ''
     pp_note = ''
+    curr_breakeven_attempts = 0
+    curr_max_breakeven_count = 0
+    ever_ran_out_of_cash = False
 
-    #Conservative strategy is assumed to work historically
-    strategy_note = f'Strategy worked historically (approx. last 5 years)'
+    cash_mgmt_note = ''
+    break_even_note = ''
+    success_note = 'Strategy worked historically (approx. last 5 years)'
+    failure_note = 'Strategy did NOT always work historically (approx. last 5 years)'
+    result_note = success_note
 
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
@@ -217,7 +220,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                         remaining_cash -= (buy_q*curr_closing_price)
                     else:
                         buy_q = 0
-                        strategy_note = f'Strategy did NOT always work historically (approx. last 5 years)'
+                        ever_ran_out_of_cash = True
 
                 #Save this for comparison during sell-side check
                 last_buy_5y_price_ratio = curr_5y_price_ratio
@@ -234,6 +237,7 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                 avg_price = total_cost/total_shares
                 df_transactions['Avg_Price'][transactions_count] = round(avg_price, 3)
                 transactions_count += 1
+                curr_breakeven_attempts += 1
                 buy_q = 0
         else:
             marked_for_buy = False
@@ -318,6 +322,11 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                     profit = 0
                     total_cash = 0
                     remaining_cash = max_cash
+
+                    if (curr_max_breakeven_count < curr_breakeven_attempts):
+                        curr_max_breakeven_count = curr_breakeven_attempts
+
+                    curr_breakeven_attempts = 0
                     marked_for_sell = 0
                     sell_now = False
                     sp500_comp_string = ''
@@ -360,6 +369,17 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
         pp_note = f'price projection[3m, 1y, 5yr]: {pp_3m}, {pp_1y}, {pp_5yr}'
     except:
         pp_note = f'Price projection tool has not been run for {tsymbol}'
+
+
+    if (ever_ran_out_of_cash):
+        result_note = failure_note
+        cash_mgmt_note = ',Ran out of cash sometime'
+
+    if (curr_max_breakeven_count > MAX_BREAKEVEN_ATTEMPTS):
+        result_note = failure_note
+        break_even_note = ',Exceeded break even attempts sometime'
+
+    strategy_note = result_note + cash_mgmt_note + break_even_note
 
     #Update notes that can be used for better decision making
     #i.e Current info, price projection summary and if this strategy has worked historically or not
