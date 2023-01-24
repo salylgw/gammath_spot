@@ -266,8 +266,7 @@ class GSA:
             current_resistance_level_y = 0
             resistance_line_slope = 0
             pdrl = 0
-            gtrends = gtc.GTRENDS()
-            sr_df = gtrends.compute_support_and_resistance_levels(tsymbol, path, df, need_charts)
+            sr_df = gtc.compute_support_and_resistance_levels(tsymbol, path, df, need_charts)
             #Extract data
             current_support_level_y = sr_df['CS_Y'][0]
             support_line_slope = sr_df['SLS'][0]

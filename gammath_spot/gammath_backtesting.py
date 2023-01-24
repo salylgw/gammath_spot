@@ -463,8 +463,15 @@ class GBT:
 
             #Just double check data is consistent before backtesting
             for i in range(len(df)):
-                if ((round(df_gscores_history.Close[i], 3) != round(df.Close[i], 3)) or (df_gscores_history.Date[i] != df.Date[i].split(' ')[0])):
-                    raise ValueError('gScores and price history mismatched')
+                if (df_gscores_history.Date[i] != df.Date[i].split(' ')[0]):
+                    print(f'{tsymbol}: gScores and Price history date mismatched at index {i}')
+                    raise ValueError('gScores and price history date mismatched')
+
+                diff_abs = round(abs(df_gscores_history.Close[i] - df.Close[i]), 3)
+                if (diff_abs > 0.001):
+                    print(f'{tsymbol}: gScores and Price history closing price mimatch at index: {i}')
+                    print(f'{tsymbol}: Suggest deleting tickers dir and rerun the toolset starting with the scraper')
+                    raise ValueError('gScores and price history closing price mismatched')
 
         except:
             print('\nERROR: Backtesting data initialization failed for symbol ', tsymbol)

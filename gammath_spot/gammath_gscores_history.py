@@ -54,12 +54,26 @@ class GSH:
         try:
             #Read Stock summary info into DataFrame
             df = pd.read_csv(path / f'{tsymbol}_history.csv')
+            df_len = len(df)
+            df_last_date = df.Date[df_len-1].split(' ')[0]
+
             initial_end_index = len(df) - mtd5y + 1
             initial_start_index = initial_end_index - mtd5y
 
             if (initial_start_index < 0):
                 print('\nInsufficient stock history for symbol ', tsymbol)
                 raise ValueError('Insufficient stock history')
+
+            #Check if we have micro-gscores history for this stock
+            gscores_history_exists = (path / f'{tsymbol}_micro_gscores.csv').exists()
+
+            if (gscores_history_exists):
+                df_gscores = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+                gscores_len = len(df_gscores)
+                gscores_last_date = df_gscores.Date[gscores_len-1]
+                if (df_last_date == gscores_last_date):
+                    #Already got gscores from last date in history file
+                    return df_gscores
 
             #Use a different df for starting with 0-index
             df1 = df.copy()
