@@ -83,15 +83,10 @@ import os
 import numpy as np
 
 class GSA:
+    def do_stock_history_analysis(self, tsymbol, path, df, need_charts_n_signals_info):
 
-    def __init__(self):
-        self.Tickers_dir = Path('tickers')
-        self.overall_sh_gscore = 0
-        self.overall_sci_gscore = 0
-        self.sh_signals = ''
-        self.sci_signals = ''
-
-    def do_stock_history_analysis(self, tsymbol, path, df, need_charts):
+        overall_sh_gscore = 0
+        sh_signals = ''
 
         #Generate and get signals based on Price history
         try:
@@ -103,7 +98,7 @@ class GSA:
             #Price signals
             price_gscore, price_max_score, price_signals = gps.get_price_signals(tsymbol, df)
             price_final_score = round((price_gscore/price_max_score), 3)
-            self.overall_sh_gscore += price_final_score
+            overall_sh_gscore += price_final_score
         except ValueError:
             print('\nERROR: generating price signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -118,7 +113,7 @@ class GSA:
             #Relative Strength Index signals
             rsi_df, rsi_gscore, rsi_max_score, rsi_signals = grs.get_rsi_signals(tsymbol, df, path)
             rsi_final_score = round((rsi_gscore/rsi_max_score), 3)
-            self.overall_sh_gscore += rsi_final_score
+            overall_sh_gscore += rsi_final_score
         except RuntimeError:
             print('\nERROR: generating RSI data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -135,7 +130,7 @@ class GSA:
             #MFI signals
             mfi_df, mfi_gscore, mfi_max_score, mfi_signals = gms.get_mfi_signals(tsymbol, df, path)
             mfi_final_score = round((mfi_gscore/mfi_max_score), 3)
-            self.overall_sh_gscore += mfi_final_score
+            overall_sh_gscore += mfi_final_score
         except RuntimeError:
             print('\nERROR: generating MFI data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -153,7 +148,7 @@ class GSA:
             stoch_df, stoch_gscore, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
             #Adjust for proportion
             stoch_final_score = round((stoch_gscore/(stoch_max_score<<1)), 3)
-            self.overall_sh_gscore += stoch_final_score
+            overall_sh_gscore += stoch_final_score
         except RuntimeError:
             print('\nERROR: generating stochastics data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -170,7 +165,7 @@ class GSA:
             #Bollinger bands signals
             bb_df, bb_gscore, bb_max_score, bb_signals = gbbs.get_bollinger_bands_signals(tsymbol, df, path)
             bb_final_score = round((bb_gscore/bb_max_score), 3)
-            self.overall_sh_gscore += bb_final_score
+            overall_sh_gscore += bb_final_score
         except RuntimeError:
             print('\nERROR: generating Bollinger Bands for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -187,7 +182,7 @@ class GSA:
             #MACD signals
             macd_df, macd_gscore, macd_max_score, macd_signals = gmacd.get_macd_signals(tsymbol, df, path)
             macd_final_score = round((macd_gscore/macd_max_score), 3)
-            self.overall_sh_gscore += macd_final_score
+            overall_sh_gscore += macd_final_score
         except RuntimeError:
             print('\nERROR: generating MACD data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -203,7 +198,7 @@ class GSA:
             #Kalman Filter signals
             kf_df, kf_gscore, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
             kf_final_score = round((kf_gscore/kf_max_score), 3)
-            self.overall_sh_gscore += kf_final_score
+            overall_sh_gscore += kf_final_score
 
         except RuntimeError:
             print('\nERROR: generating Kalman filter data for ', tsymbol, ': ', sys.exc_info()[0])
@@ -220,7 +215,7 @@ class GSA:
             #Ordinary Least Squares line signals
             ols_df, ols_gscore, ols_max_score, ols_signals = gols.get_ols_signals(tsymbol, df, path)
             ols_final_score = round((ols_gscore/ols_max_score), 3)
-            self.overall_sh_gscore += ols_final_score
+            overall_sh_gscore += ols_final_score
         except RuntimeError:
             print('\nERROR: generating OLS data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -266,7 +261,7 @@ class GSA:
             current_resistance_level_y = 0
             resistance_line_slope = 0
             pdrl = 0
-            sr_df = gtc.compute_support_and_resistance_levels(tsymbol, path, df, need_charts)
+            sr_df = gtc.compute_support_and_resistance_levels(tsymbol, path, df, need_charts_n_signals_info)
             #Extract data
             current_support_level_y = sr_df['CS_Y'][0]
             support_line_slope = sr_df['SLS'][0]
@@ -281,24 +276,48 @@ class GSA:
 
         #Create a data frame for all stock history specific (micro)gScores
         df_len = len(df)
-        sh_gScore_df = pd.DataFrame({'Date': df.Date[df_len-1].split(' ')[0], 'Close': round(df.Close[df_len-1], 3), 'Price': price_final_score, 'RSI': rsi_final_score, 'BBANDS': bb_final_score, 'MACD': macd_final_score, 'KF': kf_final_score, 'OLS': ols_final_score, 'MFI': mfi_final_score, 'Stoch': stoch_final_score, 'SH_gScore': round((self.overall_sh_gscore/10), 3), 'NUP': nup, 'A5DUP': a5dup, 'A20DUP': a20dup, 'TPC5Y': tpc5y, 'CSL': current_support_level_y, 'SLS': support_line_slope, 'PDSL': pdsl, 'CRL': current_resistance_level_y, 'RLS': resistance_line_slope, 'PDRL': pdrl}, index=range(1))
+        sh_gScore_df = pd.DataFrame(columns=gut.get_sh_gscores_df_columns(), index=range(1))
+        sh_gScore_df.Date[0] = df.Date[df_len-1].split(' ')[0]
+        sh_gScore_df.Close[0] = round(df.Close[df_len-1], 3)
+        sh_gScore_df.Price[0] = price_final_score
+        sh_gScore_df.RSI[0] = rsi_final_score
+        sh_gScore_df.BBANDS[0] = bb_final_score
+        sh_gScore_df.MACD[0] = macd_final_score
+        sh_gScore_df.KF[0] = kf_final_score
+        sh_gScore_df.OLS[0] = ols_final_score
+        sh_gScore_df.MFI[0] = mfi_final_score
+        sh_gScore_df.Stoch[0] = stoch_final_score
+        sh_gScore_df.SH_gScore[0] = round((overall_sh_gscore/10), 3)
+        sh_gScore_df.NUP[0] = nup
+        sh_gScore_df.A5DUP[0] = a5dup
+        sh_gScore_df.A20DUP[0] = a20dup
+        sh_gScore_df.TPC5Y[0] = tpc5y
+        sh_gScore_df.CSL[0] = current_support_level_y
+        sh_gScore_df.SLS[0] = support_line_slope
+        sh_gScore_df.PDSL[0] = pdsl
+        sh_gScore_df.CRL[0] = current_resistance_level_y
+        sh_gScore_df.RLS[0] = resistance_line_slope
+        sh_gScore_df.PDRL[0] = pdrl
 
         #No need to draw charts for backtesting
-        if need_charts:
+        if need_charts_n_signals_info:
             #Plot and save charts for reference
             try:
                 gsc.plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df, kf_df, ols_df)
             except:
                 print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])
 
+            #Aggregate stock history-specific signals
+            sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, pdp, mtcp, lgst_signals, support_resistance_string])
+        else:
+            sh_signals = ''
 
-        #Aggregate stock history-specific signals
-        self.sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, pdp, mtcp, lgst_signals, support_resistance_string])
+        return sh_gScore_df, sh_signals
 
-        return sh_gScore_df
+    def do_stock_current_info_analysis(self, tsymbol, path, df, df_summ, need_charts_n_signals_info):
 
-    def do_stock_current_info_analysis(self, tsymbol, path, df, df_summ):
-
+        overall_sci_gscore = 0
+        sci_signals = ''
         reco_signals_exist = False
 
         #Generate and get signals based on analyst recommendation
@@ -314,7 +333,7 @@ class GSA:
             reco_signals_exist = ((reco_gscore != 0) and (reco_max_score != 0))
             if (reco_max_score > 0):
                 reco_final_score = round((reco_gscore/reco_max_score), 3)
-                self.overall_sci_gscore += reco_final_score
+                overall_sci_gscore += reco_final_score
 
         except RuntimeError:
             print('\nERROR: while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -329,7 +348,7 @@ class GSA:
             #Options signals
             options_gscore, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
             options_final_score = round((options_gscore/options_max_score), 3)
-            self.overall_sci_gscore += options_final_score
+            overall_sci_gscore += options_final_score
         except:
             print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -341,11 +360,11 @@ class GSA:
             pe_final_score = 0
 
             #PE signals
-            pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, self.Tickers_dir)
+            pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, Path('tickers'))
             #Maintain proportion
             pe_final_score = round((pe_gscore/10), 3)
             if not reco_signals_exist:
-                self.overall_sci_gscore += pe_final_score
+                overall_sci_gscore += pe_final_score
 
         except ValueError:
             print('\nERROR: while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -362,7 +381,7 @@ class GSA:
             #Maintain proportion
             peg_final_score = round((peg_gscore/10), 3)
             if not reco_signals_exist:
-                self.overall_sci_gscore += peg_final_score
+                overall_sci_gscore += peg_final_score
 
         except ValueError:
             print('\nERROR: while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -379,7 +398,7 @@ class GSA:
             #Maintain proportion
             beta_final_score = round((beta_gscore/10), 3)
             if not reco_signals_exist:
-                self.overall_sci_gscore += beta_final_score
+                overall_sci_gscore += beta_final_score
 
         except ValueError:
             print('\nERROR: while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -395,7 +414,7 @@ class GSA:
 
             pbr_final_score = round((pbr_gscore/10), 3)
             if not reco_signals_exist:
-                self.overall_sci_gscore += pbr_final_score
+                overall_sci_gscore += pbr_final_score
         except RuntimeError:
             print('\nERROR: while generating PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -413,7 +432,7 @@ class GSA:
             #Maintain proportion
             qbs_final_score = round((qbs_gscore/10), 3)
             if not reco_signals_exist:
-                self.overall_sci_gscore += qbs_final_score
+                overall_sci_gscore += qbs_final_score
         except ValueError:
             print('\nERROR: while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -429,7 +448,7 @@ class GSA:
             #Maintain proportion
             ihp_final_score = round((ihp_gscore/10), 3)
             if not reco_signals_exist:
-                self.overall_sci_gscore += ihp_final_score
+                overall_sci_gscore += ihp_final_score
         except ValueError:
             print('\nERROR: while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -455,7 +474,7 @@ class GSA:
             st_gscore, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
             #Maintain proportion
             st_final_score = round((st_gscore/10), 3)
-            self.overall_sci_gscore += st_final_score
+            overall_sci_gscore += st_final_score
         except RuntimeError:
             print('\nERROR: while getting stocktwits signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -468,17 +487,31 @@ class GSA:
             events_info = ''
 
         #Create a data frame for all stock's current info specific (micro)gScores
-        sci_gScore_df = pd.DataFrame({'Options': options_final_score, 'PE': pe_final_score, 'PEG': peg_final_score, 'Beta': beta_final_score, 'PBR': pbr_final_score, 'QBS': qbs_final_score, 'IHP': ihp_final_score, 'Reco': reco_final_score, 'SENTI': st_final_score, 'SCI_gScore': round((self.overall_sci_gscore/10), 3)}, index=range(1))
+        sci_gScore_df = pd.DataFrame(columns=gut.get_sci_gscores_df_columns(), index=range(1))
+        sci_gScore_df.Options[0] = options_final_score
+        sci_gScore_df.PE[0] = pe_final_score
+        sci_gScore_df.PEG[0] = peg_final_score
+        sci_gScore_df.Beta[0] = beta_final_score
+        sci_gScore_df.PBR[0] = pbr_final_score
+        sci_gScore_df.QBS[0] = qbs_final_score
+        sci_gScore_df.IHP[0] = ihp_final_score
+        sci_gScore_df.Reco[0] = reco_final_score
+        sci_gScore_df.SENTI[0] = st_final_score
+        sci_gScore_df.SCI_gScore[0] = round((overall_sci_gscore/10), 3)
 
-        #Aggregate stock current info-specific signals
-        self.sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, reco_signals, st_signals, events_info])
+        if need_charts_n_signals_info:
+            #Aggregate stock current info-specific signals
+            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, reco_signals, st_signals, events_info])
+        else:
+            sci_signals = ''
 
-        return sci_gScore_df
+        return sci_gScore_df, sci_signals
 
     def do_stock_analysis_and_compute_score(self, tsymbol, df):
 
         mtdpy, mtd5y = gut.get_min_trading_days()
-        path = self.Tickers_dir / f'{tsymbol}'
+        Tickers_dir = Path('tickers')
+        path = Tickers_dir / f'{tsymbol}'
         sh_gScore_df = pd.DataFrame()
         sci_gScore_df = pd.DataFrame()
         note = 'Notes: None'
@@ -533,22 +566,22 @@ class GSA:
             return
 
         try:
-            sh_gScore_df = self.do_stock_history_analysis(tsymbol, path, df, True)
+            sh_gScore_df, sh_signals = self.do_stock_history_analysis(tsymbol, path, df, True)
         except:
             print('\nERROR: while computing stock history specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            sci_gScore_df = self.do_stock_current_info_analysis(tsymbol, path, df, df_summ)
+            sci_gScore_df, sci_signals = self.do_stock_current_info_analysis(tsymbol, path, df, df_summ, True)
         except:
             print('\nERROR: while computing stock current info specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 
         #Add up micro-gScores then save scores and signals
-        overall_gscore = round(((self.overall_sh_gscore + self.overall_sci_gscore)/10), 3)
+        overall_gscore = round((sh_gScore_df.SH_gScore[0] + sci_gScore_df.SCI_gScore[0]), 3)
 
         final_gscore_string = f'final_gscore:{overall_gscore}'
 
         #Get all signals info for saving in a file for later reference
-        overall_signals = '\n'.join([self.sh_signals, self.sci_signals, note, final_gscore_string])
+        overall_signals = '\n'.join([sh_signals, sci_signals, note, final_gscore_string])
 
         #Create a data frame for all (micro)gScores
         gScore_df = pd.DataFrame({'gScore': overall_gscore}, index=range(1))

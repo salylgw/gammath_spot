@@ -34,22 +34,12 @@ except:
 
 class GSH:
 
-    def __init__(self):
-
-        self.Tickers_dir = Path('tickers')
-        #Default levels
-        self.SH_GSCORE_MIN_DISCOUNT_LEVEL = 0.375
-        self.SH_GSCORE_NEUTRAL_LEVEL = 0
-        self.SH_GSCORE_MIN_PREMIUM_LEVEL = -0.375
-
     def get_gscores_history(self, tsymbol):
 
-        path = self.Tickers_dir / f'{tsymbol}'
+        Tickers_dir = Path('tickers')
+        path = Tickers_dir / f'{tsymbol}'
 
         mtdpy, mtd5y = gut.get_min_trading_days()
-
-        #Placeholder for all micro-gScore data frames
-        df_gscores = pd.DataFrame()
 
         try:
             #Read Stock summary info into DataFrame
@@ -75,25 +65,22 @@ class GSH:
                     #Already got gscores from last date in history file
                     return df_gscores
 
-            #Use a different df for starting with 0-index
-            df1 = df.copy()
+            #Use a different df to hold starting from index 0
+            df1 = pd.DataFrame(columns=df.columns, index=range(mtd5y))
+
+            #Get the columns for micro-gScores
+            df_gscores = pd.DataFrame(columns=gut.get_sh_gscores_df_columns(), index=range(mtd5y))
 
             #Brute force (initial experiment; optimize later) for now to run through entire history
             for i in range(mtd5y):
                 gsa_instance = gsa.GSA()
                 df1.iloc[0:mtd5y] = df.iloc[initial_start_index+i:initial_end_index+i]
-                df_micro_gscores = gsa_instance.do_stock_history_analysis(tsymbol, path, df1[0:mtd5y], False)
-
-                #Get the columns from micro gscores df
-                if not len(df_gscores):
-                    df_gscores = pd.DataFrame(columns=df_micro_gscores.columns, index=range(mtd5y))
-
-                df_gscores.iloc[i] = df_micro_gscores
+                df_gscores.iloc[i], signals = gsa_instance.do_stock_history_analysis(tsymbol, path, df1, False)
 
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
-            self.SH_GSCORE_MIN_DISCOUNT_LEVEL, self.SH_GSCORE_NEUTRAL_LEVEL, self.SH_GSCORE_MIN_PREMIUM_LEVEL = df_gscores.SH_gScore.quantile([0.20, 0.5, 0.80])
+            SH_GSCORE_MIN_DISCOUNT_LEVEL, SH_GSCORE_NEUTRAL_LEVEL, SH_GSCORE_MIN_PREMIUM_LEVEL = df_gscores.SH_gScore.quantile([0.20, 0.5, 0.80])
 
             #Draw the charts (along with dates) to get a general idea of correlations
             figure, axes = plt.subplots(nrows=11, figsize=(28, 47))
@@ -125,9 +112,9 @@ class GSH:
             sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.SH_gScore[0:mtd5y]})
             sh_gscores_df = sh_gscores_df.set_index(df_gscores.Date)
             sh_gscores_df.plot(ax=axes[1],lw=1,title='Stock History based gScores')
-            axes[1].axhline(self.SH_GSCORE_MIN_DISCOUNT_LEVEL,lw=1,ls='-',c='r')
-            axes[1].axhline(self.SH_GSCORE_NEUTRAL_LEVEL,lw=1,ls='-',c='r')
-            axes[1].axhline(self.SH_GSCORE_MIN_PREMIUM_LEVEL,lw=1,ls='-',c='r')
+            axes[1].axhline(SH_GSCORE_MIN_DISCOUNT_LEVEL,lw=1,ls='-',c='r')
+            axes[1].axhline(SH_GSCORE_NEUTRAL_LEVEL,lw=1,ls='-',c='r')
+            axes[1].axhline(SH_GSCORE_MIN_PREMIUM_LEVEL,lw=1,ls='-',c='r')
             price_gscores_df = pd.DataFrame({'Price-micro-gScores': df_gscores.Price[0:mtd5y]})
             price_gscores_df = price_gscores_df.set_index(df_gscores.Date)
             price_gscores_df.plot(ax=axes[2],lw=1,title='Price micro-gScores')
@@ -166,7 +153,7 @@ class GSH:
             return df_gscores
         except:
             print('\nERROR: gScores history failed for symbol ', tsymbol)
-            return df_gscores
+            return pd.DataFrame()
 
     def save_gscores_history(self, tsymbol):
         self.get_gscores_history(tsymbol)

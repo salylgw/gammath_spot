@@ -39,6 +39,16 @@ MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 def get_min_trading_days():
     return MIN_TRADING_DAYS_PER_YEAR, MIN_TRADING_DAYS_FOR_5_YEARS
 
+def get_sh_gscores_df_columns():
+    sh_gscores_columns = ('Date', 'Close', 'Price', 'RSI', 'BBANDS', 'MACD', 'KF', 'OLS', 'MFI', 'Stoch', 'SH_gScore', 'NUP', 'A5DUP', 'A20DUP', 'TPC5Y', 'CSL', 'SLS', 'PDSL', 'CRL', 'RLS', 'PDRL')
+
+    return sh_gscores_columns
+
+def get_sci_gscores_df_columns():
+    sci_gscores_columns = ('Options', 'PE', 'PEG', 'Beta', 'PBR', 'QBS', 'IHP', 'Reco', 'SENTI', 'SCI_gScore')
+
+    return sci_gscores_columns
+
 def check_if_same_day(fstat):
 
     fct_time = time.ctime(fstat.st_ctime).split(' ')
