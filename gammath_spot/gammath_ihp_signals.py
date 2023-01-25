@@ -26,29 +26,31 @@ def get_ihp_signals(tsymbol, df_summ):
 
     ihp_gscore = 0
     ihp_max_score = 0
+    ihp_string = ''
 
     try:
         #Get data about percentage held from summary dataframe
         ihp = df_summ['heldPercentInstitutions'][0]
+
+        #We can do checks for different levels but for now this will suffice
+        if (ihp > 0):
+            if (ihp > 0.7):
+                ihp_gscore += 1
+            else:
+                ihp_gscore -= 1
+
+        ihp_max_score += 1
+
+        #Round it off to take less space when displaying
+        ihp = round(ihp, 3)
     except:
-        raise ValueError('heldPercentInstitutions value not found')
+        ihp_string += 'Institutional holdings data not found'
 
-    #We can do checks for different levels but for now this will suffice
-    if (ihp > 0):
-        if (ihp > 0.7):
-            ihp_gscore += 1
-        else:
-            ihp_gscore -= 1
-
-    ihp_max_score += 1
-
-    #Round it off to take less space when displaying
-    ihp = round(ihp, 3)
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 
     ihp_grec = f'ihp_gscore:{ihp_gscore}/{ihp_max_score}'
 
-    ihp_signals = f'IHP:{ihp},{ihp_grec}'
+    ihp_signals = f'IHP:{ihp},{ihp_string},{ihp_grec}'
 
     return ihp_gscore, ihp_max_score, ihp_signals

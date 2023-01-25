@@ -34,6 +34,9 @@ def get_qbs_signals(tsymbol, path, df_summ):
 
     qbs_gscore = 0
     qbs_max_score = 0
+    cr_string = ''
+    qr_string = ''
+    qbs_string = ''
 
     cr = 0
     qr = 0
@@ -69,7 +72,7 @@ def get_qbs_signals(tsymbol, path, df_summ):
         df = pd.read_csv(path / f'{tsymbol}_qbs.csv', index_col='Unnamed: 0')
 
         if (len(df) == 0):
-            raise ValueError('QBS dataframe empty')
+            qbs_string += 'No balance sheet data'
         else:
 
             #Get the most recent quarter date
@@ -89,30 +92,36 @@ def get_qbs_signals(tsymbol, path, df_summ):
                                 cash_earned_last_one_year = dfe.Earnings[(dfe_len-4):].sum()
                     except:
                         cash_earned_last_one_year = 0
+                        qbs_string += ' No earnings data'
             except:
                 cash = 0
+                qbs_string += ' No cash data'
 
             try:
                 sti = df[mrqd]['Short Term Investments']
             except:
                 sti = 0
+                qbs_string += ' No short term investments data'
 
             try:
                 lti = df[mrqd]['Long Term Investments']
             except:
                 lti = 0
+                qbs_string += ' No long term investments data'
 
             try:
                 #Total shareholder equity
                 sequity = df[mrqd]['Total Stockholder Equity']
             except:
                 sequity = 0
+                qbs_string += ' No shareholder equity data'
 
             try:
                 #Long term debt
                 ldebt = df[mrqd]['Long Term Debt']
             except:
                 ldebt = 0
+                qbs_string += ' No long term debt data'
 
             #Debt to capital ratio. TBD: Need to revisit the formula
             if ((ldebt > 0) and (sequity > 0)):
@@ -151,10 +160,10 @@ def get_qbs_signals(tsymbol, path, df_summ):
             qbs_max_score += 1
     else:
         #This will show 0/4 when no balance sheet data
-        raise ValueError('QBS file doesn\'t exist')
+        qbs_string += 'No balance sheet data'
 
     qbs_grec = f'qbs_gscore:{qbs_gscore}/{qbs_max_score}'
 
-    qbs_signals = f'qbs:dtcr:{dtcr},cr:{cr_string},qr:{qr_string},{qbs_grec}'
+    qbs_signals = f'qbs:dtcr:{dtcr},cr:{cr_string},qr:{qr_string},{qbs_string},{qbs_grec}'
 
     return qbs_gscore, qbs_max_score, qbs_signals

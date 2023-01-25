@@ -314,7 +314,7 @@ class GSA:
 
         return sh_gScore_df, sh_signals
 
-    def do_stock_current_info_analysis(self, tsymbol, path, df, df_summ, need_charts_n_signals_info):
+    def do_stock_current_info_analysis(self, tsymbol, path, df, need_charts_n_signals_info):
 
         overall_sci_gscore = 0
         sci_signals = ''
@@ -337,6 +337,13 @@ class GSA:
 
         except RuntimeError:
             print('\nERROR: while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+        try:
+            #Read Stock summary info into DataFrame.
+            df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
+        except:
+            print('\nERROR: Stock summary file not found for symbol ', tsymbol)
+            df_summ = pd.DataFrame()
 
         #Generate and get signals based on options activity
         try:
@@ -517,13 +524,6 @@ class GSA:
         note = 'Notes: None'
 
         try:
-            #Read Stock summary info into DataFrame.
-            df_summ = pd.read_csv(path / f'{tsymbol}_summary.csv')
-        except:
-            print('\nERROR: Stock summary file not found for symbol ', tsymbol)
-            return
-
-        try:
             if not len(df):
                 try:
                     df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
@@ -571,7 +571,7 @@ class GSA:
             print('\nERROR: while computing stock history specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            sci_gScore_df, sci_signals = self.do_stock_current_info_analysis(tsymbol, path, df, df_summ, True)
+            sci_gScore_df, sci_signals = self.do_stock_current_info_analysis(tsymbol, path, df, True)
         except:
             print('\nERROR: while computing stock current info specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 

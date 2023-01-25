@@ -90,7 +90,7 @@ class GSD:
             print(f'Could not get stock options data for {tsymbol}')
 
         try:
-            #Get calendar info [NOTE: This is very low]
+            #Get calendar info [NOTE: This is very slow]
             gsc.get_ticker_calendar(tsymbol, ticker, path)
         except ValueError:
             print(f'Error while getting stock calendar data for {tsymbol}')

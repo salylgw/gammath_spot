@@ -29,24 +29,22 @@ def get_stocktwits_signals(tsymbol, path):
 
     st_gscore = 0
     st_max_score = 0
+    st_string = ''
     sentiment_change = None
     volume_change = None
-
-    #RE to extract sentiment change value
-    pattern_for_sentiment_change = re.compile(r'("sentimentChange"):([-]*[0-9]*[.]*[0-9]*)')
-
-    #RE to extract volume change value
-    pattern_for_volume_change = re.compile(r'("volumeChange"):([-]*[0-9]*[.]*[0-9]*)')
-    st_ticker_page_html = ''
-
-    if not path.exists():
-        path.mkdir(parents=True, exist_ok=True)
 
     try:
         #Read the saved page
         f = open(path / f'{tsymbol}_st_page.html')
         html_page = f.read()
         f.close()
+
+        #RE to extract sentiment change value
+        pattern_for_sentiment_change = re.compile(r'("sentimentChange"):([-]*[0-9]*[.]*[0-9]*)')
+
+        #RE to extract volume change value
+        pattern_for_volume_change = re.compile(r'("volumeChange"):([-]*[0-9]*[.]*[0-9]*)')
+        st_ticker_page_html = ''
 
         #Find the sentiment change score
         matched_string = pattern_for_sentiment_change.search(html_page)
@@ -67,11 +65,15 @@ def get_stocktwits_signals(tsymbol, path):
             #Convert to the float type
             sts_change = float(sentiment_change)
             st_tw_sentiment_change = f'sentiment_change: {sentiment_change}'
+        else:
+            st_string += 'No sentiments change data'
 
         if (volume_change is not None):
             #Convert to the float type
             stv_change = float(volume_change)
             st_tw_volume_change = f'volume_change: {volume_change}'
+        else:
+            st_string += ' No discussion volume change data'
 
         #Token score and information logging purpose
         if ((sts_change > 0) and (stv_change > 0)):
@@ -82,13 +84,13 @@ def get_stocktwits_signals(tsymbol, path):
             st_gscore -= 5
 
     except:
-        raise RuntimeError('Stocktwits signal generation failed')
+        st_string += 'No stocktwits data'
 
     st_max_score += 5
 
     st_grec = f'st_sv_gscore:{st_gscore}/{st_max_score}'
 
-    st_signals = f'{st_grec}'
+    st_signals = f'{st_string},{st_grec}'
 
     return st_gscore, st_max_score, st_signals
 

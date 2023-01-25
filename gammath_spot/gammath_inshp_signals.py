@@ -25,26 +25,27 @@ def get_inshp_signals(tsymbol, df_summ):
 
     inshp_gscore = 0
     inshp_max_score = 0
+    inshp_string = ''
 
     try:
         inshp = df_summ['heldPercentInsiders'][0]
+        if (inshp > 0):
+            inshp_gscore += 1
+        else:
+            inshp_gscore -= 1
+
+        inshp_max_score += 1
+
+        #Round it off to take less space displaying the value
+        inshp = round(inshp, 3)
+
     except:
-        raise ValueError('heldPercentInsiders not found')
-
-    if (inshp > 0):
-        inshp_gscore += 1
-    else:
-        inshp_gscore -= 1
-
-    inshp_max_score += 1
-
-    #Round it off to take less space displaying the value
-    inshp = round(inshp, 3)
+        inshp_string += 'Insiders holdings information not found'
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 
     inshp_grec = f'inshp_gscore:{inshp_gscore}/{inshp_max_score}'
 
-    inshp_signals = f'inshp:{inshp},{inshp_grec}'
+    inshp_signals = f'inshp:{inshp},{inshp_string},{inshp_grec}'
 
     return inshp_gscore, inshp_max_score, inshp_signals

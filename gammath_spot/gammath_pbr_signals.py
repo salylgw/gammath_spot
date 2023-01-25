@@ -25,6 +25,7 @@ def get_pbr_signals(tsymbol, df_summ):
 
     pbr_gscore = 0
     pbr_max_score = 0
+    PBR_string = ''
 
     try:
         if (len(df_summ) > 0):
@@ -43,10 +44,10 @@ def get_pbr_signals(tsymbol, df_summ):
                         else:
                             pbr_gscore -= 1
             except:
-                raise ValueError('PBR not found')
+                PBR_string = 'No PBR data'
 
         else:
-            raise RuntimeError('Dataframe empty')
+            PBR_string = 'No PBR data'
 
     except:
         pbr = 0
