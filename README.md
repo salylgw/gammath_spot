@@ -33,9 +33,14 @@ This project uses following free tools that need to be installed (you can use pi
 
 If you are not familiar with python then you can use prebuilt docker image. Please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
 
-`pip install gammath-spot`
 
-In case you run into installation problem(s) then use the alternative installation method(s) mentioned above and then run `pip install gammath-spot`
+If you are not taking the docker route and installing directly then it is <u>recommended to install miniconda</u> and then use following commands in your miniconda shell for installing gammath-spot:
+
+ 1. `conda install -c conda-forge ta-lib`
+ 2. `conda install statsmodels`
+ 3. `conda install matplotlib`
+ 4. `pip install gammath-spot`
+
 
 # WHERE to get source code without installing
 Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot.git`
