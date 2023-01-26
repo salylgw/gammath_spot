@@ -26,6 +26,7 @@ def get_beta_signals(tsymbol, df_summ):
 
     beta_gscore = 0
     beta_max_score = 0
+    beta = 0
 
     try:
         #Get the beta value from summary DF

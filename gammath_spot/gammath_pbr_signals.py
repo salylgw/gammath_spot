@@ -25,6 +25,7 @@ def get_pbr_signals(tsymbol, df_summ):
 
     pbr_gscore = 0
     pbr_max_score = 0
+    pbr = 0
     PBR_string = ''
 
     try:
@@ -50,7 +51,6 @@ def get_pbr_signals(tsymbol, df_summ):
             PBR_string = 'No PBR data'
 
     except:
-        pbr = 0
         PBR_string = 'No PBR data'
 
     pbr_max_score += 1

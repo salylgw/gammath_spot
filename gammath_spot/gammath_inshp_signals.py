@@ -25,6 +25,7 @@ def get_inshp_signals(tsymbol, df_summ):
 
     inshp_gscore = 0
     inshp_max_score = 0
+    inshp = 0
     inshp_string = ''
 
     try:

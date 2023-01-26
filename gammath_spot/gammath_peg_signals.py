@@ -25,6 +25,7 @@ def get_peg_signals(tsymbol, df_summ):
 
     peg_gscore = 0
     peg_max_score = 0
+    peg = 0
 
     try:
         peg = round(df_summ['pegRatio'][0], 3)

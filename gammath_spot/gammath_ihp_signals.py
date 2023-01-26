@@ -26,6 +26,7 @@ def get_ihp_signals(tsymbol, df_summ):
 
     ihp_gscore = 0
     ihp_max_score = 0
+    ihp = 0
     ihp_string = ''
 
     try:
