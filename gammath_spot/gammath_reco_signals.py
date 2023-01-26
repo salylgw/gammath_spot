@@ -28,6 +28,7 @@ def get_reco_signals(tsymbol, path):
 
     reco_gscore = 0
     reco_max_score = 0
+    reco_string = ''
 
     try:
         file_exists = (path / f'{tsymbol}_reco.csv').exists()
@@ -108,10 +109,11 @@ def get_reco_signals(tsymbol, path):
         else:
             #This will show 0/0 where expert recommendations don't exist.
             reco_max_score = 0
+            reco_string = 'No analysts recommendations data'
     except:
-        raise RuntimeError('Quarterly Recommendations scoring failed')
+        reco_string = 'No analysts recommendations micro-gScore'
 
 
-    reco_signals = f'reco:reco_gscore:{reco_gscore}/{reco_max_score}'
+    reco_signals = f'reco:reco_gscore:{reco_string},{reco_gscore}/{reco_max_score}'
 
     return reco_gscore, reco_max_score, reco_signals
