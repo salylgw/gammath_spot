@@ -66,10 +66,6 @@ def get_ticker_summary(tsymbol, ticker, path):
     #Extract the items of interest
     #trailingPE
     #forwardPE
-    #fiftyTwoWeekHigh
-    #fiftyTwoWeekLow
-    #fiftyDayAverage
-    #twoHundredDayAverage
     #shortRatio
     #pegRatio
     #currentRatio
@@ -80,8 +76,6 @@ def get_ticker_summary(tsymbol, ticker, path):
     #priceToBook
     #state
     #country
-    #regularMarketPrice
-    #marketCap
 
     try:
         trailingPE = stock_summary['trailingPE']
@@ -92,26 +86,6 @@ def get_ticker_summary(tsymbol, ticker, path):
         forwardPE = stock_summary['forwardPE']
     except:
         forwardPE = 0
-
-    try:
-        fiftyTwoWeekHigh = stock_summary['fiftyTwoWeekHigh']
-    except:
-        fiftyTwoWeekHigh = 0
-
-    try:
-        fiftyTwoWeekLow = stock_summary['fiftyTwoWeekLow']
-    except:
-        fiftyTwoWeekLow = 0
-
-    try:
-        fiftyDayAverage = stock_summary['fiftyDayAverage']
-    except:
-        fiftyDayAverage = 0
-
-    try:
-        twoHundredDayAverage = stock_summary['twoHundredDayAverage']
-    except:
-        twoHundredDayAverage = 0
 
     try:
         shortRatio = stock_summary['shortRatio']
@@ -162,17 +136,7 @@ def get_ticker_summary(tsymbol, ticker, path):
     except:
         country = ''
 
-    try:
-        curr_price = stock_summary['regularMarketPrice']
-    except:
-        curr_price = 0
-
-    try:
-        mktcap = stock_summary['marketCap']
-    except:
-        mktcap = 0
-
-    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'fiftyTwoWeekHigh': fiftyTwoWeekHigh, 'fiftyTwoWeekLow': fiftyTwoWeekLow, 'fiftyDayAverage': fiftyDayAverage, 'twoHundredDayAverage': twoHundredDayAverage, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'currentRatio': currentRatio, 'quickRatio': quickRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'priceToBook': pbr, 'state': state, 'country': country, 'currentPrice': curr_price, 'marketCap': mktcap}, index=range(1))
+    df = pd.DataFrame({'trailingPE': trailingPE, 'forwardPE': forwardPE, 'shortRatio': shortRatio, 'pegRatio': pegRatio, 'currentRatio': currentRatio, 'quickRatio': quickRatio, 'beta': beta, 'heldPercentInstitutions': heldPercentInstitutions, 'heldPercentInsiders': heldPercentInsiders, 'priceToBook': pbr, 'state': state, 'country': country}, index=range(1))
 
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
