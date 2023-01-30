@@ -32,6 +32,37 @@ except:
     import gammath_utils as gut
     import gammath_stocks_analysis as gsa
 
+def get_missing_gscores_count(df, gscores):
+
+    mtdpy, mtd5y = gut.get_min_trading_days()
+    df_len = len(df)
+    gscores_len = len(gscores)
+    missing_gscores_count = -1
+
+    #Get last gscore date to search
+    last_gscore_date = gscores.Date[gscores_len-1]
+
+    bottom = (df_len-mtd5y-1)
+    top = (df_len - 1)
+
+    #Assuming history is not run that often so there might be a gap of many days
+    #Using binary search on that premise to get O(logn)
+    #Otherwise sequential search O(n) starting from end would be better (if history is run every week)
+    while (bottom <= top):
+        middle = (bottom + top)//2
+        #Get df date at mid-index
+        df_date = df.Date[middle].split(' ')[0]
+        if (last_gscore_date == df_date):
+            missing_gscores_count = (df_len - 1 - middle)
+            break
+        else:
+            if (last_gscore_date > df_date):
+                bottom = (middle + 1)
+            else:
+                top = (middle - 1)
+
+    return missing_gscores_count
+
 class GSH:
 
     def get_gscores_history(self, tsymbol):
@@ -47,7 +78,7 @@ class GSH:
             df_len = len(df)
             df_last_date = df.Date[df_len-1].split(' ')[0]
 
-            initial_end_index = len(df) - mtd5y + 1
+            initial_end_index = df_len - mtd5y + 1
             initial_start_index = initial_end_index - mtd5y
 
             if (initial_start_index < 0):
@@ -64,18 +95,38 @@ class GSH:
                 if (df_last_date == gscores_last_date):
                     #Already got gscores from last date in history file
                     return df_gscores
+                else:
+                    missing_gscores_count = get_missing_gscores_count(df, df_gscores)
+                    if (missing_gscores_count != -1):
+                        #Add one to get last gScore again; Doing this to avoid mismatch if previous run was done before the closing price for the day was established
+                        missing_gscores_count += 1
+                        initial_end_index = (df_len - missing_gscores_count + 1)
+                        initial_start_index = (initial_end_index - mtd5y)
+                        #Clip missing_gscores_count-gscores from start to make room for missing gscores near the end. Also, we want to redo last one as noted above
+                        df_gscores = df_gscores.truncate(after=gscores_len-2).truncate(before=missing_gscores_count-1).reset_index().drop(columns='index')
+                    else:
+                        missing_gscores_count = mtd5y
+            else:
+                missing_gscores_count = mtd5y
 
-            #Use a different df to hold starting from index 0
+            #Use a different df starting index 0
             df1 = pd.DataFrame(columns=df.columns, index=range(mtd5y))
 
             #Get the columns for micro-gScores
-            df_gscores = pd.DataFrame(columns=gut.get_sh_gscores_df_columns(), index=range(mtd5y))
+            interim_df_gscores = pd.DataFrame(columns=gut.get_sh_gscores_df_columns(), index=range(missing_gscores_count))
+
+            #Create a GSA instance
+            gsa_instance = gsa.GSA()
 
             #Brute force (initial experiment; optimize later) for now to run through entire history
-            for i in range(mtd5y):
-                gsa_instance = gsa.GSA()
+            for i in range(missing_gscores_count):
                 df1.iloc[0:mtd5y] = df.iloc[initial_start_index+i:initial_end_index+i]
-                df_gscores.iloc[i], signals = gsa_instance.do_stock_history_analysis(tsymbol, path, df1, False)
+                interim_df_gscores.iloc[i], signals = gsa_instance.do_stock_history_analysis(tsymbol, path, df1, False)
+
+            if (gscores_history_exists):
+                df_gscores = pd.concat([df_gscores, interim_df_gscores], ignore_index=True)
+            else:
+                df_gscores = interim_df_gscores
 
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
@@ -106,8 +157,8 @@ class GSH:
             except:
                 logo_file_found = False
 
-            closing_prices_df = pd.DataFrame({tsymbol: df1.Close[0:mtd5y]})
-            closing_prices_df = closing_prices_df.set_index(df1.Date[0:mtd5y])
+            closing_prices_df = pd.DataFrame({tsymbol: df_gscores.Close[0:mtd5y]})
+            closing_prices_df = closing_prices_df.set_index(df_gscores.Date[0:mtd5y])
             closing_prices_df.plot(ax=axes[0],lw=1,title='Stock history')
             sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.SH_gScore[0:mtd5y]})
             sh_gscores_df = sh_gscores_df.set_index(df_gscores.Date)
