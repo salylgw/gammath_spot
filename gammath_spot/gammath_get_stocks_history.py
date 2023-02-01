@@ -24,67 +24,79 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
+
 
 def get_ticker_history(tsymbol, ticker, path):
 
     if (len(tsymbol) == 0):
         raise ValueError('Invalid symbol')
 
-    try:
-        # Get 10Y stock history using 10Y-period
-        stock_history = ticker.history('10y', interval='1d', actions=True,auto_adjust=True)
-    except:
-        raise RuntimeError('Error obtaining stock history')
+    mtdpy, mtd5y = gut.get_min_trading_days()
+
+    if not path.exists():
+        path.mkdir(parents=True, exist_ok=True)
+        history_file_exists = False
+    else:
+        #Check if we have stock history for this stock
+        history_file_exists = (path / f'{tsymbol}_history.csv').exists()
+
+        if (history_file_exists):
+            #Read in the previous history file to check last history date
+            df_old = pd.read_csv(path / f'{tsymbol}_history.csv', index_col='Date')
+            df_old_len = len(df_old)
+            if (df_old_len >= mtd5y):
+                history_file_exists = True
+            else:
+                history_file_exists = False
+
+    if (history_file_exists):
+
+        #Get the date from where to obtain new data
+        start_date = df_old.index[df_old_len-1].split(' ')[0]
+
+        #Index for truncating
+        last_date = df_old.index[df_old_len-2]
+
+        #Always save the previous price history for reference
+        df_old.to_csv(path / f'{tsymbol}_history_prev.csv')
+
+        #Obtain the new data
+        try:
+            stock_history_part = ticker.history(start=start_date, interval='1d', actions=True, auto_adjust=True)
+
+            #Get the number of new entries
+            part_len = len(stock_history_part)
+
+            #Truncate the unwanted items; No need to remove older dates
+            df_old = df_old.truncate(after=last_date)
+
+            #Save old and new data into single history
+            stock_history = pd.concat([df_old, stock_history_part])
+        except:
+            raise RuntimeError('Error obaining stock history')
+    else:
+        #Obtain full stock history
+        try:
+            #Get 10Y stock history using 10Y-period
+            stock_history = ticker.history(period='10y', interval='1d', actions=True, auto_adjust=True)
+        except:
+            raise RuntimeError('Error obtaining stock history')
+
+    #Remove rows with nan values (if any)
+    stock_history = stock_history.dropna(how='any')
 
     stock_history_len = len(stock_history)
-
-    if (stock_history_len > 0):
-        if not path.exists():
-            path.mkdir(parents=True, exist_ok=True)
-
+    if (stock_history_len >= mtd5y):
         try:
-            update_file = True
-
-            #Always save the original price history for reference
-            stock_history.to_csv(path / f'{tsymbol}_history_orig.csv')
-
-            #Entries with nan values cause problems during analysis so drop those
-            #Save the new history after dropping rows with nan values
-            stock_history.dropna(how='any').to_csv(path / f'{tsymbol}_history_orig_changed.csv')
-
-            #Read old history for comparison (if it exists)
-            history_file_exists = (path / f'{tsymbol}_history.csv').exists()
-
-            if (history_file_exists):
-                #Get the len of existng file without nan-rows
-                df_old = pd.read_csv(path / f'{tsymbol}_history.csv')
-                df_old_len = len(df_old)
-
-                #Get the len of new file without nan-rows
-                df_new_changed = pd.read_csv(path / f'{tsymbol}_history_orig_changed.csv')
-                df_new_changed_len = len(df_new_changed)
-
-                if (df_new_changed_len < df_old_len):
-                    print(f'\nNew file is shorter. New len: {df_new_len}, Old len: {df_old_len}')
-                    # This is a workaround for cases where history file has missing data for
-                    # few days prior to last day. In such cases, last day's data exists.
-                    # This could cause incorrect analysis so I'm maintaining older file and
-                    # using that where only last day's data doesn't exist.
-                    # A Note in the CSV with overall gScores will indicate that today's
-                    # data is missing so result can be ignored or today's data can be
-                    # rechecked manually or in such cases, re-running scraper seems to
-                    # get proper history and then this workaroud won't be used
-
-                    # Don't replace old file as it has more data.
-                    update_file = False
-
-            if (update_file):
-                #Save the history file without nan-rows for processing
-                stock_history.dropna(how='any').to_csv(path / f'{tsymbol}_history.csv')
-
+            #Save the history file without nan-rows for processing
+            stock_history.to_csv(path / f'{tsymbol}_history.csv')
         except:
             raise RuntimeError('Stock history file RW error')
     else:
-        raise ValueError('Invalid length stock history')
+        raise ValueError('Insufficient length for stock history')
 
     return

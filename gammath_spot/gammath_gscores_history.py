@@ -92,20 +92,18 @@ class GSH:
                 df_gscores = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
                 gscores_len = len(df_gscores)
                 gscores_last_date = df_gscores.Date[gscores_len-1]
-                if (df_last_date == gscores_last_date):
-                    #Already got gscores from last date in history file
-                    return df_gscores
+                #Get the missing count for gScores history
+                missing_gscores_count = get_missing_gscores_count(df, df_gscores)
+
+                if (missing_gscores_count != -1):
+                    #Add one to get last gScore again; Doing this to avoid mismatch if previous run was done before the closing price for the day was established
+                    missing_gscores_count += 1
+                    initial_end_index = (df_len - missing_gscores_count + 1)
+                    initial_start_index = (initial_end_index - mtd5y)
+                    #Clip missing_gscores_count-gscores from start to make room for missing gscores near the end. Also, we want to redo last one as noted above
+                    df_gscores = df_gscores.truncate(after=gscores_len-2).truncate(before=missing_gscores_count-1).reset_index().drop(columns='index')
                 else:
-                    missing_gscores_count = get_missing_gscores_count(df, df_gscores)
-                    if (missing_gscores_count != -1):
-                        #Add one to get last gScore again; Doing this to avoid mismatch if previous run was done before the closing price for the day was established
-                        missing_gscores_count += 1
-                        initial_end_index = (df_len - missing_gscores_count + 1)
-                        initial_start_index = (initial_end_index - mtd5y)
-                        #Clip missing_gscores_count-gscores from start to make room for missing gscores near the end. Also, we want to redo last one as noted above
-                        df_gscores = df_gscores.truncate(after=gscores_len-2).truncate(before=missing_gscores_count-1).reset_index().drop(columns='index')
-                    else:
-                        missing_gscores_count = mtd5y
+                    missing_gscores_count = mtd5y
             else:
                 missing_gscores_count = mtd5y
 
