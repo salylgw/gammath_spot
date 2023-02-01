@@ -18,6 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
+import time
 import multiprocessing as mp
 from multiprocessing import Process
 try:
@@ -65,6 +66,8 @@ def main():
 
     if (cores_to_use < 1):
         cores_to_use = 1
+
+    print('\nStart Time: ', time.strftime('%x %X'), '\n')
 
     proc_handles = []
 
@@ -115,6 +118,9 @@ def main():
 
     #Aggregate and save PE data
     gutils.aggregate_pe_data()
+
+    print('\nEnd Time: ', time.strftime('%x %X'), '\n')
+
 
 if __name__ == '__main__':
     main()
