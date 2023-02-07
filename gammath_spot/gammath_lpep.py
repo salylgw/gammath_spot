@@ -146,7 +146,7 @@ class GPEP:
         path = self.Tickers_dir / f'{tsymbol}'
 
         try:
-            df = pd.read_csv(path / f'{tsymbol}_history.csv')
+            df = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Close'])
         except:
             #Not a fatal error. Just log it and return
             print(f'\nStock history file not found for {tsymbol}')

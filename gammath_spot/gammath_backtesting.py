@@ -448,7 +448,7 @@ class GBT:
             #Verify that prepared data corresponds to correct timeline and values before backtesting
 
             #We only need last 5y data
-            df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
+            df_orig = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Date', 'Close'])
             df_len = len(df_orig)
             start_index = (df_len - mtd5y)
             if (start_index < 0):

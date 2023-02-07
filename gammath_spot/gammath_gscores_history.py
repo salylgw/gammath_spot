@@ -74,7 +74,7 @@ class GSH:
 
         try:
             #Read Stock summary info into DataFrame
-            df = pd.read_csv(path / f'{tsymbol}_history.csv')
+            df = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Date', 'High', 'Low', 'Close', 'Volume'])
             df_len = len(df)
             df_last_date = df.Date[df_len-1].split(' ')[0]
 

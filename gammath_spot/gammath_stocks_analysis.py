@@ -526,7 +526,7 @@ class GSA:
         try:
             if not len(df):
                 try:
-                    df_orig = pd.read_csv(path / f'{tsymbol}_history.csv')
+                    df_orig = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Date', 'High', 'Low', 'Close', 'Volume'])
                     df_orig_len = len(df_orig)
                     start_index = (df_orig_len - mtd5y)
                     if (start_index < 0):
