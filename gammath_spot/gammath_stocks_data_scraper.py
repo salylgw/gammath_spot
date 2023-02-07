@@ -105,8 +105,7 @@ def main():
         for i in range(start_index, end_index):
             proc_handles[i].join()
 
-        #Running out of resources so need to close handles and release resources
-        for i in range(start_index, end_index):
+            #Running out of resources so need to close handles and release resources
             proc_handles[i].close()
 
         if (max_tickers):
