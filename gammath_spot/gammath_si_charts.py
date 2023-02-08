@@ -93,3 +93,4 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
     except:
         print('\nERROR: Plotting charts for ', tsymbol, ': ', sys.exc_info()[0])
 
+    plt.close(fig=None)

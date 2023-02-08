@@ -349,6 +349,7 @@ def draw_trend_charts(tsymbol, path, df, sr_df, y_support_series, y_resistance_s
 
     #Save trend charts for later reference (Use PDF instead of png to save space)
     plt.savefig(path / f'{tsymbol}_tc.pdf', format='pdf')
+    plt.close(fig=None)
 
 #Compute current estimated moving support and resistance level
 def compute_support_and_resistance_levels(tsymbol, path, df, need_charts):

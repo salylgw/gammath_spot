@@ -200,6 +200,8 @@ class GPEP:
         #Use PDF instead of png to save space)
         plt.savefig(path / f'{tsymbol}_pep.pdf', format='pdf')
 
+        plt.close(fig=None)
+
         try:
             sgd_ic = round(spearmanr(y_predictions_series[0:yp_len], prices).correlation, 3)
         except:
@@ -273,3 +275,5 @@ class GPEP:
 
         #Save it for later reference. Use PDF instead of png to save space
         plt.savefig(path / f'SP500_pep.pdf', format='pdf')
+
+        plt.close(fig=None)

@@ -199,6 +199,7 @@ class GSH:
             #Save figure for later reference
             #Use PDF instead of png to save space
             plt.savefig(path / f'{tsymbol}_gscores_charts.pdf', format='pdf')
+            plt.close(fig=None)
             return df_gscores
         except:
             print('\nERROR: gScores history failed for symbol ', tsymbol)
