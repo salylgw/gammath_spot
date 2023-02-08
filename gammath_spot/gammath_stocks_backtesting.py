@@ -31,6 +31,7 @@ except:
 
 import pandas as pd
 import sys
+import os
 
 def main():
     """
@@ -57,16 +58,20 @@ def main():
     #so using it for portability. Spawn method is much slower compared to 'fork' method. If there are no unsafe changes made to this project then on MacOS and Linux this can be changed to use 'fork'
     mp.set_start_method('spawn')
 
-    #Check number of cores we have to be able to run in parallel
-    core_count = mp.cpu_count()
+    #Check how many cores we have to be able to run in parallel
+    #Need to check portability on this. os.uname().sysname could be used to make it OS-specific
+    try:
+        cores_to_use = len(os.sched_getaffinity(0))
+    except:
+        #Workaround. Need to find a better way at some point
+        cores_to_use = ((mp.cpu_count())//2)
 
-    #Need to check portability on this
-    #Might need to reduce the number cores actually used hence core_count and cores_to_use are defined separately
-    cores_to_use = core_count
+    #Might need to change the way number of usable cores is obtained in certain environments
 
     if (cores_to_use < 1):
         cores_to_use = 1
 
+    print(f'\nAttempting to use {cores_to_use} CPUs\n')
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
 
     proc_handles = []
