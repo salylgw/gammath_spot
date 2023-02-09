@@ -20,8 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 from pathlib import Path
 import urllib.request
-import sys
-
 
 def get_stocktwits_ticker_info(tsymbol, path):
 

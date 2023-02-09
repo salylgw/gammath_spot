@@ -24,7 +24,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 import sys
 from pathlib import Path
 import pandas as pd
-import numpy as np
 from backtesting import Backtest, Strategy
 try:
     from gammath_spot import gammath_utils as gut

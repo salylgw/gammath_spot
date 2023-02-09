@@ -27,7 +27,6 @@ import pandas as pd
 import re
 import pandas_datareader.data as pdd
 import numpy as np
-from matplotlib import pyplot as plt
 
 #Number of trading days varies across the globe.
 #Some stock exchanges are closed more than US stocks exchanges.

@@ -18,7 +18,6 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
-from pathlib import Path
 import pandas as pd
 
 def get_inshp_signals(tsymbol, df_summ):

@@ -20,7 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 from pathlib import Path
 import pandas as pd
-import os
 
 def get_events_info(tsymbol, path):
 

@@ -20,9 +20,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 import yfinance as yf
-from datetime import datetime
 from pathlib import Path
-import sys
 
 try:
     from gammath_spot import gammath_utils as gut

@@ -18,13 +18,9 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
-import yfinance as yf
 from pathlib import Path
 import bisect
-from datetime import datetime
 import pandas as pd
-import time
-import os
 import numpy as np
 
 def get_options_signals(tsymbol, path, curr_price, df_summ):

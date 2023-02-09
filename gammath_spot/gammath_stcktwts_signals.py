@@ -19,9 +19,7 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 from pathlib import Path
-import time
 import re
-import sys
 
 STOCKTWITS_TICKER_ADDR = 'https://stocktwits.com'
 

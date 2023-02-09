@@ -21,7 +21,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 import pandas as pd
 from pathlib import Path
 from talib import MFI
-import numpy as np
 
 
 def get_mfi_signals(tsymbol, df, path):

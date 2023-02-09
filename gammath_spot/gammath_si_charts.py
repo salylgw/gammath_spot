@@ -18,15 +18,11 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
-import yfinance as yf
 import pandas as pd
-from datetime import datetime
 from pathlib import Path
-from talib import RSI, BBANDS, MACD, MFI, STOCH
 from matplotlib import pyplot as plt
 import sys
 import os
-import time
 try:
     from gammath_spot import gammath_kf_signals as gkf
     from gammath_spot import gammath_ols_signals as gols

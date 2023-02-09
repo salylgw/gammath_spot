@@ -18,12 +18,8 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
-import yfinance as yf
 import pandas as pd
-from datetime import datetime
 from pathlib import Path
-from talib import RSI, BBANDS, MACD, MFI, STOCH
-from matplotlib import pyplot as plt
 try:
     from gammath_spot import gammath_price_signals as gps
     from gammath_spot import gammath_rsi_signals as grs
@@ -79,8 +75,6 @@ except:
 
 import sys
 import time
-import os
-import numpy as np
 
 class GSA:
     def do_stock_history_analysis(self, tsymbol, path, df, need_charts_n_signals_info):

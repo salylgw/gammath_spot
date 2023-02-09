@@ -19,9 +19,8 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
-from datetime import datetime
 from pathlib import Path
-from talib import RSI, BBANDS, MACD, MFI, STOCH
+from talib import MACD
 import numpy as np
 
 def get_macd_signals(tsymbol, df, path):

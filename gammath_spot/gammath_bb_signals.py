@@ -20,8 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 from talib import BBANDS
-import numpy as np
-
 
 def get_bollinger_bands_signals(tsymbol, df, path):
 
