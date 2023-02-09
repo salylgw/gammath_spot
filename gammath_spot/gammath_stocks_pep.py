@@ -106,6 +106,11 @@ def main():
         for i in range(start_index, end_index):
             proc_handles[i].join()
 
+            #Delete the GPEP instance
+            gpep_instance = gpep_instances[i]
+            gpep_instances[i] = 0
+            del gpep_instance
+
             #Running out of resources so need to close handles and release resources
             proc_handles[i].close()
 

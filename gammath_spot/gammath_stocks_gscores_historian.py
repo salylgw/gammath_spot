@@ -99,6 +99,11 @@ def main():
         for i in range(start_index, end_index):
             proc_handles[i].join()
 
+            #Delete the GSH instance
+            gsh_instance = gsh_instances[i]
+            gsh_instances[i] = 0
+            del gsh_instance
+
             #Running out of resources so need to close handles and release resources
             proc_handles[i].close()
 
