@@ -20,6 +20,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import sys
 import os
+import multiprocessing as mp
 import time
 from datetime import date
 from pathlib import Path
@@ -34,6 +35,23 @@ import numpy as np
 #in multiple geographical areas
 MIN_TRADING_DAYS_PER_YEAR = 239
 MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
+
+def get_usable_cpu_count():
+
+    #Check how many cores we have to be able to run in parallel
+    #Need to check portability on this. os.uname().sysname could be used to make it OS-specific
+    try:
+        cores_to_use = len(os.sched_getaffinity(0))
+    except:
+        #Workaround. Need to find a better way at some point
+        cores_to_use = ((mp.cpu_count())//2)
+
+    #Might need to change the way number of usable cores is obtained in certain environments
+
+    if (cores_to_use < 1):
+        cores_to_use = 1
+
+    return cores_to_use
 
 def get_min_trading_days():
     return MIN_TRADING_DAYS_PER_YEAR, MIN_TRADING_DAYS_FOR_5_YEARS
@@ -90,14 +108,10 @@ def get_price_sigmoid(prices, n_days_interval):
 
 class GUTILS:
 
-    def __init__(self):
-
-        self.Tickers_dir = Path('tickers')
-
     def get_sp500_list(self):
 
         sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
-        path = self.Tickers_dir
+        path = Path('tickers')
 
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
@@ -133,7 +147,7 @@ class GUTILS:
     def aggregate_scores(self):
 
         #Get all the subdirs. Need to check for is_dir
-        p = self.Tickers_dir
+        p = Path('tickers')
 
         #Somehow looks like os.is_dir isn't supported
         #Using pathlib/Path instead since is_dir is supported there
@@ -175,7 +189,7 @@ class GUTILS:
 
     def aggregate_pe_data(self):
 
-        path = self.Tickers_dir
+        path = Path('tickers')
         df = pd.read_csv(path / 'SP500_list.csv')
 
         #Need to calculate sector-average so rearrange
@@ -273,7 +287,7 @@ class GUTILS:
 
     def get_sp500_closing_data(self):
 
-        path = self.Tickers_dir
+        path = Path('tickers')
 
         try:
             #SP500 closing data (apparently, start and end defaults aren't working)
@@ -286,7 +300,7 @@ class GUTILS:
 
     def get_sp500_5y_return_conjecture(self):
 
-        path = self.Tickers_dir
+        path = Path('tickers')
         mtdpy, mtd5y = get_min_trading_days()
 
         try:
@@ -303,7 +317,7 @@ class GUTILS:
 
     def get_sp500_actual_return(self, start_date, end_date):
 
-        path = self.Tickers_dir
+        path = Path('tickers')
 
         try:
             #SP500 closing data
@@ -366,9 +380,11 @@ class GUTILS:
 
         i = 0
 
+        tickers_dir = Path('tickers')
+
         for tsymbol in symbols_list:
             try:
-                path = self.Tickers_dir / f'{tsymbol}'
+                path = tickers_dir / f'{tsymbol}'
                 try:
                     m5ypep, m5ypep_pct = self.get_5y_ppct(path, tsymbol)
                 except:
@@ -383,7 +399,7 @@ class GUTILS:
                 print('\nERROR: extracting estimated projections for ', tsymbol, ': ', sys.exc_info()[0])
 
         #Back to base dir
-        p = self.Tickers_dir
+        p = tickers_dir
 
         tsymbol = 'SP500'
         try:
@@ -412,8 +428,9 @@ class GUTILS:
 
         i = 0
 
+        tickers_dir = Path('tickers')
         for tsymbol in symbols_list:
-            path = self.Tickers_dir / f'{tsymbol}'
+            path = tickers_dir / f'{tsymbol}'
             try:
                 bactesting_st_data = pd.read_csv(path / f'{tsymbol}_gtrades_stats_short_term.csv', index_col='Unnamed: 0')
                 bt_st_data_len = len(bactesting_st_data)
@@ -447,7 +464,7 @@ class GUTILS:
 
 
         #Back to base dir
-        p = self.Tickers_dir
+        p = tickers_dir
 
         #Save a sorted (by ticker symbol) list for convenient reference
         df_actions.sort_values('Ticker').dropna(how='all').to_csv(p / 'Todays_Actions.csv', index=False)

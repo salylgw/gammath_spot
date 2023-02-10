@@ -20,7 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import time
 import multiprocessing as mp
-from multiprocessing import Process
 try:
     from gammath_spot import gammath_get_stocks_data as ggsd
     from gammath_spot import gammath_utils as gut
@@ -57,20 +56,11 @@ def main():
     #so using it for portability. Spawn method is much slower compared to 'fork' method. If there are no unsafe changes made to this project then on MacOS and Linux this can be changed to use 'fork'
     mp.set_start_method('spawn')
 
-    #Check how many cores we have to be able to run in parallel
-    #Need to check portability on this. os.uname().sysname could be used to make it OS-specific
-    try:
-        cores_to_use = len(os.sched_getaffinity(0))
-    except:
-        #Workaround. Need to find a better way at some point
-        cores_to_use = ((mp.cpu_count())//2)
-
-    #Might need to change the way number of usable cores is obtained in certain environments
-
-    if (cores_to_use < 1):
-        cores_to_use = 1
+    #Get the number of usable CPUs
+    cores_to_use = gut.get_usable_cpu_count()
 
     print(f'\nAttempting to use {cores_to_use} CPUs\n')
+
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
 
     proc_handles = []
@@ -101,7 +91,7 @@ def main():
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             gsd_instances.append(ggsd.GSD())
-            proc_handles.append(Process(target=gsd_instances[i].get_stocks_data, args=(f'{sym}',)))
+            proc_handles.append(mp.Process(target=gsd_instances[i].get_stocks_data, args=(f'{sym}',)))
             proc_handles[i].start()
 
             max_tickers -= 1
