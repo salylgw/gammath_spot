@@ -38,8 +38,6 @@ except:
     import gammath_utils as gut
 
 class GPEP:
-    def __init__(self):
-        self.Tickers_dir = Path('tickers')
 
     def do_sgd_regression(self, prices, single):
 
@@ -142,8 +140,9 @@ class GPEP:
 
     def get_moving_price_estimated_projection(self, tsymbol):
         mtdpy, mtd5y = gut.get_min_trading_days()
+        tickers_dir = gut.get_tickers_dir()
 
-        path = self.Tickers_dir / f'{tsymbol}'
+        path = tickers_dir / f'{tsymbol}'
 
         try:
             df = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Close'])
@@ -226,7 +225,9 @@ class GPEP:
         mtdpy, mtd5y = gut.get_min_trading_days()
 
         #SP500-specific files are in ticker dir
-        path = self.Tickers_dir
+        tickers_dir = gut.get_tickers_dir()
+
+        path = tickers_dir
         try:
             #SP500 closing data
             sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')

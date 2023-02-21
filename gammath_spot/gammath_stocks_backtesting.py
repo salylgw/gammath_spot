@@ -30,7 +30,6 @@ except:
 
 import pandas as pd
 import sys
-import os
 
 def main():
     """

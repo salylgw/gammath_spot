@@ -432,17 +432,13 @@ class gScoresDataAction(Strategy):
         self.previous_close = curr_closing_price
 
 class GBT:
-
-    def __init__(self):
-
-        self.Tickers_dir = Path('tickers')
-
     def run_backtest(self, tsymbol):
 
         mtdpy, mtd5y = gut.get_min_trading_days()
+        tickers_dir = gut.get_tickers_dir()
 
         try:
-            path = self.Tickers_dir / f'{tsymbol}'
+            path = tickers_dir / f'{tsymbol}'
 
             #Verify that prepared data corresponds to correct timeline and values before backtesting
 

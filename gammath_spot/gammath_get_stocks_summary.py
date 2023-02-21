@@ -21,8 +21,12 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 import yfinance as yf
 from pathlib import Path
 import pandas as pd
-import time
 import os
+
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 def get_ticker_summary(tsymbol, ticker, path):
 
@@ -36,20 +40,7 @@ def get_ticker_summary(tsymbol, ticker, path):
 
     if file_exists:
         fstat = os.stat(path / f'{tsymbol}_summary.csv')
-        fct_time = time.ctime(fstat.st_ctime).split(' ')
-        if (fct_time[2] == ''):
-            fct_date_index = 3
-        else:
-            fct_date_index = 2
-
-        fct_date = int(fct_time[fct_date_index])
-        dt = time.strftime('%x').split('/')
-        dt_date = int(dt[1])
-
-        if (fct_date == dt_date):
-            dont_need_fetch = True
-        else:
-            dont_need_fetch = False
+        dont_need_fetch = gut.check_if_same_day(fstat)
     else:
         dont_need_fetch = False
 

@@ -29,7 +29,6 @@ except:
 
 import sys
 import pandas as pd
-import os
 
 def main():
     """

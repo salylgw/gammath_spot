@@ -66,6 +66,10 @@ def get_sci_gscores_df_columns():
 
     return sci_gscores_columns
 
+def get_tickers_dir():
+    tickers_dir = Path('tickers')
+    return tickers_dir
+
 def check_if_same_day(fstat):
 
     fct_time = time.ctime(fstat.st_ctime).split(' ')
@@ -111,7 +115,7 @@ class GUTILS:
     def get_sp500_list(self):
 
         sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
-        path = Path('tickers')
+        path = get_tickers_dir()
 
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
@@ -147,7 +151,7 @@ class GUTILS:
     def aggregate_scores(self):
 
         #Get all the subdirs. Need to check for is_dir
-        p = Path('tickers')
+        p = get_tickers_dir()
 
         #Somehow looks like os.is_dir isn't supported
         #Using pathlib/Path instead since is_dir is supported there
@@ -189,7 +193,7 @@ class GUTILS:
 
     def aggregate_pe_data(self):
 
-        path = Path('tickers')
+        path = get_tickers_dir()
         df = pd.read_csv(path / 'SP500_list.csv')
 
         #Need to calculate sector-average so rearrange
@@ -287,7 +291,7 @@ class GUTILS:
 
     def get_sp500_closing_data(self):
 
-        path = Path('tickers')
+        path = get_tickers_dir()
 
         try:
             #SP500 closing data (apparently, start and end defaults aren't working)
@@ -300,7 +304,7 @@ class GUTILS:
 
     def get_sp500_5y_return_conjecture(self):
 
-        path = Path('tickers')
+        path = get_tickers_dir()
         mtdpy, mtd5y = get_min_trading_days()
 
         try:
@@ -317,7 +321,7 @@ class GUTILS:
 
     def get_sp500_actual_return(self, start_date, end_date):
 
-        path = Path('tickers')
+        path = get_tickers_dir()
 
         try:
             #SP500 closing data
@@ -380,7 +384,7 @@ class GUTILS:
 
         i = 0
 
-        tickers_dir = Path('tickers')
+        tickers_dir = get_tickers_dir()
 
         for tsymbol in symbols_list:
             try:
@@ -428,7 +432,7 @@ class GUTILS:
 
         i = 0
 
-        tickers_dir = Path('tickers')
+        tickers_dir = get_tickers_dir()
         for tsymbol in symbols_list:
             path = tickers_dir / f'{tsymbol}'
             try:

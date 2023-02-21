@@ -361,7 +361,7 @@ class GSA:
             pe_final_score = 0
 
             #PE signals
-            pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, Path('tickers'))
+            pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, gut.get_tickers_dir())
             #Maintain proportion
             pe_final_score = round((pe_gscore/10), 3)
             if not reco_signals_exist:
@@ -511,7 +511,7 @@ class GSA:
     def do_stock_analysis_and_compute_score(self, tsymbol, df):
 
         mtdpy, mtd5y = gut.get_min_trading_days()
-        Tickers_dir = Path('tickers')
+        Tickers_dir = gut.get_tickers_dir()
         path = Tickers_dir / f'{tsymbol}'
         sh_gScore_df = pd.DataFrame()
         sci_gScore_df = pd.DataFrame()

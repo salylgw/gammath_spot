@@ -65,7 +65,7 @@ class GSH:
 
     def get_gscores_history(self, tsymbol):
 
-        Tickers_dir = Path('tickers')
+        Tickers_dir = gut.get_tickers_dir()
         path = Tickers_dir / f'{tsymbol}'
 
         mtdpy, mtd5y = gut.get_min_trading_days()

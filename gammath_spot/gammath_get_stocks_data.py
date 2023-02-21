@@ -20,7 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import yfinance as yf
 from pathlib import Path
-import pandas as pd
 try:
     from gammath_spot import gammath_get_stocks_summary as gss
     from gammath_spot import gammath_get_stocks_financials as gsf
@@ -28,6 +27,7 @@ try:
     from gammath_spot import gammath_get_stocks_options_data as gso
     from gammath_spot import gammath_get_stcktwts as ggstw
     from gammath_spot import gammath_get_stocks_calendar as gsc
+    from gammath_spot import gammath_utils as gut
 except:
     import gammath_get_stocks_summary as gss
     import gammath_get_stocks_financials as gsf
@@ -35,11 +35,9 @@ except:
     import gammath_get_stocks_options_data as gso
     import gammath_get_stcktwts as ggstw
     import gammath_get_stocks_calendar as gsc
+    import gammath_utils as gut
 
 class GSD:
-    def __init__(self):
-        self.Tickers_dir = Path('tickers')
-
     def get_stocks_data(self, tsymbol):
 
         #Get data for stock ticker symbol from the internet
@@ -47,7 +45,8 @@ class GSD:
         if (len(tsymbol) == 0):
             raise ValueError('Invalid ticker symbol')
 
-        path = self.Tickers_dir / f'{tsymbol}'
+        tickers_dir = gut.get_tickers_dir()
+        path = tickers_dir / f'{tsymbol}'
 
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
