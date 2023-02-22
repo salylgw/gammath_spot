@@ -49,8 +49,16 @@ def get_qbs_signals(tsymbol, path, df_summ):
         else:
             cr = round(cr, 3)
             cr_string = f'{cr}'
+
+            #Check if current ratio is >= 1
+            if (cr >= 1):
+                qbs_gscore += 1
+            else:
+                qbs_gscore -= 1
     except:
         cr_string = 'No current ratio data'
+
+    qbs_max_score += 1
 
     #Check for quick ratio for debt obligation ease
     try:
@@ -60,8 +68,15 @@ def get_qbs_signals(tsymbol, path, df_summ):
         else:
             qr = round(qr, 3)
             qr_string = f'{qr}'
+            #Check if quick ratio >= 1
+            if (qr >= 1):
+                qbs_gscore += 1
+            else:
+                qbs_gscore -= 1
     except:
         qr_string = 'No quick ratio data'
+
+    qbs_max_score += 1
 
     file_exists = (path / f'{tsymbol}_qbs.csv').exists()
 
@@ -109,12 +124,21 @@ def get_qbs_signals(tsymbol, path, df_summ):
                 lti = 0
                 qbs_string += ' No long term investments data'
 
+            #Add remaining cash to get an idea of cash position
+            possible_remaining_cash += (cash + sti + lti)
+
             try:
                 #Total shareholder equity
                 sequity = df[mrqd]['Total Stockholder Equity']
+                if (sequity > 0):
+                    qbs_gscore += 1
+                else:
+                    qbs_gscore -= 1
             except:
                 sequity = 0
                 qbs_string += ' No shareholder equity data'
+
+            qbs_max_score += 1
 
             try:
                 #Long term debt
@@ -126,35 +150,10 @@ def get_qbs_signals(tsymbol, path, df_summ):
             #Debt to capital ratio. TBD: Need to revisit the formula
             if ((ldebt > 0) and (sequity > 0)):
                 dtcr = round((ldebt / (ldebt + sequity)), 3)
-
-            #Check if current ratio is >= 1
-            if (cr >= 1):
-                qbs_gscore += 1
-            else:
-                qbs_gscore -= 1
-
-            qbs_max_score += 1
-
-            #Add remaining cash to get an idea of cash position
-            possible_remaining_cash += (cash + sti + lti)
-
-            #Check if quick ratio >= 1
-            if (qr >= 1):
-                qbs_gscore += 1
-
-            qbs_max_score += 1
-
-            if (sequity > 0):
-                qbs_gscore += 1
-            else:
-                qbs_gscore -= 1
-
-            qbs_max_score += 1
-
-            if (ldebt > 0) and (dtcr <= 0.5):
-                qbs_gscore += 1
-            else:
-                qbs_gscore -= 1
+                if (dtcr <= 0.5):
+                    qbs_gscore += 1
+                else:
+                    qbs_gscore -= 1
 
             #Max score from debt data
             qbs_max_score += 1

@@ -65,9 +65,6 @@ def get_pe_signals(tsymbol, df_summ, path):
             pe_gscore += 2
         else:
             pe_gscore -= 2
-    else:
-        pe_gscore -= 2
-
 
     avg_tpe = 0
     avg_fpe = 0

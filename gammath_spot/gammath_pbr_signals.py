@@ -39,7 +39,7 @@ def get_pbr_signals(tsymbol, df_summ):
                     PBR_string = f'{pbr}'
                     if (pbr > 0):
 
-                        #Lower PBR is better; Not giving more weight as we have analyst reco and other factors accouting for "selection" criteria
+                        #Lower PBR is better; Not giving more weight as we have analyst reco and other factors accounting for "selection" criteria
                         if (pbr < 20):
                             pbr_gscore += 1
                         else:
