@@ -75,10 +75,14 @@ def main():
     #Instances of GSA class
     gsa_instances = []
 
+    #Create symbols list
+    symbols_list = []
+
     while (max_tickers):
         for i in range(start_index, end_index):
             sym = watch_list['Symbol'][i].strip()
             tsymbol = f'{sym}'
+            symbols_list.append(tsymbol)
             df_history = pd.DataFrame()
 
             gsa_instances.append(gsa.GSA())
@@ -109,8 +113,8 @@ def main():
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
 
-    #Aggregate all buy and sell scores
-    gutils.aggregate_scores()
+    #Aggregate scores and generate a gscores summary
+    gutils.aggregate_scores(symbols_list)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 

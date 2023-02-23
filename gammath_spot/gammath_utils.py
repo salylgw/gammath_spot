@@ -148,45 +148,43 @@ class GUTILS:
 
         return
 
-    def aggregate_scores(self):
+    def aggregate_scores(self, symbols_list):
 
-        #Get all the subdirs. Need to check for is_dir
+        #Get the watchlist length
+        watchlist_len = len(symbols_list)
+
+        #Get the tickers dir path
         p = get_tickers_dir()
-
-        #Somehow looks like os.is_dir isn't supported
-        #Using pathlib/Path instead since is_dir is supported there
-        subdirs = [x for x in p.iterdir() if x.is_dir()]
 
         #Pattern for note
         pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
-        df_b = pd.DataFrame(columns=['Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore', 'Note'], index=range(len(subdirs)))
+        df_b = pd.DataFrame(columns=['Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore', 'Note'], index=range(watchlist_len))
 
         i = 0
+        for symbol in symbols_list:
+            try:
+                path = p / f'{symbol}'
+                df_gscores = pd.read_csv(path / f'{symbol}_gscores.csv', index_col='Unnamed: 0')
+                df_b['Ticker'][i] = symbol
+                df_b['sh_gscore'][i] = df_gscores.SH_gScore[0]
+                df_b['sci_gscore'][i] = df_gscores.SCI_gScore[0]
+                df_b['final_gscore'][i] = df_gscores.gScore[0]
 
-        for subdir in subdirs:
-            if subdir.exists():
-                try:
-                    df_gscores = pd.read_csv(subdir / f'{subdir.name}_gscores.csv', index_col='Unnamed: 0')
-                    df_b['Ticker'][i] = f'{subdir.name}'
-                    df_b['sh_gscore'][i] = df_gscores.SH_gScore[0]
-                    df_b['sci_gscore'][i] = df_gscores.SCI_gScore[0]
-                    df_b['final_gscore'][i] = df_gscores.gScore[0]
+                f = open(path / f'{symbol}_signal.txt', 'r')
+                content = f.read()
 
-                    f = open(subdir / f'{subdir.name}_signal.txt', 'r')
-                    content = f.read()
+                matched_string = pattern_for_note.search(content)
+                if (matched_string):
+                    kw, note = matched_string.groups()
+                    df_b['Note'][i] = note
+                else:
+                    df_b['Note'][i] = ''
 
-                    matched_string = pattern_for_note.search(content)
-                    if (matched_string):
-                        kw, note = matched_string.groups()
-                        df_b['Note'][i] = note
-                    else:
-                        df_b['Note'][i] = ''
-
-                    i += 1
-                    f.close()
-                except:
-                    print('\nERROR: Getting stock signals for ', subdir.name, ': ', sys.exc_info()[0])
+                f.close()
+                i += 1
+            except:
+                print('\nERROR: Getting stock signals for ', symbol, ': ', sys.exc_info()[0])
 
         df_b.sort_values('final_gscore').dropna(how='all').to_csv(p / 'overall_gscores.csv', index=False)
 
