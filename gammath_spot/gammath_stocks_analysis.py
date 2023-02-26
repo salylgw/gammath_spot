@@ -497,7 +497,7 @@ class GSA:
         sci_gScore_df.QBS[0] = qbs_final_score
         sci_gScore_df.IHP[0] = ihp_final_score
         sci_gScore_df.Reco[0] = reco_final_score
-        sci_gScore_df.SENTI[0] = st_final_score
+        sci_gScore_df.Senti[0] = st_final_score
         sci_gScore_df.SCI_gScore[0] = round((overall_sci_gscore/10), 3)
 
         if need_charts_n_signals_info:

@@ -40,7 +40,7 @@ def main():
         #Get the watchlist file from pgm argument
         sf_name = sys.argv[1]
     except:
-        print('ERROR: Need watch list file name as one argument to this Program. See watchlist.csv')
+        print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
         raise ValueError('Missing watch list')
 
     #Read the watchlist
