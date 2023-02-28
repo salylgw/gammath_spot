@@ -22,6 +22,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 import sys
 from pathlib import Path
 import pandas as pd
+
 try:
     from gammath_spot import gammath_utils as gut
 except:
@@ -29,12 +30,19 @@ except:
 
 def main():
 
+    """
+    Main function to screen stocks for buy criteria based on micro-gScores.
+    The screened list is saved in tickers/screened_watchlist.csv.
+    """
+
     try:
+
         #Get the screening file for buy-criteria from pgm argument
         sf_name = sys.argv[1]
         df_gscores_screening = pd.read_csv(sf_name)
 
         #extract values for screening
+        #-1 means no filtering
         min_price_micro_gscore = df_gscores_screening.Price[0]
         min_rsi_micro_gscore = df_gscores_screening.RSI[0]
         min_bbands_micro_gscore = df_gscores_screening.BBANDS[0]
@@ -46,6 +54,7 @@ def main():
         min_options_micro_gscore = df_gscores_screening.Options[0]
         min_reco_micro_gscore = df_gscores_screening.Reco[0]
         min_senti_micro_gscore = df_gscores_screening.Senti[0]
+
     except:
         print('INFO: No screening info provided. Using default values')
 
@@ -63,16 +72,20 @@ def main():
         min_senti_micro_gscore = -1
 
 
-    #Traverse through all sub-dirs
+    #Get ticker dir path
     p = gut.get_tickers_dir()
+
+    #Get all sub-dirs for traversing
     subdirs = [x for x in p.iterdir() if x.is_dir()]
 
-    df_list = pd.DataFrame(columns=['Symbol'], index=range(len(subdirs)))
+    #Create a data frame for screened watch list
+    df_list = pd.DataFrame(columns=['Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore'], index=range(len(subdirs)))
 
     count = 0
     for subdir in subdirs:
         if subdir.exists():
             try:
+                #Get the saved gscores
                 df_gscores = pd.read_csv(subdir / f'{subdir.name}_gscores.csv', index_col='Unnamed: 0')
 
                 #Extract symbols that match screening criteria
@@ -88,13 +101,21 @@ def main():
                     (df_gscores.Reco[0] >= min_reco_micro_gscore) and
                     (df_gscores.Senti[0] >= min_senti_micro_gscore)):
 
-                    df_list['Symbol'][count] = f'{subdir.name}'
+                    #Extract ticker, sh_gscore, sci_gscore and final_gscore for convenient reference
+                    df_list['Ticker'][count] = f'{subdir.name}'
+                    df_list['sh_gscore'][count] = df_gscores.SH_gScore[0]
+                    df_list['sci_gscore'][count] = df_gscores.SCI_gScore[0]
+                    df_list['final_gscore'][count] = df_gscores.gScore[0]
                     count += 1
             except:
+                #No action necessary
                 continue
 
-    df_list = df_list.truncate(after=(count-1))
-    df_list.to_csv(p / 'screened_list.csv')
+    #Remove unused rows and sort by final_gscore
+    df_list = df_list.truncate(after=(count-1)).sort_values('final_gscore')
+
+    #Save screened watchlist
+    df_list.to_csv(p / 'screened_watchlist.csv')
 
 if __name__ == '__main__':
     main()
