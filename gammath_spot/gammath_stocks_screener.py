@@ -114,8 +114,8 @@ def main():
     #Remove unused rows and sort by final_gscore
     df_list = df_list.truncate(after=(count-1)).sort_values('final_gscore')
 
-    #Save screened watchlist
-    df_list.to_csv(p / 'screened_watchlist.csv')
+    #Save screened watchlist without the index field
+    df_list.to_csv(p / 'screened_watchlist.csv', index=False)
 
 if __name__ == '__main__':
     main()
