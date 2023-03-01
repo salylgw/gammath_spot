@@ -2,6 +2,8 @@
 
 It is November 2022 and all the features necessary for SPOT proof-of-concept are now complete. I have added documentation to the point where it can be opened up for collaboration. The intent to make SPOT (**S**tock **P**rice-**O**pining **T**ool) an open source project is to make it transparent, to invite scrutiny of the source code, and to collaborate for making it one of the best and comprehensive stock analysis toolset that can benefit investors worldwide. If you have Python, Finance/Investing, GUI and/or Machine learning expertise and would like to participate in this project then please let me know (You can use "contact" form on [https://www.gammathworks.com](URL) or simply send me an email at salylgw@gmail.com).
 
+**Feature In Progress**
+A GUI for SPOT.
 
 **TBD features for collaboration**
 
@@ -10,7 +12,6 @@ It is November 2022 and all the features necessary for SPOT proof-of-concept are
   * News sentiment analysis and scoring (using tools such as Natural Language Tool Kit, Spacy, Textblob etc.) needs to be implemented. I see that yfinance supports getting the news so that can be used a news source.
   * Fundamental analysis enhancements
   * General optimizations
-  * Even though I've containerized SPOT, it still appears to be an engineer's software. It needs to be made more accessible and easy-to-use. To that end, I'm considering implementing a GUI using TKinter, Flutter etc.
   * Any improvements (new features, bug fixes [if any], documentation, optimizations etc.).
 
 
