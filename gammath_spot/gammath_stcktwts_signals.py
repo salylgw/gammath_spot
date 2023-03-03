@@ -63,6 +63,8 @@ def get_stocktwits_signals(tsymbol, path):
             #Convert to the float type
             sts_change = float(sentiment_change)
             st_tw_sentiment_change = f'sentiment_change: {sentiment_change}'
+            if (sts_change > 0):
+                st_gscore += 2
         else:
             st_string += 'No sentiments change data'
 
@@ -70,21 +72,20 @@ def get_stocktwits_signals(tsymbol, path):
             #Convert to the float type
             stv_change = float(volume_change)
             st_tw_volume_change = f'volume_change: {volume_change}'
+            if ((sts_change > 0) and (stv_change > 0)):
+                st_gscore += 3
         else:
             st_string += ' No discussion volume change data'
 
-        #Token score and information logging purpose
-        if ((sts_change > 0) and (stv_change > 0)):
-            st_gscore += 5
-        elif (sts_change > 0):
-            st_gscore += 2
-        else:
-            st_gscore -= 5
-
+        #Check for -ve sentiment
+        if ((sts_change < 0) and (stv_change < 0)):
+            st_gscore = -5
+        elif (sts_change < 0):
+            st_gscore = -2
     except:
         st_string += 'No stocktwits data'
 
-    st_max_score += 5
+    st_max_score = 5
 
     st_grec = f'st_sv_gscore:{st_gscore}/{st_max_score}'
 
