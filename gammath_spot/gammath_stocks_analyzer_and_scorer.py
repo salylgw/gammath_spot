@@ -114,7 +114,7 @@ def main():
     gutils = gut.GUTILS()
 
     #Aggregate scores and generate a gscores summary
-    gutils.aggregate_scores(symbols_list)
+    gutils.aggregate_scores(symbols_list, sf_name.split('.')[0])
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 

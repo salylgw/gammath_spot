@@ -154,7 +154,7 @@ class GUTILS:
 
         return
 
-    def aggregate_scores(self, symbols_list):
+    def aggregate_scores(self, symbols_list, wl_name):
 
         #Get the watchlist length
         watchlist_len = len(symbols_list)
@@ -192,7 +192,7 @@ class GUTILS:
             except:
                 print('\nERROR: Getting stock signals for ', symbol, ': ', sys.exc_info()[0])
 
-        df_b.sort_values('final_gscore').dropna(how='all').to_csv(p / 'overall_gscores.csv', index=False)
+        df_b.sort_values('final_gscore').dropna(how='all').to_csv(p / f'{wl_name}_overall_gscores.csv', index=False)
 
 
     def aggregate_pe_data(self):
