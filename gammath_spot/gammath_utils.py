@@ -28,6 +28,7 @@ import pandas as pd
 import re
 import pandas_datareader.data as pdd
 import numpy as np
+from glob import glob
 
 #Number of trading days varies across the globe.
 #Some stock exchanges are closed more than US stocks exchanges.
@@ -115,6 +116,32 @@ def get_price_sigmoid(prices, n_days_interval):
 
 
     return (prices_sigmoid)
+
+#Get list for watchlists (name and path) in current working dir
+def get_watchlist_list():
+
+    wl_names = []
+    wl_fp_list = []
+
+    #Get all csv file names with path in current working dir
+    fp_list = glob(os.getcwd() + '/*.csv')
+
+    #Extract watchlists (name and paths)
+    for file in fp_list:
+        #Read the file
+        df = pd.read_csv(file)
+        #Check if it has only Symbol column
+        if ((len(df.columns) == 1) and (df.columns[0] == 'Symbol')):
+            pparts = file.split('/')
+            wl_fname = pparts[len(pparts)-1]
+            if (len(wl_fname)):
+                #Name without extension
+                wl_names.append(wl_fname.split('.')[0])
+                #Name with full path
+                wl_fp_list.append(file)
+
+    return wl_names, wl_fp_list
+
 
 class GUTILS:
 
