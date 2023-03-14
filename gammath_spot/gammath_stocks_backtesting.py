@@ -20,6 +20,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import time
 import multiprocessing as mp
+import queue
 
 try:
     from gammath_spot import gammath_backtesting as gbt
@@ -31,6 +32,82 @@ except:
 import pandas as pd
 import sys
 
+def run_backtester(sf_name, info_queue):
+    #Read the watchlist
+    try:
+        watch_list = pd.read_csv(sf_name)
+    except:
+        print('ERROR: Failed to read watchlist. See sample_watchlist.csv for example')
+        return
+
+    print('\nStart Time: ', time.strftime('%x %X'), '\n')
+
+    try:
+        #Set the start method for launching parallel processes
+        #Python 3.8 onwards 'spawn' is the default method for MacOS and is supported on Linux and Windows
+        #so using it for portability. Spawn method is much slower compared to 'fork' method. If there are no unsafe changes made to this project then on MacOS and Linux this can be changed to use 'fork'
+        mp.set_start_method('spawn')
+
+        #Get the number of usable CPUs
+        cores_to_use = gut.get_usable_cpu_count()
+
+        print(f'\n{cores_to_use} usable CPUs\n')
+
+        proc_handles = []
+
+        max_tickers = len(watch_list)
+
+        #Use one process per core so we can run core_to_use number of processes in parallel
+        start_index = 0
+        if (max_tickers > cores_to_use):
+            end_index = cores_to_use
+        else:
+            end_index = max_tickers
+
+        #Instances of GBT class
+        gbt_instances = []
+        symbols_list = []
+
+        while (max_tickers):
+            for i in range(start_index, end_index):
+                sym = watch_list['Symbol'][i].strip()
+                tsymbol = f'{sym}'
+                symbols_list.append(tsymbol)
+
+                gbt_instances.append(gbt.GBT())
+                proc_handles.append(mp.Process(target=gbt_instances[i].run_backtest, args=(f'{sym}',)))
+                proc_handles[i].start()
+
+                max_tickers -= 1
+
+            for i in range(start_index, end_index):
+                proc_handles[i].join()
+
+                #Delete the GBT instance
+                gbt_instance = gbt_instances[i]
+                gbt_instances[i] = 0
+                del gbt_instance
+
+                #Running out of resources so need to close handles and release resources
+                proc_handles[i].close()
+
+            if (max_tickers):
+                start_index = end_index
+                if (max_tickers > cores_to_use):
+                    end_index += cores_to_use
+                else:
+                    end_index += max_tickers
+
+        #Instantiate GUTILS class
+        gutils = gut.GUTILS()
+
+        #Summarize today's actions
+        gutils.summarize_todays_actions(symbols_list)
+    except:
+        print('ERROR: Backtesting failed')
+
+    print('\nEnd Time: ', time.strftime('%x %X'), '\n')
+
 def main():
     """
     Main function to do backtesting on provided watchlist. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years that from the gscore historian and saves the backtesting stats in respective in tickers/<ticker_symbol>/<ticker_symbol>_bt_stats.csv
@@ -40,80 +117,11 @@ def main():
     try:
         #Get the watchlist file from pgm argument
         sf_name = sys.argv[1]
+        run_backtester(sf_name, None)
     except:
         print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
-        raise ValueError('Missing watch list')
 
-    #Read the watchlist
-    try:
-        watch_list = pd.read_csv(sf_name)
-    except:
-        print('ERROR: Failed to read watchlist. See watchlist.csv for example')
-        raise ValueError('Watchlist file read failed')
 
-    #Set the start method for launching parallel processes
-    #Python 3.8 onwards 'spawn' is the default method for MacOS and is supported on Linux and Windows
-    #so using it for portability. Spawn method is much slower compared to 'fork' method. If there are no unsafe changes made to this project then on MacOS and Linux this can be changed to use 'fork'
-    mp.set_start_method('spawn')
-
-    #Get the number of usable CPUs
-    cores_to_use = gut.get_usable_cpu_count()
-
-    print(f'\nAttempting to use {cores_to_use} CPUs\n')
-    print('\nStart Time: ', time.strftime('%x %X'), '\n')
-
-    proc_handles = []
-
-    max_tickers = len(watch_list)
-
-    #Use one process per core so we can run core_to_use number of processes in parallel
-    start_index = 0
-    if (max_tickers > cores_to_use):
-        end_index = cores_to_use
-    else:
-        end_index = max_tickers
-
-    #Instances of GBT class
-    gbt_instances = []
-    symbols_list = []
-
-    while (max_tickers):
-        for i in range(start_index, end_index):
-            sym = watch_list['Symbol'][i].strip()
-            tsymbol = f'{sym}'
-            symbols_list.append(tsymbol)
-
-            gbt_instances.append(gbt.GBT())
-            proc_handles.append(mp.Process(target=gbt_instances[i].run_backtest, args=(f'{sym}',)))
-            proc_handles[i].start()
-
-            max_tickers -= 1
-
-        for i in range(start_index, end_index):
-            proc_handles[i].join()
-
-            #Delete the GBT instance
-            gbt_instance = gbt_instances[i]
-            gbt_instances[i] = 0
-            del gbt_instance
-
-            #Running out of resources so need to close handles and release resources
-            proc_handles[i].close()
-
-        if (max_tickers):
-            start_index = end_index
-            if (max_tickers > cores_to_use):
-                end_index += cores_to_use
-            else:
-                end_index += max_tickers
-
-    #Instantiate GUTILS class
-    gutils = gut.GUTILS()
-
-    #Summarize today's actions
-    gutils.summarize_todays_actions(symbols_list)
-
-    print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 
 if __name__ == '__main__':
     main()

@@ -22,23 +22,16 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 import sys
 from pathlib import Path
 import pandas as pd
+import queue
 
 try:
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_utils as gut
 
-def main():
 
-    """
-    Main function to screen stocks for buy criteria based on micro-gScores.
-    The screened list is saved in tickers/screened_watchlist.csv.
-    """
-
+def run_screener(sf_name, info_queue):
     try:
-
-        #Get the screening file for buy-criteria from pgm argument
-        sf_name = sys.argv[1]
         df_gscores_screening = pd.read_csv(sf_name)
 
         #extract values for screening
@@ -111,11 +104,28 @@ def main():
                 #No action necessary
                 continue
 
-    #Remove unused rows and sort by final_gscore
-    df_list = df_list.truncate(after=(count-1)).sort_values('final_gscore')
+    if (count):
+        #Remove unused rows and sort by final_gscore
+        df_list = df_list.truncate(after=(count-1)).sort_values('final_gscore')
 
-    #Save screened watchlist without the index field
-    df_list.to_csv(p / 'screened_watchlist.csv', index=False)
+        #Save screened watchlist without the index field
+        df_list.to_csv(p / 'screened_watchlist.csv', index=False)
+
+def main():
+
+    """
+    Main function to screen stocks for buy criteria based on micro-gScores.
+    The screened list is saved in tickers/screened_watchlist.csv.
+    """
+
+    try:
+        #Get the screening file for buy-criteria from pgm argument
+        sf_name = sys.argv[1]
+        run_screener(sf_name, None)
+    except:
+        print('ERROR: Need screener file name as one argument to this Program. See screener.csv')
+
+
 
 if __name__ == '__main__':
     main()
