@@ -20,15 +20,13 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import time
 import multiprocessing as mp
-import queue
-
+import threading, queue
 try:
     from gammath_spot import gammath_backtesting as gbt
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_backtesting as gbt
     import gammath_utils as gut
-
 import pandas as pd
 import sys
 
@@ -108,6 +106,7 @@ def run_backtester(sf_name, info_queue):
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 
+
 def main():
     """
     Main function to do backtesting on provided watchlist. For each stock, it processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years that from the gscore historian and saves the backtesting stats in respective in tickers/<ticker_symbol>/<ticker_symbol>_bt_stats.csv
@@ -121,6 +120,14 @@ def main():
     except:
         print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
 
+
+class GBACKTESTER:
+    def __init__(self):
+        self.backtester_thread = None
+
+    def launch_backtester_thread(self, watchlist, info_queue):
+        self.backtester_thread = threading.Thread(name='Backtester_main_thread', target=run_backtester, args=(watchlist,info_queue,))
+        self.backtester_thread.start()
 
 
 if __name__ == '__main__':

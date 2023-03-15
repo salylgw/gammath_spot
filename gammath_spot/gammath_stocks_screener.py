@@ -22,7 +22,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 import sys
 from pathlib import Path
 import pandas as pd
-import queue
+import threading, queue
 
 try:
     from gammath_spot import gammath_utils as gut
@@ -125,7 +125,14 @@ def main():
     except:
         print('ERROR: Need screener file name as one argument to this Program. See screener.csv')
 
+class GSCREENER:
 
+    def __init__(self):
+        self.screener_thread = None
+
+    def launch_screener_thread(self, watchlist, info_queue):
+        self.screener_thread = threading.Thread(name='Screener_main_thread', target=run_screener, args=(watchlist,info_queue,))
+        self.screener_thread.start()
 
 if __name__ == '__main__':
     main()

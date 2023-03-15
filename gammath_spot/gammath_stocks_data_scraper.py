@@ -20,19 +20,17 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import time
 import multiprocessing as mp
-import queue
+import threading, queue
 try:
     from gammath_spot import gammath_get_stocks_data as ggsd
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_get_stocks_data as ggsd
     import gammath_utils as gut
-
 import sys
 import pandas as pd
 
 def run_scraper(sf_name, info_queue):
-
     #Read the watchlist
     try:
         watch_list = pd.read_csv(sf_name)
@@ -124,6 +122,13 @@ def main():
     except:
         print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
 
+class GSCRAPER:
+    def __init__(self):
+        self.scraper_thread = None
+
+    def launch_scraper_thread(self, watchlist, info_queue):
+        self.scraper_thread = threading.Thread(name='Scraper_main_thread', target=run_scraper, args=(watchlist,info_queue,))
+        self.scraper_thread.start()
 
 if __name__ == '__main__':
     main()

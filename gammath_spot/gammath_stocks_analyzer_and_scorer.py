@@ -20,14 +20,13 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import time
 import multiprocessing as mp
-import queue
+import threading, queue
 try:
     from gammath_spot import gammath_stocks_analysis as gsa
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_stocks_analysis as gsa
     import gammath_utils as gut
-
 import pandas as pd
 import sys
 
@@ -126,6 +125,13 @@ def main():
     except:
         print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
 
+class GSCORER:
+    def __init__(self):
+        self.analyzer_and_scorer_thread = None
+
+    def launch_analyzer_and_scorer_thread(self, watchlist, info_queue):
+        self.analyzer_and_scorer_thread = threading.Thread(name='AnSc_main_thread', target=run_analyzer_and_scorer, args=(watchlist,info_queue,))
+        self.analyzer_and_scorer_thread.start()
 
 if __name__ == '__main__':
     main()

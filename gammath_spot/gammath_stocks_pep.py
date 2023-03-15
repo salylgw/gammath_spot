@@ -20,7 +20,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import time
 import multiprocessing as mp
-import queue
+import threading, queue
 
 try:
     from gammath_spot import gammath_lpep as glpep
@@ -28,7 +28,6 @@ try:
 except:
     import gammath_lpep as glpep
     import gammath_utils as gut
-
 import pandas as pd
 import sys
 import os
@@ -127,6 +126,14 @@ def main():
     except:
         print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
 
+
+class GPROJECTOR:
+    def __init__(self):
+        self.projector_thread = None
+
+    def launch_projector_thread(self, watchlist, info_queue):
+        self.projector_thread = threading.Thread(name='Projector_main_thread', target=run_projector, args=(watchlist,info_queue,))
+        self.projector_thread.start()
 
 if __name__ == '__main__':
     main()

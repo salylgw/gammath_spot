@@ -20,15 +20,13 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import time
 import multiprocessing as mp
-import queue
-
+import threading, queue
 try:
     from gammath_spot import gammath_gscores_history as gsh
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_gscores_history as gsh
     import gammath_utils as gut
-
 import pandas as pd
 import sys
 
@@ -114,6 +112,13 @@ def main():
     except:
         print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
 
+class GHISTORIAN:
+    def __init__(self):
+        self.historian_thread = None
+
+    def launch_historian_thread(self, watchlist, info_queue):
+        self.historian_thread = threading.Thread(name='Historian_main_thread', target=run_historian, args=(watchlist,info_queue,))
+        self.historian_thread.start()
 
 if __name__ == '__main__':
     main()
