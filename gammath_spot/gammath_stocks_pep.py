@@ -104,7 +104,12 @@ def run_projector(sf_name, info_queue):
 
         #Generate 5Y estimated projection for S&P500
         gpep = glpep.GPEP()
-        gpep.sp500_pep()
+
+        #Run S&P500 projection in its own process (for matplotlib main thread issue)
+        sp500_pep_handle = mp.Process(target=gpep.sp500_pep)
+        sp500_pep_handle.start()
+        sp500_pep_handle.join()
+        sp500_pep_handle.close()
 
         #Aggregate a sorted list of moving 5Y estimated projected returns
         gutils.aggregate_peps(symbols_list)

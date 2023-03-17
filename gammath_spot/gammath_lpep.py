@@ -239,7 +239,7 @@ class GPEP:
             prices = sp500_closing_data.Close.dropna()
 
         #Get the prediction and projection series
-        y_predictions_series, y_projections_series = self.do_sgd_regression(prices, True)
+        y_predictions_series, y_projections_series = self.do_sgd_regression(prices, False)
 
         #Actual length of the estimates/prediction
         yp_len = (len(y_predictions_series) - mtd5y)
