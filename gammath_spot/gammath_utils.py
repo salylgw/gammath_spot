@@ -37,6 +37,20 @@ from glob import glob
 MIN_TRADING_DAYS_PER_YEAR = 239
 MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 
+def set_child_process_start_method():
+
+    try:
+        start_method = mp.get_start_method(allow_none=True)
+    except:
+        start_method = None
+
+    #set_start_method should be called only once preferrably from main function
+    try:
+        if (start_method != 'spawn'):
+            mp.set_start_method('spawn')
+    except:
+        print(f'Failed to set child process start method to spawn. Current method is {start_method}')
+
 def get_usable_cpu_count():
 
     #Check how many cores we have to be able to run in parallel
