@@ -31,6 +31,8 @@ except:
 
 
 def run_screener(sf_name, info_queue):
+
+    complete_pct = 0
     try:
         df_gscores_screening = pd.read_csv(sf_name)
 
@@ -110,6 +112,11 @@ def run_screener(sf_name, info_queue):
 
         #Save screened watchlist without the index field
         df_list.to_csv(p / 'screened_watchlist.csv', index=False)
+
+        complete_pct = 100
+
+    #Update progress bar (if any)
+    gut.send_msg_to_gui_if_thread(info_queue, 'Screener', complete_pct)
 
 def main():
 

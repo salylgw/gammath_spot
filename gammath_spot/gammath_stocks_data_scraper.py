@@ -36,6 +36,8 @@ def run_scraper(sf_name, info_queue):
         watch_list = pd.read_csv(sf_name)
     except:
         print('ERROR: Failed to read watchlist. See sample_watchlist.csv for example')
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Scraper', 0)
         return
 
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
@@ -95,6 +97,9 @@ def run_scraper(sf_name, info_queue):
                 #Running out of resources so need to close handles and release resources
                 proc_handles[i].close()
 
+            #Update progress bar (if any)
+            gut.send_msg_to_gui_if_thread(info_queue, 'Scraper', end_index)
+
             if (max_tickers):
                 start_index = end_index
                 if (max_tickers > cores_to_use):
@@ -106,6 +111,9 @@ def run_scraper(sf_name, info_queue):
         gutils.aggregate_pe_data()
     except:
         print('ERROR: Data scraping failed')
+
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Scraper', 0)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 

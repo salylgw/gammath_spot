@@ -37,6 +37,9 @@ def run_analyzer_and_scorer(sf_name, info_queue):
         watch_list = pd.read_csv(sf_name)
     except:
         print('ERROR: Failed to read watchlist. See sample_watchlist.csv for example')
+
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Scorer', 0)
         return
 
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
@@ -46,6 +49,7 @@ def run_analyzer_and_scorer(sf_name, info_queue):
         #Python 3.8 onwards 'spawn' is the default method for MacOS and is supported on Linux and Windows
         #so using it for portability. Spawn method is much slower compared to 'fork' method. If there are no unsafe changes made to this project then on MacOS and Linux this can be changed to use 'fork'
         gut.set_child_process_start_method()
+
 
         #Get the number of usable CPUs
         cores_to_use = gut.get_usable_cpu_count()
@@ -84,7 +88,6 @@ def run_analyzer_and_scorer(sf_name, info_queue):
 
             for i in range(start_index, end_index):
                 proc_handles[i].join()
-
                 #Delete the GSA instance
                 gsa_instance = gsa_instances[i]
                 gsa_instances[i] = 0
@@ -92,6 +95,9 @@ def run_analyzer_and_scorer(sf_name, info_queue):
 
                 #Running out of resources so need to close handles and release resources
                 proc_handles[i].close()
+
+            #Update progress bar (if any)
+            gut.send_msg_to_gui_if_thread(info_queue, 'Scorer', end_index)
 
             if (max_tickers):
                 start_index = end_index
@@ -108,6 +114,9 @@ def run_analyzer_and_scorer(sf_name, info_queue):
         gutils.aggregate_scores(symbols_list, sf_name.split('.')[0])
     except:
         print('ERROR: Analysis and Scoring failed')
+
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Scorer', 0)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 

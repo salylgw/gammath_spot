@@ -39,6 +39,8 @@ def run_projector(sf_name, info_queue):
         watch_list = pd.read_csv(sf_name)
     except:
         print('ERROR: Failed to read watchlist. See sample_watchlist.csv for example')
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Projector', 0)
         return
 
     print('\nStart Time: ', time.strftime('%x %X'), '\n')
@@ -92,6 +94,9 @@ def run_projector(sf_name, info_queue):
                 #Running out of resources so need to close handles and release resources
                 proc_handles[i].close()
 
+            #Update progress bar (if any)
+            gut.send_msg_to_gui_if_thread(info_queue, 'Projector', end_index)
+
             if (max_tickers):
                 start_index = end_index
                 if (max_tickers > cores_to_use):
@@ -113,8 +118,13 @@ def run_projector(sf_name, info_queue):
 
         #Aggregate a sorted list of moving 5Y estimated projected returns
         gutils.aggregate_peps(symbols_list)
+
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Projector', (end_index+1))
     except:
         print('ERROR: Price estimation and projection failed')
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Projector', 0)
 
     print('\nEnd Time: ', time.strftime('%x %X'), '\n')
 

@@ -82,6 +82,11 @@ def get_sci_gscores_df_columns():
 
     return sci_gscores_columns
 
+def get_tool_msg_struct():
+    tool_msg_struct = {'Tool': 'None', 'PD': 0}
+
+    return tool_msg_struct
+
 def get_tickers_dir():
     tickers_dir = Path('tickers')
     return tickers_dir
@@ -130,6 +135,15 @@ def get_price_sigmoid(prices, n_days_interval):
 
 
     return (prices_sigmoid)
+
+
+def send_msg_to_gui_if_thread(info_queue, tool, data):
+    if (info_queue != None):
+        tool_msg = get_tool_msg_struct()
+        tool_msg['Tool'] = tool
+        tool_msg['PD'] = data
+        info_queue.put(tool_msg)
+        info_queue.join()
 
 #Get list for watchlists (name and path) in current working dir
 def get_watchlist_list():
