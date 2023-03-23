@@ -21,6 +21,11 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 from tkinter import *
 from tkinter import ttk
 import threading, queue
+import os
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 class Gammath_SPOT_GUI:
 
@@ -33,6 +38,51 @@ class Gammath_SPOT_GUI:
         self.historian_pb = None
         self.backtester_pb = None
         self.screener_pb = None
+        self.curr_watchlist = None
+
+        #Keep pixels per inch count for setting widget dimensions
+        self.pixels_per_inch=root.winfo_pixels('1i')
+
+        #Add menus
+        self.add_menus(root)
+
+    def load_watchlist(self, wl_name):
+        self.curr_watchlist = wl_name
+
+        #Placeholder to show the watchlist content
+
+    def add_menus(self, root):
+        self.menubar = Menu(root)
+        root['menu'] = self.menubar
+
+        #Item for watchlist
+        self.menu_wl = Menu(self.menubar)
+
+        #Item for About
+        self.menu_about = Menu(self.menubar)
+
+        #Watchlist menu item details
+        self.menubar.add_cascade(menu=self.menu_wl, label='Watchlist')
+        self.menu_wl.add_command(label='Create Watchlist')
+        self.menu_wls = Menu(self.menu_wl)
+        self.menu_wl.add_cascade(menu=self.menu_wls, label='Load Watchlist')
+
+        #Init list of existing watchlists
+        self.wl_fp_list = gut.get_watchlist_list()
+
+        #Show list of existing watchlists
+        if (len(self.wl_fp_list)):
+            for f in self.wl_fp_list:
+                self.menu_wls.add_command(label=(os.path.basename(f).split('.')[0]), command=lambda f=f: self.load_watchlist(f))
+        else:
+            self.menu_wl.entryconfigure('Load Watchlist', state=DISABLED)
+
+        #Placeholder for saving watchlist
+        self.menu_wl.add_command(label='Save Watchlist')
+
+        #Placeholder to show info
+        self.menubar.add_cascade(menu=self.menu_about, label='About')
+        self.menu_about.add_command(label='(c) Gammath Works\nhttps://www.gammathworks.com')
 
     def gui_tool_if(self, msg_queue):
 
@@ -76,6 +126,7 @@ class Gammath_SPOT_GUI:
 def main():
 
     root = Tk()
+
     #Disable tear-off menus
     root.option_add('*tearOff', FALSE)
 
@@ -84,6 +135,8 @@ def main():
 
     #Start/Instantiate GUI
     Gammath_SPOT_GUI(root)
+
+    #Start the event loop
     root.mainloop()
 
 if __name__ == '__main__':
