@@ -29,7 +29,7 @@ except:
 
 class Gammath_SPOT_GUI:
 
-    def __init__(self, root):
+    def __init__(self):
         self.tool_if_thread = None
         self.msg_queue = queue.Queue()
         self.scraper_pb = None
@@ -39,21 +39,61 @@ class Gammath_SPOT_GUI:
         self.backtester_pb = None
         self.screener_pb = None
         self.curr_watchlist = None
+        self.separators = []
 
-        #Keep pixels per inch count for setting widget dimensions
-        self.pixels_per_inch=root.winfo_pixels('1i')
+        #Root window
+        self.root = Tk()
+
+        #Disable window resizing
+        self.root.resizable(FALSE, FALSE)
+
+        #Disable tear-off menus
+        self.root.option_add('*tearOff', FALSE)
+
+        #Set title for the main window
+        self.root.title("Gammath SPOT")
+
+        #Get the path of program/package
+        pgm_dir_path, fn = os.path.split(__file__)
+
+        #Append the data dir
+        pgm_data_path = os.path.join(pgm_dir_path, 'data')
+
+        #Read the logo
+        self.logo_image = PhotoImage(file=f'{pgm_data_path}/logo.png')
 
         #Add menus
-        self.add_menus(root)
+        self.add_menus()
+
+        #Keep pixels per inch count for setting widget dimensions
+        self.pixels_per_inch=self.root.winfo_pixels('1i')
+
+        #Create canvas for logo
+        self.create_canvas()
+
+        #Add logo after canvas appears on the screen (to get actual dimensions)
+        self.canvas.after(5, lambda: self.add_logo())
+
+        #Add the app frame
+        self.add_app_frame()
+
+        #Start the event loop
+        self.root.mainloop()
+
+    def get_canvas_dimensions_in_inches(self):
+        return 8, 1.2
+
+    def get_app_frame_dimensions_in_inches(self):
+        return 8, 8
 
     def load_watchlist(self, wl_name):
         self.curr_watchlist = wl_name
 
         #Placeholder to show the watchlist content
 
-    def add_menus(self, root):
-        self.menubar = Menu(root)
-        root['menu'] = self.menubar
+    def add_menus(self):
+        self.menubar = Menu(self.root)
+        self.root['menu'] = self.menubar
 
         #Item for watchlist
         self.menu_wl = Menu(self.menubar)
@@ -83,6 +123,42 @@ class Gammath_SPOT_GUI:
         #Placeholder to show info
         self.menubar.add_cascade(menu=self.menu_about, label='About')
         self.menu_about.add_command(label='(c) Gammath Works\nhttps://www.gammathworks.com')
+
+    def create_canvas(self):
+
+        width_in_inches, height_in_inches = self.get_canvas_dimensions_in_inches()
+
+        #Convert inches into number of pixels
+        self.canvas_width_in_pixels = (width_in_inches*self.pixels_per_inch)
+        self.canvas_height_in_pixels = (height_in_inches*self.pixels_per_inch)
+
+        #Create and position the canvas
+        self.canvas = Canvas(self.root, width=self.canvas_width_in_pixels, height=(height_in_inches*self.pixels_per_inch), background='white', borderwidth = 3, relief='solid')
+        self.canvas.grid(column=0, row=0)
+
+    def add_logo(self):
+        #Get the logo image dimensions
+        image_width = self.logo_image.width()
+        image_height = self.logo_image.height()
+
+        #Derive coordinates based on actual width and height of canvas
+        x_coord = (self.canvas.winfo_width()/2)
+        y_coord = (self.canvas.winfo_height()/2)
+
+        #Add logo in the middle of the canvas
+        self.canvas.create_image(x_coord, y_coord, image=self.logo_image)
+
+    def add_app_frame(self):
+        #Get app frame dimensions
+        width_in_inches, height_in_inches = self.get_app_frame_dimensions_in_inches()
+
+        #Convert dimensions into number of pixels
+        self.app_frame_width_in_pixels = (width_in_inches*self.pixels_per_inch)
+        self.app_frame_height_in_pixels = (height_in_inches*self.pixels_per_inch)
+
+        #Create app frame to hold the widgets
+        self.app_frame = ttk.Frame(self.root, width=self.app_frame_width_in_pixels, height=self.app_frame_height_in_pixels, padding=5)
+        self.app_frame.grid()
 
     def gui_tool_if(self, msg_queue):
 
@@ -124,20 +200,8 @@ class Gammath_SPOT_GUI:
         self.gui_tool_if_thread.start()
 
 def main():
-
-    root = Tk()
-
-    #Disable tear-off menus
-    root.option_add('*tearOff', FALSE)
-
-    #Set title for the main window
-    root.title("Gammath SPOT")
-
-    #Start/Instantiate GUI
-    Gammath_SPOT_GUI(root)
-
-    #Start the event loop
-    root.mainloop()
+    #Start/Instantiate GUI. Won't return until app is closed
+    Gammath_SPOT_GUI()
 
 if __name__ == '__main__':
     main()
