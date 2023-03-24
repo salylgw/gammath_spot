@@ -39,7 +39,6 @@ class Gammath_SPOT_GUI:
         self.backtester_pb = None
         self.screener_pb = None
         self.curr_watchlist = None
-        self.separators = []
 
         #Root window
         self.root = Tk()
@@ -91,6 +90,60 @@ class Gammath_SPOT_GUI:
 
         #Placeholder to show the watchlist content
 
+    def save_watchlist(self):
+        wl_name = self.curr_watchlist
+
+        #Placeholder to update current watchlist
+
+    def save_watchlist_as(self, wl_name):
+        #Check if there was a name entered
+        if (len(wl_name)):
+            self.curr_watchlist = wl_name
+
+        #Placeholder to update current watchlist
+
+        #Destroy the window
+        self.wl_name_window.destroy()
+
+    def get_save_as_watchlist_name(self):
+
+        #Create a window for watchlist name entry
+        self.wl_name_window = Toplevel(self.app_frame)
+
+        #Disable window resizing
+        self.wl_name_window.resizable(FALSE, FALSE)
+
+        #Save As
+        self.wl_name_window.title('Save Watchlist As')
+
+        #Create a frame for dialog
+        self.dialog_frame = ttk.Frame(self.wl_name_window)
+        self.dialog_frame.grid(row=0, column=0)
+
+        #Prompt user to enter watchlist name
+        self.wl_dialog_label = ttk.Label(self.dialog_frame, text="Enter watchlist name:")
+        self.wl_dialog_label.grid(row=1, column=0)
+
+        #Entry widget to enter text
+        wl_name = StringVar()
+
+        wl_name_entry = ttk.Entry(self.dialog_frame, width=30, textvariable=wl_name)
+        wl_name_entry.grid(row=2, column=0)
+
+        #Add a cancel button
+        wl_name_cancel_button = ttk.Button(self.dialog_frame, text="Cancel", command=lambda: self.wl_name_window.destroy())
+
+        #Place it under the entry widget
+        wl_name_cancel_button.grid(row=3, column=0, sticky=(N, S))
+
+        #Add OK button
+        #Pass in the entered text
+        wl_name_ok_button = ttk.Button(self.dialog_frame, text="OK", command=lambda: self.save_watchlist_as(wl_name.get()))
+
+        #Place it next to cancel button
+        wl_name_ok_button.grid(row=3, column=0, sticky=(E))
+
+
     def add_menus(self):
         self.menubar = Menu(self.root)
         self.root['menu'] = self.menubar
@@ -118,7 +171,9 @@ class Gammath_SPOT_GUI:
             self.menu_wl.entryconfigure('Load Watchlist', state=DISABLED)
 
         #Placeholder for saving watchlist
-        self.menu_wl.add_command(label='Save Watchlist')
+        self.menu_wl.add_command(label='Save Watchlist', command=self.save_watchlist)
+        #Placeholder for saving watchlist
+        self.menu_wl.add_command(label='Save Watchlist As', command=self.get_save_as_watchlist_name)
 
         #Placeholder to show info
         self.menubar.add_cascade(menu=self.menu_about, label='About')
