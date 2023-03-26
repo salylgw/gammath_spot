@@ -52,6 +52,9 @@ class Gammath_SPOT_GUI:
         #Set title for the main window
         self.root.title("Gammath SPOT")
 
+        #Keep pixels per inch count for setting widget dimensions
+        self.pixels_per_inch=self.root.winfo_pixels('1i')
+
         #Get the path of program/package
         pgm_dir_path, fn = os.path.split(__file__)
 
@@ -64,14 +67,12 @@ class Gammath_SPOT_GUI:
         #Add menus
         self.add_menus()
 
-        #Keep pixels per inch count for setting widget dimensions
-        self.pixels_per_inch=self.root.winfo_pixels('1i')
-
         #Create canvas for logo
         self.create_canvas()
 
         #Add logo after canvas appears on the screen (to get actual dimensions)
-        self.canvas.after(5, lambda: self.add_logo())
+        self.canvas.update_idletasks()
+        self.add_logo()
 
         #Add the app frame
         self.add_app_frame()
@@ -91,7 +92,8 @@ class Gammath_SPOT_GUI:
         #Placeholder to show the watchlist content
 
     def save_watchlist(self):
-        wl_name = self.curr_watchlist
+        if (self.curr_watchlist == None):
+            self.get_save_as_watchlist_name()
 
         #Placeholder to update current watchlist
 
@@ -122,27 +124,26 @@ class Gammath_SPOT_GUI:
 
         #Prompt user to enter watchlist name
         self.wl_dialog_label = ttk.Label(self.dialog_frame, text="Enter watchlist name:")
-        self.wl_dialog_label.grid(row=1, column=0)
+        self.wl_dialog_label.grid(row=1, column=0, columnspan=2)
 
         #Entry widget to enter text
         wl_name = StringVar()
 
         wl_name_entry = ttk.Entry(self.dialog_frame, width=30, textvariable=wl_name)
-        wl_name_entry.grid(row=2, column=0)
+        wl_name_entry.grid(row=2, column=0, columnspan=2)
 
         #Add a cancel button
         wl_name_cancel_button = ttk.Button(self.dialog_frame, text="Cancel", command=lambda: self.wl_name_window.destroy())
 
         #Place it under the entry widget
-        wl_name_cancel_button.grid(row=3, column=0, sticky=(N, S))
+        wl_name_cancel_button.grid(row=3, column=0, sticky=(E))
 
         #Add OK button
         #Pass in the entered text
         wl_name_ok_button = ttk.Button(self.dialog_frame, text="OK", command=lambda: self.save_watchlist_as(wl_name.get()))
 
         #Place it next to cancel button
-        wl_name_ok_button.grid(row=3, column=0, sticky=(E))
-
+        wl_name_ok_button.grid(row=3, column=1, sticky=(W))
 
     def add_menus(self):
         self.menubar = Menu(self.root)
@@ -189,6 +190,7 @@ class Gammath_SPOT_GUI:
 
         #Create and position the canvas
         self.canvas = Canvas(self.root, width=self.canvas_width_in_pixels, height=(height_in_inches*self.pixels_per_inch), background='white', borderwidth = 3, relief='solid')
+
         self.canvas.grid(column=0, row=0)
 
     def add_logo(self):
@@ -213,7 +215,8 @@ class Gammath_SPOT_GUI:
 
         #Create app frame to hold the widgets
         self.app_frame = ttk.Frame(self.root, width=self.app_frame_width_in_pixels, height=self.app_frame_height_in_pixels, padding=5)
-        self.app_frame.grid()
+        self.app_frame.grid(row=2, column=0)
+
 
     def gui_tool_if(self, msg_queue):
 
