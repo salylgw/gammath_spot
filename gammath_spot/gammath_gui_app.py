@@ -22,10 +22,23 @@ from tkinter import *
 from tkinter import ttk
 import threading, queue
 import os
+import pandas as pd
 try:
     from gammath_spot import gammath_utils as gut
+    from gammath_spot import gammath_stocks_data_scraper as gsds
+    from gammath_spot import gammath_stocks_analyzer_and_scorer as gsas
+    from gammath_spot import gammath_stocks_pep as gspep
+    from gammath_spot import gammath_stocks_gscores_historian as gsgh
+    from gammath_spot import gammath_stocks_backtesting as gsbt
+    from gammath_spot import gammath_stocks_screener as gssc
 except:
     import gammath_utils as gut
+    import gammath_stocks_data_scraper as gsds
+    import gammath_stocks_analyzer_and_scorer as gsas
+    import gammath_stocks_pep as gspep
+    import gammath_stocks_gscores_historian as gsgh
+    import gammath_stocks_backtesting as gsbt
+    import gammath_stocks_screener as gssc
 
 class Gammath_SPOT_GUI:
 
@@ -38,8 +51,14 @@ class Gammath_SPOT_GUI:
         self.historian_pb = None
         self.backtester_pb = None
         self.screener_pb = None
-        self.curr_watchlist = None
-        self.curr_watchlist_len = 0
+        self.wl_fp_list = gut.get_watchlist_list()
+        if (len(self.wl_fp_list)):
+            self.curr_watchlist = self.wl_fp_list[0]
+            self.curr_watchlist_len = len(pd.read_csv(self.curr_watchlist))
+        else:
+            self.curr_watchlist = None
+            self.curr_watchlist_len = 0
+        self.curr_screener = None
 
         #Root window
         self.root = Tk()
@@ -168,7 +187,7 @@ class Gammath_SPOT_GUI:
         self.menu_wls = Menu(self.menu_wl)
         self.menu_wl.add_cascade(menu=self.menu_wls, label='Load Watchlist')
 
-        #Init list of existing watchlists
+        #Init list of latest existing watchlists
         self.wl_fp_list = gut.get_watchlist_list()
 
         #Show list of existing watchlists
@@ -291,35 +310,106 @@ class Gammath_SPOT_GUI:
         self.backtester_button.state([state_value])
         self.screener_button.state([state_value])
 
-    def invoke_scraper(self):
+    def get_tool_progress_bar(self, tool):
+        #Get progress bar corresponding to the tool
+        if (tool == 'Scraper'):
+            pb = self.scraper_pb
+        elif (tool == 'Scorer'):
+            pb = self.scorer_pb
+        elif (tool == 'Projector'):
+            pb = self.projector_pb
+        elif (tool == 'Historian'):
+            pb = self.historian_pb
+        elif (tool == 'Backtester'):
+            pb = self.backtester_pb
+        elif (tool == 'Screener'):
+            pb = self.screener_pb
+
+        return pb
+
+    def set_buttons_pb_state(self, tool):
         #Disable other invokations
         self.update_all_buttons_state('disable')
-        #Placeholder for Scraper
+
+        #Get the progress bar
+        pb = self.get_tool_progress_bar(tool)
+
+        #Set initial value to 0
+        pb['value'] = 0
+
+        #Keep mode to be indeterminate until the final item is done
+        pb['mode'] = 'indeterminate'
+
+        #Start the progress bar
+        pb.start()
+
+    def invoke_scraper(self):
+
+        #Disable tools buttons and start progress bar
+        self.set_buttons_pb_state('Scraper')
+
+        #Launch GUI interface thread for Scraper tool
+        self.launch_gui_tool_if_thread('Scraper', self.msg_queue)
+
+        #Launch Scraper tool thread
+        self.gscraper = gsds.GSCRAPER()
+        self.gscraper.launch_scraper_thread(self.curr_watchlist, self.msg_queue)
 
     def invoke_scorer(self):
-        #Disable other invokations
-        self.update_all_buttons_state('disable')
-        #Placeholder for Scorer
+        #Disable tools buttons and start progress bar
+        self.set_buttons_pb_state('Scorer')
+
+        #Launch GUI interface thread for Scorer tool
+        self.launch_gui_tool_if_thread('Scorer', self.msg_queue)
+
+        #Launch Analyzer/Scorer tool thread
+        self.gscorer = gsas.GSCORER()
+        self.gscorer.launch_analyzer_and_scorer_thread(self.curr_watchlist, self.msg_queue)
+
 
     def invoke_projector(self):
-        #Disable other invokations
-        self.update_all_buttons_state('disable')
-        #Placeholder for Projector
+        #Disable tools buttons and start progress bar
+        self.set_buttons_pb_state('Projector')
+
+        #Launch GUI interface thread for Projector tool
+        self.launch_gui_tool_if_thread('Projector', self.msg_queue)
+
+        #Launch Projector tool thread
+        self.gprojector = gspep.GPROJECTOR()
+        self.gprojector.launch_projector_thread(self.curr_watchlist, self.msg_queue)
 
     def invoke_historian(self):
-        #Disable other invokations
-        self.update_all_buttons_state('disable')
-        #Placeholder for Historian
+        #Disable tools buttons and start progress bar
+        self.set_buttons_pb_state('Historian')
+
+        #Launch GUI interface thread for Historian tool
+        self.launch_gui_tool_if_thread('Historian', self.msg_queue)
+
+        #Launch Historian tool thread
+        self.ghistorian = gsgh.GHISTORIAN()
+        self.ghistorian.launch_historian_thread(self.curr_watchlist, self.msg_queue)
 
     def invoke_backtester(self):
-        #Disable other invokations
-        self.update_all_buttons_state('disable')
-        #Placeholder for Backtester
+        #Disable tools buttons and start progress bar
+        self.set_buttons_pb_state('Backtester')
+
+        #Launch GUI interface thread for Backtester tool
+        self.launch_gui_tool_if_thread('Backtester', self.msg_queue)
+
+        #Launch Backtester tool thread
+        self.gbacktester = gsbt.GBACKTESTER()
+        self.gbacktester.launch_backtester_thread(self.curr_watchlist, self.msg_queue)
 
     def invoke_screener(self):
-        #Disable other invokations
-        self.update_all_buttons_state('disable')
-        #Placeholder for Screener
+        #Disable tools buttons and start progress bar
+        self.set_buttons_pb_state('Screener')
+
+        #Launch GUI interface thread for Screener tool
+        self.launch_gui_tool_if_thread('Screener', self.msg_queue)
+
+        #Launch Screener tool thread
+        self.gscreener = gssc.GSCREENER()
+        self.gscreener.launch_screener_thread(self.curr_screener, self.msg_queue)
 
     def gui_tool_if(self, msg_queue):
 
@@ -328,26 +418,15 @@ class Gammath_SPOT_GUI:
             msg = msg_queue.get()
             try:
                 tool = msg['Tool']
-                if (tool == 'Scraper'):
-                    pb = self.scraper_pb
-                elif (tool == 'Scorer'):
-                    pb = self.scorer_pb
-                elif (tool == 'Projector'):
-                    pb = self.projector_pb
-                elif (tool == 'Historian'):
-                    pb = self.historian_pb
-                elif (tool == 'Backtester'):
-                    pb = self.backtester_pb
-                elif (tool == 'Screener'):
-                    pb = self.screener_pb
-
-                if (progress_data == 0):
-                    pb.stop()
-                    pb['mode'] = 'determinate'
-
+                pb = self.get_tool_progress_bar(tool)
                 progress_data = msg['PD']
-                pb['value'] = progress_data
                 if ((progress_data == pb['maximum']) or (progress_data == 0)):
+                    pb.stop()
+                    #Show actual completion in the progress bar
+                    pb['mode'] = 'determinate'
+                    pb['value'] = progress_data
+                    #Re-enable all tools buttons
+                    self.update_all_buttons_state('enable')
                     msg_queue.task_done()
                     return
                 else:

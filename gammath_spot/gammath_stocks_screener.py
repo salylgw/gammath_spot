@@ -137,8 +137,8 @@ class GSCREENER:
     def __init__(self):
         self.screener_thread = None
 
-    def launch_screener_thread(self, watchlist, info_queue):
-        self.screener_thread = threading.Thread(name='Screener_main_thread', target=run_screener, args=(watchlist,info_queue,))
+    def launch_screener_thread(self, screener, info_queue):
+        self.screener_thread = threading.Thread(name='Screener_main_thread', target=run_screener, args=(screener,info_queue,))
         self.screener_thread.start()
 
 if __name__ == '__main__':
