@@ -1,4 +1,5 @@
 # Author: Salyl Bhagwat, Gammath Works
+# Author: Salyl Bhagwat, Gammath Works
 # Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works
 # All Rights Reserved
 #
@@ -20,6 +21,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 from tkinter import *
 from tkinter import ttk
+from tkinter import font
 import threading, queue
 import os
 import pandas as pd
@@ -51,6 +53,9 @@ class Gammath_SPOT_GUI:
         self.historian_pb = None
         self.backtester_pb = None
         self.screener_pb = None
+
+        #Revisit if/when scrollbar works well
+        self.MAX_WL_ENTRIES = 12
         self.wl_fp_list = gut.get_watchlist_list()
         if (len(self.wl_fp_list)):
             self.curr_watchlist = self.wl_fp_list[0]
@@ -101,6 +106,12 @@ class Gammath_SPOT_GUI:
         #Add tools buttons and progress bars
         self.add_tool_buttons_and_progress_bars()
 
+        #Add watchlist widget
+        self.add_watchlist_widget()
+
+        #Load default watchlist (if any)
+        self.load_watchlist(self.curr_watchlist)
+
         #Start the event loop
         self.root.mainloop()
 
@@ -113,25 +124,77 @@ class Gammath_SPOT_GUI:
     def get_progress_bar_len_in_pixels(self):
         return 200
 
-    def load_watchlist(self, wl_name):
+    def set_curr_watchlist(self, wl_name):
+        #Setup all watchlist items for current watchlist
         self.curr_watchlist = wl_name
+        if (wl_name != None):
+            self.curr_watchlist_len = len(pd.read_csv(self.curr_watchlist))
+            loaded_wl_name = os.path.basename(wl_name).split('.')[0]
+            #Update the label in watchlist widget
+            wl_label = f'Watchlist Name: {loaded_wl_name}'
+        else:
+            self.curr_watchlist_len = 0
+            wl_label = 'Watchlist'
 
-        #Placeholder to show the watchlist content
+        self.wl_label_text.set(wl_label)
+
+    def create_new_watchlist(self):
+        #Just clear up the watchist widget for new entries
+        for i in range(self.MAX_WL_ENTRIES):
+            self.table_entry[i].set('')
+
+        #Reset watchlist label
+        self.set_curr_watchlist(None)
+
+    def load_watchlist(self, wl_name):
+        #Load an existing watchlist
+        if (wl_name != None):
+            self.set_curr_watchlist(wl_name)
+
+            #Read the contents into dataframe
+            df = pd.read_csv(wl_name)
+            df_len = len(df)
+            #Fill up the table entries
+            for i in range(min(df_len, self.MAX_WL_ENTRIES)):
+                self.table_entry[i].set(df.Symbol[i])
+
+            #Keep remaining fields (if any) cleared
+            if (df_len < self.MAX_WL_ENTRIES):
+                for i in range(len(df), self.MAX_WL_ENTRIES):
+                    self.table_entry[i].set('')
 
     def save_watchlist(self):
+
         if (self.curr_watchlist == None):
+            #Need watchlist name
             self.get_save_as_watchlist_name()
 
-        #Placeholder to update current watchlist
+        count = 0
+        df = pd.DataFrame(columns=['Symbol'], index=range(self.MAX_WL_ENTRIES))
+        for i in range(self.MAX_WL_ENTRIES):
+            #Read the data from table
+            sym = self.table_entry[i].get()
+            if (sym != ''):
+                df.Symbol[i] = sym
+                count += 1
+
+        if (count):
+            #Save watchlist
+            df.truncate(after=(count-1)).to_csv(self.curr_watchlist, index=False)
+
+        #Set current watchlist to this watchlist
+        self.set_curr_watchlist(self.curr_watchlist)
 
     def save_watchlist_as(self, wl_name):
         #Check if there was a name entered
         if (len(wl_name)):
-            self.curr_watchlist = wl_name
+            #Convert the name to a full path filename
+            self.curr_watchlist = os.getcwd() + '/' + wl_name + '.csv'
 
-        #Placeholder to update current watchlist
+        #Save the contents to CSV file
+        self.save_watchlist()
 
-        #Destroy the window
+        #Delete the window
         self.wl_name_window.destroy()
 
     def get_save_as_watchlist_name(self):
@@ -184,10 +247,11 @@ class Gammath_SPOT_GUI:
 
         #Watchlist menu item details
         self.menubar.add_cascade(menu=self.menu_wl, label='Watchlist')
-        self.menu_wl.add_command(label='Create Watchlist')
+        self.menu_wl.add_command(label='Create Watchlist', command=self.create_new_watchlist)
         self.menu_wls = Menu(self.menu_wl)
         self.menu_wl.add_cascade(menu=self.menu_wls, label='Load Watchlist')
 
+        #Update watchlist file list to show in the menu
         #Init list of latest existing watchlists
         self.wl_fp_list = gut.get_watchlist_list()
 
@@ -198,9 +262,10 @@ class Gammath_SPOT_GUI:
         else:
             self.menu_wl.entryconfigure('Load Watchlist', state=DISABLED)
 
-        #Placeholder for saving watchlist
+        #Save watchlist menu item
         self.menu_wl.add_command(label='Save Watchlist', command=self.save_watchlist)
-        #Placeholder for saving watchlist
+
+        #Save As watchlist menu item
         self.menu_wl.add_command(label='Save Watchlist As', command=self.get_save_as_watchlist_name)
 
         #Placeholder to show info
@@ -218,7 +283,8 @@ class Gammath_SPOT_GUI:
         #Create and position the canvas
         self.canvas = Canvas(self.root, width=self.canvas_width_in_pixels, height=self.canvas_height_in_pixels, background='white', borderwidth = 3, relief='solid')
 
-        self.canvas.grid(column=0, row=0)
+        #Span it over two columns to facilitate placing widgets in the app frame
+        self.canvas.grid(column=0, row=0, columnspan=2)
 
     def add_logo(self):
         #Get the logo image dimensions
@@ -241,12 +307,26 @@ class Gammath_SPOT_GUI:
         self.app_frame_height_in_pixels = (height_in_inches*self.pixels_per_inch)
 
         #Create app frame to hold the widgets
-        self.app_frame = ttk.Frame(self.root, width=self.app_frame_width_in_pixels, height=self.app_frame_height_in_pixels, padding=5)
+        self.app_frame = ttk.Frame(self.root, width=self.app_frame_width_in_pixels, height=self.app_frame_height_in_pixels, padding="50 30 0 30")
         self.app_frame.grid(row=self.starting_row_for_app_frame, column=0)
+
+        #Use a font for app frame labels
+        self.app_frame_label_font = font.Font(family='TimesNewRoman', name='appFrameLabelFont', size=16, weight='bold')
+
+        #Create Toolset label
+        self.toolset_label = ttk.Label(self.app_frame, text='Toolset', font=self.app_frame_label_font)
+        self.toolset_label.grid(row=1, column=0)
+
+        #Create Watchlist label
+        self.wl_label_text = StringVar()
+        self.wl_label = ttk.Label(self.app_frame, textvariable=self.wl_label_text, font=self.app_frame_label_font)
+        self.wl_label_text.set('Watchlist')
+        self.wl_label.grid(row=1, column=1)
+
 
     def add_tool_buttons_and_progress_bars(self):
         #Add Scraper tool button
-        curr_row = (self.starting_row_for_app_frame + 1)
+        curr_row = (self.starting_row_for_app_frame + 2)
         self.scraper_button = ttk.Button(self.app_frame, text="Scraper", command=self.invoke_scraper)
         self.scraper_button.grid(row=curr_row, column=0)
 
@@ -350,6 +430,11 @@ class Gammath_SPOT_GUI:
         #Set initial value to 0
         pb['value'] = 0
 
+        #Screener doesn't use watchlist
+        if (tool != 'Screener'):
+            #Update the max count for progress bar to match current watchlist length
+            pb['maximum'] = self.curr_watchlist_len
+
         #Keep mode to be indeterminate until the final item is done
         pb['mode'] = 'indeterminate'
 
@@ -451,6 +536,17 @@ class Gammath_SPOT_GUI:
     def launch_gui_tool_if_thread(self, tool, msg_queue):
         self.gui_tool_if_thread = threading.Thread(name=f'GUI_{tool}_thread', target=self.gui_tool_if, args=(msg_queue,))
         self.gui_tool_if_thread.start()
+
+    def add_watchlist_widget(self):
+        self.table_entry = []
+        self.table_entry_handle = []
+
+        #Create a table for symbol entry using the Entry widget
+        for i in range(self.MAX_WL_ENTRIES):
+            #Input var
+            self.table_entry.append(StringVar())
+            self.table_entry_handle.append(ttk.Entry(self.app_frame, width=20, textvariable=self.table_entry[i]))
+            self.table_entry_handle[i].grid(row=(4+i), column=1, padx=70, sticky=(E))
 
 def main():
     #Start/Instantiate GUI. Won't return until app is closed
