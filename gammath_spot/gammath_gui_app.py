@@ -59,6 +59,7 @@ class Gammath_SPOT_GUI:
             self.curr_watchlist = None
             self.curr_watchlist_len = 0
         self.curr_screener = None
+        self.starting_row_for_app_frame = 2
 
         #Root window
         self.root = Tk()
@@ -241,56 +242,68 @@ class Gammath_SPOT_GUI:
 
         #Create app frame to hold the widgets
         self.app_frame = ttk.Frame(self.root, width=self.app_frame_width_in_pixels, height=self.app_frame_height_in_pixels, padding=5)
-        self.app_frame.grid(row=2, column=0)
+        self.app_frame.grid(row=self.starting_row_for_app_frame, column=0)
 
     def add_tool_buttons_and_progress_bars(self):
         #Add Scraper tool button
+        curr_row = (self.starting_row_for_app_frame + 1)
         self.scraper_button = ttk.Button(self.app_frame, text="Scraper", command=self.invoke_scraper)
-        self.scraper_button.grid(row=3, column=0)
+        self.scraper_button.grid(row=curr_row, column=0)
 
         #Progress bar for Scraper run
+        curr_row += 1
         self.scraper_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.scraper_pb.grid(row=4, column=0)
+        self.scraper_pb.grid(row=curr_row, column=0)
 
         #Add Analyzer and Scorer tool buttons
+        curr_row += 1
         self.scorer_button = ttk.Button(self.app_frame, text="Scorer", command=self.invoke_scorer)
-        self.scorer_button.grid(row=5, column=0)
+        self.scorer_button.grid(row=curr_row, column=0)
 
         #Progress bar for Analyzer/Scorer run
+        curr_row += 1
         self.scorer_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.scorer_pb.grid(row=6, column=0)
+        self.scorer_pb.grid(row=curr_row, column=0)
 
         #Add Projector tool button
+        curr_row += 1
         self.projector_button = ttk.Button(self.app_frame, text="Projector", command=self.invoke_projector)
-        self.projector_button.grid(row=7, column=0)
+        self.projector_button.grid(row=curr_row, column=0)
 
         #Progress bar for Projector run
+        curr_row += 1
         self.projector_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=(self.curr_watchlist_len+1), mode='indeterminate')
-        self.projector_pb.grid(row=8, column=0)
+        self.projector_pb.grid(row=curr_row, column=0)
 
         #Add Historian tool
+        curr_row += 1
         self.historian_button = ttk.Button(self.app_frame, text="Historian", command=self.invoke_historian)
-        self.historian_button.grid(row=9, column=0)
+        self.historian_button.grid(row=curr_row, column=0)
 
         #Progress bar for Historian run
+        curr_row += 1
         self.historian_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.historian_pb.grid(row=10, column=0)
+        self.historian_pb.grid(row=curr_row, column=0)
 
         #Add Backtester tool button
+        curr_row += 1
         self.backtester_button = ttk.Button(self.app_frame, text="Backtester", command=self.invoke_backtester)
-        self.backtester_button.grid(row=11, column=0)
+        self.backtester_button.grid(row=curr_row, column=0)
 
         #Progress bar for Backtester run
+        curr_row += 1
         self.backtester_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.backtester_pb.grid(row=12, column=0)
+        self.backtester_pb.grid(row=curr_row, column=0)
 
         #Add Screener tool button
+        curr_row += 1
         self.screener_button = ttk.Button(self.app_frame, text="Screener", command=self.invoke_screener)
-        self.screener_button.grid(row=13, column=0)
+        self.screener_button.grid(row=curr_row, column=0)
 
         #Progress bar for Screener run
+        curr_row += 1
         self.screener_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), mode='indeterminate')
-        self.screener_pb.grid(row=14, column=0)
+        self.screener_pb.grid(row=curr_row, column=0)
 
         #Update screen
         self.app_frame.update_idletasks()
