@@ -1,5 +1,4 @@
 # Author: Salyl Bhagwat, Gammath Works
-# Author: Salyl Bhagwat, Gammath Works
 # Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works
 # All Rights Reserved
 #
@@ -194,6 +193,12 @@ class Gammath_SPOT_GUI:
         #Save the contents to CSV file
         self.save_watchlist()
 
+        #Delete old list of loadable watchlist
+        self.menu_wls.delete(0, 'end')
+
+        #Update loadable watchlist list
+        self.update_loadable_watchlist_list()
+
         #Delete the window
         self.wl_name_window.destroy()
 
@@ -235,6 +240,19 @@ class Gammath_SPOT_GUI:
         #Place it next to cancel button
         wl_name_ok_button.grid(row=3, column=1, sticky=(W))
 
+    def update_loadable_watchlist_list(self):
+
+        #Update watchlist file list to show in the menu
+        #Init list of latest existing watchlists
+        self.wl_fp_list = gut.get_watchlist_list()
+
+        #Show list of existing watchlists
+        if (len(self.wl_fp_list)):
+            for f in self.wl_fp_list:
+                self.menu_wls.add_command(label=(os.path.basename(f).split('.')[0]), command=lambda f=f: self.load_watchlist(f))
+        else:
+            self.menu_wl.entryconfigure('Load Watchlist', state=DISABLED)
+
     def add_menus(self):
         self.menubar = Menu(self.root)
         self.root['menu'] = self.menubar
@@ -251,16 +269,8 @@ class Gammath_SPOT_GUI:
         self.menu_wls = Menu(self.menu_wl)
         self.menu_wl.add_cascade(menu=self.menu_wls, label='Load Watchlist')
 
-        #Update watchlist file list to show in the menu
-        #Init list of latest existing watchlists
-        self.wl_fp_list = gut.get_watchlist_list()
-
-        #Show list of existing watchlists
-        if (len(self.wl_fp_list)):
-            for f in self.wl_fp_list:
-                self.menu_wls.add_command(label=(os.path.basename(f).split('.')[0]), command=lambda f=f: self.load_watchlist(f))
-        else:
-            self.menu_wl.entryconfigure('Load Watchlist', state=DISABLED)
+        #Add watchlist list to loadable watchlist menu
+        self.update_loadable_watchlist_list()
 
         #Save watchlist menu item
         self.menu_wl.add_command(label='Save Watchlist', command=self.save_watchlist)
