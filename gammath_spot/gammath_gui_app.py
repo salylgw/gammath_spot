@@ -23,6 +23,7 @@ from tkinter import ttk
 from tkinter import font
 import threading, queue
 import os
+from pathlib import Path
 import pandas as pd
 try:
     from gammath_spot import gammath_utils as gut
@@ -62,7 +63,15 @@ class Gammath_SPOT_GUI:
         else:
             self.curr_watchlist = None
             self.curr_watchlist_len = 0
-        self.curr_screener = None
+
+        #Check if screener info file exists
+        screener_file = os.getcwd() + '/' + 'screener_info.csv'
+        if (Path(screener_file).exists()):
+            #Set screener to existing one
+            self.curr_screener = screener_file
+        else:
+            self.curr_screener = None
+
         self.starting_row_for_app_frame = 2
 
         #Root window
@@ -253,12 +262,161 @@ class Gammath_SPOT_GUI:
         else:
             self.menu_wl.entryconfigure('Load Watchlist', state=DISABLED)
 
+    def add_screener_entry_widget(self, starting_row):
+        #Widget to enter micro-gScore filtering criteria
+        self.screener_entry = []
+        self.screener_entry_handle = []
+
+        #Check how many micro-gScores exist
+        num_micro_gscores = len(gut.get_gscores_screening_df_columns())
+
+        #Create a table for micro-gScore entry using the Entry widget
+        for i in range(num_micro_gscores):
+            #Input var
+            self.screener_entry.append(StringVar())
+            self.screener_entry_handle.append(ttk.Entry(self.screener_frame, width=5, textvariable=self.screener_entry[i]))
+            self.screener_entry_handle[i].grid(row=starting_row+i, column=1)
+
+    def save_screener_info(self):
+        #Create a dataframe to read in the data from Entry widget
+        df = pd.DataFrame(columns=gut.get_gscores_screening_df_columns(), index=range(1))
+
+        #Fill the dataframe
+        df.Price[0] = self.screener_entry[0].get()
+        df.RSI[0] = self.screener_entry[1].get()
+        df.BBANDS[0] = self.screener_entry[2].get()
+        df.MACD[0] = self.screener_entry[3].get()
+        df.KF[0] = self.screener_entry[4].get()
+        df.OLS[0] = self.screener_entry[5].get()
+        df.MFI[0] = self.screener_entry[6].get()
+        df.Stoch[0] = self.screener_entry[7].get()
+        df.Options[0] = self.screener_entry[8].get()
+        df.Reco[0] = self.screener_entry[9].get()
+        df.Senti[0] = self.screener_entry[10].get()
+
+        #Only one screener file
+        screener_info_file = os.getcwd() + '/' + 'screener_info.csv'
+
+        #Save screener into a CSV file
+        df.to_csv(screener_info_file, index=False)
+
+        #Set the screener
+        self.curr_screener = screener_info_file
+
+        #Remove the window
+        self.screener_window.destroy()
+
+    def add_screener_info_widget(self):
+        #Create a window for screener info entry
+        self.screener_window = Toplevel(self.app_frame)
+
+        #Disable window resizing
+        self.screener_window.resizable(FALSE, FALSE)
+
+        #Give a tile to the window
+        self.screener_window.title('Screener')
+
+        #Create a frame for micro-gScore filtering entries
+        self.screener_frame = ttk.Frame(self.screener_window)
+        self.screener_frame.grid(row=0, column=0, columnspan=2)
+        curr_row_num = 1
+
+        #Label with helpful text
+        self.screener_main_label = ttk.Label(self.screener_frame, text='Enter micro-gScores screening info', font=self.app_frame_label_font)
+        self.screener_main_label.grid(row=curr_row_num, column=0, padx=5, columnspan=2)
+
+        curr_row_num += 1
+        starting_row = curr_row_num
+
+        #Create labels for each micro-gScore
+        self.screener_price_label = ttk.Label(self.screener_frame, text='Price', font=self.app_frame_label_font)
+        self.screener_price_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_rsi_label = ttk.Label(self.screener_frame, text='RSI', font=self.app_frame_label_font)
+        self.screener_rsi_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_BB_label = ttk.Label(self.screener_frame, text='BB', font=self.app_frame_label_font)
+        self.screener_BB_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_macd_label = ttk.Label(self.screener_frame, text='MACD', font=self.app_frame_label_font)
+        self.screener_macd_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_kf_label = ttk.Label(self.screener_frame, text='KF', font=self.app_frame_label_font)
+        self.screener_kf_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_ols_label = ttk.Label(self.screener_frame, text='OLS', font=self.app_frame_label_font)
+        self.screener_ols_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_mfi_label = ttk.Label(self.screener_frame, text='MFI', font=self.app_frame_label_font)
+        self.screener_mfi_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_stoch_label = ttk.Label(self.screener_frame, text='Stoch', font=self.app_frame_label_font)
+        self.screener_stoch_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_od_label = ttk.Label(self.screener_frame, text='Options', font=self.app_frame_label_font)
+        self.screener_od_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_reco_label = ttk.Label(self.screener_frame, text='Reco', font=self.app_frame_label_font)
+        self.screener_reco_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_senti_label = ttk.Label(self.screener_frame, text='Senti', font=self.app_frame_label_font)
+        self.screener_senti_label.grid(row=curr_row_num, column=0)
+
+        #Add widget to enter data
+        self.add_screener_entry_widget(starting_row)
+
+        curr_row_num += 1
+
+        if (self.curr_screener != None):
+            #Read in existing screener (if it exists)
+            try:
+                df = pd.read_csv(self.curr_screener)
+
+                self.screener_entry[0].set(df.Price[0])
+                self.screener_entry[1].set(df.RSI[0])
+                self.screener_entry[2].set(df.BBANDS[0])
+                self.screener_entry[3].set(df.MACD[0])
+                self.screener_entry[4].set(df.KF[0])
+                self.screener_entry[5].set(df.OLS[0])
+                self.screener_entry[6].set(df.MFI[0])
+                self.screener_entry[7].set(df.Stoch[0])
+                self.screener_entry[8].set(df.Options[0])
+                self.screener_entry[9].set(df.Reco[0])
+                self.screener_entry[10].set(df.Senti[0])
+            except:
+                df = []
+
+        #Add a cancel button
+        wl_name_cancel_button = ttk.Button(self.screener_frame, text="Cancel", command=lambda: self.screener_window.destroy())
+
+        #Place it under the label widgets
+        wl_name_cancel_button.grid(row=curr_row_num, column=0, sticky=(E))
+
+        #Add OK button
+        wl_name_ok_button = ttk.Button(self.screener_frame, text="OK", command=self.save_screener_info)
+
+        #Place it next to cancel button
+        wl_name_ok_button.grid(row=curr_row_num, column=1, sticky=(W))
+
     def add_menus(self):
         self.menubar = Menu(self.root)
         self.root['menu'] = self.menubar
 
-        #Item for watchlist
+        #Item for Watchlist
         self.menu_wl = Menu(self.menubar)
+
+        #Item for Screener
+        self.menu_screener = Menu(self.menubar)
 
         #Item for About
         self.menu_about = Menu(self.menubar)
@@ -277,6 +435,10 @@ class Gammath_SPOT_GUI:
 
         #Save As watchlist menu item
         self.menu_wl.add_command(label='Save Watchlist As', command=self.get_save_as_watchlist_name)
+
+        #Add menu item to enter screening info
+        self.menubar.add_cascade(menu=self.menu_screener, label='Screener')
+        self.menu_screener.add_command(label='Screener Info', command=self.add_screener_info_widget)
 
         #Placeholder to show info
         self.menubar.add_cascade(menu=self.menu_about, label='About')
@@ -444,6 +606,9 @@ class Gammath_SPOT_GUI:
         if (tool != 'Screener'):
             #Update the max count for progress bar to match current watchlist length
             pb['maximum'] = self.curr_watchlist_len
+        else:
+            #Default value
+            pb['maximum'] = 100
 
         #Keep mode to be indeterminate until the final item is done
         pb['mode'] = 'indeterminate'

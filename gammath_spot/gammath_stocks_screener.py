@@ -110,10 +110,10 @@ def run_screener(sf_name, info_queue):
         #Remove unused rows and sort by final_gscore
         df_list = df_list.truncate(after=(count-1)).sort_values('final_gscore')
 
-        #Save screened watchlist without the index field
-        df_list.to_csv(p / 'screened_watchlist.csv', index=False)
+    #Save screened watchlist without the index field
+    df_list.to_csv(p / 'screened_watchlist.csv', index=False)
 
-        complete_pct = 100
+    complete_pct = 100
 
     #Update progress bar (if any)
     gut.send_msg_to_gui_if_thread(info_queue, 'Screener', complete_pct)
