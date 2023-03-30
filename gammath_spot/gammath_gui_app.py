@@ -408,6 +408,35 @@ class Gammath_SPOT_GUI:
         #Place it next to cancel button
         wl_name_ok_button.grid(row=curr_row_num, column=1, sticky=(W))
 
+    def show_gssw_info(self):
+
+        #Create a window for screener info entry
+        self.about_window = Toplevel(self.app_frame)
+
+        #Disable window resizing
+        self.about_window.resizable(FALSE, FALSE)
+
+        #Give a tile to the window
+        self.about_window.title('About')
+
+        #Create a frame for micro-gScore filtering entries
+        self.about_frame = ttk.Frame(self.about_window, padding=10)
+        self.about_frame.grid(row=0, column=0, rowspan=3)
+        curr_row_num = 1
+
+        #Label with helpful text
+        self.about_version_label = ttk.Label(self.about_frame, text=f'{gut.get_gammath_spot_version_string()}', font=self.app_frame_label_font)
+        self.about_version_label.grid(row=curr_row_num, column=0)
+        curr_row_num += 1
+
+        self.about_copyright_label = ttk.Label(self.about_frame, text='(c) Gammath Works', font=self.app_frame_label_font)
+        self.about_copyright_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+
+        self.about_website_label = ttk.Label(self.about_frame, text='https://www.gammathworks.com', font=self.app_frame_label_font)
+        self.about_website_label.grid(row=curr_row_num, column=0)
+
     def add_menus(self):
         self.menubar = Menu(self.root)
         self.root['menu'] = self.menubar
@@ -440,9 +469,9 @@ class Gammath_SPOT_GUI:
         self.menubar.add_cascade(menu=self.menu_screener, label='Screener')
         self.menu_screener.add_command(label='Screener Info', command=self.add_screener_info_widget)
 
-        #Placeholder to show info
+        #Menu item to show info software info
         self.menubar.add_cascade(menu=self.menu_about, label='About')
-        self.menu_about.add_command(label='(c) Gammath Works\nhttps://www.gammathworks.com')
+        self.menu_about.add_command(label='Gammath SPOT', command=self.show_gssw_info)
 
     def create_canvas(self):
 
@@ -606,6 +635,8 @@ class Gammath_SPOT_GUI:
         if (tool != 'Screener'):
             #Update the max count for progress bar to match current watchlist length
             pb['maximum'] = self.curr_watchlist_len
+            if (tool == 'Projector'):
+                pb['maximum'] += 1
         else:
             #Default value
             pb['maximum'] = 100
