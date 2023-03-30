@@ -56,16 +56,20 @@ class Gammath_SPOT_GUI:
 
         #Revisit if/when scrollbar works well
         self.MAX_WL_ENTRIES = 12
+        self.curr_watchlist = None
+        self.curr_watchlist_len = 0
         self.wl_fp_list = gut.get_watchlist_list()
+
         if (len(self.wl_fp_list)):
-            self.curr_watchlist = self.wl_fp_list[0]
-            self.curr_watchlist_len = len(pd.read_csv(self.curr_watchlist))
-        else:
-            self.curr_watchlist = None
-            self.curr_watchlist_len = 0
+            curr_watchlist = self.wl_fp_list[0]
+            try:
+                self.curr_watchlist_len = len(pd.read_csv(curr_watchlist))
+                self.curr_watchlist = curr_watchlist
+            except:
+                print('Failed to read watchlist')
 
         #Check if screener info file exists
-        screener_file = os.getcwd() + '/' + 'screener_info.csv'
+        screener_file = os.getcwd() + '/' + 'screener.csv'
         if (Path(screener_file).exists()):
             #Set screener to existing one
             self.curr_screener = screener_file
@@ -134,15 +138,19 @@ class Gammath_SPOT_GUI:
 
     def set_curr_watchlist(self, wl_name):
         #Setup all watchlist items for current watchlist
-        self.curr_watchlist = wl_name
+        self.curr_watchlist_len = 0
+        wl_label = 'Watchlist'
+
         if (wl_name != None):
-            self.curr_watchlist_len = len(pd.read_csv(self.curr_watchlist))
-            loaded_wl_name = os.path.basename(wl_name).split('.')[0]
-            #Update the label in watchlist widget
-            wl_label = f'Watchlist Name: {loaded_wl_name}'
-        else:
-            self.curr_watchlist_len = 0
-            wl_label = 'Watchlist'
+            try:
+                curr_watchlist_len = len(pd.read_csv(wl_name))
+                self.curr_watchlist_len =  curr_watchlist_len
+                self.curr_watchlist = wl_name
+                loaded_wl_name = os.path.basename(wl_name).split('.')[0]
+                #Update the label in watchlist widget
+                wl_label = f'Watchlist Name: {loaded_wl_name}'
+            except:
+                print('Failed to set watchlist')
 
         self.wl_label_text.set(wl_label)
 
@@ -157,19 +165,22 @@ class Gammath_SPOT_GUI:
     def load_watchlist(self, wl_name):
         #Load an existing watchlist
         if (wl_name != None):
-            self.set_curr_watchlist(wl_name)
+            try:
+                #Read the contents into dataframe
+                df = pd.read_csv(wl_name)
+                df_len = len(df)
+                self.set_curr_watchlist(wl_name)
 
-            #Read the contents into dataframe
-            df = pd.read_csv(wl_name)
-            df_len = len(df)
-            #Fill up the table entries
-            for i in range(min(df_len, self.MAX_WL_ENTRIES)):
-                self.table_entry[i].set(df.Symbol[i])
+                #Fill up the table entries
+                for i in range(min(df_len, self.MAX_WL_ENTRIES)):
+                    self.table_entry[i].set(df.Symbol[i])
 
-            #Keep remaining fields (if any) cleared
-            if (df_len < self.MAX_WL_ENTRIES):
-                for i in range(len(df), self.MAX_WL_ENTRIES):
-                    self.table_entry[i].set('')
+                #Keep remaining fields (if any) cleared
+                if (df_len < self.MAX_WL_ENTRIES):
+                    for i in range(len(df), self.MAX_WL_ENTRIES):
+                        self.table_entry[i].set('')
+            except:
+                print('Failed to open watchlist file')
 
     def save_watchlist(self):
 
@@ -187,11 +198,14 @@ class Gammath_SPOT_GUI:
                 count += 1
 
         if (count):
-            #Save watchlist
-            df.truncate(after=(count-1)).to_csv(self.curr_watchlist, index=False)
+            try:
+                #Save watchlist
+                df.truncate(after=(count-1)).to_csv(self.curr_watchlist, index=False)
+                #Set current watchlist to this watchlist
+                self.set_curr_watchlist(self.curr_watchlist)
+            except:
+                print('Failed to save and set current watchlist')
 
-        #Set current watchlist to this watchlist
-        self.set_curr_watchlist(self.curr_watchlist)
 
     def save_watchlist_as(self, wl_name):
         #Check if there was a name entered
@@ -295,13 +309,16 @@ class Gammath_SPOT_GUI:
         df.Senti[0] = self.screener_entry[10].get()
 
         #Only one screener file
-        screener_info_file = os.getcwd() + '/' + 'screener_info.csv'
+        screener_info_file = os.getcwd() + '/' + 'screener.csv'
 
-        #Save screener into a CSV file
-        df.to_csv(screener_info_file, index=False)
+        try:
+            #Save screener into a CSV file
+            df.to_csv(screener_info_file, index=False)
 
-        #Set the screener
-        self.curr_screener = screener_info_file
+            #Set the screener
+            self.curr_screener = screener_info_file
+        except:
+            print('Failed to save and set current screener')
 
         #Remove the window
         self.screener_window.destroy()
@@ -417,7 +434,7 @@ class Gammath_SPOT_GUI:
         self.about_window.resizable(FALSE, FALSE)
 
         #Give a tile to the window
-        self.about_window.title('About')
+        self.about_window.title('Stock Price Opining Toolset')
 
         #Create a frame for micro-gScore filtering entries
         self.about_frame = ttk.Frame(self.about_window, padding=10)
