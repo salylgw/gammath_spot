@@ -138,5 +138,14 @@ class GSCRAPER:
         self.scraper_thread = threading.Thread(name='Scraper_main_thread', target=run_scraper, args=(watchlist,info_queue,))
         self.scraper_thread.start()
 
+    def scraper_thread_is_alive(self):
+        #Check if thread is alive
+        if (self.scraper_thread != None):
+            alive = self.scraper_thread.is_alive()
+        else:
+            alive = False
+
+        return alive
+
 if __name__ == '__main__':
     main()

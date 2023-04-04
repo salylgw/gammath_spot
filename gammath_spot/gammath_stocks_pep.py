@@ -150,5 +150,14 @@ class GPROJECTOR:
         self.projector_thread = threading.Thread(name='Projector_main_thread', target=run_projector, args=(watchlist,info_queue,))
         self.projector_thread.start()
 
+    def projector_thread_is_alive(self):
+        #Check if thread is alive
+        if (self.projector_thread != None):
+            alive = self.projector_thread.is_alive()
+        else:
+            alive = False
+
+        return alive
+
 if __name__ == '__main__':
     main()

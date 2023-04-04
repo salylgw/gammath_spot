@@ -142,5 +142,14 @@ class GSCORER:
         self.analyzer_and_scorer_thread = threading.Thread(name='AnSc_main_thread', target=run_analyzer_and_scorer, args=(watchlist,info_queue,))
         self.analyzer_and_scorer_thread.start()
 
+    def analyzer_and_scorer_thread_is_alive(self):
+        #Check if thread is alive
+        if (self.analyzer_and_scorer_thread != None):
+            alive = self.analyzer_and_scorer_thread.is_alive()
+        else:
+            alive = False
+
+        return alive
+
 if __name__ == '__main__':
     main()

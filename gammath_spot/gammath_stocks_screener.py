@@ -141,5 +141,14 @@ class GSCREENER:
         self.screener_thread = threading.Thread(name='Screener_main_thread', target=run_screener, args=(screener,info_queue,))
         self.screener_thread.start()
 
+    def screener_thread_is_alive(self):
+        #Check if thread is alive
+        if (self.screener_thread != None):
+            alive = self.screener_thread.is_alive()
+        else:
+            alive = False
+
+        return alive
+
 if __name__ == '__main__':
     main()

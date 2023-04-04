@@ -129,5 +129,14 @@ class GHISTORIAN:
         self.historian_thread = threading.Thread(name='Historian_main_thread', target=run_historian, args=(watchlist,info_queue,))
         self.historian_thread.start()
 
+    def historian_thread_is_alive(self):
+        #Check if thread is alive
+        if (self.historian_thread != None):
+            alive = self.historian_thread.is_alive()
+        else:
+            alive = False
+
+        return alive
+
 if __name__ == '__main__':
     main()

@@ -137,6 +137,15 @@ class GBACKTESTER:
         self.backtester_thread = threading.Thread(name='Backtester_main_thread', target=run_backtester, args=(watchlist,info_queue,))
         self.backtester_thread.start()
 
+    def backtester_thread_is_alive(self):
+        #Check if thread is alive
+        if (self.backtester_thread != None):
+            alive = self.backtester_thread.is_alive()
+        else:
+            alive = False
+
+        return alive
+
 
 if __name__ == '__main__':
     main()

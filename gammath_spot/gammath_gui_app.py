@@ -53,6 +53,13 @@ class Gammath_SPOT_GUI:
         self.historian_pb = None
         self.backtester_pb = None
         self.screener_pb = None
+        self.gui_tool_if_thread = None
+        self.gscraper = None
+        self.gscorer = None
+        self.gprojector = None
+        self.ghistorian = None
+        self.gbacktester = None
+        self.gscreener = None
 
         #Revisit if/when scrollbar works well
         self.MAX_WL_ENTRIES = 12
@@ -126,6 +133,38 @@ class Gammath_SPOT_GUI:
 
         #Start the event loop
         self.root.mainloop()
+
+    def is_any_if_thread_alive(self):
+        any_thread_alive = False
+
+        if (self.gui_tool_if_thread_is_alive()):
+            any_thread_alive = True
+
+        if (self.gscraper != None):
+            if (self.gscraper.scraper_thread_is_alive()):
+                any_thread_alive = True
+
+        if (self.gscorer != None):
+            if (self.gscorer.analyzer_and_scorer_thread_is_alive()):
+                any_thread_alive = True
+
+        if (self.gprojector != None):
+            if (self.gprojector.projector_thread_is_alive()):
+                any_thread_alive = True
+
+        if (self.ghistorian != None):
+            if (self.ghistorian.historian_thread_is_alive()):
+                any_thread_alive = True
+
+        if (self.gbacktester != None):
+            if (self.gbacktester.backtester_thread_is_alive()):
+                any_thread_alive = True
+
+        if (self.gscreener != None):
+            if (self.gscreener.screener_thread_is_alive()):
+                any_thread_alive = True
+
+        return any_thread_alive
 
     def get_canvas_dimensions_in_inches(self):
         return 8, 1.2
@@ -759,6 +798,15 @@ class Gammath_SPOT_GUI:
     def launch_gui_tool_if_thread(self, tool, msg_queue):
         self.gui_tool_if_thread = threading.Thread(name=f'GUI_{tool}_thread', target=self.gui_tool_if, args=(msg_queue,))
         self.gui_tool_if_thread.start()
+
+    def gui_tool_if_thread_is_alive(self):
+        #Check if thread is alive
+        if (self.gui_tool_if_thread != None):
+            alive = self.gui_tool_if_thread.is_alive()
+        else:
+            alive = False
+
+        return alive
 
     def add_watchlist_widget(self):
         self.table_entry = []
