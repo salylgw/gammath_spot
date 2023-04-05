@@ -131,40 +131,92 @@ class Gammath_SPOT_GUI:
         #Load default watchlist (if any)
         self.load_watchlist(self.curr_watchlist)
 
+        #Add a close button callback for main window
+        #We want to check if any tool is running before closing GUI app
+        self.root.protocol("WM_DELETE_WINDOW", self.checked_exit)
+
         #Start the event loop
         self.root.mainloop()
 
     def is_any_if_thread_alive(self):
         any_thread_alive = False
+        tool = ''
 
+        #Check if Tool IF thread is running
         if (self.gui_tool_if_thread_is_alive()):
             any_thread_alive = True
 
+        #Check if Scraper is running
         if (self.gscraper != None):
             if (self.gscraper.scraper_thread_is_alive()):
                 any_thread_alive = True
+                tool = 'Scraper'
 
+        #Check if Analyzer/Scorer is running
         if (self.gscorer != None):
             if (self.gscorer.analyzer_and_scorer_thread_is_alive()):
                 any_thread_alive = True
+                tool = 'Scorer'
 
+        #Check if Projector is running
         if (self.gprojector != None):
             if (self.gprojector.projector_thread_is_alive()):
                 any_thread_alive = True
+                tool = 'Projector'
 
+        #Check if Historian is running
         if (self.ghistorian != None):
             if (self.ghistorian.historian_thread_is_alive()):
                 any_thread_alive = True
+                tool = 'Historian'
 
+        #Check if Backtester is running
         if (self.gbacktester != None):
             if (self.gbacktester.backtester_thread_is_alive()):
                 any_thread_alive = True
+                tool = 'Backtester'
 
+        #Check if Screener is running
         if (self.gscreener != None):
             if (self.gscreener.screener_thread_is_alive()):
                 any_thread_alive = True
+                tool = 'Screener'
 
-        return any_thread_alive
+        return any_thread_alive, tool
+
+    def show_tool_running_message(self, tool):
+        #Create a window for screener info entry
+        self.tool_running_msg_window = Toplevel(self.app_frame)
+
+        #Disable window resizing
+        self.tool_running_msg_window.resizable(FALSE, FALSE)
+
+        #Give a title to the window
+        self.tool_running_msg_window.title('Active run')
+
+        #Create a frame for showing active tool msg
+        self.tool_running_frame = ttk.Frame(self.tool_running_msg_window, padding=10)
+        self.tool_running_frame.grid(row=0, column=0, rowspan=3)
+        curr_row_num = 1
+
+        #Label with helpful text
+        #For now suggest closing console window that launched this GUI
+        self.tool_running_label = ttk.Label(self.tool_running_frame, text=f'{tool} is still running.\nExiting the app in the middle can cause undesired results.\nIf you must exit then please close the window from which this app was launched.', font=self.app_frame_label_font)
+        self.tool_running_label.grid(row=curr_row_num, column=0)
+
+    def checked_exit(self):
+        #Check if any tools is running
+        alive, tool = self.is_any_if_thread_alive()
+
+        #If none running then okay to close this app
+        if (alive == False):
+            #OK to close the GUI app
+            self.root.destroy()
+        else:
+            #Show a message showing tool still active
+            #Prompt msg that if the user must, just close the console window
+            #from where this GUI was launched
+            self.show_tool_running_message(tool)
 
     def get_canvas_dimensions_in_inches(self):
         return 8, 1.2
@@ -369,7 +421,7 @@ class Gammath_SPOT_GUI:
         #Disable window resizing
         self.screener_window.resizable(FALSE, FALSE)
 
-        #Give a tile to the window
+        #Give a title to the window
         self.screener_window.title('Screener')
 
         #Create a frame for micro-gScore filtering entries
@@ -472,10 +524,10 @@ class Gammath_SPOT_GUI:
         #Disable window resizing
         self.about_window.resizable(FALSE, FALSE)
 
-        #Give a tile to the window
+        #Give a title to the window
         self.about_window.title('Stock Price Opining Toolset')
 
-        #Create a frame for micro-gScore filtering entries
+        #Create a frame for About data
         self.about_frame = ttk.Frame(self.about_window, padding=10)
         self.about_frame.grid(row=0, column=0, rowspan=3)
         curr_row_num = 1
