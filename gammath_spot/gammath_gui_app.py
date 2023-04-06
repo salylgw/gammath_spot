@@ -516,6 +516,55 @@ class Gammath_SPOT_GUI:
         #Place it next to cancel button
         wl_name_ok_button.grid(row=curr_row_num, column=1, sticky=(W))
 
+    def add_results_info_widget(self):
+
+        #Create a window for results info
+        self.results_window = Toplevel(self.app_frame)
+
+        #Disable window resizing
+        self.results_window.resizable(FALSE, FALSE)
+
+        #Give a title to the window
+        self.results_window.title('Results info')
+
+        #Create a frame for results entries
+        #Need to show watchlist name, results dir path, overall gscores summary
+        self.results_frame = ttk.Frame(self.results_window, padding=20)
+        self.results_frame.grid(row=0, column=0, columnspan=5)
+
+        #Get current watchlist name
+        if (self.curr_watchlist == None):
+            wl_text = 'None'
+            detailed_results_dir = ''
+        else:
+            #Extract name of the watchlist
+            wl_text = os.path.basename(self.curr_watchlist).split('.')[0]
+
+            #Get full path to make it easier for use to locate the results dir
+            detailed_results_dir = os.getcwd() + '/' + 'tickers'
+
+        curr_wl_text = f'Current watchlist name is {wl_text}'
+
+        #Create a label showing current watchlist name
+        self.results_label1 = ttk.Label(self.results_frame, text=curr_wl_text, font=self.app_frame_label_font)
+        self.results_label1.grid(row=0, column=0, columnspan=5)
+
+        #Get full path file name of overall gScores summary
+        overall_results_file = detailed_results_dir + '/' + f'{wl_text}_overall_gscores.csv'
+        try:
+            df = pd.read_csv(overall_results_file)
+            detailed_results_text = f'Detailed results can be found in: {detailed_results_dir}'
+        except:
+            detailed_results_text = 'Scorer not run yet for current watchlist'
+
+        #Display the full path for user to be able to know where to browse on local machine
+        #Or a message showing that scorer is not run yet
+        self.results_label2 = ttk.Label(self.results_frame, text=detailed_results_text, font=self.app_frame_label_font)
+        self.results_label2.grid(row=1, column=0, columnspan=5)
+
+        #Placeholder to display overall gScore summary
+
+
     def show_gssw_info(self):
 
         #Create a window for screener info entry
@@ -555,6 +604,9 @@ class Gammath_SPOT_GUI:
         #Item for Screener
         self.menu_screener = Menu(self.menubar)
 
+        #Item for Results
+        self.menu_results = Menu(self.menubar)
+
         #Item for About
         self.menu_about = Menu(self.menubar)
 
@@ -576,6 +628,10 @@ class Gammath_SPOT_GUI:
         #Add menu item to enter screening info
         self.menubar.add_cascade(menu=self.menu_screener, label='Screener')
         self.menu_screener.add_command(label='Screener Info', command=self.add_screener_info_widget)
+
+        #Add menu item to show results info
+        self.menubar.add_cascade(menu=self.menu_results, label='Results')
+        self.menu_results.add_command(label='Results Info', command=self.add_results_info_widget)
 
         #Menu item to show info software info
         self.menubar.add_cascade(menu=self.menu_about, label='About')
