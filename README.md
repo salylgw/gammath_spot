@@ -1,8 +1,8 @@
 
 ![Alt text](https://raw.githubusercontent.com/salylgw/gammath_spot/main/gammath_spot/data/logo.png)
 
-# Gammath™ SPOT
-**S**tock **P**rice-**O**pining **T**oolset is a DIY stock technical analysis software. It is used to analyze stocks and compute gScore (Gammath Works' stock analysis score) that indicates the degree to which a stock is trading at a perceived discount or at a perceived premium. It also provides tools to generate price projection, gScore-history, backtesting and stock screening. Together, these can help in making your own stock-specific buy, sell, hold decisions. SPOT supports a Graphical User Interface (GUI) and a Command Line Interface (CLI).
+# Gammath SPOT
+**S**tock **P**rice-**O**pining **T**oolset is a DIY stock technical analysis software that supports Graphical User Interface (GUI) and Command Line Interface (CLI). It is used to analyze stocks and compute a stock analysis score --- I'm calling it gScore (pronounced as "*ga Score*") --- to represent Gammath Works' stock analysis score. It indicates the degree to which a stock is trading at a perceived discount or at a perceived premium. SPOT also provides tools to generate price projection, support and resistance lines, gScore-history, backtesting and stock screening. Together, these can help in making your own stock-specific buy, sell, hold decisions.
 
 # How does it do that? It does this in six parts:
 1. It provides a `gammath_stocks_data_scraper.py` app that scrapes the web to obtain stock information necessary for algorithmic analysis and scoring.
@@ -54,11 +54,11 @@ Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot
  5. Run `docker build --no-cache=true --tag=gammathworks/gammath_spot .`.
 
 
-# HOWTO get prebuilt Gammath™ SPOT docker image to use CLI
+# HOWTO get prebuilt Gammath SPOT docker image to use CLI
  1. Repeat first three steps above.
  2. Run `docker pull gammathworks/gammath_spot`.
 
-# HOWTO to run containerized Gammath™ SPOT with CLI
+# HOWTO to run containerized Gammath SPOT with CLI
  1. Run docker desktop/engine that you installed.
  2. Open terminal or command prompt.
  3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash`.
@@ -66,7 +66,7 @@ Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot
 
 
 # HOWTO run these apps
-1. If you installed this software to use it with the GUI then run: `gammath_spot_gui > log_gui.txt`. If not installed but just obtained the source code then go to the directory gammath_spot/gammath_spot where all the source files are and run: `python gammath_gui_app.py > log_gui.txt`. `log_gui.txt` should contain the GUI app's log. The GUI is self-explanatory to run the tools, watchlists operations, screeners etc. It is still under development and is made available as it enhances the ease-of-use. When using the GUI, the user need not use the commands in following instructions. However, the information about path information on where data and results are saved is still relevant. User can use that information to directly browse and view the data and results using native apps on the machine such as file explorer, PDF viewer etc.
+1. If you installed this software to use it with the GUI then run: `gammath_spot_gui > log_gui.txt`. If not installed but just obtained the source code then go to the directory gammath_spot/gammath_spot where all the source files are and run: `python gammath_gui_app.py > log_gui.txt`. `log_gui.txt` should contain the GUI app's log. The GUI is self-explanatory to run the tools, watchlists operations, screeners, get results info etc. It is still under development and is made available as it enhances the ease-of-use. When using the GUI, the user need not use the commands in following instructions. However, the information about path information on where data and results are saved is still relevant. User can use that information to directly browse and view the data and results using native apps on the machine such as file explorer, spreadsheet viewer, PDF viewer etc.
 1. If you want to use the CLI and installed this software then run: `gammath_scraper sample_watchlist.csv > log_scraper.txt`. See  [sample_watchlist.csv](https://github.com/salylgw/gammath_spot/blob/main/gammath_spot/sample_watchlist.csv). If not installed but just obtained the source code then go to the directory gammath_spot/gammath_spot where all the source files are and run: `python gammath_stocks_data_scraper.py sample_watchlist.csv > log_scraper.txt`.
 1. Above step will save the scraper log in `log_scraper.txt` and save the scraped, formatted data in `tickers` sub-directory. Running the data scraper is essential to be able to use rest of the tools.
 1. If you want to use the CLI and installed this software then run: `gammath_scorer sample_watchlist.csv > log_scorer.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_analyzer_and_scorer.py sample_watchlist.csv > log_scorer.txt`.
@@ -80,7 +80,7 @@ Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot
 1. If you want to use the CLI and want to screen stocks based on micro-gScores and have installed this software then run: `gammath_screener screener.csv > log_screener.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_screener.py screener.csv > log_screener.txt`. Note that the filtering criteria (micro-gScores values) is specified in `screener.csv` and the results can be found in `tickers/screened_watchlist.csv`.
 
 
-# HOWTO to get Gammath™ SPOT data from Docker desktop to your PC/MAC
+# HOWTO to get Gammath SPOT data from Docker desktop to your PC/MAC
 1. Run docker desktop
 1. Click on "Volumes"
 1. Click on the Volume name
@@ -103,3 +103,5 @@ If you have any questions, then please contact me using this [form](https://www.
 
 # Happy SPOTing!
 *Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact me using this [form](https://www.gammathworks.com/contact) indicating your area of interest and expertise</u><u></u>*
+
+*Gammth and SPOT are registered trade/service marks*.

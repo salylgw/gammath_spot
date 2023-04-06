@@ -551,11 +551,17 @@ class Gammath_SPOT_GUI:
 
         #Get full path file name of overall gScores summary
         overall_results_file = detailed_results_dir + '/' + f'{wl_text}_overall_gscores.csv'
+
         try:
             df = pd.read_csv(overall_results_file)
             detailed_results_text = f'Detailed results can be found in: {detailed_results_dir}'
         except:
             detailed_results_text = 'Scorer not run yet for current watchlist'
+
+            #Check if Analyzer/Scorer is running
+            if (self.gscorer != None):
+                if (self.gscorer.analyzer_and_scorer_thread_is_alive()):
+                    detailed_results_text = 'Anayzer and Scorer run in progress'
 
         #Display the full path for user to be able to know where to browse on local machine
         #Or a message showing that scorer is not run yet
