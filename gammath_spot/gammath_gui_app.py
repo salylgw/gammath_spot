@@ -765,7 +765,8 @@ class Gammath_SPOT_GUI:
 
         #Launch Scraper tool thread
         self.gscraper = gsds.GSCRAPER()
-        self.gscraper.launch_scraper_thread(self.curr_watchlist, self.msg_queue)
+        base_file_name = os.path.basename(self.curr_watchlist)
+        self.gscraper.launch_scraper_thread(base_file_name, self.msg_queue)
 
     def invoke_scorer(self):
         #Disable tools buttons and start progress bar
@@ -776,7 +777,8 @@ class Gammath_SPOT_GUI:
 
         #Launch Analyzer/Scorer tool thread
         self.gscorer = gsas.GSCORER()
-        self.gscorer.launch_analyzer_and_scorer_thread(self.curr_watchlist, self.msg_queue)
+        base_file_name = os.path.basename(self.curr_watchlist)
+        self.gscorer.launch_analyzer_and_scorer_thread(base_file_name, self.msg_queue)
 
 
     def invoke_projector(self):
@@ -788,7 +790,8 @@ class Gammath_SPOT_GUI:
 
         #Launch Projector tool thread
         self.gprojector = gspep.GPROJECTOR()
-        self.gprojector.launch_projector_thread(self.curr_watchlist, self.msg_queue)
+        base_file_name = os.path.basename(self.curr_watchlist)
+        self.gprojector.launch_projector_thread(base_file_name, self.msg_queue)
 
     def invoke_historian(self):
         #Disable tools buttons and start progress bar
@@ -799,7 +802,8 @@ class Gammath_SPOT_GUI:
 
         #Launch Historian tool thread
         self.ghistorian = gsgh.GHISTORIAN()
-        self.ghistorian.launch_historian_thread(self.curr_watchlist, self.msg_queue)
+        base_file_name = os.path.basename(self.curr_watchlist)
+        self.ghistorian.launch_historian_thread(base_file_name, self.msg_queue)
 
     def invoke_backtester(self):
         #Disable tools buttons and start progress bar
@@ -810,7 +814,8 @@ class Gammath_SPOT_GUI:
 
         #Launch Backtester tool thread
         self.gbacktester = gsbt.GBACKTESTER()
-        self.gbacktester.launch_backtester_thread(self.curr_watchlist, self.msg_queue)
+        base_file_name = os.path.basename(self.curr_watchlist)
+        self.gbacktester.launch_backtester_thread(base_file_name, self.msg_queue)
 
     def invoke_screener(self):
         #Disable tools buttons and start progress bar
