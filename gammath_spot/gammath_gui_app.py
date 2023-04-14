@@ -268,7 +268,7 @@ class Gammath_SPOT_GUI:
 
                 #Keep remaining fields (if any) cleared
                 if (df_len < self.MAX_WL_ENTRIES):
-                    for i in range(len(df), self.MAX_WL_ENTRIES):
+                    for i in range(df_len, self.MAX_WL_ENTRIES):
                         self.table_entry[i].set('')
             except:
                 print('Failed to open watchlist file')
@@ -516,21 +516,26 @@ class Gammath_SPOT_GUI:
         #Place it next to cancel button
         wl_name_ok_button.grid(row=curr_row_num, column=1, sticky=(W))
 
+    def results_window_cleanup(self):
+        #Cleanup the fields used for results widget
+        del self.results_column_name_entry
+        del self.results_column_name_entry_handle
+        del self.results_column_value_entry
+        del self.results_column_value_entry_handle
+
+        #Remove the results window
+        self.results_window.destroy()
+
     def add_results_info_widget(self):
 
         #Create a window for results info
         self.results_window = Toplevel(self.app_frame)
 
+        #Add a cleanup function for results window
+        self.results_window.protocol("WM_DELETE_WINDOW", self.results_window_cleanup)
+
         #Disable window resizing
         self.results_window.resizable(FALSE, FALSE)
-
-        #Give a title to the window
-        self.results_window.title('Results info')
-
-        #Create a frame for results entries
-        #Need to show watchlist name, results dir path, overall gscores summary
-        self.results_frame = ttk.Frame(self.results_window, padding=20)
-        self.results_frame.grid(row=0, column=0, columnspan=5)
 
         #Get current watchlist name
         if (self.curr_watchlist == None):
@@ -543,18 +548,53 @@ class Gammath_SPOT_GUI:
             #Get full path to make it easier for use to locate the results dir
             detailed_results_dir = os.getcwd() + '/' + 'tickers'
 
-        curr_wl_text = f'Current watchlist name is {wl_text}'
+        #Give a title to the window
+        window_title = f'Results info for watchlist {wl_text}'
+        self.results_window.title(window_title)
 
-        #Create a label showing current watchlist name
-        self.results_label1 = ttk.Label(self.results_frame, text=curr_wl_text, font=self.app_frame_label_font)
-        self.results_label1.grid(row=0, column=0, columnspan=5)
+        #Create a frame for results entries
+        self.results_frame = ttk.Frame(self.results_window)
+        self.results_frame.grid(row=0, column=0, columnspan=5)
+
+        #Create a widget to display overall gScore summary
+        self.add_results_table_widget()
 
         #Get full path file name of overall gScores summary
         overall_results_file = detailed_results_dir + '/' + f'{wl_text}_overall_gscores.csv'
 
         try:
             df = pd.read_csv(overall_results_file)
-            detailed_results_text = f'Detailed results can be found in: {detailed_results_dir}'
+            detailed_results_text = f'Detailed results in: {detailed_results_dir}'
+
+            #We need the dataframe len for number of entries
+            df_len = len(df)
+
+            #Only show max entries until the scrollbar works well
+            display_items_len = min(df_len, self.MAX_WL_ENTRIES)
+
+            #Get columns info for the results
+            results_main_columns = gut.get_gscores_results_df_columns()
+            num_of_columns = len(results_main_columns)
+            for i in range(num_of_columns):
+                #Column index for entry placement
+                column_name_index = (self.MAX_WL_ENTRIES*i)
+                #Create a table for column values using the Entry widget
+                for j in range(display_items_len):
+                    #Input var
+                    self.results_column_value_entry[column_name_index+j].set(df[results_main_columns[i]][j])
+
+                #Clear the fields that are empty
+                for j in range(display_items_len, self.MAX_WL_ENTRIES):
+                    self.results_column_value_entry[column_name_index+j].set('')
+
+            for i in range(num_of_columns):
+                #Display column headers
+                self.results_column_name_entry_handle[i].grid(row=0, column=i)
+                column_name_index = (self.MAX_WL_ENTRIES*i)
+                #Create a table for column values using the Entry widget
+                for j in range(self.MAX_WL_ENTRIES):
+                    #Input var
+                    self.results_column_value_entry_handle[j + column_name_index].grid(row=(1+j), column=i)
         except:
             detailed_results_text = 'Scorer not run yet for current watchlist'
 
@@ -566,9 +606,9 @@ class Gammath_SPOT_GUI:
         #Display the full path for user to be able to know where to browse on local machine
         #Or a message showing that scorer is not run yet
         self.results_label2 = ttk.Label(self.results_frame, text=detailed_results_text, font=self.app_frame_label_font)
-        self.results_label2.grid(row=1, column=0, columnspan=5)
 
-        #Placeholder to display overall gScore summary
+        #Display the path after the table
+        self.results_label2.grid(row=(self.MAX_WL_ENTRIES+1), column=0, columnspan=5)
 
 
     def show_gssw_info(self):
@@ -935,8 +975,46 @@ class Gammath_SPOT_GUI:
         for i in range(self.MAX_WL_ENTRIES):
             #Input var
             self.table_entry.append(StringVar())
-            self.table_entry_handle.append(ttk.Entry(self.app_frame, width=20, textvariable=self.table_entry[i]))
+            self.table_entry_handle.append(ttk.Entry(self.app_frame, width=20, textvariable=self.table_entry[i], justify='center'))
             self.table_entry_handle[i].grid(row=(4+i), column=1, padx=70, sticky=(E))
+
+    def add_results_table_widget(self):
+        #Placeholders for results window entry fields
+        self.results_column_name_entry = []
+        self.results_column_name_entry_handle = []
+        self.results_column_value_entry = []
+        self.results_column_value_entry_handle = []
+
+        #Get column headers
+        results_main_columns = gut.get_gscores_results_df_columns()
+        num_of_columns = len(results_main_columns)
+
+        #Create a table to show results
+        for i in range(num_of_columns):
+            column_name_index = (self.MAX_WL_ENTRIES*i)
+            if (results_main_columns[i] != 'Note'):
+                entry_width = 10
+            else:
+                #Notes needs more space
+                entry_width = 30
+
+            #Compose column headers
+            self.results_column_name_entry.append(StringVar())
+            self.results_column_name_entry_handle.append(ttk.Entry(self.results_frame, width=entry_width, justify='center', textvariable=self.results_column_name_entry[i]))
+            self.results_column_name_entry[i].set(results_main_columns[i])
+            #Not editable
+            self.results_column_name_entry_handle[i]['state'] = 'readonly'
+
+            #Create a table for column values using the Entry widget
+            for j in range(self.MAX_WL_ENTRIES):
+                #Input var
+                self.results_column_value_entry.append(StringVar())
+                self.results_column_value_entry_handle.append(ttk.Entry(self.results_frame, width=entry_width, justify='center', textvariable=self.results_column_value_entry[j + column_name_index]))
+                #Not editable
+                self.results_column_value_entry_handle[j + column_name_index]['state'] = 'readonly'
+
+            #Display to be done after filling in values so grid is invoked in the caller
+
 
 def main():
     #Start/Instantiate GUI. Won't return until app is closed

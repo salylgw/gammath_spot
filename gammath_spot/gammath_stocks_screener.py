@@ -74,7 +74,7 @@ def run_screener(sf_name, info_queue):
     subdirs = [x for x in p.iterdir() if x.is_dir()]
 
     #Create a data frame for screened watch list
-    df_list = pd.DataFrame(columns=['Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore'], index=range(len(subdirs)))
+    df_list = pd.DataFrame(columns=gut.get_gscores_results_df_columns(), index=range(len(subdirs)))
 
     count = 0
     for subdir in subdirs:

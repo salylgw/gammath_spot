@@ -99,6 +99,11 @@ def get_gscores_screening_df_columns():
 
     return gscores_screening_columns
 
+def get_gscores_results_df_columns():
+    gscores_results_columns = ('Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore', 'Note')
+
+    return gscores_results_columns
+
 def check_if_same_day(fstat):
 
     fct_time = time.ctime(fstat.st_ctime).split(' ')
@@ -217,7 +222,7 @@ class GUTILS:
         #Pattern for note
         pattern_for_note = re.compile(r'(Note):([\s]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*[_]*[A-Z]*)')
 
-        df_b = pd.DataFrame(columns=['Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore', 'Note'], index=range(watchlist_len))
+        df_b = pd.DataFrame(columns=get_gscores_results_df_columns(), index=range(watchlist_len))
 
         i = 0
         for symbol in symbols_list:
