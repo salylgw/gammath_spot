@@ -232,11 +232,12 @@ class Gammath_SPOT_GUI:
         self.curr_watchlist_len = 0
         wl_label = 'Watchlist'
 
+        self.curr_watchlist = wl_name
+
         if (wl_name != None):
             try:
                 curr_watchlist_len = len(pd.read_csv(wl_name))
                 self.curr_watchlist_len =  curr_watchlist_len
-                self.curr_watchlist = wl_name
                 loaded_wl_name = os.path.basename(wl_name).split('.')[0]
                 #Update the label in watchlist widget
                 wl_label = f'Watchlist Name: {loaded_wl_name}'
@@ -246,6 +247,9 @@ class Gammath_SPOT_GUI:
         self.wl_label_text.set(wl_label)
 
     def create_new_watchlist(self):
+        #Disable all buttons until watchlist is saved
+        self.update_all_buttons_state('disable')
+
         #Just clear up the watchist widget for new entries
         for i in range(self.MAX_WL_ENTRIES):
             self.table_entry[i].set('')
@@ -285,7 +289,7 @@ class Gammath_SPOT_GUI:
             #Read the data from table
             sym = self.table_entry[i].get()
             if (sym != ''):
-                df.Symbol[i] = sym
+                df.Symbol[count] = sym
                 count += 1
 
         if (count):
@@ -315,6 +319,8 @@ class Gammath_SPOT_GUI:
 
         #Delete the window
         self.wl_name_window.destroy()
+
+        self.update_all_buttons_state('enable')
 
     def get_save_as_watchlist_name(self):
 
