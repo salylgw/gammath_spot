@@ -230,7 +230,7 @@ class Gammath_SPOT_GUI:
     def set_curr_watchlist(self, wl_name):
         #Setup all watchlist items for current watchlist
         self.curr_watchlist_len = 0
-        wl_label = 'Watchlist'
+        wl_label = 'Watchlist. Save before using'
 
         self.curr_watchlist = wl_name
 
@@ -607,7 +607,7 @@ class Gammath_SPOT_GUI:
             #Check if Analyzer/Scorer is running
             if (self.gscorer != None):
                 if (self.gscorer.analyzer_and_scorer_thread_is_alive()):
-                    detailed_results_text = 'Anayzer and Scorer run in progress'
+                    detailed_results_text = 'Analyzer and Scorer run in progress'
 
         #Display the full path for user to be able to know where to browse on local machine
         #Or a message showing that scorer is not run yet
@@ -868,6 +868,9 @@ class Gammath_SPOT_GUI:
         #Disable tools buttons and start progress bar
         self.set_buttons_pb_state('Scraper')
 
+        #Disable updating the watchlist while scraper is running
+        self.set_watchlist_entry_widget_state('disable')
+
         #Launch GUI interface thread for Scraper tool
         self.launch_gui_tool_if_thread('Scraper', self.msg_queue)
 
@@ -879,6 +882,9 @@ class Gammath_SPOT_GUI:
     def invoke_scorer(self):
         #Disable tools buttons and start progress bar
         self.set_buttons_pb_state('Scorer')
+
+        #Disable updating the watchlist while analyzer/scorer is running
+        self.set_watchlist_entry_widget_state('disable')
 
         #Launch GUI interface thread for Scorer tool
         self.launch_gui_tool_if_thread('Scorer', self.msg_queue)
@@ -952,6 +958,8 @@ class Gammath_SPOT_GUI:
                     pb['value'] = progress_data
                     #Re-enable all tools buttons
                     self.update_all_buttons_state('enable')
+                    #Re-enable watchlist entry widget
+                    self.set_watchlist_entry_widget_state('enable')
                     msg_queue.task_done()
                     return
                 else:
@@ -972,6 +980,15 @@ class Gammath_SPOT_GUI:
             alive = False
 
         return alive
+
+    def set_watchlist_entry_widget_state(self, state):
+        #Set the correct state for ticker symbols entry widget
+        for i in range(self.MAX_WL_ENTRIES):
+            #Input var
+            if (state == 'disable'):
+                self.table_entry_handle[i]['state'] = 'readonly'
+            else:
+                self.table_entry_handle[i]['state'] = 'normal'
 
     def add_watchlist_widget(self):
         self.table_entry = []
