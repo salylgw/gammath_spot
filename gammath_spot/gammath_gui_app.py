@@ -21,6 +21,7 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 from tkinter import *
 from tkinter import ttk
 from tkinter import font
+from tkinter import filedialog
 import threading, queue
 import os
 from pathlib import Path
@@ -543,6 +544,8 @@ class Gammath_SPOT_GUI:
         #Disable window resizing
         self.results_window.resizable(FALSE, FALSE)
 
+        detailed_results_text = None
+
         #Get current watchlist name
         if (self.curr_watchlist == None):
             wl_text = 'None'
@@ -570,7 +573,6 @@ class Gammath_SPOT_GUI:
 
         try:
             df = pd.read_csv(overall_results_file)
-            detailed_results_text = f'Detailed results in: {detailed_results_dir}'
 
             #We need the dataframe len for number of entries
             df_len = len(df)
@@ -601,21 +603,47 @@ class Gammath_SPOT_GUI:
                 for j in range(self.MAX_WL_ENTRIES):
                     #Input var
                     self.results_column_value_entry_handle[j + column_name_index].grid(row=(1+j), column=i)
+
         except:
             detailed_results_text = 'Scorer not run yet for current watchlist'
 
-            #Check if Analyzer/Scorer is running
-            if (self.gscorer != None):
-                if (self.gscorer.analyzer_and_scorer_thread_is_alive()):
-                    detailed_results_text = 'Analyzer and Scorer run in progress'
+        #Check if Analyzer/Scorer is running
+        if (self.gscorer != None):
+            if (self.gscorer.analyzer_and_scorer_thread_is_alive()):
+                detailed_results_text = 'Analyzer and Scorer run in progress'
 
-        #Display the full path for user to be able to know where to browse on local machine
-        #Or a message showing that scorer is not run yet
-        self.results_label2 = ttk.Label(self.results_frame, text=detailed_results_text, font=self.app_frame_label_font)
+        if (detailed_results_text != None):
+            #Message showing scorer status with respect to current watchlist
+            self.results_label2 = ttk.Label(self.results_frame, text=detailed_results_text, font=self.app_frame_label_font)
 
-        #Display the path after the table
-        self.results_label2.grid(row=(self.MAX_WL_ENTRIES+1), column=0, columnspan=5)
+            #Display the path after the table
+            self.results_label2.grid(row=(self.MAX_WL_ENTRIES+1), column=0, columnspan=5)
+        else:
+            #Show browse results button
+            self.browse_results_button = ttk.Button(self.results_frame, text="Browse_results", command=self.launch_browse_thread)
+            self.browse_results_button.grid(row=self.MAX_WL_ENTRIES+2, column=2, columnspan=2, sticky=(E))
 
+
+    def show_dir_path_info(self):
+        #Create a window for showing results path
+        self.dir_path_window = Toplevel(self.app_frame)
+
+        #Disable window resizing
+        self.dir_path_window.resizable(FALSE, FALSE)
+
+        #Title showing what it is
+        self.dir_path_window.title('Results directory info')
+
+        #Create a frame for results dir info
+        self.dir_path_frame = ttk.Frame(self.dir_path_window, padding=10)
+        self.dir_path_frame.grid(row=0, column=0, columnspan=5)
+
+        #Get the full path of base dir where results are stored
+        dir_string = os.getcwd() + '/' + 'tickers'
+
+        #Create a label showing where to browse for results
+        self.dir_path_label = ttk.Label(self.dir_path_frame, text=f'{dir_string}', font=self.app_frame_label_font)
+        self.dir_path_label.grid(row=0, column=0, columnspan=5)
 
     def show_gssw_info(self):
 
@@ -941,6 +969,26 @@ class Gammath_SPOT_GUI:
         #Launch Screener tool thread
         self.gscreener = gssc.GSCREENER()
         self.gscreener.launch_screener_thread(self.curr_screener, self.msg_queue)
+
+    def browse_results_dir(self):
+        #Show the info on where to browse
+        self.show_dir_path_info()
+
+        #try:
+            #Allow use to browse into specific sub-directory
+        #    file_name = filedialog.askopenfilename(initialdir='tickers')
+            #Open and associating with correct program will work on MAC; not on Windows.
+            #Need to experiment and test for this
+        #    os.system(f'open {file_name}')
+        #except:
+             #In case open is not supported on specific platform then just show the results dir
+        #    self.show_dir_path_info()
+        #return
+
+    def launch_browse_thread(self):
+        #Create a thread to browse results dir
+        self.browse_dir_thread = threading.Thread(name=f'Browse_dir_thread', target=self.browse_results_dir, args=())
+        self.browse_dir_thread.start()
 
     def gui_tool_if(self, msg_queue):
 
