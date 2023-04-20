@@ -87,7 +87,11 @@ def get_qbs_signals(tsymbol, path, df_summ):
         df = pd.read_csv(path / f'{tsymbol}_qbs.csv', index_col='Unnamed: 0')
 
         if (len(df) == 0):
+            qbs_max_score += 2
+
+            #This will show 0/2 for balance sheet component of qbs micro-gScore
             qbs_string += 'No balance sheet data'
+
         else:
 
             #Get the most recent quarter date
@@ -158,8 +162,12 @@ def get_qbs_signals(tsymbol, path, df_summ):
             #Max score from debt data
             qbs_max_score += 1
     else:
-        #This will show 0/4 when no balance sheet data
+
+        qbs_max_score += 2
+
+        #This will show 0/2 for balance sheet component of qbs micro-gScore
         qbs_string += 'No balance sheet data'
+
 
     qbs_grec = f'qbs_gscore:{qbs_gscore}/{qbs_max_score}'
 

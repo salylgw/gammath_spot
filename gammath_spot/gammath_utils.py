@@ -57,7 +57,10 @@ def set_child_process_start_method():
 def get_usable_cpu_count():
 
     #Check how many cores we have to be able to run in parallel
-    #Need to check portability on this. os.uname().sysname could be used to make it OS-specific
+    #Need to check portability on this.
+    #os.name can be used to check posix
+    #os.name 'nt' could be used for windows as os.uname won't be supported on Windows
+    #If os.name is 'posix' then os.uname().sysname could be used to check which OS
     try:
         cores_to_use = len(os.sched_getaffinity(0))
     except:

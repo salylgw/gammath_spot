@@ -98,6 +98,10 @@ class Gammath_SPOT_GUI:
         #Set title for the main window
         self.root.title("Gammath SPOT")
 
+        #Save windowing system string for reference
+        #Could be used for portability nuance
+        self.windowing_system_string = self.root.tk.call('tk', 'windowingsystem')
+
         #Keep pixels per inch count for setting widget dimensions
         self.pixels_per_inch=self.root.winfo_pixels('1i')
 
@@ -619,8 +623,9 @@ class Gammath_SPOT_GUI:
             #Display the path after the table
             self.results_label2.grid(row=(self.MAX_WL_ENTRIES+1), column=0, columnspan=5)
         else:
+            #Assume browsing will work on all platforms and show dir path if it doesn't
             #Show browse results button
-            self.browse_results_button = ttk.Button(self.results_frame, text="Browse_results", command=self.launch_browse_thread)
+            self.browse_results_button = ttk.Button(self.results_frame, text="Browse results", command=self.launch_browse_thread)
             self.browse_results_button.grid(row=self.MAX_WL_ENTRIES+2, column=2, columnspan=2, sticky=(E))
 
 
@@ -642,7 +647,7 @@ class Gammath_SPOT_GUI:
         dir_string = os.getcwd() + '/' + 'tickers'
 
         #Create a label showing where to browse for results
-        self.dir_path_label = ttk.Label(self.dir_path_frame, text=f'{dir_string}', font=self.app_frame_label_font)
+        self.dir_path_label = ttk.Label(self.dir_path_frame, text=f'Detailed Results can be found in: \n{dir_string}', font=self.app_frame_label_font, justify='center')
         self.dir_path_label.grid(row=0, column=0, columnspan=5)
 
     def show_gssw_info(self):
@@ -970,20 +975,45 @@ class Gammath_SPOT_GUI:
         self.gscreener = gssc.GSCREENER()
         self.gscreener.launch_screener_thread(self.curr_screener, self.msg_queue)
 
-    def browse_results_dir(self):
-        #Show the info on where to browse
-        self.show_dir_path_info()
 
-        #try:
-            #Allow use to browse into specific sub-directory
-        #    file_name = filedialog.askopenfilename(initialdir='tickers')
-            #Open and associating with correct program will work on MAC; not on Windows.
-            #Need to experiment and test for this
-        #    os.system(f'open {file_name}')
-        #except:
-             #In case open is not supported on specific platform then just show the results dir
-        #    self.show_dir_path_info()
-        #return
+    def browse_results_dir(self):
+
+        #We should show detailed results if platform supports it
+        try:
+            #Allow user to browse into specific sub-directory
+            file_name = filedialog.askopenfilename(initialdir='tickers')
+
+            #NOTE: Using filedialog on Mac shows a "python + CATransaction syncronize called within transaction" message.
+            #Linux and Windows don't have this message.
+            #Need to debug this for Mac to see if it is causing any problems
+
+            #It will be empty string if user cancelled so check for that
+            if (file_name != ''):
+                #Run a command in a subshell
+                #Open and associating with correct program will work on Mac; Linux and Windows with different utilities.
+                #'open' works on Mac, 'xdg-open' works on Linux and on Windows, just full path with file name works.
+                #Compose the shell command string
+                if (os.name != 'posix'):
+                    #Just full path with filename and extension for Windows
+                    shell_cmd = f'{file_name}'
+                else:
+                    if (os.uname().sysname == 'Linux'):
+                        #Need xdg-utils on Linux
+                        shell_cmd = f'xdg-open {file_name}'
+                    else:
+                        #open is supported by default on Mac
+                        shell_cmd = f'open {file_name}'
+
+                #Run the shell command to open the chosen file
+                os.system(shell_cmd)
+
+        except:
+            #In case any step for opening the file doesn't work on some platform
+            #then show the results dir info to make it easier for user to browse using native
+            #OS tools
+            self.show_dir_path_info()
+
+        return
 
     def launch_browse_thread(self):
         #Create a thread to browse results dir
