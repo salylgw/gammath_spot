@@ -130,8 +130,8 @@ class Gammath_SPOT_GUI:
         #Add tools buttons and progress bars
         self.add_tool_buttons_and_progress_bars()
 
-        #Add watchlist widget
-        self.add_watchlist_widget()
+        #Add a vertically scrollable widget for watchlist
+        self.create_wl_with_text_widget()
 
         #Load default watchlist (if any)
         self.load_watchlist(self.curr_watchlist)
@@ -235,6 +235,8 @@ class Gammath_SPOT_GUI:
     def set_curr_watchlist(self, wl_name):
         #Setup all watchlist items for current watchlist
         self.curr_watchlist_len = 0
+
+        #Remind user that watchlist needs to be saved to use
         wl_label = 'Watchlist. Save before using'
 
         self.curr_watchlist = wl_name
@@ -244,11 +246,13 @@ class Gammath_SPOT_GUI:
                 curr_watchlist_len = len(pd.read_csv(wl_name))
                 self.curr_watchlist_len =  curr_watchlist_len
                 loaded_wl_name = os.path.basename(wl_name).split('.')[0]
-                #Update the label in watchlist widget
-                wl_label = f'Watchlist Name: {loaded_wl_name}'
+
+                #Update the label text with watchlist name
+                wl_label = f'WList: {loaded_wl_name}'
             except:
                 print('Failed to set watchlist')
 
+        #Update the label
         self.wl_label_text.set(wl_label)
 
     def create_new_watchlist(self):
@@ -256,8 +260,7 @@ class Gammath_SPOT_GUI:
         self.update_all_buttons_state('disable')
 
         #Just clear up the watchist widget for new entries
-        for i in range(self.MAX_WL_ENTRIES):
-            self.table_entry[i].set('')
+        self.wl_with_text_widget.delete('1.0', 'end')
 
         #Reset watchlist label
         self.set_curr_watchlist(None)
@@ -271,14 +274,15 @@ class Gammath_SPOT_GUI:
                 df_len = len(df)
                 self.set_curr_watchlist(wl_name)
 
-                #Fill up the table entries
-                for i in range(min(df_len, self.MAX_WL_ENTRIES)):
-                    self.table_entry[i].set(df.Symbol[i])
+                #Check if watchlist has any data
+                if (df_len):
+                    #Delete all entries
+                    self.wl_with_text_widget.delete('1.0', 'end')
 
-                #Keep remaining fields (if any) cleared
-                if (df_len < self.MAX_WL_ENTRIES):
-                    for i in range(df_len, self.MAX_WL_ENTRIES):
-                        self.table_entry[i].set('')
+                #Fill up the table entries with ticker symbols
+                for i in range(df_len):
+                    self.wl_with_text_widget.insert(f'{i+1}.0', df.Symbol[i] + '\n')
+
             except:
                 print('Failed to open watchlist file')
 
@@ -288,19 +292,27 @@ class Gammath_SPOT_GUI:
             #Need watchlist name
             self.get_save_as_watchlist_name()
 
+        #Get all ticker symbols
+        wl_list = self.wl_with_text_widget.get('1.0', 'end').split('\n')
+
+        #Estimate length for dataframe
+        wl_len = len(wl_list)
+
         count = 0
-        df = pd.DataFrame(columns=['Symbol'], index=range(self.MAX_WL_ENTRIES))
-        for i in range(self.MAX_WL_ENTRIES):
+        df = pd.DataFrame(columns=['Symbol'], index=range(wl_len))
+
+        #Take only non-empty lines
+        for sym in wl_list:
             #Read the data from table
-            sym = self.table_entry[i].get()
             if (sym != ''):
                 df.Symbol[count] = sym
                 count += 1
 
         if (count):
             try:
-                #Save watchlist
-                df.truncate(after=(count-1)).to_csv(self.curr_watchlist, index=False)
+                #Save watchlist after removing empty rows and duplicates
+                df.truncate(after=(count-1)).drop_duplicates().to_csv(self.curr_watchlist, index=False)
+
                 #Set current watchlist to this watchlist
                 self.set_curr_watchlist(self.curr_watchlist)
             except:
@@ -624,8 +636,8 @@ class Gammath_SPOT_GUI:
             self.results_label2.grid(row=(self.MAX_WL_ENTRIES+1), column=0, columnspan=5)
         else:
             #Assume browsing will work on all platforms and show dir path if it doesn't
-            #Show browse results button
-            self.browse_results_button = ttk.Button(self.results_frame, text="Browse results", command=self.launch_browse_thread)
+            self.browse_results_button = ttk.Button(self.results_frame, text="Browse full results", command=self.launch_browse_thread)
+            #Show browse full results button
             self.browse_results_button.grid(row=self.MAX_WL_ENTRIES+2, column=2, columnspan=2, sticky=(E))
 
 
@@ -733,8 +745,8 @@ class Gammath_SPOT_GUI:
         #Create and position the canvas
         self.canvas = Canvas(self.root, width=self.canvas_width_in_pixels, height=self.canvas_height_in_pixels, background='white', borderwidth = 3, relief='solid')
 
-        #Span it over two columns to facilitate placing widgets in the app frame
-        self.canvas.grid(column=0, row=0, columnspan=2)
+        #Span it over three columns to facilitate placing widgets in the app frame
+        self.canvas.grid(column=0, row=0, columnspan=3)
 
     def add_logo(self):
         #Get the logo image dimensions
@@ -757,7 +769,7 @@ class Gammath_SPOT_GUI:
         self.app_frame_height_in_pixels = (height_in_inches*self.pixels_per_inch)
 
         #Create app frame to hold the widgets
-        self.app_frame = ttk.Frame(self.root, width=self.app_frame_width_in_pixels, height=self.app_frame_height_in_pixels, padding="50 30 0 30")
+        self.app_frame = ttk.Frame(self.root, width=self.app_frame_width_in_pixels, height=self.app_frame_height_in_pixels, padding="0 30 0 30")
         self.app_frame.grid(row=self.starting_row_for_app_frame, column=0)
 
         #Use a font for app frame labels
@@ -770,9 +782,8 @@ class Gammath_SPOT_GUI:
         #Create Watchlist label
         self.wl_label_text = StringVar()
         self.wl_label = ttk.Label(self.app_frame, textvariable=self.wl_label_text, font=self.app_frame_label_font)
-        self.wl_label_text.set('Watchlist')
-        self.wl_label.grid(row=1, column=1)
-
+        self.wl_label_text.set('WList')
+        self.wl_label.grid(row=1, column=1, columnspan=2, sticky=(N, W, S))
 
     def add_tool_buttons_and_progress_bars(self):
         #Add Scraper tool button
@@ -783,7 +794,7 @@ class Gammath_SPOT_GUI:
         #Progress bar for Scraper run
         curr_row += 1
         self.scraper_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.scraper_pb.grid(row=curr_row, column=0)
+        self.scraper_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Analyzer and Scorer tool buttons
         curr_row += 1
@@ -793,7 +804,7 @@ class Gammath_SPOT_GUI:
         #Progress bar for Analyzer/Scorer run
         curr_row += 1
         self.scorer_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.scorer_pb.grid(row=curr_row, column=0)
+        self.scorer_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Projector tool button
         curr_row += 1
@@ -803,7 +814,7 @@ class Gammath_SPOT_GUI:
         #Progress bar for Projector run
         curr_row += 1
         self.projector_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=(self.curr_watchlist_len+1), mode='indeterminate')
-        self.projector_pb.grid(row=curr_row, column=0)
+        self.projector_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Historian tool
         curr_row += 1
@@ -813,7 +824,7 @@ class Gammath_SPOT_GUI:
         #Progress bar for Historian run
         curr_row += 1
         self.historian_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.historian_pb.grid(row=curr_row, column=0)
+        self.historian_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Backtester tool button
         curr_row += 1
@@ -823,7 +834,7 @@ class Gammath_SPOT_GUI:
         #Progress bar for Backtester run
         curr_row += 1
         self.backtester_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
-        self.backtester_pb.grid(row=curr_row, column=0)
+        self.backtester_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Screener tool button
         curr_row += 1
@@ -833,7 +844,7 @@ class Gammath_SPOT_GUI:
         #Progress bar for Screener run
         curr_row += 1
         self.screener_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), mode='indeterminate')
-        self.screener_pb.grid(row=curr_row, column=0)
+        self.screener_pb.grid(row=curr_row, column=0, padx=70)
 
         #Update screen
         self.app_frame.update_idletasks()
@@ -852,6 +863,17 @@ class Gammath_SPOT_GUI:
         self.historian_button.state([state_value])
         self.backtester_button.state([state_value])
         self.screener_button.state([state_value])
+
+    def update_results_browser_button_state(self, state):
+
+        #Disable or Enable browser button
+        if (state == 'disable'):
+            state_value = 'disabled'
+        else:
+            state_value = '!disabled'
+
+        #Set the desired state for browser button
+        self.browse_results_button.state([state_value])
 
     def get_tool_progress_bar(self, tool):
         #Get progress bar corresponding to the tool
@@ -1007,18 +1029,30 @@ class Gammath_SPOT_GUI:
                 #Run the shell command to open the chosen file
                 os.system(shell_cmd)
 
+            #Re-enable browse results button
+            self.update_results_browser_button_state('enable')
+
         except:
             #In case any step for opening the file doesn't work on some platform
             #then show the results dir info to make it easier for user to browse using native
             #OS tools
             self.show_dir_path_info()
 
+            #Re-enable browse results button
+            self.update_results_browser_button_state('enable')
+
         return
 
     def launch_browse_thread(self):
-        #Create a thread to browse results dir
-        self.browse_dir_thread = threading.Thread(name=f'Browse_dir_thread', target=self.browse_results_dir, args=())
-        self.browse_dir_thread.start()
+        try:
+            #Create a thread to browse results dir
+            self.browse_dir_thread = threading.Thread(name=f'Browse_dir_thread', target=self.browse_results_dir, args=())
+            self.browse_dir_thread.start()
+
+            #Disable browse results button until this one completes
+            self.update_results_browser_button_state('disable')
+        except:
+            return
 
     def gui_tool_if(self, msg_queue):
 
@@ -1060,24 +1094,24 @@ class Gammath_SPOT_GUI:
         return alive
 
     def set_watchlist_entry_widget_state(self, state):
-        #Set the correct state for ticker symbols entry widget
-        for i in range(self.MAX_WL_ENTRIES):
-            #Input var
-            if (state == 'disable'):
-                self.table_entry_handle[i]['state'] = 'readonly'
-            else:
-                self.table_entry_handle[i]['state'] = 'normal'
 
-    def add_watchlist_widget(self):
-        self.table_entry = []
-        self.table_entry_handle = []
+        #Set the WL text widget to disabled or normal state
+        if (state == 'disable'):
+            self.wl_with_text_widget['state'] = 'disabled'
+        else:
+            self.wl_with_text_widget['state'] = 'normal'
+
+#    Keep this for any experiments to mix Entry widget with other scrollable widgets such as Canvas
+#    def add_watchlist_widget(self):
+#        self.table_entry = []
+#        self.table_entry_handle = []
 
         #Create a table for symbol entry using the Entry widget
-        for i in range(self.MAX_WL_ENTRIES):
+#        for i in range(self.MAX_WL_ENTRIES):
             #Input var
-            self.table_entry.append(StringVar())
-            self.table_entry_handle.append(ttk.Entry(self.app_frame, width=20, textvariable=self.table_entry[i], justify='center'))
-            self.table_entry_handle[i].grid(row=(4+i), column=1, padx=70, sticky=(E))
+#            self.table_entry.append(StringVar())
+#            self.table_entry_handle.append(ttk.Entry(self.app_frame, width=20, textvariable=self.table_entry[i], justify='center'))
+#            self.table_entry_handle[i].grid(row=(4+i), column=2, sticky=(E))
 
     def add_results_table_widget(self):
         #Placeholders for results window entry fields
@@ -1116,6 +1150,26 @@ class Gammath_SPOT_GUI:
 
             #Display to be done after filling in values so grid is invoked in the caller
 
+    def create_wl_with_text_widget(self):
+
+        #Create a widget to enter ticker symbols that is scrollable
+        #Text widget is scrollable
+        #Width in characters, height in num of lines
+        self.wl_with_text_widget = Text(self.app_frame, width=16, height=20, wrap = 'none', relief='solid')
+
+        #Tags can be used for better formatting
+        #self.wl_with_text_widget.tag_add('WL', '1.0', 'end')
+        #self.wl_with_text_widget.tag_configure('WL', font=self.app_frame_label_font, background= 'grey', justify='center')
+
+        #Place Text widget
+        self.wl_with_text_widget.grid(column=1, row=2, rowspan=15, sticky=(N, S, E))
+
+        #Create vertical scrollbar for text widget
+        self.wl_with_text_widget_scrollbar = ttk.Scrollbar(self.app_frame, orient=VERTICAL, command=self.wl_with_text_widget.yview)
+        self.wl_with_text_widget['yscrollcommand'] = self.wl_with_text_widget_scrollbar.set
+
+        #Place scrollbar next to the right of the text widget
+        self.wl_with_text_widget_scrollbar.grid(column=1, row=2, rowspan=15, sticky=(N, S, E))
 
 def main():
     #Start/Instantiate GUI. Won't return until app is closed
