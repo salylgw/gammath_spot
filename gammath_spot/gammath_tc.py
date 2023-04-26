@@ -344,8 +344,10 @@ def draw_trend_charts(tsymbol, path, df, sr_df, y_support_series, y_resistance_s
     plt.annotate(f'{round(current_resistance_level_y, 3)}', xy=(current_resistance_level_x, current_resistance_level_y), xytext=(current_resistance_level_x, (current_resistance_level_y+10)), arrowprops=dict(arrowstyle="->"))
 
     if (logo_file_found):
-        #Attach logo to the figure
-        plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
+        #Attach the logo to figure
+        #Precise location seems to not work on some platforms so place it at default location
+        #Depending on the origin, it will be at lower or upper left corner
+        plt.figimage(logo_data)
 
     #Save trend charts for later reference (Use PDF instead of png to save space)
     plt.savefig(path / f'{tsymbol}_tc.pdf', format='pdf')

@@ -191,7 +191,9 @@ class GPEP:
         lpe_df.plot(lw=1, title='Price Estimate and Projection')
 
         if (logo_file_found):
-            #Attach the logo to the figure
+            #Attach the logo to figure
+            #Precise location seems to not work on some platforms so place it at default location
+            #Depending on the origin, it will be at lower or upper left corner
             plt.figimage(logo_data)
 
 
@@ -271,7 +273,9 @@ class GPEP:
         lpe_df.plot(lw=1, title='Price Estimate and Projection')
 
         if (logo_file_found):
-            #Attach the logo to the image
+            #Attach the logo to figure
+            #Precise location seems to not work on some platforms so place it at default location
+            #Depending on the origin, it will be at lower or upper left corner
             plt.figimage(logo_data)
 
         #Save it for later reference. Use PDF instead of png to save space

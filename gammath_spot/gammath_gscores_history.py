@@ -191,8 +191,10 @@ class GSH:
             nup_gscores_df.plot(ax=axes[10],lw=1,title='Next day UP Probability')
 
             if (logo_file_found):
-                #Attach logo to the figure
-                plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
+                #Attach the logo to figure
+                #Precise location seems to not work on some platforms so place it at default location
+                #Depending on the origin, it will be at lower or upper left corner
+                plt.figimage(logo_data)
 
             #Save figure for later reference
             #Use PDF instead of png to save space

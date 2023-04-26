@@ -82,7 +82,9 @@ def plot_and_save_charts(tsymbol, path, bb_df, rsi_df, mfi_df, macd_df, stoch_df
 
         if (logo_file_found):
             #Attach the logo to figure
-            plt.figimage(logo_data, xo=charts_pw/2, yo=(charts_ph-100))
+            #Precise location seems to not work on some platforms so place it at default location
+            #Depending on the origin, it will be at lower or upper left corner
+            plt.figimage(logo_data)
 
         #Save for later reference. Use PDF instead of png to save space
         plt.savefig(path / f'{tsymbol}_charts.pdf', format='pdf')
