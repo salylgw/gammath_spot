@@ -39,11 +39,11 @@ If you want to use the GUI, it is <u>recommended to install miniconda</u> and th
  3. `conda install matplotlib`
  4. `pip install gammath-spot`
 
-If you want to use CLI and use prebuilt docker image. Please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
+If you want to use CLI and use prebuilt docker image then please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
 
 
 # WHERE to get source code without installing
-Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot.git`.
+Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_spot.git`).
 
 
 # HOWTO build docker image to use CLI
@@ -94,7 +94,7 @@ Get source code from GIT repo `git clone https://github.com/salylgw/gammath_spot
 
 
 # Investment blog
-If you want to see a free example of how output of this software is being used in decision-making then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).
+If you want to see a free example of how gScore is being used in manual decision-making then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).
 
 
 # Questions
@@ -104,4 +104,4 @@ If you have any questions, then please contact me using this [form](https://www.
 # Happy SPOTing!
 *Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact me using this [form](https://www.gammathworks.com/contact) indicating your area of interest and expertise</u><u></u>*
 
-*Gammth and SPOT are registered trade/service marks*.
+*Gammath, SPOT and logo showing stylized g(m) are registered trade/service marks*.
