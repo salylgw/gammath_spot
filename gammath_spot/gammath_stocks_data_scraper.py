@@ -109,6 +109,9 @@ def run_scraper(sf_name, info_queue):
 
         #Aggregate and save PE data
         gutils.aggregate_pe_data()
+
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Scraper', (end_index+1))
     except:
         print('ERROR: Data scraping failed')
 

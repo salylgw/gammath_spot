@@ -112,6 +112,9 @@ def run_analyzer_and_scorer(sf_name, info_queue):
 
         #Aggregate scores and generate a gscores summary
         gutils.aggregate_scores(symbols_list, sf_name.split('.')[0])
+
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Scorer', (end_index+1))
     except:
         print('ERROR: Analysis and Scoring failed')
 

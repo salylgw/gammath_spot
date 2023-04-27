@@ -812,7 +812,7 @@ class Gammath_SPOT_GUI:
 
         #Progress bar for Scraper run
         curr_row += 1
-        self.scraper_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
+        self.scraper_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=(self.curr_watchlist_len+1), mode='indeterminate')
         self.scraper_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Analyzer and Scorer tool buttons
@@ -822,7 +822,7 @@ class Gammath_SPOT_GUI:
 
         #Progress bar for Analyzer/Scorer run
         curr_row += 1
-        self.scorer_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
+        self.scorer_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=(self.curr_watchlist_len+1), mode='indeterminate')
         self.scorer_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Projector tool button
@@ -852,7 +852,7 @@ class Gammath_SPOT_GUI:
 
         #Progress bar for Backtester run
         curr_row += 1
-        self.backtester_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=self.curr_watchlist_len, mode='indeterminate')
+        self.backtester_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=(self.curr_watchlist_len+1), mode='indeterminate')
         self.backtester_pb.grid(row=curr_row, column=0, padx=70)
 
         #Add Screener tool button
@@ -925,7 +925,7 @@ class Gammath_SPOT_GUI:
         if (tool != 'Screener'):
             #Update the max count for progress bar to match current watchlist length
             pb['maximum'] = self.curr_watchlist_len
-            if (tool == 'Projector'):
+            if (tool != 'Historian'):
                 pb['maximum'] += 1
         else:
             #Default value

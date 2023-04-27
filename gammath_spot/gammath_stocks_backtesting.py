@@ -107,6 +107,9 @@ def run_backtester(sf_name, info_queue):
 
         #Summarize today's actions
         gutils.summarize_todays_actions(symbols_list)
+
+        #Update progress bar (if any)
+        gut.send_msg_to_gui_if_thread(info_queue, 'Backtester', (end_index+1))
     except:
         print('ERROR: Backtesting failed')
         #Update progress bar (if any)
