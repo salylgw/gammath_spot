@@ -23,6 +23,7 @@ from tkinter import ttk
 from tkinter import font
 from tkinter import filedialog
 import threading, queue
+import webbrowser as wb
 import os
 from pathlib import Path
 import pandas as pd
@@ -681,6 +682,40 @@ class Gammath_SPOT_GUI:
         self.dir_path_label = ttk.Label(self.dir_path_frame, text=f'Detailed Results can be found in: \n{dir_string}', font=self.app_frame_label_font, justify='center')
         self.dir_path_label.grid(row=0, column=0, columnspan=5)
 
+    def webbrowser_to_gw(self):
+
+        try:
+
+            #Browse the Gammath SPOT product page
+            wb.open('https://www.gammathworks.com/stockanalysissoftware')
+
+        except:
+
+            #Create a window for error message
+            self.webbrowser_msg = Toplevel(self.app_frame)
+
+            #Disable window resizing
+            self.webbrowser_msg.resizable(FALSE, FALSE)
+
+            #Give a title to the window
+            self.webbrowser_msg.title('Browser message')
+
+            #Create a frame for About data
+            self.webbrowser_msg_frame = ttk.Frame(self.webbrowser_msg, padding=10)
+            self.webbrowser_msg_frame.grid(row=0, column=0)
+
+            #Label showing browser open failed
+            self.webbrowser_msg_label = ttk.Label(self.webbrowser_msg_frame, text='Failed to open default browser', font=self.app_frame_label_font)
+
+            #Place the msg label
+            self.webbrowser_msg_label.grid(row=1, column=0)
+
+
+    def launch_browser_process(self):
+         #Start the browser in separate thread
+         self.browser_thread = threading.Thread(name=f'Browser_thread', target=self.webbrowser_to_gw, args=())
+         self.browser_thread.start()
+
     def show_gssw_info(self):
 
         #Create a window for screener info entry
@@ -707,8 +742,23 @@ class Gammath_SPOT_GUI:
 
         curr_row_num += 1
 
-        self.about_website_label = ttk.Label(self.about_frame, text='https://www.gammathworks.com', font=self.app_frame_label_font)
+        #Choose platform-specific cursor to make it clear that it is a clickable link when mouse moves over it
+        if (self.windowing_system_string == 'aqua'):
+            #Mac-specific
+            cursor_selection = 'pointinghand'
+        else:
+            #Linux and Windows specific
+            cursor_selection = 'hand2'
+
+        #Add label for SPOT product page to get help
+        self.about_website_label = ttk.Label(self.about_frame, cursor=cursor_selection, foreground='blue', text='Get user\'s guide from SPOT product page', font=self.app_frame_label_font)
+
+        #Make it a clickable link
+        self.about_website_label.bind('<ButtonPress-1>', lambda e: self.launch_browser_process())
+
+        #Place the label
         self.about_website_label.grid(row=curr_row_num, column=0)
+
 
     def add_menus(self):
         self.menubar = Menu(self.root)
