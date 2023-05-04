@@ -311,6 +311,7 @@ class GSA:
     def do_stock_current_info_analysis(self, tsymbol, path, df, need_charts_n_signals_info):
 
         overall_sci_gscore = 0
+        fast = 0
         sci_signals = ''
         reco_signals_exist = False
 
@@ -364,6 +365,7 @@ class GSA:
             pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, gut.get_tickers_dir())
             #Maintain proportion
             pe_final_score = round((pe_gscore/10), 3)
+            fast += pe_gscore
             if not reco_signals_exist:
                 overall_sci_gscore += pe_final_score
 
@@ -381,6 +383,7 @@ class GSA:
 
             #Maintain proportion
             peg_final_score = round((peg_gscore/10), 3)
+            fast += peg_gscore
             if not reco_signals_exist:
                 overall_sci_gscore += peg_final_score
 
@@ -398,6 +401,7 @@ class GSA:
 
             #Maintain proportion
             beta_final_score = round((beta_gscore/10), 3)
+            fast += beta_gscore
             if not reco_signals_exist:
                 overall_sci_gscore += beta_final_score
 
@@ -414,6 +418,7 @@ class GSA:
             pbr_gscore, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
 
             pbr_final_score = round((pbr_gscore/10), 3)
+            fast += pbr_gscore
             if not reco_signals_exist:
                 overall_sci_gscore += pbr_final_score
         except RuntimeError:
@@ -432,6 +437,7 @@ class GSA:
 
             #Maintain proportion
             qbs_final_score = round((qbs_gscore/10), 3)
+            fast += qbs_gscore
             if not reco_signals_exist:
                 overall_sci_gscore += qbs_final_score
         except ValueError:
@@ -448,6 +454,7 @@ class GSA:
 
             #Maintain proportion
             ihp_final_score = round((ihp_gscore/10), 3)
+            fast += ihp_gscore
             if not reco_signals_exist:
                 overall_sci_gscore += ihp_final_score
         except ValueError:
@@ -499,10 +506,12 @@ class GSA:
         sci_gScore_df.Reco[0] = reco_final_score
         sci_gScore_df.Senti[0] = st_final_score
         sci_gScore_df.SCI_gScore[0] = round((overall_sci_gscore/10), 3)
+        #Need to show total of fundamental analysis gscore component
+        fast_signals = f'Fundamental analysis gscore:{fast}/10'
 
         if need_charts_n_signals_info:
             #Aggregate stock current info-specific signals
-            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, reco_signals, st_signals, events_info])
+            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, st_signals, events_info])
         else:
             sci_signals = ''
 
