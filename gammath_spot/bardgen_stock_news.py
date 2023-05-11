@@ -28,7 +28,7 @@ def get_stock_news_headlines(tsymbol, path, start_date='', end_date=''):
     response = requests.get(url)
 
     # Parse the RSS feed
-    soup = BeautifulSoup(response.content, 'lxml')
+    soup = BeautifulSoup(response.content, features="lxml-xml")
 
     # Extract the news articles
     articles = soup.find_all("item")
@@ -46,7 +46,7 @@ def get_stock_news_headlines(tsymbol, path, start_date='', end_date=''):
         #description = article.find("description").text
 
         # Get the date
-        date = article.find("pubdate").text
+        date = article.find("pubDate").text
 
         # Get the link
         link = article.find("link").text
