@@ -28,6 +28,7 @@ try:
     from gammath_spot import gammath_get_stcktwts as ggstw
     from gammath_spot import gammath_get_stocks_calendar as gsc
     from gammath_spot import gammath_utils as gut
+    from gammath_spot import bardgen_stock_news as bgsn
 except:
     import gammath_get_stocks_summary as gss
     import gammath_get_stocks_financials as gsf
@@ -36,6 +37,7 @@ except:
     import gammath_get_stcktwts as ggstw
     import gammath_get_stocks_calendar as gsc
     import gammath_utils as gut
+    import bardgen_stock_news as bgsn
 
 class GSD:
     def get_stocks_data(self, tsymbol):
@@ -100,5 +102,11 @@ class GSD:
             print(f'\nError while getting ticker price history for {tsymbol}')
         except RuntimeError:
             print(f'\nCould not get stock price history data for {tsymbol}')
+
+#        try:
+            #Get stocks news headlines
+#            result = bgsn.get_stock_news_headlines(tsymbol, path)
+#        except:
+#            print(f'\nCould not get stock news headlines for {tsymbol}')
 
         return

@@ -8,4 +8,5 @@ ta-lib
 scikit-learn
 yfinance
 backtesting
+textblob
 
