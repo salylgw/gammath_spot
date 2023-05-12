@@ -19,6 +19,10 @@ from pathlib import Path
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 def get_stock_news_headlines(tsymbol, path, start_date='', end_date=''):
 
@@ -33,9 +37,15 @@ def get_stock_news_headlines(tsymbol, path, start_date='', end_date=''):
     # Extract the news articles
     articles = soup.find_all("item")
 
+    num_of_articles = len(articles)
+
+    #Create a dataframe for news article summary
+    df = pd.DataFrame(columns=gut.get_news_scraper_df_columns(), index=range(num_of_articles))
+
     # Create a list to store the news articles
     news_articles = []
 
+    i = 0
     # Iterate over the news articles
     for article in articles:
 
@@ -51,19 +61,14 @@ def get_stock_news_headlines(tsymbol, path, start_date='', end_date=''):
         # Get the link
         link = article.find("link").text
 
-        # Create a dictionary to store the news article
-        news_article = {
-            "title": title,
-            #"description": description,
-            "date": date,
-            "link": link
-        }
+        #Save details in dataframe
+        df.title[i] = title
+        df.date[i] = date
+        df.link[i] = link
+        i += 1
 
-        # Add the news article to the list
-        news_articles.append(news_article)
-
-    #Create a dataframe for news article summary
-    df = pd.DataFrame(news_articles)
+    #Only keep valid length
+    df = df.truncate(after=(i-1))
 
     #Save the news headlines in a CSV file for later sentiments analysis
     df.to_csv(path / f'{tsymbol}_news_headlines.csv')

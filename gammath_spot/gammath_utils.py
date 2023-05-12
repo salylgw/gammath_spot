@@ -107,6 +107,11 @@ def get_gscores_results_df_columns():
 
     return gscores_results_columns
 
+def get_news_scraper_df_columns():
+    news_scraper_df_columns = ('title', 'date', 'link', 'nhss')
+
+    return news_scraper_df_columns
+
 def check_if_same_day(fstat):
 
     fct_time = time.ctime(fstat.st_ctime).split(' ')
