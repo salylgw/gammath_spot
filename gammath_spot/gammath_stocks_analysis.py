@@ -46,6 +46,7 @@ try:
     from gammath_spot import gammath_si_charts as gsc
     from gammath_spot import gammath_tc as gtc
     from gammath_spot import gammath_utils as gut
+    from gammath_spot import gammath_news_sentiment as gns
 except:
     import gammath_price_signals as gps
     import gammath_rsi_signals as grs
@@ -72,6 +73,7 @@ except:
     import gammath_si_charts as gsc
     import gammath_tc as gtc
     import gammath_utils as gut
+    import gammath_news_sentiment as gns
 
 import sys
 import time
@@ -494,6 +496,15 @@ class GSA:
             print('\nERROR: while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
             events_info = ''
 
+        try:
+            stock_news_sentiment_score = gns.get_news_hl_sentiment_score(tsymbol, path)
+            stock_news_signals = f'Stock news sentiment (mean): {stock_news_sentiment_score}'
+        except:
+            stock_news_sentiment_score = 0
+            stock_news_signals = ''
+            print('\nERROR: while getting news sentiment score for ', tsymbol, ': ', sys.exc_info()[0])
+
+
         #Create a data frame for all stock's current info specific (micro)gScores
         sci_gScore_df = pd.DataFrame(columns=gut.get_sci_gscores_df_columns(), index=range(1))
         sci_gScore_df.Options[0] = options_final_score
@@ -505,13 +516,14 @@ class GSA:
         sci_gScore_df.IHP[0] = ihp_final_score
         sci_gScore_df.Reco[0] = reco_final_score
         sci_gScore_df.Senti[0] = st_final_score
+        sci_gScore_df.SNS[0] = stock_news_sentiment_score
         sci_gScore_df.SCI_gScore[0] = round((overall_sci_gscore/10), 3)
         #Need to show total of fundamental analysis gscore component
         fast_signals = f'Fundamental analysis gscore:{fast}/10'
 
         if need_charts_n_signals_info:
             #Aggregate stock current info-specific signals
-            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, st_signals, events_info])
+            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, st_signals, stock_news_signals, events_info])
         else:
             sci_signals = ''
 

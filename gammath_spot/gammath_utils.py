@@ -84,7 +84,7 @@ def get_sh_gscores_df_columns():
     return sh_gscores_columns
 
 def get_sci_gscores_df_columns():
-    sci_gscores_columns = ('Options', 'PE', 'PEG', 'Beta', 'PBR', 'QBS', 'IHP', 'Reco', 'Senti', 'SCI_gScore')
+    sci_gscores_columns = ('Options', 'PE', 'PEG', 'Beta', 'PBR', 'QBS', 'IHP', 'Reco', 'Senti', 'SNS', 'SCI_gScore')
 
     return sci_gscores_columns
 
