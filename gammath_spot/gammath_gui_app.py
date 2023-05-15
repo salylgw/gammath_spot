@@ -857,7 +857,7 @@ class Gammath_SPOT_GUI:
     def add_tool_buttons_and_progress_bars(self):
         #Add Scraper tool button
         curr_row = (self.starting_row_for_app_frame + 2)
-        self.scraper_button = ttk.Button(self.app_frame, text="Scraper", command=self.invoke_scraper)
+        self.scraper_button = ttk.Button(self.app_frame, text="Scraper", command=self.invoke_scraper, width=8)
         self.scraper_button.grid(row=curr_row, column=0)
 
         #Progress bar for Scraper run
@@ -867,7 +867,7 @@ class Gammath_SPOT_GUI:
 
         #Add Analyzer and Scorer tool buttons
         curr_row += 1
-        self.scorer_button = ttk.Button(self.app_frame, text="Scorer", command=self.invoke_scorer)
+        self.scorer_button = ttk.Button(self.app_frame, text="Scorer", command=self.invoke_scorer, width=8)
         self.scorer_button.grid(row=curr_row, column=0)
 
         #Progress bar for Analyzer/Scorer run
@@ -877,7 +877,7 @@ class Gammath_SPOT_GUI:
 
         #Add Projector tool button
         curr_row += 1
-        self.projector_button = ttk.Button(self.app_frame, text="Projector", command=self.invoke_projector)
+        self.projector_button = ttk.Button(self.app_frame, text="Projector", command=self.invoke_projector, width=8)
         self.projector_button.grid(row=curr_row, column=0)
 
         #Progress bar for Projector run
@@ -887,7 +887,7 @@ class Gammath_SPOT_GUI:
 
         #Add Historian tool
         curr_row += 1
-        self.historian_button = ttk.Button(self.app_frame, text="Historian", command=self.invoke_historian)
+        self.historian_button = ttk.Button(self.app_frame, text="Historian", command=self.invoke_historian, width=8)
         self.historian_button.grid(row=curr_row, column=0)
 
         #Progress bar for Historian run
@@ -897,7 +897,7 @@ class Gammath_SPOT_GUI:
 
         #Add Backtester tool button
         curr_row += 1
-        self.backtester_button = ttk.Button(self.app_frame, text="Backtester", command=self.invoke_backtester)
+        self.backtester_button = ttk.Button(self.app_frame, text="Backtester", command=self.invoke_backtester, width=8)
         self.backtester_button.grid(row=curr_row, column=0)
 
         #Progress bar for Backtester run
@@ -907,7 +907,7 @@ class Gammath_SPOT_GUI:
 
         #Add Screener tool button
         curr_row += 1
-        self.screener_button = ttk.Button(self.app_frame, text="Screener", command=self.invoke_screener)
+        self.screener_button = ttk.Button(self.app_frame, text="Screener", command=self.invoke_screener, width=8)
         self.screener_button.grid(row=curr_row, column=0)
 
         #Progress bar for Screener run
