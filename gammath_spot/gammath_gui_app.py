@@ -622,7 +622,7 @@ class Gammath_SPOT_GUI:
 
                 #Insert values at the end for each column
                 #All values of data frame
-                self.results_tree.insert('', 'end', text=f'{df[results_main_columns[0]][i]}', values=(f'{df[results_main_columns[1]][i]}', f'{df[results_main_columns[2]][i]}', f'{df[results_main_columns[3]][i]}', f'{df[results_main_columns[4]][i]}'))
+                self.results_tree.insert('', 'end', text=f'{df[results_main_columns[0]][i]}', values=(f'{df[results_main_columns[1]][i]}', f'{df[results_main_columns[2]][i]}', f'{df[results_main_columns[3]][i]}', f'{df[results_main_columns[4]][i]}', f'{df[results_main_columns[5]][i]}'))
 
             #Place the results tree
             self.results_tree.grid(column=0, row=0, columnspan=5)

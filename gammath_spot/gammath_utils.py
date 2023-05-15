@@ -103,7 +103,7 @@ def get_gscores_screening_df_columns():
     return gscores_screening_columns
 
 def get_gscores_results_df_columns():
-    gscores_results_columns = ('Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore', 'Note')
+    gscores_results_columns = ('Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore', 'newshl_sams', 'Note')
 
     return gscores_results_columns
 
@@ -241,6 +241,7 @@ class GUTILS:
                 df_b['sh_gscore'][i] = df_gscores.SH_gScore[0]
                 df_b['sci_gscore'][i] = df_gscores.SCI_gScore[0]
                 df_b['final_gscore'][i] = df_gscores.gScore[0]
+                df_b['newshl_sams'][i] = df_gscores.SNS[0]
 
                 f = open(path / f'{symbol}_signal.txt', 'r')
                 content = f.read()
