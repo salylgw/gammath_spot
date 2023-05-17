@@ -4,7 +4,7 @@
 # Gammath SPOT
 **S**tock **P**rice-**O**pining **T**oolset is a DIY stock technical analysis software with a Graphical User Interface (GUI) and a Command Line Interface (CLI). It is used to analyze stocks and compute a stock analysis score --- I'm calling it gScore (pronounced as "*ga Score*") --- to represent Gammath Works' stock analysis score. It indicates the degree to which a stock is trading at a perceived discount or at a perceived premium. SPOT also provides tools to generate price projection, support and resistance lines, stock news headline sentiment analysis score, gScore-history, backtesting and stock screening. Together, these can help in making your own stock-specific buy, sell, hold decisions.
 
-<u>*Please note that gScore is NOT G-Score/GScore/G Score/g-score. It differs in its usage, appearance, spelling, pronunciation, meaning and sits on top of totally different stock analysis and scoring system).*</u>
+*Please note that gScore is NOT G-Score/GScore/G Score/g-score. It differs in its usage, appearance, spelling, pronunciation, meaning and sits on top of totally different stock analysis and scoring system).*
 
 
 # How does it do that? It does this in six parts:
