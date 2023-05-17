@@ -38,7 +38,7 @@ MIN_TRADING_DAYS_PER_YEAR = 239
 MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 
 def get_gammath_spot_version_string():
-    return 'version 10.7'
+    return 'version 10.8'
 
 def set_child_process_start_method():
 
