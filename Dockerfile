@@ -12,7 +12,7 @@ RUN apt-get update --fix-missing && \
     && rm -rf /var/lib/apt/lists/*
 
 #RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh \
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py310_23.5.0-3-Linux-x86_64.sh -O ~/miniconda.sh \
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py310_23.5.2-0-Linux-x86_64.sh -O ~/miniconda.sh \
     && /bin/bash ~/miniconda.sh -b -p /opt/conda \
     && rm ~/miniconda.sh \
     && /opt/conda/bin/conda clean -a -y \
