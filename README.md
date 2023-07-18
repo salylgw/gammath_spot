@@ -35,7 +35,7 @@ This project uses following free tools that need to be installed (you can use pi
 
 # HOWTO install
 
-If you want to use the GUI, it is <u>recommended to install miniconda</u> and then use following commands in your miniconda shell for installing gammath-spot:
+If you want to use the GUI, it is <u>recommended to install miniconda</u> (latest version for Python 3.10) and then use following commands in your miniconda shell for installing gammath-spot:
 
  1. `conda install -c conda-forge ta-lib`
  2. `conda install statsmodels`
