@@ -23,15 +23,11 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py310_23.5.2-0-L
 
 RUN conda install -c conda-forge ta-lib
 
-RUN conda install matplotlib
-
-RUN conda install statsmodels
-
 RUN git clone https://github.com/salylgw/gammath_spot.git
 
 WORKDIR /gammath_spot/gammath_spot
 
-RUN pip install -r ../requirements.txt
+RUN pip install -r ../requirements.txt --prefer-binary
 
 VOLUME /gammath_spot/gammath_spot
 

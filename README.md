@@ -38,9 +38,7 @@ This project uses following free tools that need to be installed (you can use pi
 If you want to use the GUI, it is <u>recommended to install miniconda</u> (latest version for Python 3.10) and then use following commands in your miniconda shell for installing gammath-spot:
 
  1. `conda install -c conda-forge ta-lib`
- 2. `conda install statsmodels`
- 3. `conda install matplotlib`
- 4. `pip install gammath-spot`
+ 2. `pip install gammath-spot --prefer-binary`
 
 If you want to use CLI and use prebuilt docker image then please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
 
