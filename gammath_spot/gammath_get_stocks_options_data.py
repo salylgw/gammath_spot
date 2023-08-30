@@ -50,7 +50,7 @@ def get_options_data(tsymbol, ticker, path):
             #Get the latest options expiry date
             dates_df = pd.read_csv(path / f'{tsymbol}_options_dates.csv', index_col='Unnamed: 0')
 
-            option_date = dates_df.loc[0][0]
+            option_date = dates_df.at[0, '0']
         else:
             #Read fresh data
             option_dates = ticker.options

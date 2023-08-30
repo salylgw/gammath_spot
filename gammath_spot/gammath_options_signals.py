@@ -36,7 +36,7 @@ def get_options_signals(tsymbol, path, curr_price, df_summ):
         dates_df = pd.read_csv(path / f'{tsymbol}_options_dates.csv', index_col='Unnamed: 0')
 
         #Next expiry date
-        option_date = dates_df.loc[0][0]
+        option_date = dates_df.at[0, '0']
 
         #Get the calls and puts info
         df_calls = pd.read_csv(path / f'{tsymbol}_call_{option_date}.csv')
