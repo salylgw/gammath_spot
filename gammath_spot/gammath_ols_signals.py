@@ -93,6 +93,9 @@ def get_ols_signals(tsymbol, df, path):
     #pd dataframe for 1Y predictions. Will need all elements in same size so need to fill in nan elsewhere
     y1_series = pd.Series(np.nan, pd.RangeIndex(prices_len))
 
+    #Set the dtype for next step
+    y1_predictions = pd.Series(y1_predictions, dtype='float64')
+
     #Put the 1y predictions in right place
     y1_series[len(y1_series)-y1_predictions_len:] = y1_predictions
 
