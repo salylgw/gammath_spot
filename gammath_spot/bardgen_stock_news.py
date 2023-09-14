@@ -25,50 +25,53 @@ except:
     import gammath_utils as gut
 
 def get_stock_news_headlines(tsymbol, path, start_date='', end_date=''):
-
+    STATUS_OK = 200
     # Make a request to the Google News API
     url = "https://news.google.com/news/feeds?q={}&output=rss&start_date={}&end_date={}".format(tsymbol, start_date, end_date)
 
     response = requests.get(url)
 
-    # Parse the RSS feed
-    soup = BeautifulSoup(response.content, features="lxml-xml")
+    if (response.status_code == STATUS_OK):
+        # Parse the RSS feed
+        soup = BeautifulSoup(response.content, features="lxml-xml")
 
-    # Extract the news articles
-    articles = soup.find_all("item")
+        # Extract the news articles
+        articles = soup.find_all("item")
 
-    num_of_articles = len(articles)
+        num_of_articles = len(articles)
 
-    #Create a dataframe for news article summary
-    df = pd.DataFrame(columns=gut.get_news_scraper_df_columns(), index=range(num_of_articles))
+        #Create a dataframe for news article summary
+        df = pd.DataFrame(columns=gut.get_news_scraper_df_columns(), index=range(num_of_articles))
 
-    # Create a list to store the news articles
-    news_articles = []
+        # Create a list to store the news articles
+        news_articles = []
 
-    i = 0
-    # Iterate over the news articles
-    for article in articles:
+        i = 0
+        # Iterate over the news articles
+        for article in articles:
 
-        # Get the title
-        title = article.find("title").text
+            # Get the title
+            title = article.find("title").text
 
-        # Get the description
-        #description = article.find("description").text
+            # Get the description
+            #description = article.find("description").text
 
-        # Get the date
-        date = article.find("pubDate").text
+            # Get the date
+            date = article.find("pubDate").text
 
-        # Get the link
-        link = article.find("link").text
+            # Get the link
+            link = article.find("link").text
 
-        #Save details in dataframe
-        df.title[i] = title
-        df.date[i] = date
-        df.link[i] = link
-        i += 1
+            #Save details in dataframe
+            df.title[i] = title
+            df.date[i] = date
+            df.link[i] = link
+            i += 1
 
-    #Only keep valid length
-    df = df.truncate(after=(i-1))
+        #Only keep valid length
+        df = df.truncate(after=(i-1))
 
-    #Save the news headlines in a CSV file for later sentiments analysis
-    df.to_csv(path / f'{tsymbol}_news_headlines.csv')
+        #Save the news headlines in a CSV file for later sentiments analysis
+        df.to_csv(path / f'{tsymbol}_news_headlines.csv')
+    else:
+        raise RuntimeError('error getting news headlines')
