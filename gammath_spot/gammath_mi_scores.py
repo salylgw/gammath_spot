@@ -18,7 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
-# Get mutual information score for micro-gScores
+# Get mutual information score
 
 import pandas as pd
 try:
@@ -27,20 +27,22 @@ except:
     import gammath_utils as gut
 from sklearn.feature_selection import (mutual_info_regression, mutual_info_classif)
 
-def get_mi_scores(gscores):
+def get_mi_scores(features, target_variable, type):
 
-    if (len(gscores) <= 0):
-        raise ValueError('Invalid micro gscores data')
+    if (len(features) <= 0):
+        raise ValueError('Invalid features data')
 
-    #micro-gscore MI for price correlation
-    mi = mutual_info_regression(gscores.drop(['Date', 'Close'], axis=1), gscores.Close)
-    mi_scores_regr = pd.Series(mi, index=gscores.columns.drop(['Date', 'Close']))
+    #Check if it is for regression or classification
+    if (type == 'regression'):
+        mi = mutual_info_regression(features, target_variable)
+        mi_pd_series = pd.Series(mi, index=features.columns)
+    elif (type == 'classification'):
+        #Get price sigmoid (1-day interval)
+        ps = gut.get_price_sigmoid(target_variable, 1)
 
-    #Get price sigmoid (1-day interval)
-    ps = gut.get_price_sigmoid(gscores.Close, 1)
+        mi = mutual_info_classif(features, ps)
+        mi_pd_series = pd.Series(mi, index=features.columns)
+    else:
+        raise ValueError('Invalid type')
 
-    #micro-gscore MI for direction correlation
-    mi = mutual_info_classif(gscores.drop(['Date', 'Close'], axis=1), ps)
-    mi_scores_classif = pd.Series(mi, index=gscores.columns.drop(['Date', 'Close']))
-
-    return mi_scores_regr, mi_scores_classif
+    return mi_pd_series

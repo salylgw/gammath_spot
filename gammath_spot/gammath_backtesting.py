@@ -87,8 +87,8 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
 
     #Check which of 5-/20-day probability correlates better with price
     try:
-        mi_scores_regr, mi_scores_classif = gmis.get_mi_scores(df)
-        if (mi_scores_regr.A5DUP > mi_scores_regr.A20DUP):
+        mi_scores = gmis.get_mi_scores(df[['A5DUP', 'A20DUP']], df.Close, 'regression')
+        if (mi_scores.A5DUP > mi_scores.A20DUP):
             use_a20dup = False
     except:
         print('\nERROR: MI scores for symbol ', tsymbol, ': ', sys.exc_info()[0])
