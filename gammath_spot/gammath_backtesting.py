@@ -40,8 +40,9 @@ MAX_BUY_STEP = 10
 #Following is a basic example of writing your own strategy for backtesting
 #This is provided as an example to show one of the ways to do it
 #Remember, sell criteria is subjective. The methods shown here could be a way out of a position if one decides to get out; It is not meant to be mandatory sell decision. If one is confident of long-term prospects and if the stock does actually do well then perhaps buy and hold might turn out to be the best strategy
-#It is generally expected that in reality, execution of gScore-based dollar cost averaging would be better than what is used in backtesting since this does not account for news analysis and current information that is used in decision-making. As described in the guidelines, one would check the news before making buy/sell decisions
-def run_basic_backtest(df, path, tsymbol, term, max_cash):
+#It is generally expected that in reality, execution of gScore-based strategy would be better than what is used in backtesting since backtesting strategy does not account for news analysis and current information that is used in decision-making. As described in the guidelines, one would check the news before making buy/sell decisions
+#This basic example is for short-/long-term and medium-/high-risk trades
+def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
 
     mtdpy, mtd5y = gut.get_min_trading_days()
 
@@ -93,6 +94,19 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
     except:
         print('\nERROR: MI scores for symbol ', tsymbol, ': ', sys.exc_info()[0])
 
+    #Check which micro-gScores correlate better with gScore
+    try:
+        mi_scores = gmis.get_mi_scores(df.drop(['Date', 'Close', 'SH_gScore'], axis=1), df.SH_gScore, 'regression')
+        mi_scores = mi_scores.sort_values(ascending=False)
+        #Get top two correlated micro-gScores with respect to overall gScore
+        first_micro_gscore = mi_scores.index[0]
+        second_micro_gscore = mi_scores.index[1]
+    except:
+        #Use MFI and MACD as default micro-gScores
+        first_micro_gscore = 'MFI'
+        second_micro_gscore = 'MACD'
+        print('\nERROR: MI scores for symbol ', tsymbol, ': ', sys.exc_info()[0])
+
     #Use percentile levels to determine discount, neutral and premium levels
     #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
     MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.SH_gScore.quantile([0.20, 0.5, 0.80])
@@ -121,8 +135,9 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
 
     for i in range(2, history_len):
         curr_sh_gscore = df.SH_gScore[i]
-        curr_macd_gscore = df.MACD[i]
-        curr_mfi_gscore = df.MFI[i]
+        #Get the top correlated (with respect to gScore) micro-gScores
+        curr_first_micro_gscore_val = df[first_micro_gscore][i]
+        curr_second_micro_gscore_val = df[second_micro_gscore][i]
         prev_closing_price = df.Close[i-1]
         curr_closing_price = df.Close[i]
         prev_nup = df.NUP[i-1]
@@ -192,9 +207,13 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
             #Check if rising after multi-day drop
             rise_after_multi_day_drop = ((prev_nup >= nup_tp) and (single_day_rising))
 
-            # We only want to buy when price is below our current average price
+            # For brevity, we only want to buy when price is below our current average price
             if (total_shares and (curr_closing_price > avg_price)):
                 buy_now = False
+            elif (risk_appetite == 'high'):
+                #higher trading risk so relaxed condition for buy
+                if (consec_two_days_rising or rise_after_multi_day_drop):
+                    buy_now = True
             elif ((curr_support_line_slope >= 0) and (curr_resistance_line_slope >= 0)):
                 if (rise_after_multi_day_drop):
                     #We are looking for quick rebound after not a huge fall
@@ -205,10 +224,9 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
                         buy_now = True
 
             if (buy_now):
-                if ((curr_macd_gscore > 0) and (curr_mfi_gscore > 0)):
-
+                if ((curr_first_micro_gscore_val > 0) and (curr_second_micro_gscore_val > 0)):
                     #Buy quantity is managed better when news analysis is done
-                    #This is a conservative approach in the absence of that just
+                    #This is a conservative approach in the absence of that
                     if (remaining_cash >= curr_closing_price):
                         if (total_shares):
                             buy_q = min(MAX_BUY_STEP, remaining_cash//curr_closing_price)
@@ -266,14 +284,17 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
             #Check if in profit
             if (total_cost < total_cash):
                 #Check if falling after a multi-day run or fallen for two consecutive days
-                if ((fall_after_multi_day_rise or consec_two_days_falling) and (curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)):
+                if (fall_after_multi_day_rise or consec_two_days_falling):
                     if (term == 'short_term'):
-                        #For short-term: just sell if not too close to support line
-                        if (curr_pdsl > supp_mp):
+                        if (risk_appetite == 'high'):
                             sell_now = True
+                        else:
+                            #For short-term: just sell if not too close to support line
+                            if (((curr_pdsl > supp_mp) and (curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0))):
+                                sell_now = True
                     elif (term == 'long_term'):
-                        #For long-term, we need more checks
-                        if (curr_pdrl < res_mp): #Check not too much room to rise
+                        #For long-term, we need more checks if risk_appetite is not high
+                        if (((curr_pdrl < res_mp) and (curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)) or (risk_appetite == 'high')): #Check not too much room to rise
                             #If we already doubled then just sell irrespective of holding period
                             if (profit_pct > 100):
                                 sell_now = True
@@ -388,7 +409,8 @@ def run_basic_backtest(df, path, tsymbol, term, max_cash):
     df_transactions = df_transactions.truncate(after=transactions_count)
 
     #Save for later reference
-    df_transactions.to_csv(path / f'{tsymbol}_gtrades_stats_{term}.csv')
+    df_transactions.to_csv(path / f'{tsymbol}_gtrades_stats_{term}_{risk_appetite}_risk_appetite.csv')
+
 
 #Get the main stock history based gScores
 def extractGscores(data):
@@ -473,8 +495,10 @@ class GBT:
             return
 
         #You can call your own backtesting function here. Following is one example
-        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term', 10000)
-        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term', 'medium', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term', 'medium', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term', 'high', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term', 'high', 10000)
 
         #Following is done to make it easier to use this with backtesting python framework
 #        df_gscores_history.Date = pd.to_datetime(df_gscores_history['Date'])

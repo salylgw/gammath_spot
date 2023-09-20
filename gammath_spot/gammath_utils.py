@@ -498,44 +498,35 @@ class GUTILS:
         today_day = today.day
 
         #Create a dataframe to save tickers and their associated actions
-        df_actions = pd.DataFrame(columns=['Ticker', 'Price', 'Action', 'Quantity', 'Term'], index=range(len(symbols_list)<<1))
+        df_actions = pd.DataFrame(columns=['Ticker', 'Price', 'Action', 'Quantity', 'Risk_Appetite', 'Term'], index=range(len(symbols_list)<<1))
+
+        #Init loop params
+        term = ('short', 'long')
+        risk = ('medium', 'high')
 
         i = 0
 
         tickers_dir = get_tickers_dir()
         for tsymbol in symbols_list:
             path = tickers_dir / f'{tsymbol}'
-            try:
-                bactesting_st_data = pd.read_csv(path / f'{tsymbol}_gtrades_stats_short_term.csv', index_col='Unnamed: 0')
-                bt_st_data_len = len(bactesting_st_data)
-                last_action_index = bt_st_data_len-2
-                last_action_date = bactesting_st_data.Date.iloc[last_action_index].split(' ')[0].split('-')
-                if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
-                    #Today's action
-                    df_actions['Ticker'][i] = f'{tsymbol}'
-                    df_actions['Price'][i] = bactesting_st_data.Price.iloc[last_action_index]
-                    df_actions['Action'][i] = bactesting_st_data.Action.iloc[last_action_index]
-                    df_actions['Quantity'][i] = bactesting_st_data.Quantity.iloc[last_action_index]
-                    df_actions['Term'][i] = 'short_term'
-                    i += 1
-            except:
-                print(f'Failed to open short-term backtesting data for {tsymbol}')
-            try:
-                bactesting_lt_data = pd.read_csv(path / f'{tsymbol}_gtrades_stats_long_term.csv', index_col='Unnamed: 0')
-                bt_lt_data_len = len(bactesting_lt_data)
-                last_action_index = bt_lt_data_len-2
-                last_action_date = bactesting_lt_data.Date.iloc[last_action_index].split(' ')[0].split('-')
-                if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
-                    #Today's action
-                    df_actions['Ticker'][i] = f'{tsymbol}'
-                    df_actions['Price'][i] = bactesting_lt_data.Price.iloc[last_action_index]
-                    df_actions['Action'][i] = bactesting_lt_data.Action.iloc[last_action_index]
-                    df_actions['Quantity'][i] = bactesting_lt_data.Quantity.iloc[last_action_index]
-                    df_actions['Term'][i] = 'long_term'
-                    i += 1
-            except:
-                print(f'Failed to open long-term backtesting data for {tsymbol}')
-
+            for iterm in term:
+                for risk_level in risk:
+                    try:
+                        bactesting_st_data = pd.read_csv(path / f'{tsymbol}_gtrades_stats_{iterm}_term_{risk_level}_risk_appetite.csv', index_col='Unnamed: 0')
+                        bt_st_data_len = len(bactesting_st_data)
+                        last_action_index = bt_st_data_len-2
+                        last_action_date = bactesting_st_data.Date.iloc[last_action_index].split(' ')[0].split('-')
+                        if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
+                            #Today's action
+                            df_actions['Ticker'][i] = f'{tsymbol}'
+                            df_actions['Price'][i] = bactesting_st_data.Price.iloc[last_action_index]
+                            df_actions['Action'][i] = bactesting_st_data.Action.iloc[last_action_index]
+                            df_actions['Quantity'][i] = bactesting_st_data.Quantity.iloc[last_action_index]
+                            df_actions['Term'][i] = f'{iterm}_term'
+                            df_actions['Risk_Appetite'][i] = f'{risk_level}_risk_appetite'
+                            i += 1
+                    except:
+                        print(f'Failed to open {tsymbol}_gtrades_stats_{iterm}_term_{risk_level}_risk_appetite.csv')
 
         #Back to base dir
         p = tickers_dir
