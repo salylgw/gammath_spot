@@ -6,7 +6,7 @@ pykalman
 statsmodels
 ta-lib
 scikit-learn
-yfinance
+yfinance==0.2.28
 backtesting
 textblob
 
