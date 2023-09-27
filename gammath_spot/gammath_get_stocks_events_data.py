@@ -42,8 +42,6 @@ def get_events_info(tsymbol, path):
                 #Extract all event dates
                 for i in range(num_cols):
                     event_dates.append(df[df.columns[i]][event])
-    else:
-        print(f'\nINFO: Events file for {tsymbol} not found')
 
     events_info = f'{event}: {event_dates}'
 

@@ -53,11 +53,11 @@ class GSD:
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
 
-        try:
-            #Fetch stocktwits page; Finish getting all data outside of yahoo
-            ggstw.get_stocktwits_ticker_info(tsymbol, path)
-        except:
-            print(f'\nERROR: Failed to get Stocktwits info for {tsymbol}')
+#        try:
+            #Fetch stocktwits page
+#            ggstw.get_stocktwits_ticker_info(tsymbol, path)
+#        except:
+#            print(f'\nERROR: Failed to get Stocktwits info for {tsymbol}')
 
         try:
             #Create Yahoo finance ticker handle
@@ -87,13 +87,13 @@ class GSD:
         except RuntimeError:
             print(f'Could not get stock options data for {tsymbol}')
 
-        try:
+#        try:
             #Get calendar info [NOTE: This is very slow]
-            gsc.get_ticker_calendar(tsymbol, ticker, path)
-        except ValueError:
-            print(f'Error while getting stock calendar data for {tsymbol}')
-        except RuntimeError:
-            print(f'Could not get stock calendar data for {tsymbol}')
+#            gsc.get_ticker_calendar(tsymbol, ticker, path)
+#        except ValueError:
+#            print(f'Error while getting stock calendar data for {tsymbol}')
+#        except RuntimeError:
+#            print(f'Could not get stock calendar data for {tsymbol}')
 
         try:
             #Get stock history
