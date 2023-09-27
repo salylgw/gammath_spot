@@ -32,10 +32,15 @@ except:
     import gammath_utils as gut
     import gammath_mi_scores as gmis
 
-#Default values
+#Default values to cover broadest variety of stocks.
+#Should be fine tuned for specific characteristics
 MAX_BREAKEVEN_ATTEMPTS = 10
 MAX_BUY_STEP = 10
-
+MIN_SH_PREMIUM_LEVEL = -0.4
+NEUTRAL_SH_LEVEL = -0.1
+MIN_SH_DISCOUNT_LEVEL = 0.2
+MIN_NEXT_DAY_UP_PROB = 0.94
+MIN_NEXT_DAY_DOWN_PROB = 0.94
 
 #Following is a basic example of writing your own strategy for backtesting
 #This is provided as an example to show one of the ways to do it
@@ -84,60 +89,18 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
 
-    use_a20dup = True
+    #Generally, RSI and BBANDS correlates better with gScore
+    first_micro_gscore = 'RSI'
+    second_micro_gscore = 'BBANDS'
 
-    #Check which of 5-/20-day probability correlates better with price
-    try:
-        mi_scores = gmis.get_mi_scores(df[['A5DUP', 'A20DUP']], df.Close, 'regression')
-        if (mi_scores.A5DUP > mi_scores.A20DUP):
-            use_a20dup = False
-    except:
-        print('\nERROR: MI scores for symbol ', tsymbol, ': ', sys.exc_info()[0])
-
-    #Check which micro-gScores correlate better with gScore
-    try:
-        mi_scores = gmis.get_mi_scores(df.drop(['Date', 'Close', 'SH_gScore'], axis=1), df.SH_gScore, 'regression')
-        mi_scores = mi_scores.sort_values(ascending=False)
-        #Get top two correlated micro-gScores with respect to overall gScore
-        first_micro_gscore = mi_scores.index[0]
-        second_micro_gscore = mi_scores.index[1]
-    except:
-        #Use MFI and MACD as default micro-gScores
-        first_micro_gscore = 'MFI'
-        second_micro_gscore = 'MACD'
-        print('\nERROR: MI scores for symbol ', tsymbol, ': ', sys.exc_info()[0])
-
-    #Use percentile levels to determine discount, neutral and premium levels
-    #This should cover a broad range of stocks and then can be customized and fine tuned for variety of criteria
-    MIN_SH_PREMIUM_LEVEL, NEUTRAL_SH_PREMIUM_LEVEL, MIN_SH_DISCOUNT_LEVEL = df.SH_gScore.quantile([0.20, 0.5, 0.80])
-
-    #Get the low and high percentiles for next day up/down probability
-    nup_bp, nup_tp = df.NUP.quantile([0.1, 0.9])
-    ndp_bp = round((1 - nup_tp), 3)
-    ndp_tp = round((1 - nup_bp), 3)
     last_buy_5y_price_ratio = 0
-
-    if (use_a20dup):
-        #Get 20-day probability percentiles
-        ndup_bp, ndup_mp, ndup_tp = df.A20DUP.quantile([0.25, 0.5, 0.75])
-    else:
-        #Get 5-day probability percentiles
-        ndup_bp, ndup_mp, ndup_tp = df.A5DUP.quantile([0.25, 0.5, 0.75])
-
-    #Get support price diff pct percentiles
-    supp_bp, supp_mp, supp_tp = df.PDSL.quantile([0.25, 0.5, 0.75])
-
-    #Get resistance price diff pct percentiles
-    res_bp, res_mp, res_tp = df.PDRL.quantile([0.25, 0.5, 0.75])
-
-    curr_supp_days = 0
-    curr_res_days = 0
 
     for i in range(2, history_len):
         curr_sh_gscore = df.SH_gScore[i]
         #Get the top correlated (with respect to gScore) micro-gScores
         curr_first_micro_gscore_val = df[first_micro_gscore][i]
         curr_second_micro_gscore_val = df[second_micro_gscore][i]
+        curr_ols = df.OLS[i]
         prev_closing_price = df.Close[i-1]
         curr_closing_price = df.Close[i]
         prev_nup = df.NUP[i-1]
@@ -153,33 +116,8 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         curr_support_level = df.CSL[i]
         prev_resistance_level = df.CRL[i-1]
         curr_resistance_level = df.CRL[i]
-
-        if (use_a20dup):
-            prev_ndup = df.A20DUP[i-1]
-            curr_ndup = df.A20DUP[i]
-        else:
-            prev_ndup = df.A5DUP[i-1]
-            curr_ndup = df.A5DUP[i]
-
-        #Get number of days in current support level
-        #Could be used in decision making
-        if (prev_support_level != curr_support_level):
-            if (curr_support_line_slope and (prev_support_line_slope == curr_support_line_slope)):
-                curr_supp_days += 1
-            else:
-                curr_supp_days = 1
-        else:
-            curr_supp_days += 1
-
-        #Get number of days in current resistance level
-        #Could be used in decision making
-        if (prev_resistance_level != curr_resistance_level):
-            if (curr_resistance_line_slope and (prev_resistance_line_slope == curr_resistance_line_slope)):
-                curr_res_days += 1
-            else:
-                curr_res_days = 1
-        else:
-            curr_res_days += 1
+        prev_ndup = df.A5DUP[i-1]
+        curr_ndup = df.A5DUP[i]
 
         #Check if n-day up probability is rising or falling (approximately)
         if (prev_ndup > curr_ndup):
@@ -192,7 +130,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         last_buy_5y_price_ratio = 0
 
         #Look for discount zone entry or if it is still in the "buy zone"
-        if (((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= NEUTRAL_SH_PREMIUM_LEVEL)))):
+        if (((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= NEUTRAL_SH_LEVEL)))):
 
             marked_for_sell = False
             marked_for_buy = True
@@ -205,7 +143,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
             consec_two_days_rising = (single_day_rising and (prev_closing_price > df.Close[i-2]))
 
             #Check if rising after multi-day drop
-            rise_after_multi_day_drop = ((prev_nup >= nup_tp) and (single_day_rising))
+            rise_after_multi_day_drop = ((prev_nup >= MIN_NEXT_DAY_UP_PROB) and (single_day_rising))
 
             # For brevity, we only want to buy when price is below our current average price
             if (total_shares and (curr_closing_price > avg_price)):
@@ -214,11 +152,9 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                 #higher trading risk so relaxed condition for buy
                 if (consec_two_days_rising or rise_after_multi_day_drop):
                     buy_now = True
-            elif ((curr_support_line_slope >= 0) and (curr_resistance_line_slope >= 0)):
+            elif ((curr_support_line_slope >= 0) and (curr_resistance_line_slope >= 0) and (curr_ols > 0)):
                 if (rise_after_multi_day_drop):
-                    #We are looking for quick rebound after not a huge fall
-                    if ((curr_pdsl < supp_mp) and (curr_pdrl < res_mp)):
-                        buy_now = True
+                    buy_now = True
                 elif (consec_two_days_rising):
                     if (rising_ndup):
                         buy_now = True
@@ -274,7 +210,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         consec_two_days_falling = (single_day_falling and (prev_closing_price < df.Close[i-2]))
 
         #Check if price fell after multi-day rise
-        fall_after_multi_day_rise = ((prev_ndp >= ndp_tp) and single_day_falling)
+        fall_after_multi_day_rise = ((prev_ndp >= MIN_NEXT_DAY_DOWN_PROB) and single_day_falling)
 
         #Check for premium level
         if (((curr_sh_gscore <= MIN_SH_PREMIUM_LEVEL) and total_shares) or marked_for_sell):
@@ -289,12 +225,12 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                         if (risk_appetite == 'high'):
                             sell_now = True
                         else:
-                            #For short-term: just sell if not too close to support line
-                            if (((curr_pdsl > supp_mp) and (curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0))):
+                            #For short-term: just sell if flat or -ve slope for support line or OLS shows downward trend
+                            if (((curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)) or (curr_ols < 0)):
                                 sell_now = True
                     elif (term == 'long_term'):
                         #For long-term, we need more checks if risk_appetite is not high
-                        if (((curr_pdrl < res_mp) and (curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)) or (risk_appetite == 'high')): #Check not too much room to rise
+                        if (((curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)) or (curr_ols < 0) or (risk_appetite == 'high')): #Check not too much room to rise
                             #If we already doubled then just sell irrespective of holding period
                             if (profit_pct > 100):
                                 sell_now = True
@@ -420,8 +356,9 @@ def extractGscores(data):
 class gScoresDataAction(Strategy):
 
     def init(self):
-        self.min_sh_premium_level = -0.375
-        self.min_sh_discount_level = 0.375
+        self.min_sh_premium_level = -0.3
+        self.neutral_sh_level = -0.1
+        self.min_sh_discount_level = 0.2
         self.previous_close = 0
         self.total_shares = 0
         self.total_cost = 0
