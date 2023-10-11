@@ -120,12 +120,15 @@ def get_price_signals(tsymbol, df):
     except:
         yearly_lowest_val = 0
 
+    ylp = f'ylp: %5.3f' % yearly_lowest_val
+
     try:
         #52-week high
         yearly_highest_val = df.High[prices_len-1-mtdpy:].max()
     except:
         yearly_highest_val = 0
 
+    yhp = f'yhp: %5.3f' % yearly_highest_val
     if (yearly_lowest_val > 0):
         if (lp <= yearly_lowest_val):
             #New 52-week low; Log it for information
@@ -232,6 +235,6 @@ def get_price_signals(tsymbol, df):
 
     price_grec = f'price_gscore:{price_gscore}/{price_max_score}'
 
-    price_signals = f'price: {price_dir},{curr_count_quantile_str},{curr_price}:{curr_price_1y_quantile_str},{price_grec},{nftwlh}'
+    price_signals = f'price: {price_dir},{curr_count_quantile_str},{curr_price}:{curr_price_1y_quantile_str},{ylp},{yhp},{nftwlh},{price_grec}'
 
     return price_gscore, price_max_score, price_signals

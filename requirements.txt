@@ -9,4 +9,5 @@ scikit-learn
 yfinance
 backtesting
 textblob
+tensorflow
 
