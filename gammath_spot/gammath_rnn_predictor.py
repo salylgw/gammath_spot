@@ -26,7 +26,6 @@ from sklearn.preprocessing import MinMaxScaler
 #Tensorflow shows default messages depending on GPU that may not exist on the system
 #Need to disable those logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import EarlyStopping
@@ -46,9 +45,9 @@ def do_rnn_lstm_prediction(ar_size, data, need_scaling):
     data = np.array(data).reshape(-1, 1)
 
     if (need_scaling):
-        self.scaler = MinMaxScaler()
+        scaler = MinMaxScaler()
         #Scale data between 0 and 1
-        scaled_data = self.scaler.fit_transform(data)
+        scaled_data = scaler.fit_transform(data)
     else:
         #Already scaled input
         scaled_data = data
@@ -74,6 +73,9 @@ def do_rnn_lstm_prediction(ar_size, data, need_scaling):
 
     #single time-step for now
     output_sequence = False
+
+    #Using GPU is much faster but there are some portability issues to be resolved
+    #Until then, use CPU for this
 
     #Run some experiments for regression problem
     if (need_scaling):
@@ -103,6 +105,6 @@ def do_rnn_lstm_prediction(ar_size, data, need_scaling):
 
     if (need_scaling):
         #Unscale the values
-        y_predict = self.scaler.inverse_transform(y_predict)
+        y_predict = scaler.inverse_transform(y_predict)
 
     return y_predict
