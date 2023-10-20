@@ -71,40 +71,40 @@ def do_rnn_lstm_prediction(ar_size, data, need_scaling):
     x_test = x[x_test_offset:]
     y_test = y[y_test_offset:]
 
-    #single time-step for now
-    output_sequence = False
-
     #Using GPU is much faster but there are some portability issues to be resolved
     #Until then, use CPU for this
 
-    #Run some experiments for regression problem
+    #Run some experiments for single feature regression
     if (need_scaling):
         #Scaled using minmax scaler between 0 and 1
-        model = Sequential([LSTM(units=128, input_shape=(ar_size, 1), name='LSTM', return_sequences=output_sequence), Dense(1, name='Output')])
+        model = Sequential([LSTM(units=1, input_shape=(ar_size, 1), name='LSTM', return_sequences=False), Dense(1, name='Output')])
     else:
         #Already scaled data (in this case SH_gScore i.e. between -1 and +1)
-        model = Sequential([LSTM(units=128, activation='tanh', input_shape=(ar_size, 1), name='LSTM', return_sequences=output_sequence), Dense(64, activation='relu'),  Dense(1, activation='linear', name='Output')])
+        model = Sequential([LSTM(units=1, activation='tanh', input_shape=(ar_size, 1), name='LSTM', return_sequences=False), Dense(1, name='Output')])
 
     #Compile the model with popular optimizer and MSE for regression
     model.compile(optimizer='adam', loss='mean_squared_error')
-
-    #Batch size for training
-    batch_size = round(len(x_train)//ar_size)
 
     #Use early stopping
     early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
 
     #Train the model with training set
-    lstm_training = model.fit(x_train, y_train, epochs=100, batch_size=batch_size, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
+    lstm_training = model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
 
     #Get the evaluation results for debugging
     evaluation = model.evaluate(x_test, y_test)
 
-    #Predict
+    #Predict (eventually in a loop to predict t+k steps into the future)
     y_predict = model.predict(x_test)
+    y_predict_len = len(y_predict)
+
+    #Rearrange current predicted value into x_test and loop
 
     if (need_scaling):
         #Unscale the values
         y_predict = scaler.inverse_transform(y_predict)
 
-    return y_predict
+    #Return single value for time-step t for now
+    predicted_value = y_predict[y_predict_len-1][0]
+
+    return predicted_value
