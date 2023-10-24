@@ -10,4 +10,5 @@ yfinance
 backtesting
 textblob
 tensorflow
+keras-tuner
 
