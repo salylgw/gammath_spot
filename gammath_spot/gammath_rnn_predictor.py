@@ -30,13 +30,22 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import optimizers
+
 try:
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_utils as gut
 
-#This is experimental and a Work-In-Progress. Lot will change before it is usable
-def do_rnn_lstm_prediction(ar_size, data, need_scaling):
+#This is experimental, Work-In-Progress and barely tested. Lot will change before it is usable
+#The purpose of this function is to generate data for lookahead number of timesteps
+#Generally, more time steps into the future compounds the errors so it is preferred
+#to use smaller number of lookahead timesteps. Ideal lookahead_time_steps=1.
+#Predictions are likely to reflect a trend (increasing or decreasing).
+#This function can be called again with new augmented data to retrain and do further lookahead
+def do_rnn_lstm_lookahead(data, lookahead_time_steps, need_scaling):
+    #re-arrange data in 63-time steps and output
+    ar_size = 63
+
     #Align data based on AR input size
     start_offset = (len(data)%ar_size)
     data = data[start_offset:]
@@ -74,13 +83,15 @@ def do_rnn_lstm_prediction(ar_size, data, need_scaling):
     #Using GPU is much faster but there are some portability issues to be resolved
     #Until then, use CPU for this
 
+    #TBD: Tune hyperparameters with keras_tuner
+
     #Run some experiments for single feature regression
     if (need_scaling):
         #Scaled using minmax scaler between 0 and 1
-        model = Sequential([LSTM(units=1, input_shape=(ar_size, 1), name='LSTM', return_sequences=False), Dense(1, name='Output')])
+        model = Sequential([LSTM(units=32, input_shape=(ar_size, 1), name='LSTM', return_sequences=False), Dense(1, name='Output')])
     else:
-        #Already scaled data (in this case SH_gScore i.e. between -1 and +1)
-        model = Sequential([LSTM(units=1, activation='tanh', input_shape=(ar_size, 1), name='LSTM', return_sequences=False), Dense(1, name='Output')])
+        #Already scaled data (in this case SH_gScore is between -0.75 and +0.75)
+        model = Sequential([LSTM(units=32, activation='tanh', input_shape=(ar_size, 1), name='LSTM', return_sequences=False), Dense(1, activation='tanh', name='Output')])
 
     #Compile the model with popular optimizer and MSE for regression
     model.compile(optimizer='adam', loss='mean_squared_error')
@@ -94,17 +105,21 @@ def do_rnn_lstm_prediction(ar_size, data, need_scaling):
     #Get the evaluation results for debugging
     evaluation = model.evaluate(x_test, y_test)
 
-    #Predict (eventually in a loop to predict t+k steps into the future)
-    y_predict = model.predict(x_test)
-    y_predict_len = len(y_predict)
+    predicted_values = []
 
-    #Rearrange current predicted value into x_test and loop
+    for i in range(lookahead_time_steps):
+        #Predict (eventually in a loop to predict t+k steps into the future)
+        y_predict = model.predict(x_test)
+        y_predict_len = len(y_predict)
+        predicted_values.append(y_predict[y_predict_len-1][0])
+        #Rearrange current predicted value into x_test and loop
+        new_row = np.concatenate([x_test[x_test.shape[0]-1:, 1:, :], y_predict[None, (y_predict_len-1):, :]], axis=1)
+        x_test = np.concatenate([x_test[1:, :, :], new_row[:, :, :]])
 
     if (need_scaling):
-        #Unscale the values
-        y_predict = scaler.inverse_transform(y_predict)
+        #Unscale the values (need to do this for predicted_values also
+        predicted_values = scaler.inverse_transform(np.array(predicted_values).reshape(-1, 1))
+        predicted_values = predicted_values.flatten()
 
-    #Return single value for time-step t for now
-    predicted_value = y_predict[y_predict_len-1][0]
-
-    return predicted_value
+    #return values predicted for lookahead_time_steps
+    return predicted_values
