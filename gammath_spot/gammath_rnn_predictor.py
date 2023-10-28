@@ -40,6 +40,7 @@ except:
 #This is experimental, Work-In-Progress and barely tested. Lot will change before it is usable
 class GRNN:
     def __init__(self):
+        #Use ~3 months for autoregressive input/output
         self.ar_size = 63
 
     def init_model_tuning_params(self):
@@ -48,27 +49,24 @@ class GRNN:
         self.hp_activations = self.hp.Choice('activations', ['linear', 'relu', 'tanh'])
         self.hp_optimizers = self.hp.Choice('optimizer', ['sgd', 'rmsprop', 'adam'])
         self.hp_learning_rate = self.hp.Choice('learning_rate', [1e-4, 1e-3, 1e-3])
+        return self.hp
 
-    #The purpose of this function is to generate data for lookahead number of timesteps
-    #Generally, more time steps into the future compounds the errors so it is preferred
-    #to use smaller number of lookahead timesteps. Ideal lookahead_time_steps=1.
-    #Predictions are likely to reflect a trend (increasing or decreasing).
-    #This function can be called again with new augmented data to retrain and do further lookahead
-    def do_rnn_lstm_lookahead(self, data, lookahead_time_steps, need_scaling):
-        #re-arrange data in 63-time steps and output
-        self.ar_size = 63
+    def prepare_data_for_rnn_lstm(self, data, need_scaling):
+        input_data_len  = len(data)
+        if (input_data_len < self.ar_size):
+            return
 
         #Align data based on AR input size
-        start_offset = (len(data)%self.ar_size)
+        start_offset = (input_data_len%self.ar_size)
         data = data[start_offset:]
 
         #Make it 2D
         data = np.array(data).reshape(-1, 1)
 
         if (need_scaling):
-            scaler = MinMaxScaler()
+            self.scaler = MinMaxScaler()
             #Scale data between 0 and 1
-            scaled_data = scaler.fit_transform(data)
+            scaled_data = self.scaler.fit_transform(data)
         else:
             #Already scaled input
             scaled_data = data
@@ -91,6 +89,17 @@ class GRNN:
         y_train = y[:y_test_offset]
         x_test = x[x_test_offset:]
         y_test = y[y_test_offset:]
+
+        return x_train, x_test, y_train, y_test
+
+    #The purpose of this function is to generate data for lookahead number of timesteps
+    #Generally, more time steps into the future compounds the errors so it is preferred
+    #to use smaller number of lookahead timesteps. Ideal lookahead_time_steps=1.
+    #Predictions are likely to reflect a trend (increasing or decreasing).
+    #This function can be called again with new augmented data to retrain and do further lookahead
+    def do_rnn_lstm_lookahead(self, data, lookahead_time_steps, need_scaling):
+
+        x_train, x_test, y_train, y_test = self.prepare_data_for_rnn_lstm(data, need_scaling)
 
         #Using GPU is much faster but there are some portability issues to be resolved
         #Until then, use CPU for this
@@ -130,7 +139,7 @@ class GRNN:
 
         if (need_scaling):
             #Unscale the values (need to do this for predicted_values also
-            predicted_values = scaler.inverse_transform(np.array(predicted_values).reshape(-1, 1))
+            predicted_values = self.scaler.inverse_transform(np.array(predicted_values).reshape(-1, 1))
             predicted_values = predicted_values.flatten()
 
         #return values predicted for lookahead_time_steps
