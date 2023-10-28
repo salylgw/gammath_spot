@@ -100,7 +100,7 @@ class GRNN:
         return x_train, x_test, y_train, y_test
 
     def get_best_tuned_model(self, x_train, x_test, y_train, y_test):
-        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=10, hyperparameters=self.hp)
+        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=10, hyperparameters=self.hp, directory='tuned_models', project_name='rnn_lstm_module_tuning')
         #Use early stopping
         early_stopping = EarlyStopping(monitor='val_loss', patience=3)
         tuner_hb.search(x_train, y_train, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
