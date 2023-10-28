@@ -51,6 +51,13 @@ class GRNN:
         self.hp_learning_rate = self.hp.Choice('learning_rate', [1e-4, 1e-3, 1e-3])
         return self.hp
 
+    def build_model(self, hp):
+        self.model = Sequential([LSTM(units=self.hp_units, activation=self.hp_activations, input_shape=(self.ar_size, 1), name='LSTM', return_sequences=False), Dense(1, activation=self.hp_activations, name='Output')])
+
+        #Compile the model with popular optimizer and MSE for regression
+        self.model.compile(optimizer=self.hp_optimizers, loss='mean_squared_error')
+        return self.model
+
     def prepare_data_for_rnn_lstm(self, data, need_scaling):
         input_data_len  = len(data)
         if (input_data_len < self.ar_size):
@@ -91,6 +98,15 @@ class GRNN:
         y_test = y[y_test_offset:]
 
         return x_train, x_test, y_train, y_test
+
+    def get_best_tuned_model(self, x_train, x_test, y_train, y_test):
+        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=10, hyperparameters=self.hp)
+        #Use early stopping
+        early_stopping = EarlyStopping(monitor='val_loss', patience=3)
+        tuner_hb.search(x_train, y_train, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
+        best_model = tuner_hb.get_best_models()[0]
+        return best_model
+
 
     #The purpose of this function is to generate data for lookahead number of timesteps
     #Generally, more time steps into the future compounds the errors so it is preferred
