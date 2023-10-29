@@ -99,13 +99,17 @@ class GRNN:
 
         return x_train, x_test, y_train, y_test
 
-    def get_best_tuned_model(self, x_train, x_test, y_train, y_test):
+    def get_best_tuned_model_hyperparams(self, x_train, x_test, y_train, y_test):
         tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=10, hyperparameters=self.hp, directory='tuned_models', project_name='rnn_lstm_module_tuning')
         #Use early stopping
         early_stopping = EarlyStopping(monitor='val_loss', patience=3)
         tuner_hb.search(x_train, y_train, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
-        best_model = tuner_hb.get_best_models()[0]
-        return best_model
+        best_hyperparams = tuner_hb.get_best_hyperparameters()[0]
+        self.best_num_of_units = best_hyperparams.get('units')
+        self.best_activation = best_hyperparams.get('activations')
+        self.best_optimizer = best_hyperparams.get('optimizer')
+        self.best_learning_rate = best_hyperparams.get('learning_rate')
+        return best_hyperparams
 
 
     #The purpose of this function is to generate data for lookahead number of timesteps
