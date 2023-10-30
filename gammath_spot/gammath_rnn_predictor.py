@@ -100,11 +100,20 @@ class GRNN:
         return x_train, x_test, y_train, y_test
 
     def get_best_tuned_model_hyperparams(self, x_train, x_test, y_train, y_test):
-        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=10, hyperparameters=self.hp, directory='tuned_models', project_name='rnn_lstm_module_tuning')
+        #init search space
+        hp = self.init_model_tuning_params()
+
+        #Use Hyperband algo
+        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=20, hyperparameters=hp, directory='tuned_models', project_name='rnn_lstm_module_tuning')
+
         #Use early stopping
-        early_stopping = EarlyStopping(monitor='val_loss', patience=3)
+        early_stopping = EarlyStopping(monitor='val_loss', patience=5)
+
+        #Run search for best hyperparameters
         tuner_hb.search(x_train, y_train, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
         best_hyperparams = tuner_hb.get_best_hyperparameters()[0]
+
+        #Save for later use
         self.best_num_of_units = best_hyperparams.get('units')
         self.best_activation = best_hyperparams.get('activations')
         self.best_optimizer = best_hyperparams.get('optimizer')
@@ -119,23 +128,20 @@ class GRNN:
     #This function can be called again with new augmented data to retrain and do further lookahead
     def do_rnn_lstm_lookahead(self, data, lookahead_time_steps, need_scaling):
 
+        #Prep data
         x_train, x_test, y_train, y_test = self.prepare_data_for_rnn_lstm(data, need_scaling)
 
         #Using GPU is much faster but there are some portability issues to be resolved
         #Until then, use CPU for this
 
-        #TBD: Tune hyperparameters with keras_tuner
+        #Tune hyperparameters with keras_tuner
+        best_hyperparams = self.get_best_tuned_model_hyperparams(x_train, x_test, y_train, y_test)
 
-        #Run some experiments for single feature regression
-        if (need_scaling):
-            #Scaled using minmax scaler between 0 and 1
-            model = Sequential([LSTM(units=32, input_shape=(self.ar_size, 1), name='LSTM', return_sequences=False), Dense(1, name='Output')])
-        else:
-            #Already scaled data (in this case SH_gScore is between -0.75 and +0.75)
-            model = Sequential([LSTM(units=32, activation='tanh', input_shape=(self.ar_size, 1), name='LSTM', return_sequences=False), Dense(1, activation='tanh', name='Output')])
+        #Create LSTM RNN for single feature using best tuned hyperparameters
+        model = Sequential([LSTM(units=self.best_num_of_units, activation=self.best_activation, input_shape=(self.ar_size, 1), name='LSTM', return_sequences=False), Dense(1, activation=self.best_activation, name='Output')])
 
         #Compile the model with popular optimizer and MSE for regression
-        model.compile(optimizer='adam', loss='mean_squared_error')
+        model.compile(optimizer=self.best_optimizer, loss='mean_squared_error')
 
         #Use early stopping
         early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
