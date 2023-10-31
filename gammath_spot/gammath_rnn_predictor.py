@@ -19,6 +19,7 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import os
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -99,12 +100,15 @@ class GRNN:
 
         return x_train, x_test, y_train, y_test
 
-    def get_best_tuned_model_hyperparams(self, x_train, x_test, y_train, y_test):
+    def get_best_tuned_model_hyperparams(self, tsymbol, data_type, x_train, x_test, y_train, y_test):
+
+        path = Path(f'tickers/{tsymbol}')
+
         #init search space
         hp = self.init_model_tuning_params()
 
         #Use Hyperband algo
-        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=20, hyperparameters=hp, directory='tuned_models', project_name='rnn_lstm_module_tuning')
+        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=20, hyperparameters=hp, directory=path, project_name=f'{data_type}_rnn_lstm_hp_tuning')
 
         #Use early stopping
         early_stopping = EarlyStopping(monitor='val_loss', patience=5)
@@ -126,7 +130,12 @@ class GRNN:
     #to use smaller number of lookahead timesteps. Ideal lookahead_time_steps=1.
     #Predictions are likely to reflect a trend (increasing or decreasing).
     #This function can be called again with new augmented data to retrain and do further lookahead
-    def do_rnn_lstm_lookahead(self, data, lookahead_time_steps, need_scaling):
+    def do_rnn_lstm_lookahead(self, tsymbol, data, lookahead_time_steps, data_type):
+
+        if (data_type == 'SH_gScore'):
+            need_scaling = False
+        else:
+            need_scaling = True
 
         #Prep data
         x_train, x_test, y_train, y_test = self.prepare_data_for_rnn_lstm(data, need_scaling)
@@ -135,13 +144,20 @@ class GRNN:
         #Until then, use CPU for this
 
         #Tune hyperparameters with keras_tuner
-        best_hyperparams = self.get_best_tuned_model_hyperparams(x_train, x_test, y_train, y_test)
+        best_hyperparams = self.get_best_tuned_model_hyperparams(tsymbol, data_type, x_train, x_test, y_train, y_test)
 
         #Create LSTM RNN for single feature using best tuned hyperparameters
         model = Sequential([LSTM(units=self.best_num_of_units, activation=self.best_activation, input_shape=(self.ar_size, 1), name='LSTM', return_sequences=False), Dense(1, activation=self.best_activation, name='Output')])
 
+        if (self.best_optimizer == 'sgd'):
+            best_optimizer = optimizers.SGD(learning_rate = self.best_learning_rate)
+        elif (self.best_optimizer == 'rmsprop'):
+            best_optimizer = optimizers.RMSprop(learning_rate = self.best_learning_rate)
+        elif (self.best_optimizer == 'adam'):
+            best_optimizer = optimizers.Adam(learning_rate = self.best_learning_rate)
+
         #Compile the model with popular optimizer and MSE for regression
-        model.compile(optimizer=self.best_optimizer, loss='mean_squared_error')
+        model.compile(optimizer=best_optimizer, loss='mean_squared_error')
 
         #Use early stopping
         early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
