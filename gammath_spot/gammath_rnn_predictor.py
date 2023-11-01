@@ -49,7 +49,7 @@ class GRNN:
         self.hp_units = self.hp.Int('units', min_value=4, max_value=64, step=10)
         self.hp_activations = self.hp.Choice('activations', ['linear', 'relu', 'tanh'])
         self.hp_optimizers = self.hp.Choice('optimizer', ['sgd', 'rmsprop', 'adam'])
-        self.hp_learning_rate = self.hp.Choice('learning_rate', [1e-4, 1e-3, 1e-3])
+        self.hp_learning_rate = self.hp.Choice('learning_rate', [1e-4, 1e-3, 1e-2])
         return self.hp
 
     def build_model(self, hp):
@@ -114,7 +114,7 @@ class GRNN:
         early_stopping = EarlyStopping(monitor='val_loss', patience=5)
 
         #Run search for best hyperparameters
-        tuner_hb.search(x_train, y_train, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
+        tuner_hb.search(x_train, y_train, validation_data=(x_test, y_test), batch_size=self.train_batch_size, callbacks=[early_stopping], shuffle=False, verbose=1)
         best_hyperparams = tuner_hb.get_best_hyperparameters()[0]
 
         #Save for later use
@@ -140,6 +140,9 @@ class GRNN:
         #Prep data
         x_train, x_test, y_train, y_test = self.prepare_data_for_rnn_lstm(data, need_scaling)
 
+        #Batch size
+        self.train_batch_size = int(len(x_train)/self.ar_size)
+
         #Using GPU is much faster but there are some portability issues to be resolved
         #Until then, use CPU for this
 
@@ -160,10 +163,10 @@ class GRNN:
         model.compile(optimizer=best_optimizer, loss='mean_squared_error')
 
         #Use early stopping
-        early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
+        early_stopping = EarlyStopping(monitor='val_loss', patience=40, restore_best_weights=True)
 
         #Train the model with training set
-        lstm_training = model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test), callbacks=[early_stopping], verbose=1)
+        lstm_training = model.fit(x_train, y_train, epochs=400, batch_size=self.train_batch_size, validation_data=(x_test, y_test), callbacks=[early_stopping], shuffle=False, verbose=1)
 
         #Get the evaluation results for debugging
         evaluation = model.evaluate(x_test, y_test)
