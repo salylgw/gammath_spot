@@ -18,6 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
+import sys
 import os
 from pathlib import Path
 import pandas as pd
@@ -189,3 +190,45 @@ class GRNN:
 
         #return values predicted for lookahead_time_steps
         return predicted_values
+
+
+def main():
+    """
+    Main function to compute stock's SH_gScore, Price estimate.
+    Work-In-Progress and barely tested
+    """
+
+    try:
+        #Get the ticker symbol
+        tsymbol = sys.argv[1]
+
+        #'SH_gScore' or 'Price'
+        type_to_estimate = sys.argv[2]
+        if ((type_to_estimate != 'SH_gScore') and (type_to_estimate != 'Price')):
+            print('ERROR: Invalid type to estaimte. Must be SH_gScore or Price')
+            return
+
+        #Get number of tradings days
+        trading_days_to_estimate = int(sys.argv[3])
+
+        try:
+            #Read micro-gScores
+            path = Path(f'tickers/{tsymbol}')
+            gscores = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+        except:
+            print('gScores not found. Please run gScore historian tool')
+            return
+
+        #Instantiate gScore RNN class
+        grnn = GRNN()
+
+        #Get predictions
+        y_predict = grnn.do_rnn_lstm_lookahead(tsymbol, gscores.SH_gScore, trading_days_to_estimate, type_to_estimate)
+
+        #Save data
+
+    except:
+        print('ERROR: Need ticker symbol, type to estimate and number of trading days to estiamte')
+
+if __name__ == '__main__':
+    main()
