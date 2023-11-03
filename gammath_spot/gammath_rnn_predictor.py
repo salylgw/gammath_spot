@@ -225,7 +225,11 @@ def main():
         #Get predictions
         y_predict = grnn.do_rnn_lstm_lookahead(tsymbol, gscores.SH_gScore, trading_days_to_estimate, type_to_estimate)
 
-        #Save data
+        #Organize data in a data frame
+        df_estimated_gscores = pd.DataFrame(y_predict, columns=[f'Estimated_{type_to_estimate}'])
+
+        #Save gscores estiamtes
+        df_estimated_gscores.to_csv(path / f'{tsymbol}_estimated_{type_to_estimate}.csv')
 
     except:
         print('ERROR: Need ticker symbol, type to estimate and number of trading days to estiamte')
