@@ -197,7 +197,6 @@ def main():
     Main function to compute stock's SH_gScore, Price estimate.
     Work-In-Progress and barely tested
     """
-
     try:
         #Get the ticker symbol
         tsymbol = sys.argv[1]
@@ -211,19 +210,30 @@ def main():
         #Get number of tradings days
         trading_days_to_estimate = int(sys.argv[3])
 
-        try:
-            #Read micro-gScores
-            path = Path(f'tickers/{tsymbol}')
-            gscores = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
-        except:
-            print('gScores not found. Please run gScore historian tool')
-            return
+        path = Path(f'tickers/{tsymbol}')
+
+        if (type_to_estimate == 'SH_gScore'):
+            try:
+                #Read micro-gScores
+                gscores = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+                data = gscores.SH_gScore
+            except:
+                print('gScore not found. Please run gScore historian tool before using this tool')
+                return
+        elif (type_to_estimate == 'Price'):
+            try:
+                df = pd.read_csv(path / f'{tsymbol}_history.csv')
+                df_len = len(df)
+                mtdpy, mtd5y = gut.get_min_trading_days()
+                data = df.Close.truncate(before=(df_len-mtd5y)).reset_index().drop('index', axis=1).Close
+            except:
+                print('Price history not found. Please run scraper tool before using this tool')
 
         #Instantiate gScore RNN class
         grnn = GRNN()
 
         #Get predictions
-        y_predict = grnn.do_rnn_lstm_lookahead(tsymbol, gscores.SH_gScore, trading_days_to_estimate, type_to_estimate)
+        y_predict = grnn.do_rnn_lstm_lookahead(tsymbol, data, trading_days_to_estimate, type_to_estimate)
 
         #Organize data in a data frame
         df_estimated_gscores = pd.DataFrame(y_predict, columns=[f'Estimated_{type_to_estimate}'])
@@ -232,7 +242,7 @@ def main():
         df_estimated_gscores.to_csv(path / f'{tsymbol}_estimated_{type_to_estimate}.csv')
 
     except:
-        print('ERROR: Need ticker symbol, type to estimate and number of trading days to estiamte')
+        print('ERROR: Need ticker symbol, type and number of trading days to estiamte')
 
 if __name__ == '__main__':
     main()
