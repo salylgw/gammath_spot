@@ -19,7 +19,11 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
-from talib import BBANDS
+#If you want to use talib, you might need to use conda
+#and use conda install -c conda-forge ta-lib
+#from talib import BBANDS
+
+from cgptgen_tilib import compute_bollinger_bands as bb
 
 def get_bollinger_bands_signals(tsymbol, df, path):
 
@@ -27,7 +31,8 @@ def get_bollinger_bands_signals(tsymbol, df, path):
 
     try:
         #Get bollinger bands values
-        ub, mb, lb = BBANDS(df.Close, timeperiod=BBANDS_TIME_PERIOD, nbdevup=2, nbdevdn=2, matype=0)
+#        ub, mb, lb = BBANDS(df.Close, timeperiod=BBANDS_TIME_PERIOD, nbdevup=2, nbdevdn=2, matype=0)
+        ub, mb, lb = bb(df.Close)
     except:
         raise RuntimeError('Bollinger Band Call Failed')
 
