@@ -20,8 +20,9 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 from pathlib import Path
-from talib import MACD
 import numpy as np
+#from talib import MACD
+from bardgen_tilib import compute_macd
 
 def get_macd_signals(tsymbol, df, path):
 
@@ -35,7 +36,8 @@ def get_macd_signals(tsymbol, df, path):
     curr_diff_quantile_str = ''
 
     try:
-        macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
+#        macd, macd_signal, macd_histogram = MACD(df.Close, MACD_FAST_PERIOD, MACD_SLOW_PERIOD, MACD_SIGNAL_PERIOD)
+        macd, macd_signal, macd_histogram = compute_macd(df.Close)
     except:
         raise RuntimeError('MACD data generation failed')
 
