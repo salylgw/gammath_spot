@@ -20,13 +20,15 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 from pathlib import Path
-from talib import RSI
 import numpy as np
-
+#If you want to use talib, you might need to use conda
+#and use conda install -c conda-forge ta-lib
+#from talib import RSI
+from cgptgen_tilib import compute_rsi
 
 def get_rsi_signals(tsymbol, df, path):
 
-    RSI_TIME_PERIOD = 14
+#    RSI_TIME_PERIOD = 14
     RSI_OVERSOLD_LEVEL = 30
     RSI_OVERBOUGHT_LEVEL = 70
 
@@ -36,7 +38,8 @@ def get_rsi_signals(tsymbol, df, path):
     curr_count_quantile_str = ''
 
     try:
-        rsi = RSI(df.Close, timeperiod=RSI_TIME_PERIOD)
+#        rsi = RSI(df.Close, timeperiod=RSI_TIME_PERIOD)
+        rsi = compute_rsi(df.Close)
     except:
         raise RuntimeError('RSI call failed')
 
@@ -44,7 +47,6 @@ def get_rsi_signals(tsymbol, df, path):
     if (rsi_len <= 0):
         raise ValueError('Invalid length of RSI data')
 
-    rsi_ds = rsi.describe()
     curr_rsi = rsi[rsi_len-1]
     prev_rsi = rsi[rsi_len-2]
 
@@ -56,7 +58,7 @@ def get_rsi_signals(tsymbol, df, path):
         rsi_direction = 'direction_unclear'
 
     #Get the RSI mean for reference to check for average RSI
-    rsi_mean = rsi_ds['mean']
+    rsi_mean = rsi.mean()
     if (curr_rsi < rsi_mean):
         rsi_avg = 'below average'
         rsi_gscore += 2
