@@ -100,30 +100,6 @@ def compute_mfi(high_prices, low_prices, close_prices, volumes, period=14):
 
     return mfi
 
-def compute_macd(prices, slow_period=26, fast_period=12, signal_period=9):
-    slow_ema = calculate_ema(prices, slow_period)
-    fast_ema = calculate_ema(prices, fast_period)
-
-    macd_line = fast_ema - slow_ema
-    signal_line = calculate_ema(macd_line, signal_period)
-    histogram = macd_line - signal_line
-
-    macd_line = pd.Series(macd_line)
-    signal_line = pd.Series(signal_line)
-    histogram = pd.Series(histogram)
-
-    return macd_line, signal_line, histogram
-
-def calculate_ema(prices, period):
-    ema = np.zeros_like(prices)
-    ema[period-1] = np.mean(prices[:period])
-    smoothing_factor = 2 / (period + 1)
-
-    for i in range(period, len(prices)):
-        ema[i] = (prices[i] - ema[i-1]) * smoothing_factor + ema[i-1]
-
-    return ema
-
 #I prefer talib's STOCH function. This implementation from ChatGPT could be a good starting point as an alternative
 def compute_stoch(close_prices, low_prices, high_prices, k_period, d_period, slowing_period):
 
