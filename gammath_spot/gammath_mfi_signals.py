@@ -20,12 +20,14 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 from pathlib import Path
-from talib import MFI
-
+#If you want to use talib, you might need to use conda
+#and use conda install -c conda-forge ta-lib
+#from talib import MFI
+from cgptgen_tilib import compute_mfi
 
 def get_mfi_signals(tsymbol, df, path):
 
-    MFI_TIME_PERIOD = 14
+#    MFI_TIME_PERIOD = 14
     MFI_OVERSOLD_LEVEL = 20
     MFI_OVERBOUGHT_LEVEL = 80
 
@@ -49,10 +51,11 @@ def get_mfi_signals(tsymbol, df, path):
         lpm1 = prices[prices_len-2]
 
     try:
-        mfi = MFI(df.High, df.Low, df.Close, df.Volume, timeperiod=MFI_TIME_PERIOD)
+#        mfi = MFI(df.High, df.Low, df.Close, df.Volume, timeperiod=MFI_TIME_PERIOD)
+        mfi = compute_mfi(df.High, df.Low, df.Close, df.Volume)
         mfi_len = len(mfi)
-        mfi_ds = mfi.describe()
-        mfi_mean = mfi_ds['mean']
+        #Get mean for reference point
+        mfi_mean = mfi.mean()
     except:
         raise RuntimeError('MFI data generation failed')
 

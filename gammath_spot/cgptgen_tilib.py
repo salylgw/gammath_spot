@@ -66,10 +66,11 @@ def compute_mfi(high_prices, low_prices, close_prices, volumes, period=14):
     typical_prices = [(high + low + close) / 3 for high, low, close in zip(high_prices, low_prices, close_prices)]
     raw_money_flows = [typical_price * volume for typical_price, volume in zip(typical_prices, volumes)]
 
+    prices_len = len(typical_prices)
     positive_money_flows = []
     negative_money_flows = []
 
-    for i in range(1, len(typical_prices)):
+    for i in range(1, prices_len):
         if typical_prices[i] > typical_prices[i - 1]:
             positive_money_flows.append(raw_money_flows[i])
             negative_money_flows.append(0)
@@ -80,9 +81,9 @@ def compute_mfi(high_prices, low_prices, close_prices, volumes, period=14):
             positive_money_flows.append(0)
             negative_money_flows.append(0)
 
-    mfi_values = []
+    mfi_values = np.zeros(prices_len)
 
-    for i in range(period - 1, len(typical_prices)):
+    for i in range(period - 1, prices_len):
         positive_money_flow_sum = sum(positive_money_flows[i - period + 1 : i + 1])
         negative_money_flow_sum = sum(negative_money_flows[i - period + 1 : i + 1])
 
@@ -92,7 +93,7 @@ def compute_mfi(high_prices, low_prices, close_prices, volumes, period=14):
             money_flow_ratio = positive_money_flow_sum / negative_money_flow_sum
             mfi = 100 - (100 / (1 + money_flow_ratio))
 
-        mfi_values.append(mfi)
+        mfi_values[i] = mfi
 
     #Return in pandas series
     mfi = pd.Series(mfi_values)
