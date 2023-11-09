@@ -17,8 +17,6 @@
 #Please note that is experimental and barely tested
 #The reason for this file. Many users have expressed problem installing talib.
 #Installing from conda-forge channel resolves it but there have been some users who don't prefer that way.
-#There are other options but now that I have help from ChatGPT....
-
 import pandas as pd
 import numpy as np
 
@@ -99,44 +97,3 @@ def compute_mfi(high_prices, low_prices, close_prices, volumes, period=14):
     mfi = pd.Series(mfi_values)
 
     return mfi
-
-#I prefer talib's STOCH function. This implementation from ChatGPT could be a good starting point as an alternative
-def compute_stoch(close_prices, low_prices, high_prices, k_period, d_period, slowing_period):
-
-    highest_high = np.max(high_prices)
-    lowest_low = np.min(low_prices)
-
-    # Calculate %K line
-    k_line = (close_prices - lowest_low) / (highest_high - lowest_low) * 100
-    k_line = simple_moving_average(k_line, k_period)
-
-    # Calculate %D line
-    d_line = simple_moving_average(k_line, d_period)
-
-    # Calculate slow %K line
-    slow_k_line = simple_moving_average(k_line, slowing_period)
-
-    # Calculate slow %D line using exponential moving average
-    slow_d_line = exponential_moving_average(slow_k_line, slowing_period)
-
-    #Return in pandas series
-    slow_k_line = pd.Series(slow_k_line)
-    slow_d_line = pd.Series(slow_d_line)
-
-    return slow_k_line, slow_d_line
-
-def simple_moving_average(values, n):
-
-    sma = np.convolve(values, np.ones(n)/n, mode='valid')
-    nan_padding = np.full(n-1, np.nan)
-
-    return np.concatenate((nan_padding, sma), axis=0)
-
-def exponential_moving_average(values, n):
-
-    weights = np.exp(np.linspace(-1., 0., n))
-    weights /= weights.sum()
-    ema = np.convolve(values, weights, mode='valid')
-    nan_padding = np.full(n-1, np.nan)
-
-    return np.concatenate((nan_padding, ema), axis=0)
