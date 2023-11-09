@@ -27,3 +27,10 @@ def compute_macd(prices, slow=26, fast=12, signal=9):
     macd_hist = macd - signal_line
 
     return macd, signal_line, macd_hist
+
+
+def compute_stochastic_slow(high, low, close, slow_k_period=3, slow_d_period=3):
+    fast_k = (close - low) / (high - low)*100
+    slow_k = fast_k.rolling(window=slow_k_period).mean()
+    slow_d = slow_k.rolling(window=slow_d_period).mean()
+    return slow_k, slow_d

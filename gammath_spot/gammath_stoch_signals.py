@@ -19,12 +19,13 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
-from talib import STOCH
+#from talib import STOCH
+from bardgen_tilib import compute_stochastic_slow
 
 def get_stochastics_slow_signals(tsymbol, df):
 
-    STOCH_FAST_PERIOD = 14
-    STOCH_SLOW_PERIOD = 3
+#    STOCH_FAST_PERIOD = 14
+#    STOCH_SLOW_PERIOD = 3
     STOCH_OVERSOLD_LEVEL = 20
     STOCH_OVERBOUGHT_LEVEL = 80
 
@@ -35,7 +36,8 @@ def get_stochastics_slow_signals(tsymbol, df):
 
 
     try:
-        slowk, slowd = STOCH(df.High, df.Low, df.Close, fastk_period=STOCH_FAST_PERIOD, slowk_period=STOCH_SLOW_PERIOD, slowk_matype=0, slowd_period=STOCH_SLOW_PERIOD, slowd_matype=0)
+#        slowk, slowd = STOCH(df.High, df.Low, df.Close, fastk_period=STOCH_FAST_PERIOD, slowk_period=STOCH_SLOW_PERIOD, slowk_matype=0, slowd_period=STOCH_SLOW_PERIOD, slowd_matype=0)
+        slowk, slowd = compute_stochastic_slow(df.High, df.Low, df.Close)
     except:
         raise RuntimeError('Stochastics data generation failed')
 
@@ -45,8 +47,8 @@ def get_stochastics_slow_signals(tsymbol, df):
         raise ValueError('Stochastics data length error')
 
     stoch_d_curr_val = slowd[stoch_len-1]
-    slowd_ds = slowd.describe()
-    slowd_mean = slowd_ds['mean']
+
+    slowd_mean = slowd.mean()
 
     if (stoch_d_curr_val < slowd_mean):
         stoch_lvl = 'below average'
