@@ -4,10 +4,8 @@ pandas_datareader
 matplotlib
 pykalman
 statsmodels
-ta-lib
 scikit-learn
 yfinance
-backtesting
 textblob
 tensorflow
 keras-tuner

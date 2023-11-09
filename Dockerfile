@@ -21,7 +21,7 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py310_23.5.2-0-L
     && echo "conda activate base" >> ~/.bashrc \
     && /opt/conda/bin/conda init bash
 
-RUN conda install -c conda-forge ta-lib
+#RUN conda install -c conda-forge ta-lib
 
 RUN git clone https://github.com/salylgw/gammath_spot.git
 
