@@ -24,21 +24,20 @@ This project uses following free tools that need to be installed (you can use pi
 1. numpy
 1. pandas
 1. pandas_datareader
-1. ta-lib (Install ta-lib using miniconda in case you run into problem: `conda install -c conda-forge ta-lib`)
 1. yfinance
 1. pykalman
-1. statsmodels (Install statsmodels using miniconda in case you run into problems: `conda install statsmodels`)
+1. statsmodels
 1. scikit-learn
-1. matplotlib (Install matplotlib using miniconda in case you run into problem: `conda install matplotlib`)
-1. backtesting
+1. matplotlib
 1. textblob
+1. tensorflow
+1. keras-tuner
 
 # HOWTO install
 
 If you want to use the GUI, it is <u>recommended to install miniconda</u> (latest version for Python 3.10) and then use following commands in your miniconda shell for installing gammath-spot:
 
- 1. `conda install -c conda-forge ta-lib`
- 2. `pip install gammath-spot --prefer-binary`
+ 1. `pip install gammath-spot --prefer-binary`
 
 If you want to use CLI and use prebuilt docker image then please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
 
@@ -58,6 +57,7 @@ Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_sp
 # HOWTO get prebuilt Gammath SPOT docker image to use CLI
  1. Repeat first three steps above.
  2. Run `docker pull gammathworks/gammath_spot`.
+
 
 # HOWTO to run containerized Gammath SPOT with CLI
  1. Run docker desktop/engine that you installed.
