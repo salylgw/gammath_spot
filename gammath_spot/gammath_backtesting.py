@@ -19,12 +19,11 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 # THIS IS PROVIDED TO MAKE IT EASY FOR BACKTESTING
-# Users will need to implement their own strategy in the gScoresDataAction class or in run_basic_backtest function
+# Users will need to implement their own strategy in run_basic_backtest function
 
 import sys
 from pathlib import Path
 import pandas as pd
-from backtesting import Backtest, Strategy
 try:
     from gammath_spot import gammath_utils as gut
     from gammath_spot import gammath_mi_scores as gmis
@@ -348,47 +347,6 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
     df_transactions.to_csv(path / f'{tsymbol}_gtrades_stats_{term}_{risk_appetite}_risk_appetite.csv')
 
 
-#Get the main stock history based gScores
-def extractGscores(data):
-    return data.Total
-
-#Implement your own strategy in this class
-class gScoresDataAction(Strategy):
-
-    def init(self):
-        self.min_sh_premium_level = -0.3
-        self.neutral_sh_level = -0.1
-        self.min_sh_discount_level = 0.2
-        self.previous_close = 0
-        self.total_shares = 0
-        self.total_cost = 0
-        self.sh_gScore = self.I(extractGscores, self.data)
-
-    def next(self):
-        #Following is provided to make it easier for you to implement your own strategy using the gScore and micro-gScores
-        curr_sh_gscore = self.sh_gScore[-1]
-        curr_closing_price = self.data.Close[-1]
-
-        #You can use multiple micro-gScores from self.data.<micro-gScore>
-
-        # Following is provided as an example of using this backtesting framework
-        # Typical way is to check the charts from gscores historian to correlate gScore and micro-gScores with price
-        # Then use those correlated fields in your own strategy
-        # Then check the backtesting stats on how well your strategy did
-        # If it shows your desired success rate then one can choose to execute on that strategy
-
-        # Following shows how to use the APIs. Following is not a strategy.
-        # Actual strategy will need to be implemented
-#        if (self.previous_close):
-#            if (curr_sh_gscore >= self.min_sh_discount_level):
-#                if (curr_closing_price > self.previous_close):
-#                    self.buy()
-
-#            if (curr_sh_gscore <= self.min_sh_premium_level):
-#                if (curr_closing_price < self.previous_close):
-#                    self.sell()
-
-        self.previous_close = curr_closing_price
 
 class GBT:
     def run_backtest(self, tsymbol):
@@ -437,15 +395,3 @@ class GBT:
         run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term', 'high', 10000)
         run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term', 'high', 10000)
 
-        #Following is done to make it easier to use this with backtesting python framework
-#        df_gscores_history.Date = pd.to_datetime(df_gscores_history['Date'])
-#        df_gscores_history = df_gscores_history.set_index('Date')
-
-        #Instantiate Backtest
-#        backtest = Backtest(df_gscores_history, gScoresDataAction, cash=20000)
-
-        #Back test the strategy using our dataframe
-#        bt_stats = backtest.run()
-
-        #Save it for later reference
-#        bt_stats.to_csv(path / f'{tsymbol}_bt_stats.csv')
