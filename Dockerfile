@@ -1,8 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10-slim-bullseye
 
-ENV PATH /opt/conda/bin:$PATH
-
 RUN apt-get update --fix-missing && \
     apt-get install -y \
     git \

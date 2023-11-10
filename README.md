@@ -34,12 +34,11 @@ This project uses following free tools that need to be installed (you can use pi
 1. keras-tuner
 
 # HOWTO install
-
-If you want to use the GUI, it is <u>recommended to install miniconda</u> (latest version for Python 3.10) and then use following commands in your miniconda shell for installing gammath-spot:
+Install Python version **3.10** and then use following commands in your shell for installing gammath-spot:
 
  1. `pip install gammath-spot --prefer-binary`
 
-If you want to use CLI and use prebuilt docker image then please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
+If you want to use CLI (instead of GUI) then you can use docker container. For using prebuilt docker image, please see the the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4).
 
 
 # WHERE to get source code without installing
