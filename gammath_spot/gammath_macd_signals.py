@@ -22,7 +22,10 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 #from talib import MACD
-from bardgen_tilib import compute_macd
+try:
+    from gammath_spot.bardgen_tilib import compute_macd
+except:
+    from bardgen_tilib import compute_macd
 
 def get_macd_signals(tsymbol, df, path):
 

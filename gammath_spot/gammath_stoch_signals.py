@@ -20,7 +20,10 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 #from talib import STOCH
-from bardgen_tilib import compute_stochastic_slow
+try:
+    from gammath_spot.bardgen_tilib import compute_stochastic_slow
+except:
+    from bardgen_tilib import compute_stochastic_slow
 
 def get_stochastics_slow_signals(tsymbol, df):
 

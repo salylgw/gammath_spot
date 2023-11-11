@@ -23,7 +23,10 @@ from pathlib import Path
 #If you want to use talib, you might need to use conda
 #and use conda install -c conda-forge ta-lib
 #from talib import MFI
-from cgptgen_tilib import compute_mfi
+try:
+    from gammath_spot.cgptgen_tilib import compute_mfi
+except:
+    from cgptgen_tilib import compute_mfi
 
 def get_mfi_signals(tsymbol, df, path):
 

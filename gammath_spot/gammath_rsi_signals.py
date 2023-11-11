@@ -24,7 +24,10 @@ import numpy as np
 #If you want to use talib, you might need to use conda
 #and use conda install -c conda-forge ta-lib
 #from talib import RSI
-from cgptgen_tilib import compute_rsi
+try:
+    from gammath_spot.cgptgen_tilib import compute_rsi
+except:
+    from cgptgen_tilib import compute_rsi
 
 def get_rsi_signals(tsymbol, df, path):
 

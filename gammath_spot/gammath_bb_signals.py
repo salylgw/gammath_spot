@@ -23,7 +23,10 @@ import pandas as pd
 #and use conda install -c conda-forge ta-lib
 #from talib import BBANDS
 
-from cgptgen_tilib import compute_bollinger_bands as bb
+try:
+    from gammath_spot.cgptgen_tilib import compute_bollinger_bands as bb
+except:
+    from cgptgen_tilib import compute_bollinger_bands as bb
 
 def get_bollinger_bands_signals(tsymbol, df, path):
 
