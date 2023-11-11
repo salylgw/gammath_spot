@@ -24,7 +24,7 @@ def readme():
         return f.read()
 
 setup(name='gammath_spot',
-      version='11.3',
+      version='11.81',
       description='Stock Price-Opining Tools',
       long_description=readme(),
       long_description_content_type='text/markdown',
@@ -33,11 +33,11 @@ setup(name='gammath_spot',
       author='Salyl Bhagwat',
       author_email='salylgw@gmail.com',
       packages=['gammath_spot'],
-      install_requires=['numpy', 'pandas', 'pandas_datareader', 'ta-lib', 'yfinance', 'pykalman', 'statsmodels', 'matplotlib', 'scikit-learn', 'backtesting', 'textblob',],
+      install_requires=['numpy', 'pandas', 'pandas_datareader', 'yfinance', 'pykalman', 'statsmodels', 'matplotlib', 'scikit-learn', 'textblob', 'tensorflow', 'keras-tuner',],
       include_package_data=True,
       package_data={'gammath_spot': ['data/logo.png']},
       entry_points = {
-          'console_scripts': ['gammath_scraper=gammath_spot.gammath_stocks_data_scraper:main','gammath_scorer=gammath_spot.gammath_stocks_analyzer_and_scorer:main','gammath_projector=gammath_spot.gammath_stocks_pep:main','gammath_historian=gammath_spot.gammath_stocks_gscores_historian:main','gammath_backtester=gammath_spot.gammath_stocks_backtesting:main','gammath_screener=gammath_spot.gammath_stocks_screener:main','gammath_spot_gui=gammath_spot.gammath_gui_app:main'],
+          'console_scripts': ['gammath_scraper=gammath_spot.gammath_stocks_data_scraper:main','gammath_scorer=gammath_spot.gammath_stocks_analyzer_and_scorer:main','gammath_projector=gammath_spot.gammath_stocks_pep:main','gammath_estimator=gammath_spot.gammath_rnn_predictor:main','gammath_historian=gammath_spot.gammath_stocks_gscores_historian:main','gammath_backtester=gammath_spot.gammath_stocks_backtesting:main','gammath_screener=gammath_spot.gammath_stocks_screener:main','gammath_spot_gui=gammath_spot.gammath_gui_app:main'],
       },
       zip_safe=False)
 
