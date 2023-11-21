@@ -129,7 +129,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         last_buy_5y_price_ratio = 0
 
         #Look for discount zone entry or if it is still in the "buy zone"
-        if (((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (total_shares and (curr_sh_gscore >= NEUTRAL_SH_LEVEL)))):
+        if (((curr_sh_gscore >= MIN_SH_DISCOUNT_LEVEL) or (marked_for_buy and (curr_sh_gscore >= NEUTRAL_SH_LEVEL)))):
 
             marked_for_sell = False
             marked_for_buy = True
@@ -144,12 +144,12 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
             #Check if rising after multi-day drop
             rise_after_multi_day_drop = ((prev_nup >= MIN_NEXT_DAY_UP_PROB) and (single_day_rising))
 
-            # For brevity, we only want to buy when price is below our current average price
+            # For brevity, we only want to buy when price is in the "buy zone" and  below our current average price
             if (total_shares and (curr_closing_price > avg_price)):
                 buy_now = False
             elif (risk_appetite == 'high'):
-                #higher trading risk so relaxed condition for buy
-                if (consec_two_days_rising or rise_after_multi_day_drop):
+                #higher trading risk so relaxed condition for buy when in "buy zone"
+                if ((curr_sh_gscore < MIN_SH_DISCOUNT_LEVEL) and (consec_two_days_rising or rise_after_multi_day_drop)):
                     buy_now = True
             elif ((curr_support_line_slope >= 0) and (curr_resistance_line_slope >= 0) and (curr_ols > 0)):
                 if (rise_after_multi_day_drop):
