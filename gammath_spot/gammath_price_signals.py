@@ -145,7 +145,7 @@ def get_price_signals(tsymbol, df):
 
         #Log quantile for days count
         if (last_falling_days_count < mp):
-            curr_count_quantile_str = 'day-count in bottom quantile'
+            curr_count_quantile_str = 'day-count in bottom half'
         elif (last_falling_days_count < tp):
             curr_count_quantile_str = 'day-count in middle quantile'
         else:
@@ -178,7 +178,7 @@ def get_price_signals(tsymbol, df):
 
         #Log quantile for days count
         if (last_rising_days_count < mp):
-            curr_count_quantile_str = 'day-count in bottom quantile'
+            curr_count_quantile_str = 'day-count in bottom half'
         elif (last_rising_days_count < tp):
             curr_count_quantile_str = 'day-count in middle quantile'
         else:
@@ -214,7 +214,7 @@ def get_price_signals(tsymbol, df):
 
     #Log quantile for current price in 52-week range
     if (lp < mp):
-        curr_price_1y_quantile_str = 'in 1Y bottom quantile'
+        curr_price_1y_quantile_str = 'in 1Y bottom half'
     elif (lp < tp):
         curr_price_1y_quantile_str = 'in 1Y middle quantile'
     else:

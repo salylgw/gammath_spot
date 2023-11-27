@@ -135,7 +135,7 @@ def get_kf_state_means(tsymbol, df):
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff < mp):
-            curr_diff_quantile_str = 'bottom quantile'
+            curr_diff_quantile_str = 'bottom half'
 
         if (curr_diff >= bp):
             kf_gscore += 2
@@ -162,7 +162,7 @@ def get_kf_state_means(tsymbol, df):
         #bigger the difference could mean better price compared to mean
         #scores are based on curr_diff greater than 25, 50, 75 percentile
         if (curr_diff < mp):
-            curr_diff_quantile_str = 'bottom quantile'
+            curr_diff_quantile_str = 'bottom half'
 
         if (curr_diff >= bp):
             kf_gscore -= 2
@@ -193,7 +193,7 @@ def get_kf_state_means(tsymbol, df):
         bp, mp, tp = kf_below_mean_count_series.quantile([0.25, 0.5, 0.75])
 
         if (curr_below_mean_count < mp):
-            curr_count_quantile_str = 'bottom quantile'
+            curr_count_quantile_str = 'bottom half'
 
         if (curr_below_mean_count >= bp):
             kf_gscore += 1
@@ -217,7 +217,7 @@ def get_kf_state_means(tsymbol, df):
         bp, mp, tp = kf_above_mean_count_series.quantile([0.25, 0.5, 0.75])
 
         if (curr_above_mean_count < mp):
-            curr_count_quantile_str = 'bottom quantile'
+            curr_count_quantile_str = 'bottom half'
 
         if (curr_above_mean_count >= bp):
             kf_gscore -= 1

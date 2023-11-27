@@ -141,7 +141,7 @@ def get_macd_signals(tsymbol, df, path):
         bp_diff, mp_diff, tp_diff = macd_neg_diff_count_series.quantile([0.25, 0.5, 0.75])
 
         if (curr_macd_ndiff < mp_diff):
-            curr_diff_quantile_str = 'bottom quantile'
+            curr_diff_quantile_str = 'bottom half'
 
         if (curr_macd_ndiff >= mp_diff):
             curr_diff_quantile_str = 'middle quantile'
@@ -157,7 +157,7 @@ def get_macd_signals(tsymbol, df, path):
             #Increase buy score at 25, 50 and 75 percentile crossing
             if (curr_days_in_negative >= bp):
                 macd_gscore += 1
-                curr_count_quantile_str = 'bottom quantile'
+                curr_count_quantile_str = 'bottom half'
 
             if (curr_days_in_negative >= mp):
                 macd_gscore += 2
@@ -186,7 +186,7 @@ def get_macd_signals(tsymbol, df, path):
         bp_diff, mp_diff, tp_diff = macd_pos_diff_count_series.quantile([0.25, 0.5, 0.75])
 
         if (curr_macd_pdiff <= mp_diff):
-            curr_diff_quantile_str = 'bottom quantile'
+            curr_diff_quantile_str = 'bottom half'
 
         if (curr_macd_pdiff > mp_diff):
             curr_diff_quantile_str = 'middle quantile'
@@ -207,7 +207,7 @@ def get_macd_signals(tsymbol, df, path):
             #Increase sell score at 25, 50 and 75 percentile crossing
             if (curr_days_in_positive >= bp):
                 macd_gscore -= 1
-                curr_count_quantile_str = 'bottom quantile'
+                curr_count_quantile_str = 'bottom half'
 
             if (curr_days_in_positive >= mp):
                 macd_gscore -= 2

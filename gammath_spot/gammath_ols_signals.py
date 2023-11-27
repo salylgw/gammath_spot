@@ -259,7 +259,7 @@ def get_ols_signals(tsymbol, df, path):
             if (residual <= 0):
                 #Below OLS line
                 if (curr_diff < mp):
-                    curr_diff_quantile_str = 'bottom quantile'
+                    curr_diff_quantile_str = 'bottom half'
 
                 if (curr_diff >= bp):
                     ols_gscore += 1
@@ -274,7 +274,7 @@ def get_ols_signals(tsymbol, df, path):
             else:
                 #Above OLS line
                 if (curr_diff < mp):
-                    curr_diff_quantile_str = 'bottom quantile'
+                    curr_diff_quantile_str = 'bottom half'
 
                 if (curr_diff >= bp):
                     ols_gscore -= 1

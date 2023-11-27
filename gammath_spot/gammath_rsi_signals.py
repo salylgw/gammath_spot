@@ -126,7 +126,7 @@ def get_rsi_signals(tsymbol, df, path):
         bp, mp, tp = rsi_os_count_series.quantile([0.25, 0.5, 0.75])
 
         if (curr_oversold_count < mp):
-            curr_count_quantile_str = 'oversold day-count in bottom quantile'
+            curr_count_quantile_str = 'oversold day-count in bottom half'
 
         if (curr_oversold_count >= bp):
             rsi_gscore += 1
@@ -144,7 +144,7 @@ def get_rsi_signals(tsymbol, df, path):
         bp, mp, tp = rsi_ob_count_series.quantile([0.25, 0.5, 0.75])
 
         if (curr_overbought_count < mp):
-            curr_count_quantile_str = 'overbought day-count in bottom quantile'
+            curr_count_quantile_str = 'overbought day-count in bottom half'
 
         if (curr_overbought_count >= bp):
             rsi_gscore -= 1
