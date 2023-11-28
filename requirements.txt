@@ -9,5 +9,4 @@ yfinance
 textblob
 tensorflow
 keras-tuner
-pymdptoolbox
 
