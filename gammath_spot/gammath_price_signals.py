@@ -43,6 +43,8 @@ def get_price_signals(tsymbol, df):
         raise ValueError('Invalid Price data for generating signals')
 
     lp = prices[prices_len-1]
+    slp = prices[prices_len-2]
+    price_pct_change = round(((lp-slp)*100/slp), 3)
 
     #Limit to 3 digits after decimal point
     curr_price = f'curr_price: %5.3f' % lp
@@ -235,6 +237,6 @@ def get_price_signals(tsymbol, df):
 
     price_grec = f'price_gscore:{price_gscore}/{price_max_score}'
 
-    price_signals = f'price: {price_dir},{curr_count_quantile_str},{curr_price}:{curr_price_1y_quantile_str},{ylp},{yhp},{nftwlh},{price_grec}'
+    price_signals = f'price: {price_dir},{curr_count_quantile_str},pct_change:{price_pct_change},curr_price:{curr_price},{curr_price_1y_quantile_str},{ylp},{yhp},{nftwlh},{price_grec}'
 
     return price_gscore, price_max_score, price_signals
