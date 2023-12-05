@@ -57,6 +57,10 @@ Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_sp
  1. Repeat first three steps above.
  2. Run `docker pull gammathworks/gammath_spot`.
 
+# HOWTO resolve typical environment issues when using docker
+ 1. If running out of space, one could see related error message when pulling docker image. Try running `docker image prune -f` to free up space by removing unused images.
+ 2. If signature mismatch error is seen for a component image when building your own docker image then try using `docker builder prune -f` to remove build cache.
+ 3. Generally speaking, it is a good idea to use latest version of docker desktop.
 
 # HOWTO to run containerized Gammath SPOT with CLI
  1. Run docker desktop/engine that you installed.
