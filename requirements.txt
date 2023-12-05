@@ -9,4 +9,5 @@ yfinance
 textblob
 tensorflow
 keras-tuner
+gymnasium
 
