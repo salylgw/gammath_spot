@@ -127,7 +127,8 @@ class GSH:
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
-            SH_GSCORE_MIN_DISCOUNT_LEVEL, SH_GSCORE_NEUTRAL_LEVEL, SH_GSCORE_MIN_PREMIUM_LEVEL = df_gscores.SH_gScore.quantile([0.20, 0.5, 0.80])
+            #Use hardcoded values to avoid looking back to decide on levels
+            SH_GSCORE_MIN_DISCOUNT_LEVEL, SH_GSCORE_NEUTRAL_LEVEL, SH_GSCORE_MIN_PREMIUM_LEVEL = 0.375, 0, -0.375
 
             #Draw the charts (along with dates) to get a general idea of correlations
             figure, axes = plt.subplots(nrows=11, figsize=(28, 47))
