@@ -593,10 +593,11 @@ class GSA:
         #Add up micro-gScores then save scores and signals
         overall_gscore = round((sh_gScore_df.SH_gScore[0] + sci_gScore_df.SCI_gScore[0]), 3)
 
+        component_gscore_string = f'SH_gScore:{sh_gScore_df.SH_gScore[0]},SCI_gScore:{sci_gScore_df.SCI_gScore[0]}'
         final_gscore_string = f'final_gscore:{overall_gscore}'
 
         #Get all signals info for saving in a file for later reference
-        overall_signals = '\n'.join([sh_signals, sci_signals, note, final_gscore_string])
+        overall_signals = '\n'.join([sh_signals, sci_signals, note, component_gscore_string, final_gscore_string])
 
         #Create a data frame for all (micro)gScores
         gScore_df = pd.DataFrame({'gScore': overall_gscore}, index=range(1))
