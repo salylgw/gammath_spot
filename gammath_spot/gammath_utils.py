@@ -80,7 +80,7 @@ def get_min_trading_days():
 
 
 def get_sh_gscores_df_columns():
-    sh_gscores_columns = ('Date', 'Close', 'Price', 'RSI', 'BBANDS', 'MACD', 'KF', 'OLS', 'MFI', 'Stoch', 'SH_gScore', 'NUP', 'A5DUP', 'A20DUP', 'TPC5Y', 'CSL', 'SLS', 'PDSL', 'CRL', 'RLS', 'PDRL')
+    sh_gscores_columns = ('Date', 'Close', 'Price', 'RSI', 'BBANDS', 'MACD', 'KF', 'OLS', 'MFI', 'Stoch', 'SH_gScore', 'NUP', 'A5DUP', 'A20DUP', 'TPC5Y', 'CSL', 'SLS', 'PDSL', 'CRL', 'RLS', 'PDRL', 'DDBTP', 'DPSTP')
 
     return sh_gscores_columns
 

@@ -124,11 +124,35 @@ class GSH:
             else:
                 df_gscores = interim_df_gscores
 
-            #Save gscores history
-            df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
-
             #Use hardcoded values to avoid looking back to decide on levels
             SH_GSCORE_MIN_DISCOUNT_LEVEL, SH_GSCORE_NEUTRAL_LEVEL, SH_GSCORE_MIN_PREMIUM_LEVEL = 0.375, 0, -0.375
+
+            discounted_zone = False
+            premium_zone = False
+
+            #Find the default (without any stock-specific fine tuning) buy/sell transition points
+            for i in range(len(df_gscores)):
+                #SH_gScore can have wild swings so need each of these comparisons
+                if (df_gscores.SH_gScore[i] >= SH_GSCORE_MIN_DISCOUNT_LEVEL):
+                    discounted_zone = True
+
+                if (discounted_zone):
+                    if (df_gscores.SH_gScore[i] < SH_GSCORE_MIN_DISCOUNT_LEVEL):
+                        discounted_zone = False
+                        #Mark default discount zone to buy zone transition
+                        df_gscores.DDBTP[i] = '*'
+
+                if (df_gscores.SH_gScore[i] <= SH_GSCORE_MIN_PREMIUM_LEVEL):
+                    premium_zone = True
+
+                if (premium_zone):
+                    if (df_gscores.SH_gScore[i] > SH_GSCORE_MIN_PREMIUM_LEVEL):
+                        premium_zone = False
+                        #Mark default premium zone to sell zone transition
+                        df_gscores.DPSTP[i] = '*'
+
+            #Save gscores history
+            df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
             #Draw the charts (along with dates) to get a general idea of correlations
             figure, axes = plt.subplots(nrows=11, figsize=(28, 47))
