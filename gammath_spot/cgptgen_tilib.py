@@ -35,6 +35,10 @@ def compute_rsi(prices, window=14):
     seed = deltas[:window+1]
     up = seed[seed >= 0].sum() / window
     down = -seed[seed < 0].sum() / window
+
+    if (not down):
+        down = 0.001
+
     rs = up / down
     rsi = np.zeros_like(prices)
     rsi[:window] = 100. - 100. / (1. + rs)
@@ -50,6 +54,8 @@ def compute_rsi(prices, window=14):
 
         up = (up * (window - 1) + upval) / window
         down = (down * (window - 1) + downval) / window
+        if (not down):
+            down = 0.001
         rs = up / down
         rsi[i] = 100. - 100. / (1. + rs)
 
