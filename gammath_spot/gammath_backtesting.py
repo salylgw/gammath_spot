@@ -51,7 +51,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
     mtdpy, mtd5y = gut.get_min_trading_days()
 
     #Create a data frame to save the stats and useful info to measure the performance of the strategy
-    df_transactions = pd.DataFrame(columns=['Date', 'Price', 'Action', 'Quantity', 'Avg_Price', 'Profit', 'Return_Pct', 'SP500_Pct', 'Days_Held', 'Last_Price', 'Stage', 'Notes'], index=range(mtd5y))
+    df_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(mtd5y))
 
     history_len = len(df)
 

@@ -89,6 +89,10 @@ def get_sci_gscores_df_columns():
 
     return sci_gscores_columns
 
+def get_trading_bt_columns():
+    trading_bt_columns = ('Date', 'Price', 'Action', 'Quantity', 'Avg_Price', 'Profit', 'Return_Pct', 'SP500_Pct', 'Days_Held', 'Last_Price', 'Stage', 'Notes')
+    return trading_bt_columns
+
 def get_tool_msg_struct():
     tool_msg_struct = {'Tool': 'None', 'PD': 0}
 
