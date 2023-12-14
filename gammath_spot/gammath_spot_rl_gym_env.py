@@ -24,6 +24,10 @@ import pandas as pd
 import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 #This is a work-in-progress. A lot will change before it is usable
 
@@ -35,7 +39,7 @@ class SPOT_environment(gym.Env):
         self.ticker = tsymbol
         self.step = 0
         self.init_SPOT_RL_env_data(tsymbol)
-        self.action_space = spaces.Discrete(len(self.actions))
+        self.action_space = spaces.Discrete(len(self.action_types))
         self.observation_space = spaces.Box(self.SPOT_vals_mins, self.SPOT_vals_maxs)
         self.reset()
 
@@ -44,9 +48,22 @@ class SPOT_environment(gym.Env):
         self.step = 0
         #Get initial value reading
         obs = self.SPOT_vals.iloc[self.step].values
-        self.step += 1
+        done = False
         #info might need to be returned. TBD
-        return obs
+        return obs, done
+
+    def take_obs_step(self):
+        obs = self.SPOT_vals.iloc[self.step].values
+        self.step += 1
+        done = self.step > self.steps
+        return obs, done
+
+    def take_trade_action_step(self, action):
+        #TBD
+        reward = 0
+        info = {}
+
+        return reward, info
 
     def render(self):
         #action not required
@@ -61,10 +78,13 @@ class SPOT_environment(gym.Env):
 
         #Price history corresponding to steps
         self.prices = df.Close
-
+        self.steps = len(self.SPOT_vals)
         #Need min/max for gymnasium
         self.SPOT_vals_mins = np.array(self.SPOT_vals.min())
         self.SPOT_vals_maxs = np.array(self.SPOT_vals.max())
 
-        #Basic actions
-        self.actions = ['Sell', 'Hold', 'Buy']
+        #Basic action types
+        self.action_types = ['Sell', 'Hold', 'Buy']
+
+        self.actions = np.zeros(self.steps)
+        trading_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(self.steps))
