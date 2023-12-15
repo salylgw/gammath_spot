@@ -18,13 +18,23 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
+import os
+try:
+    #Following code is only for tkinter to run in docker container
+    #Correct resolution and hook ups for rendering on a host's system is not implemented
+    from pyvirtualdisplay import Display
+    display = Display(visible=False)
+    display.start()
+    os.environ["DISPLAY"] = ":{}".format(display.display)
+except:
+    pass
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import font
 from tkinter import filedialog
 import threading, queue
 import webbrowser as wb
-import os
 from pathlib import Path
 import pandas as pd
 try:

@@ -1,10 +1,11 @@
 # syntax=docker/dockerfile:1
-FROM python:3.10-slim-bullseye
+FROM python:3.10-bullseye
 
 RUN apt-get update --fix-missing && \
     apt-get install -y \
     git \
     vim \
+    xvfb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -12,6 +13,8 @@ RUN apt-get update --fix-missing && \
 RUN git clone https://github.com/salylgw/gammath_spot.git
 
 WORKDIR /gammath_spot/gammath_spot
+
+RUN pip install pyvirtualdisplay --prefer-binary
 
 RUN pip install -r ../requirements.txt --prefer-binary
 
