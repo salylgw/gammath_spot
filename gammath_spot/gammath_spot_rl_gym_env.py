@@ -35,9 +35,11 @@ except:
 class SPOT_environment(gym.Env):
     metadata = {'render_modes': []}
 
-    def __init__(self, tsymbol):
+    def __init__(self, tsymbol, max_trading_days):
         self.ticker = tsymbol
-        self.step = 0
+        self.max_trading_days = max_trading_days
+        self.steps = max_trading_days
+        self.random_start_index = 0
         self.init_SPOT_RL_env_data(tsymbol)
         self.action_space = spaces.Discrete(len(self.action_types))
         self.observation_space = spaces.Box(self.SPOT_vals_mins, self.SPOT_vals_maxs)
@@ -46,24 +48,26 @@ class SPOT_environment(gym.Env):
     def reset(self):
         #step 0
         self.step = 0
-        #Get initial value reading
-        obs = self.SPOT_vals.iloc[self.step].values
+        #Use random starting point
+        self.random_start_index = np.random.randint(low=0, high=(len(self.SPOT_vals)-self.max_trading_days))
         done = False
-        #info might need to be returned. TBD
-        return obs, done
 
     def take_obs_step(self):
-        obs = self.SPOT_vals.iloc[self.step].values
+        #New observation
+        obs = self.SPOT_vals.iloc[self.random_start_index + self.step].values
         self.step += 1
         done = self.step > self.steps
         return obs, done
 
     def take_trade_action_step(self, action):
+        #Get new observation
+        obs, done = self.take_obs_step()
+
         #TBD
         reward = 0
         info = {}
 
-        return reward, info
+        return obs, reward, done, info
 
     def render(self):
         #action not required
@@ -78,13 +82,11 @@ class SPOT_environment(gym.Env):
 
         #Price history corresponding to steps
         self.prices = df.Close
-        self.steps = len(self.SPOT_vals)
         #Need min/max for gymnasium
         self.SPOT_vals_mins = np.array(self.SPOT_vals.min())
         self.SPOT_vals_maxs = np.array(self.SPOT_vals.max())
 
         #Basic action types
         self.action_types = ['Sell', 'Hold', 'Buy']
-
-        self.actions = np.zeros(self.steps)
-        trading_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(self.steps))
+        #Zero-init trade transaction info for all steps
+        self.trading_transactions = pd.DataFrame(data=0, columns=gut.get_trading_bt_columns(), index=range(self.steps))
