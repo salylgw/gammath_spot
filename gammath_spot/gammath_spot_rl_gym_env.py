@@ -24,6 +24,7 @@ import pandas as pd
 import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
+from gymnasium.envs.registration import register
 try:
     from gammath_spot import gammath_utils as gut
 except:
@@ -90,3 +91,17 @@ class SPOT_environment(gym.Env):
         self.action_types = ['Sell', 'Hold', 'Buy']
         #Zero-init trade transaction info for all steps
         self.trading_transactions = pd.DataFrame(data=0, columns=gut.get_trading_bt_columns(), index=range(self.steps))
+
+def main():
+    tsymbol = sys.argv[1]
+    try:
+        max_trading_days = int(sys.argv[2])
+    except:
+        mtdpy, mtd5y = gut.get_min_trading_days()
+        max_trading_days = (mtd5y - mtdpy)
+
+    register(id='SPOT_trading', entry_point='gammath_spot_rl_gym_env:SPOT_environment', max_episode_steps=None)
+    env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
+
+if __name__ == '__main__':
+    main()
