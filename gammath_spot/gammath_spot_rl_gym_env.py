@@ -49,8 +49,12 @@ class SPOT_environment(gym.Env):
     def reset(self):
         #step 0
         self.step = 0
+        self.start_buy_index = -1
+        self.end_buy_index = -1
         #Use random starting point
         self.random_start_index = np.random.randint(low=0, high=(len(self.SPOT_vals)-self.max_trading_days))
+        #Zero-init trade transaction info for all steps
+        self.trading_transactions = pd.DataFrame(data=0, columns=gut.get_trading_bt_columns(), index=range(self.steps))
         done = False
 
     def take_obs_step(self):
@@ -61,14 +65,37 @@ class SPOT_environment(gym.Env):
         return obs, done
 
     def take_trade_action_step(self, action):
+        reward = 0
+        trade_step = (self.random_start_index + self.step - 1)
+
+        #Save the action
+        self.trading_transactions['Action'][trade_step] = self.action_types[action]
+        #Calculate reward for the action
+        if (action == 0): #Only check reward when selling
+            if (self.start_buy_index >= 0):
+                cost = self.trading_transactions['Price'][self.start_buy_index:(self.end_buy_index+1)].sum()
+                quantity = self.self.trading_transactions['Quantity'][self.start_buy_index:(self.end_buy_index+1)].sum()
+                sell_amount = quantity*self.prices[trade_step]
+                profit = (((sell_amount - cost)*100)/cost)
+                reward = profit
+                self.trading_transactions['Price'][trade_step] = round(self.prices[trade_step], 3)
+                self.trading_transactions['Quantity'][trade_step] = quantity
+                self.start_buy_index = -1
+                self.end_buy_index = -1
+        else:
+            if (action == 2):
+                #Buy side bookkeeping
+                if (self.start_buy_index < 0):
+                    self.start_buy_index = trade_step
+
+                self.trading_transactions['Price'][trade_step] = round(self.prices[trade_step], 3)
+                self.trading_transactions['Quantity'][trade_step] = 1
+                self.end_buy_index = trade_step
+
         #Get new observation
         obs, done = self.take_obs_step()
 
-        #TBD
-        reward = 0
-        info = {}
-
-        return obs, reward, done, info
+        return obs, reward, done
 
     def render(self):
         #action not required
@@ -89,8 +116,6 @@ class SPOT_environment(gym.Env):
 
         #Basic action types
         self.action_types = ['Sell', 'Hold', 'Buy']
-        #Zero-init trade transaction info for all steps
-        self.trading_transactions = pd.DataFrame(data=0, columns=gut.get_trading_bt_columns(), index=range(self.steps))
 
 def main():
     tsymbol = sys.argv[1]
