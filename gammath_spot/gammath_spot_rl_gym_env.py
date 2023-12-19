@@ -46,7 +46,7 @@ class SPOT_environment(gym.Env):
         self.observation_space = spaces.Box(self.SPOT_vals_mins, self.SPOT_vals_maxs)
         self.reset()
 
-    def reset(self):
+    def reset(self, seed=None):
         #step 0
         self.step = 0
         self.start_buy_index = -1
@@ -54,8 +54,9 @@ class SPOT_environment(gym.Env):
         #Use random starting point
         self.random_start_index = np.random.randint(low=0, high=(len(self.SPOT_vals)-self.max_trading_days))
         #Zero-init trade transaction info for all steps
-        self.trading_transactions = pd.DataFrame(data=0, columns=gut.get_trading_bt_columns(), index=range(self.steps))
-        done = False
+        self.trading_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(self.steps))
+        obs, done = self.take_obs_step()
+        return obs, {}
 
     def take_obs_step(self):
         #New observation
@@ -117,6 +118,19 @@ class SPOT_environment(gym.Env):
         #Basic action types
         self.action_types = ['Sell', 'Hold', 'Buy']
 
+#SPOT RL trading agent that interacts with SPOT trading
+class SPOT_agent():
+    def __init__(self):
+        self.gamma = 0.98
+        self.epsilon_start = 0.98
+        self.epsilon_end = 0.01
+
+    def save_state_transitions(self, curr_state, action, reward, next_state, done):
+        return
+
+    def epsilon_greedy_policy(self, state):
+        return
+
 def main():
     tsymbol = sys.argv[1]
     try:
@@ -126,7 +140,25 @@ def main():
         max_trading_days = (mtd5y - mtdpy)
 
     register(id='SPOT_trading', entry_point='gammath_spot_rl_gym_env:SPOT_environment', max_episode_steps=None)
-    env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
+    spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
+    spot_trading_agent = SPOT_agent()
+
+    max_episodes = 1000
+
+    #Training loop
+    for episode_num in range(max_episodes):
+        #Reset environment for new episodes
+        spot_trading_env.env.unwrapped.reset()
+        #Get initial state
+        curr_state, done = spot_trading_env.env.unwrapped.take_obs_step()
+        while not done:
+            #Get action from policy. TBD
+            action = 0
+            #Get reward and observation of next state
+            next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
+            #Save transition TBD
+            spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, done)
+            curr_state = next_state
 
 if __name__ == '__main__':
     main()
