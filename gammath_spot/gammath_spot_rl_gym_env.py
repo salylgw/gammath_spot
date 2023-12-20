@@ -120,16 +120,30 @@ class SPOT_environment(gym.Env):
 
 #SPOT RL trading agent that interacts with SPOT trading
 class SPOT_agent():
-    def __init__(self):
+    def __init__(self, max_episodes, max_actions):
         self.gamma = 0.98
-        self.epsilon_start = 0.98
-        self.epsilon_end = 0.01
+        self.epsilon = 1.0
+        self.epsilon_decay = self.epsilon/max_episodes
+        self.max_actions = max_actions
 
     def save_state_transitions(self, curr_state, action, reward, next_state, done):
         return
 
+    def update_epsilon(self):
+        self.epsilon -= self.epsilon_decay
+
+    def default_policy(self, state):
+        #Placeholder
+        return 0
+
     def epsilon_greedy_policy(self, state):
-        return
+        if (self.epsilon > np.random.rand()):
+            #Pick a random action; Need to update this later for context-based actions list
+            action = np.random.choice(self.max_actions)
+        else:
+            action = self.default_policy(state)
+
+        return action
 
 def main():
     tsymbol = sys.argv[1]
@@ -141,9 +155,9 @@ def main():
 
     register(id='SPOT_trading', entry_point='gammath_spot_rl_gym_env:SPOT_environment', max_episode_steps=None)
     spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
-    spot_trading_agent = SPOT_agent()
 
     max_episodes = 1000
+    spot_trading_agent = SPOT_agent(max_episodes=max_episodes, max_actions=spot_trading_env.env.unwrapped.action_space.n)
 
     #Training loop
     for episode_num in range(max_episodes):
@@ -152,10 +166,12 @@ def main():
         #Get initial state
         curr_state, done = spot_trading_env.env.unwrapped.take_obs_step()
         while not done:
-            #Get action from policy. TBD
-            action = 0
+            #Get action based on policy.
+            action = spot_trading_agent.epsilon_greedy_policy(curr_state)
+
             #Get reward and observation of next state
             next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
+
             #Save transition TBD
             spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, done)
             curr_state = next_state
