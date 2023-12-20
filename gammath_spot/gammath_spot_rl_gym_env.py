@@ -22,6 +22,7 @@ import sys
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from collections import deque
 import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.envs.registration import register
@@ -125,8 +126,11 @@ class SPOT_agent():
         self.epsilon = 1.0
         self.epsilon_decay = self.epsilon/max_episodes
         self.max_actions = max_actions
+        self.saved_experience = deque(maxlen=5000000)
 
     def save_state_transitions(self, curr_state, action, reward, next_state, done):
+        #Place holder. More changes later
+        self.saved_experience.append((curr_state, action, reward, next_state, done))
         return
 
     def update_epsilon(self):
