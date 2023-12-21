@@ -23,6 +23,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 from collections import deque
+from random import sample
 import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.envs.registration import register
@@ -73,19 +74,22 @@ class SPOT_environment(gym.Env):
         #Save the action
         self.trading_transactions['Action'][trade_step] = self.action_types[action]
         #Calculate reward for the action
-        if (action == 0): #Only check reward when selling
+        if (action == 2): #Only check reward when selling
             if (self.start_buy_index >= 0):
                 cost = self.trading_transactions['Price'][self.start_buy_index:(self.end_buy_index+1)].sum()
-                quantity = self.self.trading_transactions['Quantity'][self.start_buy_index:(self.end_buy_index+1)].sum()
+                quantity = self.trading_transactions['Quantity'][self.start_buy_index:(self.end_buy_index+1)].sum()
                 sell_amount = quantity*self.prices[trade_step]
-                profit = (((sell_amount - cost)*100)/cost)
+                profit = 0
+                if (cost > 0):
+                    profit = (((sell_amount - cost)*100)/cost)
+
                 reward = profit
                 self.trading_transactions['Price'][trade_step] = round(self.prices[trade_step], 3)
                 self.trading_transactions['Quantity'][trade_step] = quantity
                 self.start_buy_index = -1
                 self.end_buy_index = -1
         else:
-            if (action == 2):
+            if (action == 0):
                 #Buy side bookkeeping
                 if (self.start_buy_index < 0):
                     self.start_buy_index = trade_step
@@ -117,7 +121,7 @@ class SPOT_environment(gym.Env):
         self.SPOT_vals_maxs = np.array(self.SPOT_vals.max())
 
         #Basic action types
-        self.action_types = ['Sell', 'Hold', 'Buy']
+        self.action_types = ['Buy', 'Hold', 'Sell']
 
 #SPOT RL trading agent that interacts with SPOT trading
 class SPOT_agent():
@@ -126,11 +130,23 @@ class SPOT_agent():
         self.epsilon = 1.0
         self.epsilon_decay = self.epsilon/max_episodes
         self.max_actions = max_actions
+        self.bought = False
         self.saved_experience = deque(maxlen=5000000)
+        self.batch_size = 1024
 
     def save_state_transitions(self, curr_state, action, reward, next_state, done):
         #Place holder. More changes later
         self.saved_experience.append((curr_state, action, reward, next_state, done))
+        return
+
+    def replay_experience(self):
+        saved_experience_len = len(self.saved_experience)
+        if (saved_experience_len > self.batch_size):
+            #Get iterator for corresponding iterables
+            curr_batch = map(np.array, zip(*sample(self.saved_experience, self.batch_size)))
+            curr_state, action, reward, next_state, done = curr_batch
+
+        #TBD
         return
 
     def update_epsilon(self):
@@ -138,14 +154,26 @@ class SPOT_agent():
 
     def default_policy(self, state):
         #Placeholder
+        #Use the learnings from experience
         return 0
 
     def epsilon_greedy_policy(self, state):
         if (self.epsilon > np.random.rand()):
-            #Pick a random action; Need to update this later for context-based actions list
-            action = np.random.choice(self.max_actions)
+            #Pick a random action;
+            if self.bought:
+                max_actions = self.max_actions
+            else:
+                #Only buy or hold are valid actions
+                max_actions = (self.max_actions-1)
+
+            action = np.random.choice(max_actions)
         else:
             action = self.default_policy(state)
+
+        if (action == 0):
+            self.bought = True
+        elif (action == 2):
+            self.bought = False
 
         return action
 
@@ -176,9 +204,16 @@ def main():
             #Get reward and observation of next state
             next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
 
-            #Save transition TBD
+            #Save transition
             spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, done)
+
+            #Replay experience
+            spot_trading_agent.replay_experience()
+
             curr_state = next_state
+
+        #Update epsilone for next episode
+        spot_trading_agent.update_epsilon()
 
 if __name__ == '__main__':
     main()
