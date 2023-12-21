@@ -18,6 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
+import os
 import sys
 from pathlib import Path
 import pandas as pd
@@ -27,13 +28,19 @@ from random import sample
 import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.envs.registration import register
+#Tensorflow shows default messages depending on GPU that may not exist on the system
+#Need to disable those logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
 try:
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_utils as gut
 
 #This is a work-in-progress. A lot will change before it is usable
-
+#dim = observation_space.shape[0]
 #Environment that is compatible with Gymnasium
 class SPOT_environment(gym.Env):
     metadata = {'render_modes': []}
@@ -79,11 +86,13 @@ class SPOT_environment(gym.Env):
                 cost = self.trading_transactions['Price'][self.start_buy_index:(self.end_buy_index+1)].sum()
                 quantity = self.trading_transactions['Quantity'][self.start_buy_index:(self.end_buy_index+1)].sum()
                 sell_amount = quantity*self.prices[trade_step]
-                profit = 0
+                profit_pct = 0
                 if (cost > 0):
-                    profit = (((sell_amount - cost)*100)/cost)
+                    #Profit percentage
+                    profit_pct = (((sell_amount - cost)*100)/cost)
 
-                reward = profit
+                #Keep the reward under +/- 1 with ample room to grow in either direction
+                reward = profit_pct/1000
                 self.trading_transactions['Price'][trade_step] = round(self.prices[trade_step], 3)
                 self.trading_transactions['Quantity'][trade_step] = quantity
                 self.start_buy_index = -1
@@ -133,6 +142,13 @@ class SPOT_agent():
         self.bought = False
         self.saved_experience = deque(maxlen=5000000)
         self.batch_size = 1024
+
+    def build_model(self):
+        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=(self.ar_size, 1), name='Dense_input'), Dense(units=self.max_actions, name='Output')])
+
+        #Compile the model with popular optimizer and MSE for regression
+        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
+        return self.model
 
     def save_state_transitions(self, curr_state, action, reward, next_state, done):
         #Place holder. More changes later
