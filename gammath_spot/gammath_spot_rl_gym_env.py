@@ -40,7 +40,6 @@ except:
     import gammath_utils as gut
 
 #This is a work-in-progress. A lot will change before it is usable
-#dim = observation_space.shape[0]
 #Environment that is compatible with Gymnasium
 class SPOT_environment(gym.Env):
     metadata = {'render_modes': []}
@@ -134,7 +133,7 @@ class SPOT_environment(gym.Env):
 
 #SPOT RL trading agent that interacts with SPOT trading
 class SPOT_agent():
-    def __init__(self, max_episodes, max_actions):
+    def __init__(self, max_episodes, obs_dim, max_actions):
         self.gamma = 0.98
         self.epsilon = 1.0
         self.epsilon_decay = self.epsilon/max_episodes
@@ -142,13 +141,20 @@ class SPOT_agent():
         self.bought = False
         self.saved_experience = deque(maxlen=5000000)
         self.batch_size = 1024
+        self.obs_dim = obs_dim
+        self.q_learner_network = self.build_model()
+        self.q_target_network = self.build_model()
+        self.update_qtn_weights_from_qln_weights()
 
     def build_model(self):
-        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=(self.ar_size, 1), name='Dense_input'), Dense(units=self.max_actions, name='Output')])
+        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=self.obs_dim, name='Dense_input'), Dense(units=self.max_actions, name='Output')])
 
         #Compile the model with popular optimizer and MSE for regression
         self.model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
         return self.model
+
+    def update_qtn_weights_from_qln_weights(self):
+        self.q_target_network.set_weights(self.q_learner_network.get_weights())
 
     def save_state_transitions(self, curr_state, action, reward, next_state, done):
         #Place holder. More changes later
@@ -205,7 +211,7 @@ def main():
     spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
 
     max_episodes = 1000
-    spot_trading_agent = SPOT_agent(max_episodes=max_episodes, max_actions=spot_trading_env.env.unwrapped.action_space.n)
+    spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=spot_trading_env.env.unwrapped.observation_space.shape, max_actions=spot_trading_env.env.unwrapped.action_space.n)
 
     #Training loop
     for episode_num in range(max_episodes):
