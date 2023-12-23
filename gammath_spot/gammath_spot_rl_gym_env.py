@@ -144,6 +144,7 @@ class SPOT_agent():
         self.obs_dim = obs_dim
         self.q_learner_network = self.build_model()
         self.q_target_network = self.build_model()
+        self.q_target_network.trainable = False
         self.update_qtn_weights_from_qln_weights()
 
     def build_model(self):
@@ -175,9 +176,10 @@ class SPOT_agent():
         self.epsilon -= self.epsilon_decay
 
     def default_policy(self, state):
-        #Placeholder
-        #Use the learnings from experience
-        return 0
+        q = self.q_learner_network(state)
+        #Get max q value index
+        action = np.argmax(q, axis=1).squeeze()
+        return action
 
     def epsilon_greedy_policy(self, state):
         if (self.epsilon > np.random.rand()):
@@ -190,8 +192,10 @@ class SPOT_agent():
 
             action = np.random.choice(max_actions)
         else:
+            #this will still be arbitrary initially
             action = self.default_policy(state)
 
+        #Set the flag for choosing valid action
         if (action == 0):
             self.bought = True
         elif (action == 2):
@@ -211,7 +215,9 @@ def main():
     spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
 
     max_episodes = 1000
-    spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=spot_trading_env.env.unwrapped.observation_space.shape, max_actions=spot_trading_env.env.unwrapped.action_space.n)
+    obs_dim = obs_dim=spot_trading_env.env.unwrapped.observation_space.shape
+    max_actions=spot_trading_env.env.unwrapped.action_space.n
+    spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=obs_dim, max_actions=max_actions)
 
     #Training loop
     for episode_num in range(max_episodes):
@@ -221,7 +227,7 @@ def main():
         curr_state, done = spot_trading_env.env.unwrapped.take_obs_step()
         while not done:
             #Get action based on policy.
-            action = spot_trading_agent.epsilon_greedy_policy(curr_state)
+            action = spot_trading_agent.epsilon_greedy_policy(curr_state.reshape(-1, obs_dim[0]))
 
             #Get reward and observation of next state
             next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
