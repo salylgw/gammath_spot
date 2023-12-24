@@ -31,6 +31,7 @@ from gymnasium.envs.registration import register
 #Tensorflow shows default messages depending on GPU that may not exist on the system
 #Need to disable those logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
@@ -164,11 +165,12 @@ class SPOT_agent():
         return
 
     def replay_experience(self):
+        #Not tested yet
         saved_experience_len = len(self.saved_experience)
         if (saved_experience_len > self.batch_size):
             #Get iterator for corresponding iterables
             curr_batch = map(np.array, zip(*sample(self.saved_experience, self.batch_size)))
-            curr_state, action, reward, next_state, done = curr_batch
+            curr_state, action, reward, next_state, not_done = curr_batch
 
             #Use double deep q-learning (DDQN) algorithm
             #We want to decouple the estimation of action values from selection of actions
@@ -177,12 +179,21 @@ class SPOT_agent():
             ln_next_q_values = self.q_learner_network.predict_on_batch(next_state)
 
             #Select max values in learning network
-            ln_max_q_values = np.argmax(q, axis=1).squeeze()
+            ln_max_q_values = np.argmax(ln_next_q_values, axis=1).squeeze()
 
             #Estimate next q values in target network
             tn_next_q_values = self.q_target_network.predict_on_batch(next_state)
 
-            #TBD updating q vlaues based on rewards, training learner nw etc.
+            indices = tf.range(self.batch_size)
+
+            #Select target network's predicted q values for learner network's max q values
+            temporal_diff_target_vals = tf.gather_nd(tn_next_q_values, tf.stack((indices, tf.cast(ln_max_q_values, tf.int32)), axis=1))
+
+            target_vals = (reward + (self.gamma*temporal_diff_target_vals*not_done))
+
+            ln_q_values = self.q_learner_network.predict_on_batch(curr_state)
+            ln_q_values[indices, action] = target_vals
+            loss = self.q_learner_network.train_on_batch(x=curr_state, y=ln_q_values)
 
         #Update target network weights at regular intervals
         if (not (self.steps % self.target_networks_update_interval_steps)):
@@ -253,7 +264,7 @@ def main():
             next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
 
             #Save transition
-            spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, done)
+            spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, (0.0 if done else 1.0))
 
             #Replay experience
             spot_trading_agent.replay_experience()
