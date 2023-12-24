@@ -146,9 +146,11 @@ class SPOT_agent():
         self.q_target_network = self.build_model()
         self.q_target_network.trainable = False
         self.update_qtn_weights_from_qln_weights()
+        self.steps = 0
+        self.target_networks_update_interval_steps = 128
 
     def build_model(self):
-        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=self.obs_dim, name='Dense_input'), Dense(units=self.max_actions, name='Output')])
+        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=self.obs_dim, name='Dense_input'), Dense(units=32, activation='tanh', name='Dense_itermediate'), Dense(units=self.max_actions, name='Output')])
 
         #Compile the model with popular optimizer and MSE for regression
         self.model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
@@ -158,7 +160,6 @@ class SPOT_agent():
         self.q_target_network.set_weights(self.q_learner_network.get_weights())
 
     def save_state_transitions(self, curr_state, action, reward, next_state, done):
-        #Place holder. More changes later
         self.saved_experience.append((curr_state, action, reward, next_state, done))
         return
 
@@ -169,14 +170,30 @@ class SPOT_agent():
             curr_batch = map(np.array, zip(*sample(self.saved_experience, self.batch_size)))
             curr_state, action, reward, next_state, done = curr_batch
 
-        #TBD
+            #Use double deep q-learning (DDQN) algorithm
+            #We want to decouple the estimation of action values from selection of actions
+
+            #Estimate next q values in learning network
+            ln_next_q_values = self.q_learner_network.predict_on_batch(next_state)
+
+            #Select max values in learning network
+            ln_max_q_values = np.argmax(q, axis=1).squeeze()
+
+            #Estimate next q values in target network
+            tn_next_q_values = self.q_target_network.predict_on_batch(next_state)
+
+            #TBD updating q vlaues based on rewards, training learner nw etc.
+
+        #Update target network weights at regular intervals
+        if (not (self.steps % self.target_networks_update_interval_steps)):
+            self.update_qtn_weights_from_qln_weights()
         return
 
     def update_epsilon(self):
         self.epsilon -= self.epsilon_decay
 
     def default_policy(self, state):
-        q = self.q_learner_network(state)
+        q = self.q_learner_network.predict(state)
         #Get max q value index
         action = np.argmax(q, axis=1).squeeze()
         return action
@@ -200,6 +217,9 @@ class SPOT_agent():
             self.bought = True
         elif (action == 2):
             self.bought = False
+
+        #Update steps completed
+        self.steps += 1
 
         return action
 
