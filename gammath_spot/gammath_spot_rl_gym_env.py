@@ -20,7 +20,6 @@ __copyright__ = 'Copyright (c) 2021-2023, Salyl Bhagwat, Gammath Works'
 
 import os
 import sys
-from pathlib import Path
 import pandas as pd
 import numpy as np
 from collections import deque
@@ -65,13 +64,13 @@ class SPOT_environment(gym.Env):
         #Zero-init trade transaction info for all steps
         self.trading_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(self.steps))
         obs, done = self.take_obs_step()
-        return obs, {}
+        return obs, done
 
     def take_obs_step(self):
         #New observation
         obs = self.SPOT_vals.iloc[self.random_start_index + self.step].values
         self.step += 1
-        done = self.step > self.steps
+        done = (self.step > (self.steps - 1))
         return obs, done
 
     def take_trade_action_step(self, action):
@@ -81,7 +80,7 @@ class SPOT_environment(gym.Env):
         #Save the action
         self.trading_transactions['Action'][trade_step] = self.action_types[action]
         #Calculate reward for the action
-        if (action == 2): #Only check reward when selling
+        if (self.action_types[action] == 'Sell'): #Only check reward when selling
             if (self.start_buy_index >= 0):
                 cost = self.trading_transactions['Price'][self.start_buy_index:(self.end_buy_index+1)].sum()
                 quantity = self.trading_transactions['Quantity'][self.start_buy_index:(self.end_buy_index+1)].sum()
@@ -98,7 +97,7 @@ class SPOT_environment(gym.Env):
                 self.start_buy_index = -1
                 self.end_buy_index = -1
         else:
-            if (action == 0):
+            if (self.action_types[action] == 'Buy'):
                 #Buy side bookkeeping
                 if (self.start_buy_index < 0):
                     self.start_buy_index = trade_step
@@ -189,10 +188,13 @@ class SPOT_agent():
             #Select target network's predicted q values for learner network's max q values
             temporal_diff_target_vals = tf.gather_nd(tn_next_q_values, tf.stack((indices, tf.cast(ln_max_q_values, tf.int32)), axis=1))
 
+            #gamma and temporal diff not relevant if it is done
             target_vals = (reward + (self.gamma*temporal_diff_target_vals*not_done))
 
             ln_q_values = self.q_learner_network.predict_on_batch(curr_state)
             ln_q_values[indices, action] = target_vals
+
+            #Check loss value for debugging
             loss = self.q_learner_network.train_on_batch(x=curr_state, y=ln_q_values)
 
         #Update target network weights at regular intervals
@@ -210,12 +212,14 @@ class SPOT_agent():
         return action
 
     def epsilon_greedy_policy(self, state):
+        #This can be updated to use backtesting profiles
         if (self.epsilon > np.random.rand()):
             #Pick a random action;
             if self.bought:
                 max_actions = self.max_actions
             else:
                 #Only buy or hold are valid actions
+                #If there sell before buy then there won't be any reward
                 max_actions = (self.max_actions-1)
 
             action = np.random.choice(max_actions)
@@ -236,12 +240,18 @@ class SPOT_agent():
 
 def main():
     tsymbol = sys.argv[1]
+    mtdpy, mtd5y = gut.get_min_trading_days()
+
     try:
         max_trading_days = int(sys.argv[2])
+        if ((max_trading_days <= 0) or (max_trading_days >= mtd5y)):
+            print(f'Max trading days must be between 1 and {mtd5y-1}. Exiting')
+            return
     except:
-        mtdpy, mtd5y = gut.get_min_trading_days()
+        print(f'Max trading days not specified. Setting it to approximately 4 years')
         max_trading_days = (mtd5y - mtdpy)
 
+    path = gut.get_tickers_dir()
     register(id='SPOT_trading', entry_point='gammath_spot_rl_gym_env:SPOT_environment', max_episode_steps=None)
     spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
 
@@ -249,19 +259,23 @@ def main():
     obs_dim = obs_dim=spot_trading_env.env.unwrapped.observation_space.shape
     max_actions=spot_trading_env.env.unwrapped.action_space.n
     spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=obs_dim, max_actions=max_actions)
+    rewards_per_episode = []
 
     #Training loop
     for episode_num in range(max_episodes):
-        #Reset environment for new episodes
-        spot_trading_env.env.unwrapped.reset()
-        #Get initial state
-        curr_state, done = spot_trading_env.env.unwrapped.take_obs_step()
+        #Reset environment for new episodes and get initial state
+        curr_state, done = spot_trading_env.env.unwrapped.reset()
+        curr_episode_rewards = 0
+
         while not done:
             #Get action based on policy.
             action = spot_trading_agent.epsilon_greedy_policy(curr_state.reshape(-1, obs_dim[0]))
 
             #Get reward and observation of next state
             next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
+
+            #Accumulate rewards per step
+            curr_episode_rewards += reward
 
             #Save transition
             spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, (0.0 if done else 1.0))
@@ -271,8 +285,17 @@ def main():
 
             curr_state = next_state
 
+        #Save rewards per episode for later reference (adjust back to show percentage gain/loss)
+        rewards_per_episode.append(curr_episode_rewards*1000)
+
         #Update epsilone for next episode
         spot_trading_agent.update_epsilon()
+
+    #Create a data frame to save the rewards and useful info to measure the performance of the strategy
+    df_episodes_info = pd.DataFrame(data=rewards_per_episode, columns=['Rewards'], index=range(max_episodes))
+
+    #Save for later reference
+    df_episodes_info.to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_info.csv')
 
 if __name__ == '__main__':
     main()
