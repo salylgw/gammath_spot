@@ -24,7 +24,7 @@ def readme():
         return f.read()
 
 setup(name='gammath_spot',
-      version='11.82',
+      version='12.0.3',
       description='Stock Price-Opining Tools',
       long_description=readme(),
       long_description_content_type='text/markdown',
@@ -33,7 +33,7 @@ setup(name='gammath_spot',
       author='Salyl Bhagwat',
       author_email='salylgw@gmail.com',
       packages=['gammath_spot'],
-      install_requires=['numpy', 'pandas', 'pandas_datareader', 'yfinance', 'pykalman', 'statsmodels', 'matplotlib', 'scikit-learn', 'textblob', 'tensorflow', 'keras-tuner',],
+      install_requires=['numpy', 'pandas', 'pandas_datareader', 'yfinance', 'pykalman', 'statsmodels', 'matplotlib', 'scikit-learn', 'textblob', 'tensorflow', 'keras-tuner','gymnasium',],
       include_package_data=True,
       package_data={'gammath_spot': ['data/logo.png']},
       entry_points = {
