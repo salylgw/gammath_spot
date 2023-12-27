@@ -252,7 +252,7 @@ def main():
         max_trading_days = (mtd5y - mtdpy)
 
     path = gut.get_tickers_dir()
-    register(id='SPOT_trading', entry_point='gammath_spot_rl_gym_env:SPOT_environment', max_episode_steps=None)
+    register(id='SPOT_trading', entry_point=f'{__name__}:SPOT_environment', max_episode_steps=None)
 
     spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
 
