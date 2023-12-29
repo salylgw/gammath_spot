@@ -52,17 +52,24 @@ class SPOT_environment(gym.Env):
         self.init_SPOT_RL_env_data(tsymbol)
         self.action_space = spaces.Discrete(len(self.action_types))
         self.observation_space = spaces.Box(self.SPOT_vals_mins, self.SPOT_vals_maxs)
+        self.total_transactions_so_far = 0
         self.reset()
 
     def reset(self, seed=None):
         #step 0
         self.step = 0
         self.start_buy_index = -1
-        self.end_buy_index = -1
         #Use random starting point
         self.random_start_index = np.random.randint(low=0, high=(len(self.SPOT_vals)-self.max_trading_days))
+
         #Zero-init trade transaction info for all steps
-        self.trading_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(self.steps))
+        for i in range(self.total_transactions_so_far):
+            self.trading_transactions['Date'][i] = ''
+            self.trading_transactions['Action'][i] = ''
+            self.trading_transactions['Price'][i] = 0.0
+            self.trading_transactions['Quantity'][i] = 0
+
+        self.total_transactions_so_far = 0
         obs, done = self.take_obs_step()
         return obs, done
 
@@ -77,13 +84,13 @@ class SPOT_environment(gym.Env):
         reward = 0
         trade_step = (self.random_start_index + self.step - 1)
 
-        #Save the action
-        self.trading_transactions['Action'][trade_step] = self.action_types[action]
+        #Save the action (exclude saving hold actions)
         #Calculate reward for the action
         if (self.action_types[action] == 'Sell'): #Only check reward when selling
             if (self.start_buy_index >= 0):
-                cost = self.trading_transactions['Price'][self.start_buy_index:(self.end_buy_index+1)].sum()
-                quantity = self.trading_transactions['Quantity'][self.start_buy_index:(self.end_buy_index+1)].sum()
+                self.trading_transactions['Date'][self.total_transactions_so_far] = self.Dates[trade_step]
+                cost = self.trading_transactions['Price'][:self.total_transactions_so_far].sum()
+                quantity = self.trading_transactions['Quantity'][:self.total_transactions_so_far].sum()
                 sell_amount = quantity*self.prices[trade_step]
                 profit_pct = 0
                 if (cost > 0):
@@ -92,19 +99,22 @@ class SPOT_environment(gym.Env):
 
                 #Keep the reward under +/- 1 with ample room to grow in either direction
                 reward = profit_pct/1000
-                self.trading_transactions['Price'][trade_step] = round(self.prices[trade_step], 3)
-                self.trading_transactions['Quantity'][trade_step] = quantity
+                self.trading_transactions['Action'][self.total_transactions_so_far] = self.action_types[action]
+                self.trading_transactions['Price'][self.total_transactions_so_far] = round(self.prices[trade_step], 3)
+                self.trading_transactions['Quantity'][self.total_transactions_so_far] = quantity
+                self.total_transactions_so_far += 1
                 self.start_buy_index = -1
-                self.end_buy_index = -1
         else:
             if (self.action_types[action] == 'Buy'):
                 #Buy side bookkeeping
                 if (self.start_buy_index < 0):
                     self.start_buy_index = trade_step
 
-                self.trading_transactions['Price'][trade_step] = round(self.prices[trade_step], 3)
-                self.trading_transactions['Quantity'][trade_step] = 1
-                self.end_buy_index = trade_step
+                self.trading_transactions['Action'][self.total_transactions_so_far] = self.action_types[action]
+                self.trading_transactions['Date'][self.total_transactions_so_far] = self.Dates[trade_step]
+                self.trading_transactions['Price'][self.total_transactions_so_far] = round(self.prices[trade_step], 3)
+                self.trading_transactions['Quantity'][self.total_transactions_so_far] = 1
+                self.total_transactions_so_far += 1
 
         #Get new observation
         obs, done = self.take_obs_step()
@@ -124,12 +134,19 @@ class SPOT_environment(gym.Env):
 
         #Price history corresponding to steps
         self.prices = df.Close
+        self.Dates = df.Date
         #Need min/max for gymnasium
         self.SPOT_vals_mins = np.array(self.SPOT_vals.min())
         self.SPOT_vals_maxs = np.array(self.SPOT_vals.max())
 
         #Basic action types
         self.action_types = ['Buy', 'Hold', 'Sell']
+
+        #Trade transactions
+        self.trading_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(self.steps))
+
+    def get_episode_trade_transactions(self):
+        return self.trading_transactions[:self.total_transactions_so_far]
 
 #SPOT RL trading agent that interacts with SPOT trading
 class SPOT_agent():
@@ -262,6 +279,12 @@ def main():
     spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=obs_dim, max_actions=max_actions)
     rewards_per_episode = []
 
+    #Create dataframe to save trade transactions across all episodes
+    columns = list(gut.get_trading_bt_columns())
+    columns.append('episode_num')
+    df_episodes_trade_transactions = pd.DataFrame(columns=columns, index=range(max_episodes*max_trading_days))
+    total_trade_transaction_count = 0
+
     #Training loop
     for episode_num in range(max_episodes):
         #Reset environment for new episodes and get initial state
@@ -281,6 +304,19 @@ def main():
             #Save transition
             spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, (0.0 if done else 1.0))
 
+            if done:
+                #Get the trade transaction from this episode
+                episode_trade_transactions = spot_trading_env.env.unwrapped.get_episode_trade_transactions()
+
+                for i in range(len(episode_trade_transactions)):
+                    #Same episode num for each transaction in this loop
+                    df_episodes_trade_transactions['episode_num'][total_trade_transaction_count] = episode_num
+                    df_episodes_trade_transactions['Date'][total_trade_transaction_count] = episode_trade_transactions.Date[i]
+                    df_episodes_trade_transactions['Action'][total_trade_transaction_count] = episode_trade_transactions.Action[i]
+                    df_episodes_trade_transactions['Price'][total_trade_transaction_count] = episode_trade_transactions.Price[i]
+                    df_episodes_trade_transactions['Quantity'][total_trade_transaction_count] = episode_trade_transactions.Quantity[i]
+                    total_trade_transaction_count += 1
+
             #Replay experience
             spot_trading_agent.replay_experience()
 
@@ -291,6 +327,9 @@ def main():
 
         #Update epsilone for next episode
         spot_trading_agent.update_epsilon()
+
+    #Save episodes trade transactions for later reference
+    df_episodes_trade_transactions.truncate(after=(total_trade_transaction_count-1)).to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_trade_transactions.csv')
 
     #Create a data frame to save the rewards and useful info to measure the performance of the strategy
     df_episodes_info = pd.DataFrame(data=rewards_per_episode, columns=['Rewards'], index=range(max_episodes))
