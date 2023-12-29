@@ -89,8 +89,8 @@ class SPOT_environment(gym.Env):
         if (self.action_types[action] == 'Sell'): #Only check reward when selling
             if (self.start_buy_index >= 0):
                 self.trading_transactions['Date'][self.total_transactions_so_far] = self.Dates[trade_step]
-                cost = self.trading_transactions['Price'][:self.total_transactions_so_far].sum()
-                quantity = self.trading_transactions['Quantity'][:self.total_transactions_so_far].sum()
+                cost = self.trading_transactions['Price'][self.start_buy_index:self.total_transactions_so_far].sum()
+                quantity = self.trading_transactions['Quantity'][self.start_buy_index:self.total_transactions_so_far].sum()
                 sell_amount = quantity*self.prices[trade_step]
                 profit_pct = 0
                 if (cost > 0):
@@ -108,7 +108,7 @@ class SPOT_environment(gym.Env):
             if (self.action_types[action] == 'Buy'):
                 #Buy side bookkeeping
                 if (self.start_buy_index < 0):
-                    self.start_buy_index = trade_step
+                    self.start_buy_index = self.total_transactions_so_far
 
                 self.trading_transactions['Action'][self.total_transactions_so_far] = self.action_types[action]
                 self.trading_transactions['Date'][self.total_transactions_so_far] = self.Dates[trade_step]
