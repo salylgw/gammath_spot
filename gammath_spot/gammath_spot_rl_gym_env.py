@@ -134,27 +134,36 @@ class SPOT_environment(gym.Env):
 
         #Price history corresponding to steps
         self.prices = df.Close
+        #Get the dates for testing
         self.Dates = df.Date
         #Need min/max for gymnasium
         self.SPOT_vals_mins = np.array(self.SPOT_vals.min())
         self.SPOT_vals_maxs = np.array(self.SPOT_vals.max())
 
         #Basic action types
-        self.action_types = ['Buy', 'Hold', 'Sell']
+        self.action_types = ('Buy', 'Hold', 'Sell')
 
         #Trade transactions
         self.trading_transactions = pd.DataFrame(columns=gut.get_trading_bt_columns(), index=range(self.steps))
+
+    def get_action_types(self):
+        #Need to know the type of actions for logging agent transactions
+        return self.action_types
 
     def get_episode_trade_transactions(self):
         return self.trading_transactions[:self.total_transactions_so_far]
 
 #SPOT RL trading agent that interacts with SPOT trading
 class SPOT_agent():
-    def __init__(self, max_episodes, obs_dim, max_actions):
+    def __init__(self, max_episodes, obs_dim, actions):
+        #Long term focus
         self.gamma = 0.98
+        #Start with exploration
         self.epsilon = 1.0
+        #Linear decay for balancing exploitation
         self.epsilon_decay = self.epsilon/max_episodes
-        self.max_actions = max_actions
+        self.max_actions = len(actions)
+        self.action_types = actions
         self.bought = False
         self.saved_experience = deque(maxlen=5000000)
         self.batch_size = 1024
@@ -167,7 +176,7 @@ class SPOT_agent():
         self.target_networks_update_interval_steps = 128
 
     def build_model(self):
-        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=self.obs_dim, name='Dense_input'), Dense(units=32, activation='tanh', name='Dense_itermediate'), Dense(units=self.max_actions, name='Output')])
+        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=self.obs_dim, name='Dense_input'), Dense(units=32, activation='tanh', name='Dense_intermediate'), Dense(units=self.max_actions, name='Output')])
 
         #Compile the model with popular optimizer and MSE for regression
         self.model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
@@ -181,7 +190,7 @@ class SPOT_agent():
         return
 
     def replay_experience(self):
-        #Not tested yet
+        #Barely tested
         saved_experience_len = len(self.saved_experience)
         if (saved_experience_len > self.batch_size):
             #Get iterator for corresponding iterables
@@ -236,7 +245,7 @@ class SPOT_agent():
                 max_actions = self.max_actions
             else:
                 #Only buy or hold are valid actions
-                #If there sell before buy then there won't be any reward
+                #If there is sell before buy then there won't be any reward
                 max_actions = (self.max_actions-1)
 
             action = np.random.choice(max_actions)
@@ -245,9 +254,9 @@ class SPOT_agent():
             action = self.default_policy(state)
 
         #Set the flag for choosing valid action
-        if (action == 0):
+        if (self.action_types[action] == 'Buy'):
             self.bought = True
-        elif (action == 2):
+        elif (self.action_types[action] == 'Sell'):
             self.bought = False
 
         #Update steps completed
@@ -274,14 +283,14 @@ def main():
     spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
 
     max_episodes = 1000
-    obs_dim = obs_dim=spot_trading_env.env.unwrapped.observation_space.shape
-    max_actions=spot_trading_env.env.unwrapped.action_space.n
-    spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=obs_dim, max_actions=max_actions)
-    rewards_per_episode = []
+    obs_dim = spot_trading_env.env.unwrapped.observation_space.shape
+    action_types = spot_trading_env.env.unwrapped.get_action_types()
+    spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=obs_dim, actions=action_types)
 
     #Create dataframe to save trade transactions across all episodes
     columns = list(gut.get_trading_bt_columns())
     columns.append('episode_num')
+    columns.append('episode_reward')
     df_episodes_trade_transactions = pd.DataFrame(columns=columns, index=range(max_episodes*max_trading_days))
     total_trade_transaction_count = 0
 
@@ -323,19 +332,13 @@ def main():
             curr_state = next_state
 
         #Save rewards per episode for later reference (adjust back to show percentage gain/loss)
-        rewards_per_episode.append(curr_episode_rewards*1000)
+        df_episodes_trade_transactions['episode_reward'][total_trade_transaction_count-1] = round((curr_episode_rewards*1000), 3) #round it off to take less display space in CSV file
 
         #Update epsilone for next episode
         spot_trading_agent.update_epsilon()
 
-    #Save episodes trade transactions for later reference
-    df_episodes_trade_transactions.truncate(after=(total_trade_transaction_count-1)).to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_trade_transactions.csv')
-
-    #Create a data frame to save the rewards and useful info to measure the performance of the strategy
-    df_episodes_info = pd.DataFrame(data=rewards_per_episode, columns=['Rewards'], index=range(max_episodes))
-
-    #Save for later reference
-    df_episodes_info.to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_info.csv')
+    #Save episodes trade transactions and reward information for later reference, testing and debugging
+    df_episodes_trade_transactions.truncate(after=(total_trade_transaction_count-1)).to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_info.csv')
 
 if __name__ == '__main__':
     main()
