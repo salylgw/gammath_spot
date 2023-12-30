@@ -39,7 +39,7 @@ MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 
 def get_gammath_spot_version_string():
     #Show version for GUI
-    return 'version 12.0.3'
+    return 'version 12.0.7'
 
 def set_child_process_start_method():
 
