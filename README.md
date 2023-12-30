@@ -32,6 +32,7 @@ This project uses following free tools that need to be installed (you can use pi
 1. textblob
 1. tensorflow
 1. keras-tuner
+1. gymnasium
 
 # HOWTO install
 Install Python version **3.10** and then use following commands in your shell for installing gammath-spot:
@@ -84,7 +85,7 @@ Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_sp
 1. You can do backtesting on provided watchlist. If you want to use the CLI and if you installed this software then run: `gammath_backtester sample_watchlist.csv > log_backtester.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_backtesting.py sample_watchlist.csv > log_backtester.txt`. You can update the function locally for implementing your own strategy.
 1. For each stock, backtester processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years (that were saved from the gscore historian) and saves the backtesting stats in `tickers/<ticker_symbol>/<ticker_symbol>_gtrades_stats_<term>_<risk>_risk_appetite.csv` (term is either short_term or long_term and risk is medium or high). You can check the backtesting stats to understand if the strategy you use worked historically and then decide whether to use that strategy or not. A sorted list of "Today's Actions" summary associated with default backtested strategy is saved in `tickers/Todays_Actions.csv`.
 1. If you want to use the CLI and want to screen stocks based on micro-gScores and have installed this software then run: `gammath_screener screener.csv > log_screener.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_screener.py screener.csv > log_screener.txt`. Note that the filtering criteria (micro-gScores values) is specified in `screener.csv` and the results can be found in `tickers/screened_watchlist.csv`.
-1. If you want to use the CLI and want to use the SPOT trade simulator (please note that this is work-in-progress with limited testing) then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_spot_rl_gym_env <ticker> <number of trading days> > log_trader.txt`.
+1. If you want to use the CLI and want to use the SPOT trade simulator (please note that this is work-in-progress with limited testing) and have installed this software then run: `gammath_trading_simulator log_trader.csv > log_screener.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_spot_rl_gym_env <ticker> <number of trading days> > log_trader.txt`.
 
 
 # HOWTO to get Gammath SPOT data from Docker desktop to your PC/MAC
@@ -109,6 +110,6 @@ If you have any questions, then please contact me using this [form](https://www.
 
 
 # Happy SPOTing!
-*Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance then please contact me using this [form](https://www.gammathworks.com/contact) indicating your area of interest and expertise</u><u></u>*
+*Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance/investing then please contact me using this [form](https://www.gammathworks.com/contact) indicating your area of interest and expertise</u><u></u>*
 
 *Gammath, SPOT and logo showing stylized g(m) are registered trade/service marks*.
