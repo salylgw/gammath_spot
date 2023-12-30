@@ -1,6 +1,6 @@
 **Purpose**
 
-It is April 2023 and all the features necessary for SPOT are now complete. I have added documentation to the point where it can be opened up for collaboration. The intent to make SPOT (**S**tock **P**rice-**O**pining **T**ool) an open source project is to make it transparent, to invite scrutiny of the source code, and to collaborate for making it one of the best and comprehensive stock analysis toolset that can benefit investors worldwide. If you have Python, Finance/Investing, and/or Machine learning expertise and would like to participate in this project then please let me know (You can use "contact" form on [https://www.gammathworks.com](URL) or simply send me an email at salylgw@gmail.com).
+It is December 2023 and all the features necessary for SPOT are now complete. I have added documentation to the point where it can be opened up for collaboration. The intent to make SPOT (**S**tock **P**rice-**O**pining **T**ool) an open source project is to make it transparent, to invite scrutiny of the source code, and to collaborate for making it one of the best and comprehensive stock analysis toolset that can benefit investors worldwide. If you have Python, Finance/Investing, and/or Machine learning expertise and would like to participate in this project then please let me know (You can use "contact" form on [https://www.gammathworks.com](URL) or simply send me an email at salylgw@gmail.com).
 
 
 **TBD features for collaboration**
