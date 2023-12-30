@@ -88,17 +88,8 @@ class SPOT_environment(gym.Env):
         #Calculate reward for the action
         if (self.action_types[action] == 'Sell'): #Only check reward when selling
             if (self.start_buy_index >= 0):
+                quantity, reward = self.get_rewards(trade_step)
                 self.trading_transactions['Date'][self.total_transactions_so_far] = self.Dates[trade_step]
-                cost = self.trading_transactions['Price'][self.start_buy_index:self.total_transactions_so_far].sum()
-                quantity = self.trading_transactions['Quantity'][self.start_buy_index:self.total_transactions_so_far].sum()
-                sell_amount = quantity*self.prices[trade_step]
-                profit_pct = 0
-                if (cost > 0):
-                    #Profit percentage
-                    profit_pct = (((sell_amount - cost)*100)/cost)
-
-                #Keep the reward under +/- 1 with ample room to grow in either direction
-                reward = profit_pct/1000
                 self.trading_transactions['Action'][self.total_transactions_so_far] = self.action_types[action]
                 self.trading_transactions['Price'][self.total_transactions_so_far] = round(self.prices[trade_step], 3)
                 self.trading_transactions['Quantity'][self.total_transactions_so_far] = quantity
@@ -118,6 +109,14 @@ class SPOT_environment(gym.Env):
 
         #Get new observation
         obs, done = self.take_obs_step()
+
+        if (done and (reward == 0) and (self.start_buy_index >= 0)):
+            #Did not have a corresponding sale for buy(s) at the end of the episode
+            #Last observation step
+            trade_step = (self.random_start_index + self.step - 1)
+
+            #Get the incomplete reward
+            quantity, reward = self.get_rewards(trade_step)
 
         return obs, reward, done
 
@@ -149,6 +148,20 @@ class SPOT_environment(gym.Env):
     def get_action_types(self):
         #Need to know the type of actions for logging agent transactions
         return self.action_types
+
+    def get_rewards(self, trade_step):
+        reward = 0
+        cost = self.trading_transactions['Price'][self.start_buy_index:self.total_transactions_so_far].sum()
+        quantity = self.trading_transactions['Quantity'][self.start_buy_index:self.total_transactions_so_far].sum()
+        sell_amount = quantity*self.prices[trade_step]
+        if (cost > 0):
+            #Profit percentage
+            profit_pct = (((sell_amount - cost)*100)/cost)
+
+            #Keep the reward under +/- 1 with ample room to grow in either direction
+            reward = profit_pct/1000
+
+        return quantity, reward
 
     def get_episode_trade_transactions(self):
         return self.trading_transactions[:self.total_transactions_so_far]
