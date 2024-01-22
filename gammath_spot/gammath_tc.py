@@ -71,9 +71,9 @@ def get_weekly_lows_and_highs(df):
         end_index = 0
         i = start_index
         while (i >= end_index):
-            df_lows.OI[df_lows_count] = weekly_low_indices[i]
-            df_lows.Date[df_lows_count] = df.Date[weekly_low_indices[i]]
-            df_lows.Close[df_lows_count] = df.Close[weekly_low_indices[i]]
+            df_lows.loc[df_lows_count, "OI"] = weekly_low_indices[i]
+            df_lows.loc[df_lows_count, "Date"] = df.Date[weekly_low_indices[i]]
+            df_lows.loc[df_lows_count, "Close"] = df.Close[weekly_low_indices[i]]
             df_lows_count += 1
             i -= 1
 
@@ -116,9 +116,9 @@ def get_weekly_lows_and_highs(df):
         end_index = 0
         i = start_index
         while (i >= end_index):
-            df_highs.OI[df_highs_count] = weekly_high_indices[i]
-            df_highs.Date[df_highs_count] = df.Date[weekly_high_indices[i]]
-            df_highs.Close[df_highs_count] = df.Close[weekly_high_indices[i]]
+            df_highs.loc[df_highs_count, "OI"] = weekly_high_indices[i]
+            df_highs.loc[df_highs_count, "Date"] = df.Date[weekly_high_indices[i]]
+            df_highs.loc[df_highs_count, "Close"] = df.Close[weekly_high_indices[i]]
             df_highs_count += 1
             i -= 1
 
@@ -649,14 +649,14 @@ def compute_support_and_resistance_levels(tsymbol, path, df, need_charts):
 
     #Create a dataframe for support and resistance data for different uses
     sr_df = pd.DataFrame(columns=['CS_Y', 'PDSL', 'CSDD', 'SLS', 'CS_X', 'CR_Y', 'RLS', 'PDRL', 'CRDD', 'CR_X'], index=range(1))
-    sr_df['CS_Y'][0] = round(current_support_level_y, 3)
-    sr_df['PDSL'][0] = round(((lcp - current_support_level_y)*100)/current_support_level_y, 3)
-    sr_df['SLS'][0] = round(support_line_slope, 3)
-    sr_df['CS_X'][0] = current_support_level_x
-    sr_df['CR_Y'][0] = round(current_resistance_level_y, 3)
-    sr_df['RLS'][0] = round(resistance_line_slope, 3)
-    sr_df['PDRL'][0] = round(((current_resistance_level_y - lcp)*100)/current_resistance_level_y, 3)
-    sr_df['CR_X'][0] = current_resistance_level_x
+    sr_df.loc[0, "CS_Y"] = round(current_support_level_y, 3)
+    sr_df.loc[0, "PDSL"] = round(((lcp - current_support_level_y)*100)/current_support_level_y, 3)
+    sr_df.loc[0, "SLS"] = round(support_line_slope, 3)
+    sr_df.loc[0, "CS_X"] = current_support_level_x
+    sr_df.loc[0, "CR_Y"] = round(current_resistance_level_y, 3)
+    sr_df.loc[0, "RLS"] = round(resistance_line_slope, 3)
+    sr_df.loc[0, "PDRL"] = round(((current_resistance_level_y - lcp)*100)/current_resistance_level_y, 3)
+    sr_df.loc[0, "CR_X"] = current_resistance_level_x
 
     if need_charts:
         draw_trend_charts(tsymbol, path, df, sr_df, y_support_series, y_resistance_series)

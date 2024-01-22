@@ -55,10 +55,10 @@ def get_news_hl_sentiment_score(tsymbol, path):
                 news_hl_sentiment_score = (TextBlob(news_headlines['title'][i]).sentiment.polarity)
                 total_news_hl_sentiment_score += news_hl_sentiment_score
                 processed_newshl_count += 1
-                df.title[i] = news_headlines.title[i]
-                df.date[i] = news_headlines.date[i]
-                df.link[i] = news_headlines.link[i]
-                df.nhss[i] = news_hl_sentiment_score
+                df.loc[i, "title"] = news_headlines.title[i]
+                df.loc[i, "date"] = news_headlines.date[i]
+                df.loc[i, "link"] = news_headlines.link[i]
+                df.loc[i, "nhss"] = news_hl_sentiment_score
             except:
                 news_hl_sentiment_score = 0
                 print(f'There was an error while during {tsymbol} news headline sentiment analysis')

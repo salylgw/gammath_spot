@@ -273,27 +273,27 @@ class GSA:
         #Create a data frame for all stock history specific (micro)gScores
         df_len = len(df)
         sh_gScore_df = pd.DataFrame(columns=gut.get_sh_gscores_df_columns(), index=range(1))
-        sh_gScore_df.Date[0] = df.Date[df_len-1].split(' ')[0]
-        sh_gScore_df.Close[0] = round(df.Close[df_len-1], 3)
-        sh_gScore_df.Price[0] = price_final_score
-        sh_gScore_df.RSI[0] = rsi_final_score
-        sh_gScore_df.BBANDS[0] = bb_final_score
-        sh_gScore_df.MACD[0] = macd_final_score
-        sh_gScore_df.KF[0] = kf_final_score
-        sh_gScore_df.OLS[0] = ols_final_score
-        sh_gScore_df.MFI[0] = mfi_final_score
-        sh_gScore_df.Stoch[0] = stoch_final_score
-        sh_gScore_df.SH_gScore[0] = round((overall_sh_gscore/10), 3)
-        sh_gScore_df.NUP[0] = nup
-        sh_gScore_df.A5DUP[0] = a5dup
-        sh_gScore_df.A20DUP[0] = a20dup
-        sh_gScore_df.TPC5Y[0] = tpc5y
-        sh_gScore_df.CSL[0] = current_support_level_y
-        sh_gScore_df.SLS[0] = support_line_slope
-        sh_gScore_df.PDSL[0] = pdsl
-        sh_gScore_df.CRL[0] = current_resistance_level_y
-        sh_gScore_df.RLS[0] = resistance_line_slope
-        sh_gScore_df.PDRL[0] = pdrl
+        sh_gScore_df.loc[0, "Date"] = df.Date[df_len-1].split(' ')[0]
+        sh_gScore_df.loc[0, "Close"] = round(df.Close[df_len-1], 3)
+        sh_gScore_df.loc[0, "Price"] = price_final_score
+        sh_gScore_df.loc[0, "RSI"] = rsi_final_score
+        sh_gScore_df.loc[0, "BBANDS"] = bb_final_score
+        sh_gScore_df.loc[0, "MACD"] = macd_final_score
+        sh_gScore_df.loc[0, "KF"] = kf_final_score
+        sh_gScore_df.loc[0, "OLS"] = ols_final_score
+        sh_gScore_df.loc[0, "MFI"] = mfi_final_score
+        sh_gScore_df.loc[0, "Stoch"] = stoch_final_score
+        sh_gScore_df.loc[0, "SH_gScore"] = round((overall_sh_gscore/10), 3)
+        sh_gScore_df.loc[0, "NUP"] = nup
+        sh_gScore_df.loc[0, "A5DUP"] = a5dup
+        sh_gScore_df.loc[0, "A20DUP"] = a20dup
+        sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
+        sh_gScore_df.loc[0, "CSL"] = current_support_level_y
+        sh_gScore_df.loc[0, "SLS"] = support_line_slope
+        sh_gScore_df.loc[0, "PDSL"] = pdsl
+        sh_gScore_df.loc[0, "CRL"] = current_resistance_level_y
+        sh_gScore_df.loc[0, "RLS"] = resistance_line_slope
+        sh_gScore_df.loc[0, "PDRL"] = pdrl
 
         #No need to draw charts for backtesting
         if need_charts_n_signals_info:
@@ -507,17 +507,17 @@ class GSA:
 
         #Create a data frame for all stock's current info specific (micro)gScores
         sci_gScore_df = pd.DataFrame(columns=gut.get_sci_gscores_df_columns(), index=range(1))
-        sci_gScore_df.Options[0] = options_final_score
-        sci_gScore_df.PE[0] = pe_final_score
-        sci_gScore_df.PEG[0] = peg_final_score
-        sci_gScore_df.Beta[0] = beta_final_score
-        sci_gScore_df.PBR[0] = pbr_final_score
-        sci_gScore_df.QBS[0] = qbs_final_score
-        sci_gScore_df.IHP[0] = ihp_final_score
-        sci_gScore_df.Reco[0] = reco_final_score
-        sci_gScore_df.Senti[0] = st_final_score
-        sci_gScore_df.SNS[0] = stock_news_sentiment_score
-        sci_gScore_df.SCI_gScore[0] = round((overall_sci_gscore/10), 3)
+        sci_gScore_df.loc[0, "Options"] = options_final_score
+        sci_gScore_df.loc[0, "PE"] = pe_final_score
+        sci_gScore_df.loc[0, "PEG"] = peg_final_score
+        sci_gScore_df.loc[0, "Beta"] = beta_final_score
+        sci_gScore_df.loc[0, "PBR"] = pbr_final_score
+        sci_gScore_df.loc[0, "QBS"] = qbs_final_score
+        sci_gScore_df.loc[0, "IHP"] = ihp_final_score
+        sci_gScore_df.loc[0, "Reco"] = reco_final_score
+        sci_gScore_df.loc[0, "Senti"] = st_final_score
+        sci_gScore_df.loc[0, "SNS"] = stock_news_sentiment_score
+        sci_gScore_df.loc[0, "SCI_gScore"] = round((overall_sci_gscore/10), 3)
         #Need to show total of fundamental analysis gscore component
         fast_signals = f'Fundamental analysis gscore:{fast}/10'
 

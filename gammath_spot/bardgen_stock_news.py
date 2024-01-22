@@ -63,9 +63,9 @@ def get_stock_news_headlines(tsymbol, path, start_date='', end_date=''):
             link = article.find("link").text
 
             #Save details in dataframe
-            df.title[i] = title
-            df.date[i] = date
-            df.link[i] = link
+            df.loc[i, "title"] = title
+            df.loc[i, "date"] = date
+            df.loc[i, "link"] = link
             i += 1
 
         #Only keep valid length

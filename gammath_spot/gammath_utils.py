@@ -242,11 +242,11 @@ class GUTILS:
             try:
                 path = p / f'{symbol}'
                 df_gscores = pd.read_csv(path / f'{symbol}_gscores.csv', index_col='Unnamed: 0')
-                df_b['Ticker'][i] = symbol
-                df_b['sh_gscore'][i] = df_gscores.SH_gScore[0]
-                df_b['sci_gscore'][i] = df_gscores.SCI_gScore[0]
-                df_b['final_gscore'][i] = df_gscores.gScore[0]
-                df_b['newshl_sams'][i] = df_gscores.SNS[0]
+                df_b.loc[i, "Ticker"] = symbol
+                df_b.loc[i, "sh_gscore"] = df_gscores.SH_gScore[0]
+                df_b.loc[i, "sci_gscore"] = df_gscores.SCI_gScore[0]
+                df_b.loc[i, "final_gscore"] = df_gscores.gScore[0]
+                df_b.loc[i, "newshl_sams"] = df_gscores.SNS[0]
 
                 f = open(path / f'{symbol}_signal.txt', 'r')
                 content = f.read()
@@ -254,9 +254,9 @@ class GUTILS:
                 matched_string = pattern_for_note.search(content)
                 if (matched_string):
                     kw, note = matched_string.groups()
-                    df_b['Note'][i] = note
+                    df_b.loc[i, "Note"] = note
                 else:
-                    df_b['Note'][i] = ''
+                    df_b.loc[i, "Note"] = ''
 
                 f.close()
                 i += 1
@@ -290,12 +290,12 @@ class GUTILS:
                 fpe = df_summ['forwardPE'][0]
 
                 #df_sp Symbols are arranged based on sectors so same order will be in df_pe
-                df_pe['TPE'][i] = tpe
-                df_pe['FPE'][i] = fpe
+                df_pe.loc[i, "TPE"] = tpe
+                df_pe.loc[i, "FPE"] = fpe
 
             except:
-                df_pe['TPE'][i] = 0
-                df_pe['FPE'][i] = 0
+                df_pe.loc[i, "TPE"] = 0
+                df_pe.loc[i, "FPE"] = 0
 
             i += 1
 
@@ -348,8 +348,8 @@ class GUTILS:
 
 
             #Save average values at all indices for this sector
-            df_pe['LS_AVG_TPE'][start_index:end_index] = curr_sector_tpe_avg
-            df_pe['LS_AVG_FPE'][start_index:end_index] = curr_sector_fpe_avg
+            df_pe.loc[start_index:end_index, "LS_AVG_TPE"] = curr_sector_tpe_avg
+            df_pe.loc[start_index:end_index, "LS_AVG_FPE"] = curr_sector_fpe_avg
 
 
         #New data frame with columns from PE dataframe joined
@@ -469,9 +469,9 @@ class GUTILS:
                 except:
                     continue
 
-                df_pep['Ticker'][i] = f'{tsymbol}'
-                df_pep['M5YPEP'][i] = m5ypep
-                df_pep['M5YPEP_PCT'][i] = m5ypep_pct
+                df_pep.loc[i, "Ticker"] = f'{tsymbol}'
+                df_pep.loc[i, "M5YPEP"] = m5ypep
+                df_pep.loc[i, "M5YPEP_PCT"] = m5ypep_pct
 
                 i += 1
             except:
@@ -486,9 +486,9 @@ class GUTILS:
         except:
             print(f'S&P500 Price projection error')
         else:
-            df_pep['Ticker'][i] = tsymbol
-            df_pep['M5YPEP'][i] = m5ypep
-            df_pep['M5YPEP_PCT'][i] = m5ypep_pct
+            df_pep.loc[i, "Ticker"] = tsymbol
+            df_pep.loc[i, "M5YPEP"] = m5ypep
+            df_pep.loc[i, "M5YPEP_PCT"] = m5ypep_pct
 
         #Save a sorted (by return percentage) list for convenient reference
         df_pep.sort_values('M5YPEP_PCT').dropna(how='all').to_csv(p / 'MPEP.csv', index=False)
@@ -523,12 +523,12 @@ class GUTILS:
                         last_action_date = bactesting_st_data.Date.iloc[last_action_index].split(' ')[0].split('-')
                         if ((today_year == int(last_action_date[0])) and (today_month == int(last_action_date[1])) and (today_day == int(last_action_date[2]))):
                             #Today's action
-                            df_actions['Ticker'][i] = f'{tsymbol}'
-                            df_actions['Price'][i] = bactesting_st_data.Price.iloc[last_action_index]
-                            df_actions['Action'][i] = bactesting_st_data.Action.iloc[last_action_index]
-                            df_actions['Quantity'][i] = bactesting_st_data.Quantity.iloc[last_action_index]
-                            df_actions['Term'][i] = f'{iterm}_term'
-                            df_actions['Risk_Appetite'][i] = f'{risk_level}_risk_appetite'
+                            df_actions.loc[i, 'Ticker'] = f'{tsymbol}'
+                            df_actions.loc[i, 'Price'] = bactesting_st_data.Price.iloc[last_action_index]
+                            df_actions.loc[i, 'Action'] = bactesting_st_data.Action.iloc[last_action_index]
+                            df_actions.loc[i, 'Quantity'] = bactesting_st_data.Quantity.iloc[last_action_index]
+                            df_actions.loc[i, 'Term'] = f'{iterm}_term'
+                            df_actions.loc[i, 'Risk_Appetite'] = f'{risk_level}_risk_appetite'
                             i += 1
                     except:
                         print(f'Failed to open {tsymbol}_gtrades_stats_{iterm}_term_{risk_level}_risk_appetite.csv')
