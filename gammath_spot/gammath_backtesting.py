@@ -182,12 +182,12 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                 #Mimic a buy order
                 total_shares += buy_q
                 total_cost += (curr_closing_price*buy_q)
-                df_transactions['Date'][transactions_count] = df.Date[i].split(' ')[0]
-                df_transactions['Price'][transactions_count] = round(curr_closing_price, 3)
-                df_transactions['Action'][transactions_count] = 'BUY'
-                df_transactions['Quantity'][transactions_count] = buy_q
+                df_transactions.loc[transactions_count, "Date"] = df.Date[i].split(' ')[0]
+                df_transactions.loc[transactions_count, "Price"] = round(curr_closing_price, 3)
+                df_transactions.loc[transactions_count, "Action"] = 'BUY'
+                df_transactions.loc[transactions_count, "Quantity"] = buy_q
                 avg_price = total_cost/total_shares
-                df_transactions['Avg_Price'][transactions_count] = round(avg_price, 3)
+                df_transactions.loc[transactions_count, "Avg_Price"] = round(avg_price, 3)
                 transactions_count += 1
                 curr_breakeven_attempts += 1
                 buy_q = 0
@@ -251,16 +251,16 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
 
                 if (sell_now):
                     #Mimic a sell order
-                    df_transactions['Date'][transactions_count] = df.Date[i].split(' ')[0]
-                    df_transactions['Price'][transactions_count] = round(curr_closing_price, 3)
-                    df_transactions['Action'][transactions_count] = 'SELL'
-                    df_transactions['Quantity'][transactions_count] = total_shares
-                    df_transactions['Avg_Price'][transactions_count] = round(avg_price, 3)
-                    df_transactions['Profit'][transactions_count] = round(profit, 3)
-                    df_transactions['Days_Held'][transactions_count] = days_held
+                    df_transactions.loc[transactions_count, "Date"] = df.Date[i].split(' ')[0]
+                    df_transactions.loc[transactions_count, "Price"] = round(curr_closing_price, 3)
+                    df_transactions.loc[transactions_count, "Action"] = 'SELL'
+                    df_transactions.loc[transactions_count, "Quantity"] = total_shares
+                    df_transactions.loc[transactions_count, "Avg_Price"] = round(avg_price, 3)
+                    df_transactions.loc[transactions_count, "Profit"] = round(profit, 3)
+                    df_transactions.loc[transactions_count, "Days_Held"] = days_held
 
                     #profit percentage
-                    df_transactions['Return_Pct'][transactions_count] = profit_pct
+                    df_transactions.loc[transactions_count, "Return_Pct"] = profit_pct
 
                     #Get actual return for S&P500 for the same duration
                     start_date = df.Date[i-days_held].split(' ')[0]
@@ -268,7 +268,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                     actual_sp500_return = gutils.get_sp500_actual_return(start_date, end_date)
 
                     #Compare this return vs benchmark return side-by-side for same duration
-                    df_transactions['SP500_Pct'][transactions_count] = actual_sp500_return
+                    df_transactions.loc[transactions_count, "SP500_Pct"] = actual_sp500_return
                     transactions_count += 1
                     total_shares = 0
                     total_cost = 0
@@ -300,7 +300,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         sci_note = f'Current_info_data_overall_positive'
 
     #Show last closing price for convenience
-    df_transactions.Last_Price[transactions_count] = round(curr_closing_price, 3)
+    df_transactions.loc[transactions_count, "Last_Price"] = round(curr_closing_price, 3)
 
     #Check current stage (buy/sell/hold cycle) of our strategy execution
     if (marked_for_buy):
@@ -311,8 +311,8 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         cycle = 'Hold_cycle'
 
     if (total_shares):
-        df_transactions.Days_Held[transactions_count] = days_held
-        df_transactions.Return_Pct[transactions_count] = profit_pct
+        df_transactions.loc[transactions_count, "Days_Held"] = days_held
+        df_transactions.loc[transactions_count, "Return_Pct"] = profit_pct
 
     try:
         #Get projected price
@@ -339,8 +339,8 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
     #Update notes that can be used for better decision making
     #i.e Current info, price projection summary and if this strategy has worked historically or not
     note = f'{sci_note},{pp_note},{strategy_note}'
-    df_transactions.Stage[transactions_count] = cycle
-    df_transactions.Notes[transactions_count] = note
+    df_transactions.loc[transactions_count, "Stage"] = cycle
+    df_transactions.loc[transactions_count, "Notes"] = note
     df_transactions = df_transactions.truncate(after=transactions_count)
 
     #Save for later reference

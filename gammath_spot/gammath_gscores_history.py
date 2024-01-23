@@ -140,7 +140,7 @@ class GSH:
                     if (df_gscores.SH_gScore[i] < SH_GSCORE_MIN_DISCOUNT_LEVEL):
                         discounted_zone = False
                         #Mark default discount zone to buy zone transition
-                        df_gscores.DDBTP[i] = '*'
+                        df_gscores.loc[i, "DDBTP"] = '*'
 
                 if (df_gscores.SH_gScore[i] <= SH_GSCORE_MIN_PREMIUM_LEVEL):
                     premium_zone = True
@@ -149,7 +149,7 @@ class GSH:
                     if (df_gscores.SH_gScore[i] > SH_GSCORE_MIN_PREMIUM_LEVEL):
                         premium_zone = False
                         #Mark default premium zone to sell zone transition
-                        df_gscores.DPSTP[i] = '*'
+                        df_gscores.loc[i, "DPSTP"] = '*'
 
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')

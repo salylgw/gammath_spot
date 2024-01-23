@@ -38,7 +38,7 @@ def get_moving_technical_price_conjecture(df):
     last_price = prices[prices_len-1]
 
     #Get percent change per day for mtd5y and get a mean of it
-    mean_pct_change_per_day = prices[prices_len-mtd5y:].pct_change().mean()
+    mean_pct_change_per_day = prices[prices_len-mtd5y:].pct_change(fill_method=None).dropna().mean()
 
     #Calculated conjecture of price after approximately 5 years from last price based on average percentage change per day from approximately last 5 years
     moving_technical_conjecture_price_in_5y = round((last_price + (last_price*mean_pct_change_per_day*mtd5y)), 3) #round it off to take less space in text file
