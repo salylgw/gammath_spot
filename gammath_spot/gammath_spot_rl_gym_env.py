@@ -64,10 +64,10 @@ class SPOT_environment(gym.Env):
 
         #Zero-init trade transaction info for all steps
         for i in range(self.total_transactions_so_far):
-            self.trading_transactions['Date'][i] = ''
-            self.trading_transactions['Action'][i] = ''
-            self.trading_transactions['Price'][i] = 0.0
-            self.trading_transactions['Quantity'][i] = 0
+            self.trading_transactions.loc[i, "Date"] = ''
+            self.trading_transactions.loc[i, "Action"] = ''
+            self.trading_transactions.loc[i, "Price"] = 0.0
+            self.trading_transactions.loc[i, "Quantity"] = 0
 
         self.total_transactions_so_far = 0
         obs, done = self.take_obs_step()
@@ -89,10 +89,10 @@ class SPOT_environment(gym.Env):
         if (self.action_types[action] == 'Sell'): #Only check reward when selling
             if (self.start_buy_index >= 0):
                 quantity, reward = self.get_rewards(trade_step)
-                self.trading_transactions['Date'][self.total_transactions_so_far] = self.Dates[trade_step]
-                self.trading_transactions['Action'][self.total_transactions_so_far] = self.action_types[action]
-                self.trading_transactions['Price'][self.total_transactions_so_far] = round(self.prices[trade_step], 3)
-                self.trading_transactions['Quantity'][self.total_transactions_so_far] = quantity
+                self.trading_transactions.loc[self.total_transactions_so_far, "Date"] = self.Dates[trade_step]
+                self.trading_transactions.loc[self.total_transactions_so_far, "Action"] = self.action_types[action]
+                self.trading_transactions.loc[self.total_transactions_so_far, "Price"] = round(self.prices[trade_step], 3)
+                self.trading_transactions.loc[self.total_transactions_so_far, "Quantity"] = quantity
                 self.total_transactions_so_far += 1
                 self.start_buy_index = -1
         else:
@@ -101,10 +101,10 @@ class SPOT_environment(gym.Env):
                 if (self.start_buy_index < 0):
                     self.start_buy_index = self.total_transactions_so_far
 
-                self.trading_transactions['Action'][self.total_transactions_so_far] = self.action_types[action]
-                self.trading_transactions['Date'][self.total_transactions_so_far] = self.Dates[trade_step]
-                self.trading_transactions['Price'][self.total_transactions_so_far] = round(self.prices[trade_step], 3)
-                self.trading_transactions['Quantity'][self.total_transactions_so_far] = 1
+                self.trading_transactions.loc[self.total_transactions_so_far, "Action"] = self.action_types[action]
+                self.trading_transactions.loc[self.total_transactions_so_far, "Date"] = self.Dates[trade_step]
+                self.trading_transactions.loc[self.total_transactions_so_far, "Price"] = round(self.prices[trade_step], 3)
+                self.trading_transactions.loc[self.total_transactions_so_far, "Quantity"] = 1
                 self.total_transactions_so_far += 1
 
         #Get new observation
@@ -151,8 +151,8 @@ class SPOT_environment(gym.Env):
 
     def get_rewards(self, trade_step):
         reward = 0
-        cost = self.trading_transactions['Price'][self.start_buy_index:self.total_transactions_so_far].sum()
-        quantity = self.trading_transactions['Quantity'][self.start_buy_index:self.total_transactions_so_far].sum()
+        cost = self.trading_transactions.loc[self.start_buy_index:self.total_transactions_so_far, "Price"].sum()
+        quantity = self.trading_transactions.loc[self.start_buy_index:self.total_transactions_so_far, "Quantity"].sum()
         sell_amount = quantity*self.prices[trade_step]
         if (cost > 0):
             #Profit percentage
@@ -332,11 +332,11 @@ def main():
 
                 for i in range(len(episode_trade_transactions)):
                     #Same episode num for each transaction in this loop
-                    df_episodes_trade_transactions['episode_num'][total_trade_transaction_count] = episode_num
-                    df_episodes_trade_transactions['Date'][total_trade_transaction_count] = episode_trade_transactions.Date[i]
-                    df_episodes_trade_transactions['Action'][total_trade_transaction_count] = episode_trade_transactions.Action[i]
-                    df_episodes_trade_transactions['Price'][total_trade_transaction_count] = episode_trade_transactions.Price[i]
-                    df_episodes_trade_transactions['Quantity'][total_trade_transaction_count] = episode_trade_transactions.Quantity[i]
+                    df_episodes_trade_transactions.loc[total_trade_transaction_count, "episode_num"] = episode_num
+                    df_episodes_trade_transactions.loc[total_trade_transaction_count, "Date"] = episode_trade_transactions.Date[i]
+                    df_episodes_trade_transactions.loc[total_trade_transaction_count, "Action"] = episode_trade_transactions.Action[i]
+                    df_episodes_trade_transactions.loc[total_trade_transaction_count, "Price"] = episode_trade_transactions.Price[i]
+                    df_episodes_trade_transactions.loc[total_trade_transaction_count, "Quantity"] = episode_trade_transactions.Quantity[i]
                     total_trade_transaction_count += 1
 
             #Replay experience
@@ -345,7 +345,7 @@ def main():
             curr_state = next_state
 
         #Save rewards per episode for later reference (adjust back to show percentage gain/loss)
-        df_episodes_trade_transactions['episode_reward'][total_trade_transaction_count-1] = round((curr_episode_rewards*1000), 3) #round it off to take less display space in CSV file
+        df_episodes_trade_transactions.loc[total_trade_transaction_count-1, "episode_reward"] = round((curr_episode_rewards*1000), 3) #round it off to take less display space in CSV file
 
         #Update epsilone for next episode
         spot_trading_agent.update_epsilon()
