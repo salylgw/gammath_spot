@@ -29,6 +29,10 @@ import re
 import pandas_datareader.data as pdd
 import numpy as np
 from glob import glob
+try:
+    from gammath_spot import version
+except:
+    import version
 
 #Number of trading days varies across the globe.
 #Some stock exchanges are closed more than US stocks exchanges.
@@ -39,7 +43,7 @@ MIN_TRADING_DAYS_FOR_5_YEARS = (MIN_TRADING_DAYS_PER_YEAR*5)
 
 def get_gammath_spot_version_string():
     #Show version for GUI
-    return 'version 12.0.7'
+    return f'version {version.__version__}'
 
 def set_child_process_start_method():
 

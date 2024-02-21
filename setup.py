@@ -18,14 +18,18 @@ __author__= 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
 from setuptools import setup
+from importlib.util import spec_from_file_location, module_from_spec
+spec = spec_from_file_location("gammath_spot.version", "gammath_spot/version.py")
+version = module_from_spec(spec)
+spec.loader.exec_module(version)
 
 def readme():
     with open('README.md') as f:
         return f.read()
 
 setup(name='gammath_spot',
-      version='12.0.7',
-      description='Stock Price-Opining Tools',
+      version=version.__version__,
+      description='Stock Price-Opining Toolset',
       long_description=readme(),
       long_description_content_type='text/markdown',
       classifiers=['Development Status :: 4 - Beta', 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)', 'Programming Language :: Python :: 3.8', 'Topic :: Office/Business :: Financial :: Investment'],
