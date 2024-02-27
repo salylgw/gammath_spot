@@ -18,8 +18,9 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
+#Following warnings filter is not needed with yfinance v0.2.37
+#import warnings
+#warnings.simplefilter(action='ignore', category=FutureWarning)
 import yfinance as yf
 import pandas as pd
 from pathlib import Path
