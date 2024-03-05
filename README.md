@@ -47,11 +47,11 @@ Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_sp
 
 
 # HOWTO build docker image to use CLI
- 1. Get Docker desktop (for MAC or Windows) or Docker Engine (for Linux) from [here](https://docs.docker.com/get-docker).
- 2. Run it.
+ 1. Get Docker desktop (for MAC or Windows) or Docker Engine (for Linux) from [here](https://docs.docker.com/get-docker)
+ 2. Run it
  3. Open terminal (MAC/Linux) or Power Shell (Windows)
- 4. Use this [Dockerfile](https://github.com/salylgw/gammath_spot/blob/main/Dockerfile) in the directory where you want to build the image.
- 5. Run `docker build --no-cache=true --tag=gammathworks/gammath_spot .`.
+ 4. Use this [Dockerfile](https://github.com/salylgw/gammath_spot/blob/main/Dockerfile) in the directory where you want to build the image
+ 5. Run `docker build --no-cache=true --tag=gammathworks/gammath_spot .` (Please note that '.' is part of the command)
 
 
 # HOWTO get prebuilt Gammath SPOT docker image to use CLI
