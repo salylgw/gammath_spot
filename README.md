@@ -55,8 +55,8 @@ Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_sp
 
 
 # HOWTO get prebuilt Gammath SPOT docker image to use CLI
- 1. Repeat first three steps above.
- 2. Run `docker pull gammathworks/gammath_spot`.
+ 1. Repeat first three steps above
+ 2. Run `docker pull gammathworks/gammath_spot`
 
 # HOWTO resolve typical environment issues when using docker
  1. If running out of space, one could see related error message when pulling docker image. Try running `docker image prune -f` to free up space by removing unused images.
@@ -64,9 +64,9 @@ Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_sp
  3. Generally speaking, it is a good idea to use latest version of docker desktop.
 
 # HOWTO to run containerized Gammath SPOT with CLI
- 1. Run docker desktop/engine that you installed.
- 2. Open terminal or command prompt.
- 3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash`.
+ 1. Run docker desktop/engine that you installed
+ 2. Open terminal or command prompt
+ 3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash`
  4. Note: You can replace the value for TZ to match your timezone.
 
 
