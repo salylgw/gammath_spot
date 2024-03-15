@@ -58,7 +58,7 @@ Install Python version **3.10** and then use following command in your shell for
  2. Open terminal or command prompt
  3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash`
  4. Note: You can replace the value for TZ to match your timezone.
- 5. This should bring you to the command prompt. Run `pwd` on the command prompt. This should show you "/gammath_spot/gammath_spot". You can run `ls' command on the command prompt and it should show you all the files with `.py` extension. If you see this then it means you are ready to run the Gammath SPOT commands as described below.
+ 5. This should bring you to the command prompt. Run `pwd` on the command prompt. This should show you "/gammath_spot/gammath_spot". You can run `ls` command on the command prompt and it should show you all the files with `.py` extension. If you see this then it means you are ready to run the Gammath SPOT commands as described below.
 
 
 # HOWTO run these apps
