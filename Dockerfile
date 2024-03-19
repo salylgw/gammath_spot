@@ -16,6 +16,6 @@ WORKDIR /gammath_spot/gammath_spot
 
 RUN pip install pyvirtualdisplay --prefer-binary
 
-RUN pip install -r ../requirements.txt --prefer-binary
+RUN pip install gammath-spot --prefer-binary
 
 VOLUME /gammath_spot/gammath_spot
