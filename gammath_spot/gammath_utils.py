@@ -226,6 +226,9 @@ class GUTILS:
             #Save the history for reference and processing
             sp500.to_csv(path / f'SP500_list.csv')
 
+            #Save S&P500 as a watchlist
+            sp500.Symbol.to_csv(f'SP500_watchlist.csv', index=False)
+
         return
 
     def aggregate_scores(self, symbols_list, wl_name):
