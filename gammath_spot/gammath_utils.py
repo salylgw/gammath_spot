@@ -227,7 +227,7 @@ class GUTILS:
             sp500.to_csv(path / f'SP500_list.csv')
 
             #Save S&P500 as a watchlist
-            sp500.Symbol.to_csv(f'SP500_watchlist.csv', index=False)
+            sp500.Symbol.to_csv(path / f'SP500_watchlist.csv', index=False)
 
         return
 
