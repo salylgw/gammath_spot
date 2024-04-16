@@ -31,6 +31,8 @@ from gymnasium.envs.registration import register
 #Need to disable those logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
+#Specifying input_shape in first layer is resulting in warning so using Input object to specify input shape explicitly
+from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
@@ -189,7 +191,7 @@ class SPOT_agent():
         self.target_networks_update_interval_steps = 128
 
     def build_model(self):
-        self.model = Sequential([Dense(units=32, activation='tanh', input_shape=self.obs_dim, name='Dense_input'), Dense(units=32, activation='tanh', name='Dense_intermediate'), Dense(units=self.max_actions, name='Output')])
+        self.model = Sequential([Input(shape=self.obs_dim), Dense(units=32, activation='tanh', name='Dense_input'), Dense(units=32, activation='tanh', name='Dense_intermediate'), Dense(units=self.max_actions, name='Output')])
 
         #Compile the model with popular optimizer and MSE for regression
         self.model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')

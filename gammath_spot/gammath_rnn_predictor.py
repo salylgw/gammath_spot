@@ -28,6 +28,8 @@ from sklearn.preprocessing import MinMaxScaler
 #Tensorflow shows default messages depending on GPU that may not exist on the system
 #Need to disable those logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+#Specifying input_shape in first layer is resulting in warning so using Input object to specify input shape explicitly
+from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import EarlyStopping
@@ -54,7 +56,7 @@ class GRNN:
         return self.hp
 
     def build_model(self, hp):
-        self.model = Sequential([LSTM(units=self.hp_units, activation=self.hp_activations, input_shape=(self.ar_size, 1), name='LSTM', return_sequences=False), Dense(1, activation=self.hp_activations, name='Output')])
+        self.model = Sequential([Input(shape=(self.ar_size, 1)), LSTM(units=self.hp_units, activation=self.hp_activations, name='LSTM', return_sequences=False), Dense(1, activation=self.hp_activations, name='Output')])
 
         #Compile the model with popular optimizer and MSE for regression
         self.model.compile(optimizer=self.hp_optimizers, loss='mean_squared_error')
@@ -151,7 +153,7 @@ class GRNN:
         best_hyperparams = self.get_best_tuned_model_hyperparams(tsymbol, data_type, x_train, x_test, y_train, y_test)
 
         #Create LSTM RNN for single feature using best tuned hyperparameters
-        model = Sequential([LSTM(units=self.best_num_of_units, activation=self.best_activation, input_shape=(self.ar_size, 1), name='LSTM', return_sequences=False), Dense(1, activation=self.best_activation, name='Output')])
+        model = Sequential([Input(shape=(self.ar_size, 1)), LSTM(units=self.best_num_of_units, activation=self.best_activation, name='LSTM', return_sequences=False), Dense(1, activation=self.best_activation, name='Output')])
 
         if (self.best_optimizer == 'sgd'):
             best_optimizer = optimizers.SGD(learning_rate = self.best_learning_rate)
