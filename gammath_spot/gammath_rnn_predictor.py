@@ -42,6 +42,12 @@ except:
     import gammath_utils as gut
 
 #This is experimental, Work-In-Progress and barely tested. Lot will change before it is usable
+
+class DerivedSequential:
+    def build_from_config(self, config):
+        #TBD.
+        pass
+
 class GRNN:
     def __init__(self):
         #Use ~3 months for autoregressive input/output
@@ -56,7 +62,7 @@ class GRNN:
         return self.hp
 
     def build_model(self, hp):
-        self.model = Sequential([Input(shape=(self.ar_size, 1)), LSTM(units=self.hp_units, activation=self.hp_activations, name='LSTM', return_sequences=False), Dense(1, activation=self.hp_activations, name='Output')])
+        self.model = DerivedSequential([Input(shape=(self.ar_size, 1)), LSTM(units=self.hp_units, activation=self.hp_activations, name='LSTM', return_sequences=False), Dense(1, activation=self.hp_activations, name='Output')])
 
         #Compile the model with popular optimizer and MSE for regression
         self.model.compile(optimizer=self.hp_optimizers, loss='mean_squared_error')
@@ -111,7 +117,7 @@ class GRNN:
         hp = self.init_model_tuning_params()
 
         #Use Hyperband algo
-        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=20, hyperparameters=hp, directory=path, project_name=f'{data_type}_rnn_lstm_hp_tuning')
+        tuner_hb = tuner.Hyperband(self.build_model, objective='val_loss', max_epochs=20, hyperparameters=hp, directory=path, project_name=f'{data_type}_rnn_lstm_hp_tuning', overwrite=True)
 
         #Use early stopping
         early_stopping = EarlyStopping(monitor='val_loss', patience=5)
