@@ -43,7 +43,7 @@ except:
 
 #This is experimental, Work-In-Progress and barely tested. Lot will change before it is usable
 
-class DerivedSequential:
+class DerivedSequential(Sequential):
     def build_from_config(self, config):
         #TBD.
         pass
