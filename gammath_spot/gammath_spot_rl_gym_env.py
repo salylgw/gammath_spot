@@ -353,11 +353,11 @@ def main():
         #Save rewards per episode for later reference (adjust back to show percentage gain/loss)
         df_episodes_trade_transactions.loc[total_trade_transaction_count-1, "episode_reward"] = round((curr_episode_rewards*1000), 3) #round it off to take less display space in CSV file
 
-        #Update epsilone for next episode
+        #Update epsilon for next episode
         spot_trading_agent.update_epsilon()
 
     #Save episodes trade transactions and reward information for later reference, testing and debugging
-    df_episodes_trade_transactions.truncate(after=(total_trade_transaction_count-1)).to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_info.csv')
+    df_episodes_trade_transactions.iloc[:total_trade_transaction_count].to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_info.csv')
 
 if __name__ == '__main__':
     main()
