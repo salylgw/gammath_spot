@@ -309,6 +309,10 @@ def main():
     df_episodes_trade_transactions = pd.DataFrame(columns=columns, index=range(max_episodes*max_trading_days))
     total_trade_transaction_count = 0
 
+    #Force eager execution (as opposed to graph execution) until the code is ready for optimization
+    tf.data.experimental.enable_debug_mode()
+    tf.config.run_functions_eagerly(True)
+
     #Training loop
     for episode_num in range(max_episodes):
         #Reset environment for new episodes and get initial state
