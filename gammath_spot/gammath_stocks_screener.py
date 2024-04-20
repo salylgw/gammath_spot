@@ -97,10 +97,7 @@ def run_screener(sf_name, info_queue):
                     (df_gscores.Senti[0] >= min_senti_micro_gscore)):
 
                     #Extract ticker, sh_gscore, sci_gscore and final_gscore for convenient reference
-                    df_list['Ticker'][count] = f'{subdir.name}'
-                    df_list['sh_gscore'][count] = df_gscores.SH_gScore[0]
-                    df_list['sci_gscore'][count] = df_gscores.SCI_gScore[0]
-                    df_list['final_gscore'][count] = df_gscores.gScore[0]
+                    df_list.iloc[count] = {"Ticker": f'{subdir.name}', "sh_gscore": df_gscores.SH_gScore[0], "sci_gscore": df_gscores.SCI_gScore[0], "final_gscore": df_gscores.gScore[0]}
                     count += 1
             except:
                 #No action necessary
