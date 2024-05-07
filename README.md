@@ -40,7 +40,7 @@ Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_sp
 
 
 # HOWTO install
-Install Python version **3.10** and then use following command in your shell for installing gammath-spot:
+Install Python version **3.12** and then use following command in your shell for installing gammath-spot:
 
  1. `pip install gammath-spot --prefer-binary`
 
