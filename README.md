@@ -80,6 +80,9 @@ Install Python version **3.12** and then use following command in your shell for
 1. If you want to screen stocks based on micro-gScores and have installed this software then run: `gammath_screener screener.csv > log_screener.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_screener.py screener.csv > log_screener.txt`. Note that the filtering criteria (micro-gScores values) is specified in `screener.csv` and the results can be found in `tickers/screened_watchlist.csv`.
 1. If you want to use the SPOT trade simulator (please note that this is work-in-progress with limited testing) and have installed this software then run: `gammath_trading_simulator log_trader.csv > log_screener.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_spot_rl_gym_env <ticker> <number of trading days> > log_trader.txt`.
 
+# HOWTO to resolve uncommon issue of *command not found* error when running gammath_scraper, scorer etc. after installation
+Typically, path environment variable is automatically updated during installation to include location of console scripts gammath_scraper, gammath_scorer, gammath_projector, gammath_historian, gammath_backtester, gammath_screener, gammath_estimator, gammath_trading_simulator and gammath_spot_gui. However, in certain setups, installation script may not update the path environment variable so then one has to update it manually with path to these console scripts.
+
 
 # HOWTO to get Gammath SPOT data from Docker desktop to your PC/MAC
 *Note: Depending on the Docker desktop version and your environment, there might be some variations to following steps. These should give you enough ideas to navigate through the difference(s) (if any)*.
