@@ -51,7 +51,7 @@ def get_lgstic_signals(tsymbol, df, path):
     reg_params = np.logspace(-4, 4, 8)
 
     #Logistic regression model with cross validation
-    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000, multi_class='ovr').fit(x_vals_5d, y_vals_5d)
+    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000).fit(x_vals_5d, y_vals_5d)
 
     #Get y probability estimates
     y_5d_proba = lrm.predict_proba(x_vals_5d)
@@ -79,7 +79,7 @@ def get_lgstic_signals(tsymbol, df, path):
     y_vals_20d = np.ravel(y_vals_20d)
 
     #Logistic regression model
-    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000, multi_class='ovr').fit(x_vals_20d, y_vals_20d)
+    lrm = LogisticRegressionCV(Cs=reg_params, fit_intercept=True, random_state=20, solver='liblinear', max_iter=10000).fit(x_vals_20d, y_vals_20d)
 
     #Get y probability estimates
     y_20d_proba = lrm.predict_proba(x_vals_20d)
