@@ -82,8 +82,8 @@ def get_ticker_history(tsymbol, ticker, path):
     else:
         #Obtain full stock history
         try:
-            #Get 10Y stock history using 10Y-period
-            stock_history = ticker.history(period='10y', interval='1d', actions=True, auto_adjust=True)
+            #Get maximum stock history using max-period
+            stock_history = ticker.history(period='max', interval='1d', actions=True, auto_adjust=True)
         except:
             raise RuntimeError('Error obtaining stock history')
 
