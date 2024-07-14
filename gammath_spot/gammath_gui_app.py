@@ -316,7 +316,7 @@ class Gammath_SPOT_GUI:
         for sym in wl_list:
             #Read the data from table
             if (sym != ''):
-                df.Symbol[count] = sym
+                df.loc[count, 'Symbol'] = sym
                 count += 1
 
         if (count):
