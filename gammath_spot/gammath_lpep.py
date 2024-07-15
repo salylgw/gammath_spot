@@ -229,7 +229,7 @@ class GPEP:
         #SP500-specific files are in ticker dir
         tickers_dir = gut.get_tickers_dir()
 
-        path = tickers_dir
+        path = tickers_dir / 'SP500'
         try:
             #SP500 closing data
             sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')

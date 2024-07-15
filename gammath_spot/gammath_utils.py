@@ -195,7 +195,7 @@ class GUTILS:
     def get_sp500_list(self):
 
         sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
-        path = get_tickers_dir()
+        path = get_tickers_dir() / 'SP500'
 
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
@@ -276,7 +276,7 @@ class GUTILS:
     def aggregate_pe_data(self):
 
         path = get_tickers_dir()
-        df = pd.read_csv(path / 'SP500_list.csv')
+        df = pd.read_csv(path / 'SP500/SP500_list.csv')
 
         #Need to calculate sector-average so rearrange
         df_sp = df.sort_values('GICS Sector')
@@ -369,7 +369,7 @@ class GUTILS:
         df_sp = df_sp.sort_values('Symbol')
 
         #Save for later reference and processing
-        df_sp.to_csv(path / 'SP500_SEC_PES.csv', index=False)
+        df_sp.to_csv(path / 'SP500/SP500_SEC_PES.csv', index=False)
 
     def get_sp500_closing_data(self):
 
@@ -380,7 +380,7 @@ class GUTILS:
             #Specify a start to get more data
             sp500_closing_data = pdd.DataReader('SP500', 'fred', start='1/1/2010')
             sp500_closing_data.columns = ['Close']
-            sp500_closing_data.to_csv(path / 'SP500_history.csv')
+            sp500_closing_data.to_csv(path / 'SP500/SP500_history.csv')
         except:
             print('Get SP500 closing data failed')
 
@@ -391,7 +391,7 @@ class GUTILS:
 
         try:
             #SP500 closing data (entire range)
-            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
+            sp500_closing_data = pd.read_csv(path / 'SP500/SP500_history.csv')
 
             #Get a 5Y return conjecture
             pct_5y_return_conecture = sp500_closing_data.Close.dropna().pct_change().mean()*mtd5y*100
@@ -407,7 +407,7 @@ class GUTILS:
 
         try:
             #SP500 closing data
-            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
+            sp500_closing_data = pd.read_csv(path / 'SP500/SP500_history.csv')
             sp500_closing_data = sp500_closing_data.set_index('DATE')
             try:
                 start_val = sp500_closing_data.Close[start_date]
@@ -484,12 +484,13 @@ class GUTILS:
             except:
                 print('\nERROR: extracting estimated projections for ', tsymbol, ': ', sys.exc_info()[0])
 
+
         #Back to base dir
         p = tickers_dir
 
         tsymbol = 'SP500'
         try:
-            m5ypep, m5ypep_pct = self.get_5y_ppct(p, tsymbol)
+            m5ypep, m5ypep_pct = self.get_5y_ppct(p / f'{tsymbol}', tsymbol)
         except:
             print(f'S&P500 Price projection error')
         else:

@@ -28,6 +28,7 @@ def get_pe_signals(tsymbol, df_summ, path):
     pe_gscore = 0
     pe_max_score = 2
 
+    path = path / 'SP500'
     try:
         if (path / 'SP500_SEC_PES.csv').exists():
             df_sp = pd.read_csv(path / 'SP500_SEC_PES.csv')
