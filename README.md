@@ -114,6 +114,10 @@ Typically, path environment variable is automatically updated during installatio
  2. If signature mismatch error is seen for a component image when building your own docker image then try using `docker builder prune -f` to remove build cache.
  3. Generally speaking, it is a good idea to use latest version of docker desktop and gammath-spot.
 
+# HOWTO fix scraper tool failure on iOS due to certificate issue
+ 1. Go->Applications->Python 3.12.
+ 2. Run "Install Certificates.command" as Administrator.
+ 3. Get out of administrator role and run the scraper tool.
 
 # Investment blog
 If you want to see a free example of how gScore is being used in manual decision-making then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).
