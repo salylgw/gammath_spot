@@ -117,7 +117,7 @@ Typically, path environment variable is automatically updated during installatio
 # HOWTO fix scraper tool failure on iOS due to certificate issue
  1. Go->Applications->Python 3.12.
  2. Run "Install Certificates.command" as Administrator.
- 3. Get out of administrator role and run the scraper tool.
+ 3. Get out of administrator role.
 
 # Investment blog
 If you want to see a free example of how gScore is being used in manual decision-making then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).
