@@ -379,8 +379,7 @@ class GUTILS:
             #SP500 closing data (apparently, start and end defaults aren't working)
             #Specify a start to get more data
             sp500_closing_data = pdd.DataReader('SP500', 'fred', start='1/1/2010')
-            sp500_closing_data.columns = ['Close']
-            sp500_closing_data.to_csv(path / 'SP500/SP500_history.csv')
+            sp500_closing_data.rename({'SP500': 'Close'}, axis='columns').dropna().to_csv(path / 'SP500/SP500_history.csv')
         except:
             print('Get SP500 closing data failed')
 
