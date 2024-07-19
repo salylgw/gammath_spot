@@ -383,23 +383,6 @@ class GUTILS:
         except:
             print('Get SP500 closing data failed')
 
-    def get_sp500_5y_return_conjecture(self):
-
-        path = get_tickers_dir()
-        mtdpy, mtd5y = get_min_trading_days()
-
-        try:
-            #SP500 closing data (entire range)
-            sp500_closing_data = pd.read_csv(path / 'SP500/SP500_history.csv')
-
-            #Get a 5Y return conjecture
-            pct_5y_return_conecture = sp500_closing_data.Close.dropna().pct_change().mean()*mtd5y*100
-
-            return round(pct_5y_return_conecture, 3)
-        except:
-            print('Get SP500 5Y return conjecture failed')
-            return 0
-
     def get_sp500_actual_return(self, start_date, end_date):
 
         path = get_tickers_dir()
