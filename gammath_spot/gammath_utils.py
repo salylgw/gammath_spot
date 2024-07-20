@@ -32,9 +32,11 @@ from glob import glob
 try:
     from gammath_spot import version
     from gammath_spot import gammath_get_stocks_history as gsh
+    from gammath_spot import gammath_stocks_analysis as gsa
 except:
     import version
     import gammath_get_stocks_history as gsh
+    import gammath_stocks_analysis as gsa
 
 
 #Number of trading days varies across the globe.
@@ -389,13 +391,18 @@ class GUTILS:
         except:
             print('Get SP500 closing data failed')
 
+    def do_sp500_analysis(self):
+        #Create a GSA instance
+        gsa_instance = gsa.GSA()
+        gsa_instance.do_stock_analysis_and_compute_score('SP500', True)
+
     def get_sp500_actual_return(self, start_date, end_date):
 
         path = get_tickers_dir()
 
         try:
-            #SP500 closing data
-            sp500_closing_data = pd.read_csv(path / 'SP500/SP500_history.csv')
+            #SP500 closing data from FRED
+            sp500_closing_data = pd.read_csv(path / 'SP500/SP500_history_fred.csv')
             sp500_closing_data = sp500_closing_data.set_index('DATE')
             try:
                 start_val = sp500_closing_data.Close[start_date]

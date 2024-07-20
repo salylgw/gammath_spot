@@ -529,7 +529,7 @@ class GSA:
 
         return sci_gScore_df, sci_signals
 
-    def do_stock_analysis_and_compute_score(self, tsymbol, df):
+    def do_stock_analysis_and_compute_score(self, tsymbol, SH_only):
 
         mtdpy, mtd5y = gut.get_min_trading_days()
         Tickers_dir = gut.get_tickers_dir()
@@ -539,22 +539,21 @@ class GSA:
         note = 'Notes: None'
 
         try:
-            if not len(df):
-                try:
-                    df_orig = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Date', 'High', 'Low', 'Close', 'Volume'])
-                    df_orig_len = len(df_orig)
-                    start_index = (df_orig_len - mtd5y)
-                    if (start_index < 0):
-                        raise ValueError('Not enough stock history')
+            try:
+                df_orig = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Date', 'High', 'Low', 'Close', 'Volume'])
+                df_orig_len = len(df_orig)
+                start_index = (df_orig_len - mtd5y)
+                if (start_index < 0):
+                    raise ValueError('Not enough stock history')
 
-                    end_index = df_orig_len
+                end_index = df_orig_len
 
-                    #Use a different df for starting with 0-index
-                    df = df_orig.copy()
-                    df.iloc[0:mtd5y] = df_orig.iloc[start_index:end_index]
-                    df = df.truncate(after=mtd5y-1)
-                except:
-                    raise RuntimeError('No price history data')
+                #Use a different df for starting with 0-index
+                df = df_orig.copy()
+                df.iloc[0:mtd5y] = df_orig.iloc[start_index:end_index]
+                df = df.truncate(after=mtd5y-1)
+            except:
+                raise RuntimeError('No price history data')
 
             #Check stock history data frame length.
             stock_history_len = len(df)
@@ -585,26 +584,31 @@ class GSA:
         except:
             print('\nERROR: while computing stock history specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 
-        try:
-            sci_gScore_df, sci_signals = self.do_stock_current_info_analysis(tsymbol, path, df, True)
-        except:
-            print('\nERROR: while computing stock current info specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
+        if not SH_only:
+            try:
+                sci_gScore_df, sci_signals = self.do_stock_current_info_analysis(tsymbol, path, df, True)
+            except:
+                print('\nERROR: while computing stock current info specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #Add up micro-gScores then save scores and signals
-        overall_gscore = round((sh_gScore_df.SH_gScore[0] + sci_gScore_df.SCI_gScore[0]), 3)
+            #Add up micro-gScores then save scores and signals
+            overall_gscore = round((sh_gScore_df.SH_gScore[0] + sci_gScore_df.SCI_gScore[0]), 3)
 
-        component_gscore_string = f'SH_gScore:{sh_gScore_df.SH_gScore[0]},SCI_gScore:{sci_gScore_df.SCI_gScore[0]}'
-        final_gscore_string = f'final_gscore:{overall_gscore}'
+            component_gscore_string = f'SH_gScore:{sh_gScore_df.SH_gScore[0]},SCI_gScore:{sci_gScore_df.SCI_gScore[0]}'
+            final_gscore_string = f'final_gscore:{overall_gscore}'
 
-        #Get all signals info for saving in a file for later reference
-        overall_signals = '\n'.join([sh_signals, sci_signals, note, component_gscore_string, final_gscore_string])
 
-        #Create a data frame for all (micro)gScores
-        gScore_df = pd.DataFrame({'gScore': overall_gscore}, index=range(1))
-        gScore_df = gScore_df.join(pd.DataFrame.join(sh_gScore_df, sci_gScore_df))
+            #Get all signals info for saving in a file for later reference
+            overall_signals = '\n'.join([sh_signals, sci_signals, note, component_gscore_string, final_gscore_string])
 
-        #Save the CSV file for later reference
-        gScore_df.to_csv(path / f'{tsymbol}_gscores.csv')
+            #Create a data frame for all (micro)gScores
+            gScore_df = pd.DataFrame({'gScore': overall_gscore}, index=range(1))
+            gScore_df = gScore_df.join(pd.DataFrame.join(sh_gScore_df, sci_gScore_df))
+
+            #Save the CSV file for later reference
+            gScore_df.to_csv(path / f'{tsymbol}_gscores.csv')
+        else:
+            #SH only signals
+            overall_signals = sh_signals
 
         try:
             f = open(path / f'{tsymbol}_signal.txt', 'w')

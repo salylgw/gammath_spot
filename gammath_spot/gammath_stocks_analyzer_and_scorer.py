@@ -78,10 +78,9 @@ def run_analyzer_and_scorer(sf_name, info_queue):
                 sym = watch_list['Symbol'][i].strip()
                 tsymbol = f'{sym}'
                 symbols_list.append(tsymbol)
-                df_history = pd.DataFrame()
 
                 gsa_instances.append(gsa.GSA())
-                proc_handles.append(mp.Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',df_history,)))
+                proc_handles.append(mp.Process(target=gsa_instances[i].do_stock_analysis_and_compute_score, args=(f'{sym}',False,)))
                 proc_handles[i].start()
 
                 max_tickers -= 1
@@ -112,6 +111,8 @@ def run_analyzer_and_scorer(sf_name, info_queue):
 
         #Aggregate scores and generate a gscores summary
         gutils.aggregate_scores(symbols_list, sf_name.split('.')[0])
+
+        gutils.do_sp500_analysis()
 
         #Update progress bar (if any)
         gut.send_msg_to_gui_if_thread(info_queue, 'Scorer', (end_index+1))
