@@ -109,4 +109,5 @@ class GSD:
         except:
             print(f'\nCould not get stock news headlines for {tsymbol}')
 
+        del ticker
         return

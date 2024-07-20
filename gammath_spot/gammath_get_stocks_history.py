@@ -101,3 +101,16 @@ def get_ticker_history(tsymbol, ticker, path):
         raise ValueError('Insufficient length for stock history')
 
     return
+
+def get_sp500_history(path):
+    try:
+        #Create Yahoo finance ^GSPC handle
+        sp500_ticker = yf.Ticker('^GSPC')
+    except:
+        print(f'\nERROR: Failed to create Yahoo ticker handle for SP500')
+        raise RuntimeError('Failed to create Yahoo ticker handle')
+
+    get_ticker_history('SP500', sp500_ticker, path)
+    del sp500_ticker
+
+    return

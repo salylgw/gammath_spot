@@ -31,8 +31,11 @@ import numpy as np
 from glob import glob
 try:
     from gammath_spot import version
+    from gammath_spot import gammath_get_stocks_history as gsh
 except:
     import version
+    import gammath_get_stocks_history as gsh
+
 
 #Number of trading days varies across the globe.
 #Some stock exchanges are closed more than US stocks exchanges.
@@ -379,7 +382,10 @@ class GUTILS:
             #SP500 closing data (apparently, start and end defaults aren't working)
             #Specify a start to get more data
             sp500_closing_data = pdd.DataReader('SP500', 'fred', start='1/1/2010')
-            sp500_closing_data.rename({'SP500': 'Close'}, axis='columns').dropna().to_csv(path / 'SP500/SP500_history.csv')
+            sp500_closing_data.rename({'SP500': 'Close'}, axis='columns').dropna().to_csv(path / 'SP500/SP500_history_fred.csv')
+
+            #Get full data for analysis from Yahoo Finance
+            gsh.get_sp500_history(path / 'SP500');
         except:
             print('Get SP500 closing data failed')
 
