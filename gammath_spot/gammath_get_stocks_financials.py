@@ -128,14 +128,15 @@ def get_ticker_financials(tsymbol, ticker, path):
             except:
                 qcf_dont_need_fetch = True
 
-        if not qe_dont_need_fetch:
-            try:
-                stock_earnings = ticker.quarterly_earnings
+        #TBD: Deprecated API. Revisit later.
+#        if not qe_dont_need_fetch:
+#            try:
+#                stock_earnings = ticker.quarterly_earnings
                 #Save the data for reference and processing
-                if (len(stock_earnings) > 0):
-                    stock_earnings.to_csv(path / f'{tsymbol}_qe.csv')
-            except:
-                qe_dont_need_fetch = True
+#                if (len(stock_earnings) > 0):
+#                    stock_earnings.to_csv(path / f'{tsymbol}_qe.csv')
+#            except:
+#                qe_dont_need_fetch = True
 
         if not qf_dont_need_fetch:
             try:
