@@ -112,7 +112,11 @@ def run_analyzer_and_scorer(sf_name, info_queue):
         #Aggregate scores and generate a gscores summary
         gutils.aggregate_scores(symbols_list, sf_name.split('.')[0])
 
-        gutils.do_sp500_analysis()
+        #Run S&P500 analysis in its own process (for matplotlib main thread issue)
+        sp500_analysis_handle = mp.Process(target=gutils.do_sp500_analysis)
+        sp500_analysis_handle.start()
+        sp500_analysis_handle.join()
+        sp500_analysis_handle.close()
 
         #Update progress bar (if any)
         gut.send_msg_to_gui_if_thread(info_queue, 'Scorer', (end_index+1))
