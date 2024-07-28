@@ -9,7 +9,7 @@ It is December 2023 and all the features necessary for SPOT proof-of-concept are
   * Stocks related domestic and international social networking sites need to be explored and used in the toolset
   * GPU and graphics related portability (including inside docker container)
   * Replace python packages that are not supported with latest updates
-  * Mobile app and Cloud backend
+  * Mobile app and Cloud backend (Currently under development)
   * Any improvements (new features, improvements, bug fixes [if any], documentation, optimizations etc.).
 
 
