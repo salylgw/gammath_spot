@@ -29,6 +29,7 @@ import re
 import pandas_datareader.data as pdd
 import numpy as np
 from glob import glob
+
 try:
     from gammath_spot import version
     from gammath_spot import gammath_get_stocks_history as gsh
@@ -496,7 +497,6 @@ class GUTILS:
         #Save a sorted (by return percentage) list for convenient reference
         df_pep.sort_values('M5YPEP_PCT').dropna(how='all').to_csv(p / 'MPEP.csv', index=False)
 
-
     def summarize_todays_actions(self, symbols_list):
 
         #Get today's date
@@ -541,3 +541,7 @@ class GUTILS:
 
         #Save a sorted (by ticker symbol) list for convenient reference
         df_actions.sort_values('Ticker').dropna(how='all').to_csv(p / 'Todays_Actions.csv', index=False)
+
+        json_data = df_actions.to_json(orient='records')
+
+        return json_data
