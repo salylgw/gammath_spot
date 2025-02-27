@@ -7,9 +7,9 @@ It is December 2023 and all the features necessary for SPOT proof-of-concept are
 
   * Explore and include use of other data sources (regional and international) for the data scraper tool. I have seen that yfinance works for some stocks listed on exchanges outside the US but I haven't tested those much. [sample_watchlist.csv](https://github.com/salylgw/gammath_spot/blob/main/gammath_spot/sample_watchlist.csv) includes examples of stocks listed outside the US and needs to be expanded.
   * Stocks related domestic and international social networking sites need to be explored and used in the toolset
-  * GPU and graphics related portability (including inside docker container)
+  * GPU and graphics related portability (including usage in docker container)
   * Replace python packages that are not supported with latest updates
-  * Mobile app and Cloud backend (Currently under development)
+  * Mobile app and Cloud backend (Currently under development using Flutter/Dart and Flask)
   * Any improvements (new features, improvements, bug fixes [if any], documentation, optimizations etc.).
 
 
