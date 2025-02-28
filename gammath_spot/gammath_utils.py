@@ -29,6 +29,8 @@ import re
 import pandas_datareader.data as pdd
 import numpy as np
 from glob import glob
+import configparser
+import requests
 
 try:
     from gammath_spot import version
@@ -198,6 +200,9 @@ def get_watchlist_list():
 
 class GUTILS:
 
+    def __init__(self):
+        self.config = configparser.ConfigParser()
+        self.config.read('gw_config.ini')
     def get_sp500_list(self):
 
         sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
@@ -543,5 +548,16 @@ class GUTILS:
         df_actions.sort_values('Ticker').dropna(how='all').to_csv(p / 'Todays_Actions.csv', index=False)
 
         json_data = df_actions.to_json(orient='records')
+
+        try:
+            if self.config['webhook']['url']:
+                headers = {'Content-type': 'application/json'}
+                response = requests.post(endpoint, data=json_data, headers=headers)
+                response.raise_for_status()
+                print('Actions sent to endpoint')
+        except requests.exceptions.RequestException as e:
+            print(f'Error sending data to endpoint: {e}')
+        except:
+            print('Webhook not configured. done.')
 
         return json_data
