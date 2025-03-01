@@ -203,6 +203,7 @@ class GUTILS:
     def __init__(self):
         self.config = configparser.ConfigParser()
         self.config.read('gw_config.ini')
+
     def get_sp500_list(self):
 
         sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
@@ -550,9 +551,11 @@ class GUTILS:
         json_data = df_actions.to_json(orient='records')
 
         try:
+            ep_url = self.config['webhook']['url']
+            ep_api_key = self.config['webhook']['api_key']
             if self.config['webhook']['url']:
-                headers = {'Content-type': 'application/json'}
-                response = requests.post(endpoint, data=json_data, headers=headers)
+                headers = {'Content-type': 'application/json', 'Authorization': f'Bearer {ep_api_key}'}
+                response = requests.post(ep_url, data=json_data, headers=headers)
                 response.raise_for_status()
                 print('Actions sent to endpoint')
         except requests.exceptions.RequestException as e:
