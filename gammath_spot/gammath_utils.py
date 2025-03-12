@@ -548,19 +548,22 @@ class GUTILS:
         #Save a sorted (by ticker symbol) list for convenient reference
         df_actions.sort_values('Ticker').dropna(how='all').to_csv(p / 'Todays_Actions.csv', index=False)
 
-        json_data = df_actions.to_json(orient='records')
+        json_data = ''
 
-        try:
-            ep_url = self.config['webhook']['url']
-            ep_api_key = self.config['webhook']['api_key']
-            if self.config['webhook']['url']:
-                headers = {'Content-type': 'application/json', 'Authorization': f'Bearer {ep_api_key}'}
-                response = requests.post(ep_url, data=json_data, headers=headers)
-                response.raise_for_status()
-                print('Actions sent to endpoint')
-        except requests.exceptions.RequestException as e:
-            print(f'Error sending data to endpoint: {e}')
-        except:
-            print('Webhook not configured. done.')
+        if (i):
+            json_data = df_actions.truncate(after=(i-1)).to_json(orient='records')
+
+            try:
+                ep_url = self.config['webhook']['url']
+                ep_api_key = self.config['webhook']['api_key']
+                if self.config['webhook']['url']:
+                    headers = {'Content-type': 'application/json', 'Authorization': f'Bearer {ep_api_key}'}
+                    response = requests.post(ep_url, data=json_data, headers=headers)
+                    response.raise_for_status()
+                    print('Actions sent to endpoint')
+            except requests.exceptions.RequestException as e:
+                print(f'Error sending data to endpoint: {e}')
+            except:
+                print('Webhook not configured. done.')
 
         return json_data
