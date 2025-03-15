@@ -551,7 +551,7 @@ class GUTILS:
         json_data = ''
 
         if (i):
-            json_data = df_actions.truncate(after=(i-1)).to_json(orient='records')
+            json_data = df_actions.drop_duplicates(['Ticker']).truncate(after=(i-1)).to_json(orient='records')
 
             try:
                 ep_url = self.config['webhook']['url']
