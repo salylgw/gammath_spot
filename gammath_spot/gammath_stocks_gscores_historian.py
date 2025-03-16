@@ -18,6 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
+import argparse
 import time
 import multiprocessing as mp
 import threading, queue
@@ -115,11 +116,15 @@ def main():
 
     #Avoiding to check number of args as if watchlist is not there then there will be an exception anyway
     try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument("watchlist", help="A CSV file as watchlist. e.g. sample_watchlist.csv")
+        args = parser.parse_args()
+
         #Get the watchlist file from pgm argument
-        sf_name = sys.argv[1]
+        sf_name = args.watchlist
         run_historian(sf_name, None)
     except:
-        print('ERROR: Need watch list file name as one argument to this Program. See sample_watchlist.csv')
+        print('ERROR: Need valid watch list file name as one argument to this Program. See sample_watchlist.csv')
 
 class GHISTORIAN:
     def __init__(self):

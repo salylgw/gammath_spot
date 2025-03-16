@@ -19,6 +19,7 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
 #Stock screener based on micro-gScores
+import argparse
 import sys
 from pathlib import Path
 import pandas as pd
@@ -123,8 +124,12 @@ def main():
     """
 
     try:
-        #Get the screening file for buy-criteria from pgm argument
-        sf_name = sys.argv[1]
+        parser = argparse.ArgumentParser()
+        parser.add_argument("screener", help="A CSV file as screening criteria. e.g. screener.csv")
+        args = parser.parse_args()
+
+        #Get the watchlist file from pgm argument
+        sf_name = args.screener
         run_screener(sf_name, None)
     except:
         print('ERROR: Need screener file name as one argument to this Program. See screener.csv')
