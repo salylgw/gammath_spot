@@ -18,6 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
+import argparse
 import sys
 import os
 from pathlib import Path
@@ -206,17 +207,23 @@ def main():
     Work-In-Progress and barely tested
     """
     try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument("ticker", help="A ticker symbol e.g. AAPL")
+        parser.add_argument("type_to_estimate", help="Type to estimate e.g. Price or SH_gscore")
+        parser.add_argument("number_of_trading_days", help="Number of trading days to estimate e.g. 10")
+        args = parser.parse_args()
+
         #Get the ticker symbol
-        tsymbol = sys.argv[1]
+        tsymbol = args.ticker
 
         #'SH_gScore' or 'Price'
-        type_to_estimate = sys.argv[2]
+        type_to_estimate = args.type_to_estimate
         if ((type_to_estimate != 'SH_gScore') and (type_to_estimate != 'Price')):
-            print('ERROR: Invalid type to estaimte. Must be SH_gScore or Price')
+            print('ERROR: Invalid type to estimate. Must be SH_gScore or Price')
             return
 
         #Get number of tradings days
-        trading_days_to_estimate = int(sys.argv[3])
+        trading_days_to_estimate = int(args.number_of_trading_days)
 
         path = Path(f'tickers/{tsymbol}')
 

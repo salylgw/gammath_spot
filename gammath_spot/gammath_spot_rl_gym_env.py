@@ -18,6 +18,7 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
+import argparse
 import os
 import sys
 import pandas as pd
@@ -127,8 +128,12 @@ class SPOT_environment(gym.Env):
         pass
 
     def init_SPOT_RL_env_data(self, tsymbol):
-        #Get gscores history
-        df = pd.read_csv(f'tickers/{tsymbol}/{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+        try:
+            #Get gscores history
+            df = pd.read_csv(f'tickers/{tsymbol}/{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+        except:
+            print(f'Micro gScores not found for {tsymbol}. Please run gScore historian tool before using this tool')
+            exit(-1)
 
         #Filter out parts not needed for RL
         self.SPOT_vals = df.drop(['Date', 'Close', 'TPC5Y', 'CSL', 'CRL', 'PDSL', 'PDRL', 'DDBTP', 'DPSTP'], axis=1)
@@ -280,11 +285,15 @@ class SPOT_agent():
         return action
 
 def main():
-    tsymbol = sys.argv[1]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("ticker", help="A ticker symbol e.g. AAPL")
+    parser.add_argument("number_of_trading_days", help="Number of trading days to estimate e.g. 10")
+    args = parser.parse_args()
+    tsymbol = args.ticker
     mtdpy, mtd5y = gut.get_min_trading_days()
 
     try:
-        max_trading_days = int(sys.argv[2])
+        max_trading_days = int(args.number_of_trading_days)
         if ((max_trading_days <= 0) or (max_trading_days >= mtd5y)):
             print(f'Max trading days must be between 1 and {mtd5y-1}. Exiting')
             return
