@@ -47,6 +47,9 @@ def run_scraper(sf_name, info_queue):
         #Instantiate GUTILS class
         gutils = gut.GUTILS()
 
+        #Fetch fear gauge
+        gutils.get_fg()
+
         #Fetch and save S&P500 list.
         gutils.get_sp500_list()
 

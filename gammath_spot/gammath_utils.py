@@ -31,6 +31,7 @@ import numpy as np
 from glob import glob
 import configparser
 import requests
+import yfinance as yf
 
 try:
     from gammath_spot import version
@@ -203,6 +204,12 @@ class GUTILS:
     def __init__(self):
         self.config = configparser.ConfigParser()
         self.config.read('gw_config.ini')
+
+    def get_fg(self):
+        fg_data = yf.download('^VIX', period='1d', auto_adjust=True)
+        if not fg_data.empty:
+            path = get_tickers_dir()
+            fg_data.to_csv(path / f'fear_gauge.csv')
 
     def get_sp500_list(self):
 
