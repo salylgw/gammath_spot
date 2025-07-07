@@ -3,6 +3,7 @@ pandas
 pandas_datareader
 matplotlib
 pykalman
+scipy==1.14.0
 statsmodels
 scikit-learn
 yfinance
