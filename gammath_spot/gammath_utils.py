@@ -32,6 +32,7 @@ from glob import glob
 import configparser
 import requests
 import yfinance as yf
+from io import StringIO
 
 try:
     from gammath_spot import version
@@ -209,6 +210,10 @@ class GUTILS:
         fg_data = yf.download('^VIX', period='1d', auto_adjust=True)
         if not fg_data.empty:
             path = get_tickers_dir()
+
+            if not path.exists():
+                path.mkdir(parents=True, exist_ok=True)
+
             fg_data.to_csv(path / f'fear_gauge.csv')
 
     def get_sp500_list(self):
@@ -237,10 +242,14 @@ class GUTILS:
             dont_need_fetch = False
 
         if (not dont_need_fetch):
-            #Get S&P500 list from the internet.
+            #Get S&P500 list from the internet as if from web browser
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+            response = requests.get(sp500_list_url, headers=headers)
+            html_text_buffer = StringIO(response.text)
+
             #Specify header (row to use to make column headers)
             #No need to get entire list of dataframes. We only need first dataframe
-            sp500 = pd.read_html(sp500_list_url, header=0)[0]
+            sp500 = pd.read_html(html_text_buffer, attrs={'id': 'constituents'})[0]
 
             #Save the history for reference and processing
             sp500.to_csv(path / f'SP500_list.csv')
