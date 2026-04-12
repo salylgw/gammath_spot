@@ -5,7 +5,7 @@ matplotlib
 pykalman
 scipy==1.14.0
 statsmodels
-scikit-learn
+scikit-learn==1.7.2
 yfinance
 textblob
 tensorflow
