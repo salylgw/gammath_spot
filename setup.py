@@ -37,7 +37,7 @@ setup(name='gammath_spot',
       author='Salyl Bhagwat',
       author_email='salylgw@gmail.com',
       packages=['gammath_spot'],
-      install_requires=['numpy', 'pandas', 'pandas_datareader', 'yfinance', 'pykalman', 'statsmodels', 'matplotlib', 'scikit-learn', 'textblob', 'tensorflow', 'keras-tuner','gymnasium',],
+      install_requires=['numpy', 'pandas==2.3.3', 'pandas_datareader', 'yfinance', 'pykalman', 'statsmodels', 'matplotlib', 'scikit-learn==1.7.2', 'textblob', 'tensorflow', 'keras-tuner','gymnasium',],
       include_package_data=True,
       package_data={'gammath_spot': ['data/logo.png']},
       entry_points = {
