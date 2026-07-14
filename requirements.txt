@@ -1,6 +1,6 @@
 numpy
 pandas==2.3.3
-pandas_datareader
+pandas_datareader==0.10.0
 matplotlib
 pykalman
 scipy==1.14.0
