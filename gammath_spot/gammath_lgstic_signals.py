@@ -24,6 +24,8 @@ try:
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_utils as gut
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.metrics import roc_auc_score
 

@@ -1,11 +1,11 @@
 numpy
-pandas==2.3.3
-pandas_datareader==0.10.0
+pandas
+pandas_datareader
 matplotlib
 pykalman
-scipy==1.14.0
+scipy
 statsmodels
-scikit-learn==1.7.2
+scikit-learn
 yfinance
 textblob
 tensorflow
