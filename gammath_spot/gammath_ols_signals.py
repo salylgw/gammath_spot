@@ -49,7 +49,8 @@ def get_ols_signals(tsymbol, df, path):
     if (prices_len < mtd5y):
         raise ValueError('price history too short')
 
-    y_vals = np.array(df.Close)
+    #use to_numpy instead of np.array to avoid unnecessary memcpy
+    y_vals = df.Close.to_numpy(dtype=float)
     y_vals_len = len(y_vals)
     try:
         x_vals = sm.add_constant([x for x in range(prices_len)])
@@ -314,7 +315,7 @@ def get_ols_signals(tsymbol, df, path):
         curr_diff_sign = '+ve'
 
     #Return OLS lines data in a dataframe for plotting charts
-    ols_df = pd.DataFrame({tsymbol: df.Close, 'OLS': y_predictions, 'OLS_1Y': y1_series})
+    ols_df = pd.DataFrame({tsymbol: df.Close.to_numpy(), 'OLS': y_predictions, 'OLS_1Y': y1_series})
 
     #Get Information Coefficient using Spearman rank correlation coefficient
     try:
