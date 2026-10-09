@@ -117,18 +117,12 @@ def get_macd_signals(tsymbol, df, path):
                 macd_neg_diff_count_series[macd_neg_diff_count_index] = curr_macd_ndiff
                 macd_neg_diff_count_index += 1
 
-    #Drop nans and sort the vals
+    #Drop nans
     macd_neg_days_count_series = macd_neg_days_count_series.dropna()
-    macd_neg_days_count_series = macd_neg_days_count_series.sort_values()
-
     macd_neg_diff_count_series = macd_neg_diff_count_series.dropna()
-    macd_neg_diff_count_series = macd_neg_diff_count_series.sort_values()
 
     macd_pos_days_count_series = macd_pos_days_count_series.dropna()
-    macd_pos_days_count_series = macd_pos_days_count_series.sort_values()
-
     macd_pos_diff_count_series = macd_pos_diff_count_series.dropna()
-    macd_pos_diff_count_series = macd_pos_diff_count_series.sort_values()
 
     #Buy/Sell signal moment is only a small part of the equation; No scoring on the start of the indication
 

@@ -53,7 +53,7 @@ def get_ols_signals(tsymbol, df, path):
     y_vals = df.Close.to_numpy(dtype=float)
     y_vals_len = len(y_vals)
     try:
-        x_vals = sm.add_constant([x for x in range(prices_len)])
+        x_vals = sm.add_constant(np.arange(prices_len))
     except:
         raise RuntimeError('Stats Models API failure')
 
@@ -174,11 +174,7 @@ def get_ols_signals(tsymbol, df, path):
             ls_1y_pdiff_count_index += 1
 
     ls_1y_ndiff_series = ls_1y_ndiff_series.dropna(how='all')
-    ls_1y_ndiff_series = ls_1y_ndiff_series.sort_values()
-
     ls_1y_pdiff_series = ls_1y_pdiff_series.dropna(how='all')
-    ls_1y_pdiff_series = ls_1y_pdiff_series.sort_values()
-
 
     if (residual_1y <= 0):
         #Get 1y percentile values for -ve residuals
@@ -206,11 +202,7 @@ def get_ols_signals(tsymbol, df, path):
                 ls_5y_pdiff_count_index += 1
 
     ls_5y_ndiff_series = ls_5y_ndiff_series.dropna(how='all')
-    ls_5y_ndiff_series = ls_5y_ndiff_series.sort_values()
-
     ls_5y_pdiff_series = ls_5y_pdiff_series.dropna(how='all')
-    ls_5y_pdiff_series = ls_5y_pdiff_series.sort_values()
-
 
     if (residual_5y <= 0):
         #Get 5y percentile values for -ve residuals

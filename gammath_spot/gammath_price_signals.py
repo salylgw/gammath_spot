@@ -96,13 +96,10 @@ def get_price_signals(tsymbol, df):
 
     #Lower counts will be too many so drop them to get approx percentile past lower numbers
     price_consec_falling_days_count_series = price_consec_falling_days_count_series.drop_duplicates()
-    price_consec_falling_days_count_series = price_consec_falling_days_count_series.sort_values()
-
     price_consec_rising_days_count_series = price_consec_rising_days_count_series.dropna()
 
     #Lower counts will be too many so drop them to get approx percentile past lower numbers
     price_consec_rising_days_count_series = price_consec_rising_days_count_series.drop_duplicates()
-    price_consec_rising_days_count_series = price_consec_rising_days_count_series.sort_values()
 
     try:
         #50-day average

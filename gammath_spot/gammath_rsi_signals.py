@@ -115,11 +115,7 @@ def get_rsi_signals(tsymbol, df, path):
 
 
     rsi_os_count_series = rsi_os_count_series.dropna()
-    rsi_os_count_series = rsi_os_count_series.sort_values()
-
     rsi_ob_count_series = rsi_ob_count_series.dropna()
-    rsi_ob_count_series = rsi_ob_count_series.sort_values()
-
 
     if (curr_oversold_count > 0):
         #Get percentile values for oversold days count

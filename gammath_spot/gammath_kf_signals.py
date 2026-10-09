@@ -121,10 +121,7 @@ def get_kf_state_means(tsymbol, df):
                 curr_below_mean_count = 0
 
     kf_neg_diff_series = kf_neg_diff_series.dropna()
-    kf_neg_diff_series = kf_neg_diff_series.sort_values()
-
     kf_pos_diff_series = kf_pos_diff_series.dropna()
-    kf_pos_diff_series = kf_pos_diff_series.sort_values()
 
     #Use current diff to factor into dip score based on which quantile it falls in
     if (curr_below_mean_count > 0):
@@ -182,10 +179,7 @@ def get_kf_state_means(tsymbol, df):
         kf_max_score += 3
 
     kf_below_mean_count_series = kf_below_mean_count_series.dropna()
-    kf_below_mean_count_series = kf_below_mean_count_series.sort_values()
-
     kf_above_mean_count_series = kf_above_mean_count_series.dropna()
-    kf_above_mean_count_series = kf_above_mean_count_series.sort_values()
 
     #Compute buy/sell scores based on where current below mean count falls in 25, 50, 75 percentile
     if (curr_below_mean_count > 0):
