@@ -20,13 +20,37 @@ __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 import numpy as np
-import statsmodels.api as sm
 from pathlib import Path
 from scipy.stats import spearmanr
 try:
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_utils as gut
+
+def local_add_constant(x):
+    """Removing dependence on statsmodels API"""
+    #Need first column with all 1s
+    return np.column_stack([np.ones(len(x)), x])
+
+class local_OLS:
+    """Removing dependence on statsmodels API"""
+    def __init__(self, y):
+        #Convert X and Y to array
+        self.y = y
+        self.X = local_add_constant(np.arange(len(y)))
+
+    def fit(self):
+        #Get the least squares solution using SVD
+        self.params, *_ = np.linalg.lstsq(self.X, self.y, rcond=None)
+        self.fittedvalues = self.X @ self.params
+        self.resid = self.y - self.fittedvalues
+
+        sum_sq_res = np.sum(self.resid ** 2)
+        #No need to check for constant column because is added by default
+        sum_sq_total = np.sum((self.y - self.y.mean()) ** 2)
+
+        self.rsquared = 1.0 - (sum_sq_res / sum_sq_total)
+        return self
 
 
 def get_ols_signals(tsymbol, df, path):
@@ -51,43 +75,24 @@ def get_ols_signals(tsymbol, df, path):
 
     #use to_numpy instead of np.array to avoid unnecessary memcpy
     y_vals = df.Close.to_numpy(dtype=float)
-    y_vals_len = len(y_vals)
-    try:
-        x_vals = sm.add_constant(np.arange(prices_len))
-    except:
-        raise RuntimeError('Stats Models API failure')
 
-    x_vals_len = len(x_vals)
-
-    #OLS using statsmodels API
+    #OLS using local method
 
     #Model last 1 year data
     index_1y = mtdpy
 
-    try:
-        model_1y = sm.OLS(y_vals[(y_vals_len-index_1y):], x_vals[(x_vals_len-index_1y):]).fit()
-    except:
-        raise RuntimeError('Stats Models API failure')
+    model_1y = local_OLS(y_vals[-index_1y:]).fit()
 
     #Model last 5 years data
-    try:
-        model = sm.OLS(y_vals, x_vals).fit()
-    except:
-        raise RuntimeError('Stats Models API failure')
+    model = local_OLS(y_vals).fit()
 
     #Get yprediction to plot the 1y OLS line along with the price chart
-    try:
-        y1_predictions = model_1y.predict()
-    except:
-        raise RuntimeError('Stats Models API failure')
+    y1_predictions = model_1y.fittedvalues
 
     y1_predictions_len = len(y1_predictions)
 
     #Get yprediction to plot the 5y OLS line along with price chart
-    try:
-        y_predictions = model.predict()
-    except:
-        raise RuntimeError('Stats Models API failure')
+    y_predictions = model.fittedvalues
 
     y_predictions_len = len(y_predictions)
 
