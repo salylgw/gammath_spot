@@ -26,28 +26,47 @@ try:
     from gammath_spot import gammath_utils as gut
 except:
     import gammath_utils as gut
+from functools import lru_cache
 
 def local_add_constant(x):
     """Removing dependence on statsmodels API"""
     #Need first column with all 1s
     return np.column_stack([np.ones(len(x)), x])
 
+#cache and reuse same length array (help during backtesting)
+@lru_cache(maxsize=1)
+def centered_x_and_sq_d_sum(n):
+    """(x-mean_x) and sum of squares for x=0 to (n-1) """
+    x_centered = np.arange(n, dtype=float) - (n-1) / 2.0
+    x_centered.flags.writeable = False #No overwrites
+
+    #sum of squared deviation
+    return x_centered, (n*((n*n)-1)) / 12.0
+
 class local_OLS:
     """Removing dependence on statsmodels API"""
     def __init__(self, y):
         #Convert X and Y to array
         self.y = y
-        self.X = local_add_constant(np.arange(len(y)))
+        self.n = len(y)
 
     def fit(self):
-        #Get the least squares solution using SVD
-        self.params, *_ = np.linalg.lstsq(self.X, self.y, rcond=None)
-        self.fittedvalues = self.X @ self.params
-        self.resid = self.y - self.fittedvalues
+        #Get the least squares solution using closed form [better for backtesting loop]
+        y, n = self.y, self.n
+        xc, ssd = centered_x_and_sq_d_sum(n)
+        x_mean = (n-1)/2.0
+        y_mean = y.mean()
 
-        sum_sq_res = np.sum(self.resid ** 2)
-        #No need to check for constant column because is added by default
-        sum_sq_total = np.sum((self.y - self.y.mean()) ** 2)
+        slope = np.dot(xc, y)/ssd
+        intercept = y_mean - slope * x_mean
+        self.params = np.array([intercept, slope])
+
+        self.fittedvalues = intercept + slope * (xc + x_mean)
+        self.resid = y - self.fittedvalues
+
+        sum_sq_res = np.dot(self.resid, self.resid)
+        yc = y - y_mean
+        sum_sq_total = yc @ yc
 
         self.rsquared = 1.0 - (sum_sq_res / sum_sq_total)
         return self
@@ -124,14 +143,14 @@ def get_ols_signals(tsymbol, df, path):
     #Log the score for debugging
 
     #Slope of 1Y OLS line (just need to do y2-y1 to get the direction)
-    slope_dir_1y = (y1_predictions[y1_predictions_len-1] - y1_predictions[0])
+    slope_dir_1y = model_1y.params[1];
     if (slope_dir_1y < 0):
         slope_sign_1y = '-ve'
     else:
         slope_sign_1y = '+ve'
 
     #Slope of OLS line
-    slope_dir_5y = (y_predictions[y_predictions_len-1] - y_predictions[0])
+    slope_dir_5y = model.params[1];
     if (slope_dir_5y < 0):
         slope_sign_5y = '-ve'
     else:
