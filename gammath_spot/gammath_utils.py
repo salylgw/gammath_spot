@@ -157,7 +157,7 @@ def get_price_sigmoid(prices, n_days_interval):
     end_index = (prices_len - n_days_interval)
 
     #Zero-initialize the sigmoid
-    prices_sigmoid = pd.Series(0, pd.RangeIndex((prices_len-start_index)/n_days_interval))
+    prices_sigmoid = pd.Series(0, pd.RangeIndex((prices_len-start_index)//n_days_interval))
     j = 1
 
     #First element of sigmoid is set to 0; next ascending val then 1 else 0

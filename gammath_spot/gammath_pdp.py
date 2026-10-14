@@ -70,8 +70,8 @@ def get_price_dir_probability(df):
     overall_up_probability = round(total_up_days/(prices_len-1), 3)
     overall_down_probability = round(total_down_days/(prices_len-1), 3)
 
-    price_consec_up_dir_counts = np.cumsum(price_consec_up_dir_counts[::-1])[::-1]
-    price_consec_down_dir_counts = np.cumsum(price_consec_down_dir_counts[::-1])[::-1]
+    price_consec_up_dir_counts[1:] = np.cumsum(price_consec_up_dir_counts[:0:-1])[::-1]
+    price_consec_down_dir_counts[1:] = np.cumsum(price_consec_down_dir_counts[:0:-1])[::-1]
 
     next_up_p = 0
     next_down_p = 0
