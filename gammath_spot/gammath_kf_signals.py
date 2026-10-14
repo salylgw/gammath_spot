@@ -19,9 +19,45 @@ __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
-from pykalman import KalmanFilter
 import numpy as np
 from scipy.stats import spearmanr
+
+def kf_state_means(observed_vals, transition_covariance=1.0, observation_covariance=1.0,
+                   initial_state_mean = 0.0, initial_state_covariance=1.0):
+    """Replace pykalman to use local single dimension Kalman filter that returns filtered state means
+    Just takes the 1-D Pandas series price inputs and returns 1-D np.ndarray of shape (n,)
+    """
+    z = np.asarray(observed_vals, dtype=float).ravel()
+    n = z.size
+
+    Q = float(transition_covariance)
+    R = float(observation_covariance)
+    state_means = np.empty(n, dtype=float)
+
+    x_prediction = float(initial_state_mean)
+    p_prediction = float(initial_state_covariance)
+
+    for t in range(n):
+        if t > 0:
+            #Predict step (best guess for new state is previous estimate. Uncertainty grows by Q)
+            x_prediction = x_est
+            p_prediction = p_est + Q
+
+        if np.isnan(z[t]):
+            x_est, p_est = x_prediction, p_prediction
+        else:
+            #Update step
+            residual_innovation = z[t] - x_prediction
+            #residual variance = pred uncertainty + measurement noise
+            s = p_prediction + R
+            #Kalman gain (near 0 then trust the prediction; near 1 then trust the price)
+            k = p_prediction / s
+            x_est = x_prediction + k * residual_innovation
+            p_est = (1.0-k) * p_prediction
+
+        state_means[t] = x_est
+
+    return state_means
 
 def get_kf_state_means(tsymbol, df):
 
@@ -38,17 +74,11 @@ def get_kf_state_means(tsymbol, df):
 
     #Generate state means based on closing prices
     if (prices_len > 0):
-        try:
-            #Initialize Kalman filter with default params
-            kf = KalmanFilter()
-
-            #Get the state mean and covariance
-            state_means, state_covariance = kf.filter(df.Close)
-        except:
-            raise RuntimeError('Failed to generate Kalman Filter State Means and Covariance')
+        #Get the state mean and covariance
+        state_means = kf_state_means(df.Close)
 
         #Extract state means into PD series
-        ds_sm = pd.Series(state_means.flatten())
+        ds_sm = pd.Series(state_means)
         sm_len = len(ds_sm)
 
     if ((sm_len <= 0) or (prices_len <= 0)):
