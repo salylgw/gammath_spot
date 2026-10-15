@@ -2,7 +2,6 @@ numpy
 pandas
 pandas_datareader
 matplotlib
-scipy
 scikit-learn
 yfinance
 textblob

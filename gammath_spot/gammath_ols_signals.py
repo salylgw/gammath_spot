@@ -21,7 +21,6 @@ __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from scipy.stats import spearmanr
 try:
     from gammath_spot import gammath_utils as gut
 except:
@@ -333,15 +332,7 @@ def get_ols_signals(tsymbol, df, path):
     #Return OLS lines data in a dataframe for plotting charts
     ols_df = pd.DataFrame({tsymbol: df.Close.to_numpy(), 'OLS': y_predictions, 'OLS_1Y': y1_series})
 
-    #Get Information Coefficient using Spearman rank correlation coefficient
-    try:
-        ols_ic = round(spearmanr(ols_df.OLS.dropna(), df.Close.dropna()).correlation, 3)
-    except:
-        ols_ic = np.nan
-        #Not a fatal error. Just log it
-        print(f'Failed to compute Information Coefficient for {tsymbol} OLS')
-
-    ols_grec = f'ols_ic:{ols_ic},ols_gscore:{ols_gscore}/{ols_max_score}'
+    ols_grec = f'ols_gscore:{ols_gscore}/{ols_max_score}'
 
     ols_signals = f'OLS: ols_fit_score:{fit_score},1y_slope:{slope_sign_1y},5y_slope:{slope_sign_5y},curr_diff:{curr_diff_sign},{curr_diff_quantile_str},{ols_grec}'
 

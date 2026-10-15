@@ -110,7 +110,7 @@ def local_logistic_regression(x, y, max_iter=100, tol=1e-8):
 
     return next_p, accuracy
 
-#Get UP/DOWN probabilities for next week and month
+#Get UP/DOWN probabilities after approximately a month
 def get_lgstic_signals(tsymbol, df, path):
 
     lgstic_signals = ''
@@ -118,16 +118,6 @@ def get_lgstic_signals(tsymbol, df, path):
     prices_len = len(df.Close)
     lp = df.Close[prices_len-1]
     prices = df.Close
-
-    #Get price sigmoid (approx. 1-week interval)
-    sigmoid_vals_5d = gut.get_price_sigmoid(prices, 5)
-
-    y_vals_5d = np.array(sigmoid_vals_5d).ravel()
-    x_vals_5d = np.arange(len(y_vals_5d), dtype=float)
-
-    #Fit logistic trend
-    next_5d_p, accuracy_score_5d = local_logistic_regression(x_vals_5d, y_vals_5d)
-    a5dup = round(next_5d_p, 3) 
 
     #Get price sigmoid (approx. 1-month interval)
     sigmoid_vals_20d = gut.get_price_sigmoid(prices, 20)
@@ -141,6 +131,6 @@ def get_lgstic_signals(tsymbol, df, path):
     a20dup = round(next_20d_p, 3)
 
     #Log output for quick reference
-    lgstic_log = f'Probability after approx. a week: UP:{a5dup}, DOWN: {round((1-a5dup), 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{a20dup}, DOWN: {round((1-a20dup), 3)},accu_score:{accuracy_score_20d}'
+    lgstic_log = f'Probability after approx. a month: UP:{a20dup}, DOWN: {round((1-a20dup), 3)},accu_score:{accuracy_score_20d}'
 
-    return a5dup, a20dup, lgstic_log
+    return a20dup, lgstic_log

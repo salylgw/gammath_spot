@@ -31,7 +31,7 @@ def get_probabilty_signals(tsymbol, df, path):
     1-week trend probability and 1-month trend probability
     """
     next_up_p, pdp_log = get_price_dir_probability(df)
-    after_week_p, after_month_p, lgstic_log = get_lgstic_signals(tsymbol, df, path)
+    after_month_p, lgstic_log = get_lgstic_signals(tsymbol, df, path)
 
     after_day_up_p_score = 2.0*next_up_p - 1.0
     after_month_p_score = 2.0*after_month_p - 1.0
@@ -48,5 +48,5 @@ def get_probabilty_signals(tsymbol, df, path):
     display_fraction = f'{round(probability_score*10):d}/10'
     probability_log = f'Probabilities score: {display_fraction}\n{pdp_log}\n{lgstic_log}'
 
-    return probability_score, probability_log
+    return next_up_p, after_month_p, probability_score, probability_log
 

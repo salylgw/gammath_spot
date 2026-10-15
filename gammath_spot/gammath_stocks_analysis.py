@@ -219,34 +219,14 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
 
-        # Price direction probability (overall and next day)
-        try:
-            nup = 0
-            pdp = ''
-
-            #Get the next day probability for decision-making
-            nup, pdp = gpdp.get_price_dir_probability(df)
-        except ValueError:
-            print('\nERROR: generating next day price direction probability for ', tsymbol, ': ', sys.exc_info()[0])
-
-        # Logistic regression signals
-        try:
-            a5dup = 0
-            a20dup = 0
-            lgst_signals = ''
-
-            a5dup, a20dup, lgst_signals = glgst.get_lgstic_signals(tsymbol, df, path)
-        except RuntimeError:
-            print('\nERROR: generating Logistic regression data for ', tsymbol, ': ', sys.exc_info()[0])
-        except ValueError:
-            print('\nERROR: generating signals from Logistic regression data ', tsymbol, ': ', sys.exc_info()[0])
-
         # Proability signals
         try:
+            nup = 0
+            a20dup = 0
             probability_score = 0
             probability_log = ''
 
-            probability_score, probability_log = gproba.get_probabilty_signals(tsymbol, df, path)
+            nup, a20dup, probability_score, probability_log = gproba.get_probabilty_signals(tsymbol, df, path)
         except RuntimeError:
             print('\nERROR: generating probability signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -298,7 +278,6 @@ class GSA:
         sh_gScore_df.loc[0, "Stoch"] = stoch_final_score
         sh_gScore_df.loc[0, "SH_gScore"] = round((overall_sh_gscore/10), 3)
         sh_gScore_df.loc[0, "NUP"] = nup
-        sh_gScore_df.loc[0, "A5DUP"] = a5dup
         sh_gScore_df.loc[0, "A20DUP"] = a20dup
         sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
         sh_gScore_df.loc[0, "CSL"] = current_support_level_y

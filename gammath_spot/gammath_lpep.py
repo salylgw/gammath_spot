@@ -31,7 +31,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import SGDRegressor
 from sklearn.metrics import (r2_score, make_scorer)
 from matplotlib import pyplot as plt
-from scipy.stats import spearmanr
 try:
     from gammath_spot import gammath_utils as gut
 except:
@@ -204,26 +203,17 @@ class GPEP:
         plt.close(fig=None)
 
         try:
-            sgd_ic = round(spearmanr(y_predictions_series[0:yp_len], prices).correlation, 3)
-        except:
-            sgd_ic = np.nan
-            #Not a fatal error. Just log it
-            print(f'Failed to compute Information Coefficient for {tsymbol} SGD')
-
-        try:
             #Append the signals file
             f = open(path / f'{tsymbol}_signal.txt', 'a')
         except:
             print('\nERROR: opening signal file for ', tsymbol, ': ', sys.exc_info()[0])
         else:
             #Log 3 months, 1 year and 5 year projection for quick reference
-            projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+mtdpy], 3)}, {round(y_projections_series[yp_len+mtd5y-1], 3)}, sgd_ic:{sgd_ic}'
+            projection_string = f'Moving Price Projection (approx. 3m, 1y, 5yrs): {round(y_projections_series[yp_len+60], 3)}, {round(y_projections_series[yp_len+mtdpy], 3)}, {round(y_projections_series[yp_len+mtd5y-1], 3)}'
             f.write(projection_string)
             f.close()
 
-
     def sp500_pep(self):
-
         mtdpy, mtd5y = gut.get_min_trading_days()
 
         #SP500-specific files are in ticker dir

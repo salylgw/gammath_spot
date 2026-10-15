@@ -31,6 +31,7 @@ except:
     import gammath_utils as gut
     import gammath_mi_scores as gmis
 
+
 #Default values to cover broadest variety of stocks.
 #Should be fine tuned for specific characteristics
 MAX_BREAKEVEN_ATTEMPTS = 10
@@ -115,8 +116,8 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         curr_support_level = df.CSL[i]
         prev_resistance_level = df.CRL[i-1]
         curr_resistance_level = df.CRL[i]
-        prev_ndup = df.A5DUP[i-1]
-        curr_ndup = df.A5DUP[i]
+        prev_ndup = df.A20DUP[i-1]
+        curr_ndup = df.A20DUP[i]
 
         #Check if n-day up probability is rising or falling (approximately)
         if (prev_ndup > curr_ndup):

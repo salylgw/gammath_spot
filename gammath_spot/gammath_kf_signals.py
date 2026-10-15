@@ -20,7 +20,6 @@ __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 import numpy as np
-from scipy.stats import spearmanr
 
 def kf_state_means(observed_vals, transition_covariance=1.0, observation_covariance=1.0,
                    initial_state_mean = 0.0, initial_state_covariance=1.0):
@@ -263,15 +262,7 @@ def get_kf_state_means(tsymbol, df):
     #Return KF state means in a dataframe for plotting charts
     kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
 
-    #Get Information Coefficient using Spearman rank correlation coefficient
-    try:
-        kf_ic = round(spearmanr(kf_df['Kalman Filter'].dropna(), df.Close.dropna()).correlation, 3)
-    except:
-        kf_ic = np.nan
-        #Not a fatal error. Just log it
-        print(f'Failed to compute Information Coefficient for {tsymbol} KF')
-
-    kf_grec = f'kf_ic:{kf_ic},kf_gscore:{kf_gscore}/{kf_max_score}'
+    kf_grec = f'kf_gscore:{kf_gscore}/{kf_max_score}'
 
     if (curr_below_mean_count > 0):
         kf_signals = f'KF:-ve_days:{curr_count_quantile_str},-ve_diff:{curr_diff_quantile_str},{kf_grec}'
