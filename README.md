@@ -25,8 +25,6 @@ This project uses following free tools that need to be installed (you can use pi
 1. pandas
 1. pandas_datareader
 1. yfinance
-1. pykalman
-1. statsmodels
 1. scikit-learn
 1. matplotlib
 1. textblob

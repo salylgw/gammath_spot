@@ -2,9 +2,7 @@ numpy
 pandas
 pandas_datareader
 matplotlib
-pykalman
 scipy
-statsmodels
 scikit-learn
 yfinance
 textblob
