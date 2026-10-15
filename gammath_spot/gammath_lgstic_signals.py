@@ -141,6 +141,6 @@ def get_lgstic_signals(tsymbol, df, path):
     a20dup = round(next_20d_p, 3)
 
     #Log output for quick reference
-    lgstic_signals = f'Probability after approx. a week: UP:{a5dup}, DOWN: {round((1-a5dup), 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{a20dup}, DOWN: {round((1-a20dup), 3)},accu_score:{accuracy_score_20d}'
+    lgstic_log = f'Probability after approx. a week: UP:{a5dup}, DOWN: {round((1-a5dup), 3)},accu_score:{accuracy_score_5d}\nProbability after approx. a month: UP:{a20dup}, DOWN: {round((1-a20dup), 3)},accu_score:{accuracy_score_20d}'
 
-    return a5dup, a20dup, lgstic_signals
+    return a5dup, a20dup, lgstic_log

@@ -40,6 +40,7 @@ try:
     from gammath_spot import gammath_reco_signals as greco
     from gammath_spot import gammath_ols_signals as gols
     from gammath_spot import gammath_lgstic_signals as glgst
+    from gammath_spot import gammath_probability_signals as gproba
     from gammath_spot import gammath_pdp as gpdp
     from gammath_spot import gammath_mtpc as gmtpc
     from gammath_spot import gammath_get_stocks_events_data as gge
@@ -68,6 +69,7 @@ except:
     import gammath_ols_signals as gols
     import gammath_lgstic_signals as glgst
     import gammath_pdp as gpdp
+    import gammath_probability_signals as gproba
     import gammath_mtpc as gmtpc
     import gammath_get_stocks_events_data as gge
     import gammath_si_charts as gsc
@@ -227,16 +229,6 @@ class GSA:
         except ValueError:
             print('\nERROR: generating next day price direction probability for ', tsymbol, ': ', sys.exc_info()[0])
 
-        # Moving Technical 5Y Price Conjecture
-        try:
-            tpc5y = 0
-            mtcp = ''
-
-            #Get 5Y price conjecture for decision-making
-            tpc5y, mtcp = gmtpc.get_moving_technical_price_conjecture(df)
-        except ValueError:
-            print('\nERROR: generating moving 5y technical price conjecture for ', tsymbol, ': ', sys.exc_info()[0])
-
         # Logistic regression signals
         try:
             a5dup = 0
@@ -248,6 +240,27 @@ class GSA:
             print('\nERROR: generating Logistic regression data for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
             print('\nERROR: generating signals from Logistic regression data ', tsymbol, ': ', sys.exc_info()[0])
+
+        # Proability signals
+        try:
+            probability_score = 0
+            probability_log = ''
+
+            probability_score, probability_log = gproba.get_probabilty_signals(tsymbol, df, path)
+        except RuntimeError:
+            print('\nERROR: generating probability signals for ', tsymbol, ': ', sys.exc_info()[0])
+        except ValueError:
+            print('\nERROR: generating probability signals for ', tsymbol, ': ', sys.exc_info()[0])
+
+        # Moving Technical 5Y Price Conjecture
+        try:
+            tpc5y = 0
+            mtcp = ''
+
+            #Get 5Y price conjecture for decision-making
+            tpc5y, mtcp = gmtpc.get_moving_technical_price_conjecture(df)
+        except ValueError:
+            print('\nERROR: generating moving 5y technical price conjecture for ', tsymbol, ': ', sys.exc_info()[0])
 
         # Get support and resistance level
         try:
@@ -304,7 +317,7 @@ class GSA:
                 print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])
 
             #Aggregate stock history-specific signals
-            sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, pdp, mtcp, lgst_signals, support_resistance_string])
+            sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, probability_log, mtcp, support_resistance_string])
         else:
             sh_signals = ''
 

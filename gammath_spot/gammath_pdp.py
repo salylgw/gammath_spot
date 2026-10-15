@@ -87,6 +87,6 @@ def get_price_dir_probability(df):
         next_down_p = round((p_streak_continues if falling else (1 - p_streak_continues)), 3)
         next_up_p = round(((1 - p_streak_continues) if falling else p_streak_continues), 3)
 
-    pdp = f'Overall_empirical_PDP: UP: {overall_up_probability} DOWN: {overall_down_probability}\nNext_day_empirical_PDP: UP: {next_up_p} DOWN: {next_down_p}'
+    pdp_log = f'Overall_empirical_PDP: UP: {overall_up_probability} DOWN: {overall_down_probability}\nNext_day_empirical_PDP: UP: {next_up_p} DOWN: {next_down_p}'
 
-    return next_up_p, pdp
+    return next_up_p, pdp_log
