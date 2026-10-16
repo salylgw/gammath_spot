@@ -27,7 +27,6 @@ try:
     from gammath_spot import gammath_mfi_signals as gms
     from gammath_spot import gammath_stoch_signals as gss
     from gammath_spot import gammath_macd_signals as gmacd
-    from gammath_spot import gammath_stcktwts_signals as gstw
     from gammath_spot import gammath_kf_signals as gkf
     from gammath_spot import gammath_options_signals as gos
     from gammath_spot import gammath_pe_signals as gpes
@@ -43,7 +42,6 @@ try:
     from gammath_spot import gammath_probability_signals as gproba
     from gammath_spot import gammath_pdp as gpdp
     from gammath_spot import gammath_mtpc as gmtpc
-    from gammath_spot import gammath_get_stocks_events_data as gge
     from gammath_spot import gammath_si_charts as gsc
     from gammath_spot import gammath_tc as gtc
     from gammath_spot import gammath_utils as gut
@@ -55,7 +53,6 @@ except:
     import gammath_mfi_signals as gms
     import gammath_stoch_signals as gss
     import gammath_macd_signals as gmacd
-    import gammath_stcktwts_signals as gstw
     import gammath_kf_signals as gkf
     import gammath_options_signals as gos
     import gammath_pe_signals as gpes
@@ -71,7 +68,6 @@ except:
     import gammath_pdp as gpdp
     import gammath_probability_signals as gproba
     import gammath_mtpc as gmtpc
-    import gammath_get_stocks_events_data as gge
     import gammath_si_charts as gsc
     import gammath_tc as gtc
     import gammath_utils as gut
@@ -465,28 +461,18 @@ class GSA:
         except ValueError:
             print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #Generate and get signals based on Stocktwits sentiment and volume change
         try:
             st_gscore = 0
             st_max_score = 5
             st_signals = ''
             st_final_score = 0
 
-            #StockTwits signals
-            st_gscore, st_max_score, st_signals = gstw.get_stocktwits_signals(tsymbol, path)
+            #DISCONTINUED use of stocktwits. Placeholder
             #Maintain proportion
             st_final_score = round((st_gscore/10), 3)
             overall_sci_gscore += st_final_score
         except RuntimeError:
             print('\nERROR: while getting stocktwits signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-        #Get info on earnings etc. to be aware before making buy/sell decision
-        try:
-            #Get events info
-            events_info = gge.get_events_info(tsymbol, path)
-        except:
-            print('\nERROR: while getting events info for ', tsymbol, ': ', sys.exc_info()[0])
-            events_info = ''
 
         try:
             stock_news_sentiment_score = gns.get_news_hl_sentiment_score(tsymbol, path)
@@ -515,7 +501,7 @@ class GSA:
 
         if need_charts_n_signals_info:
             #Aggregate stock current info-specific signals
-            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, st_signals, stock_news_signals, events_info])
+            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, st_signals, stock_news_signals])
         else:
             sci_signals = ''
 
