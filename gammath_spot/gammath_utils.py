@@ -199,6 +199,21 @@ def get_watchlist_list():
 
     return wl_fp_list
 
+def get_curr_ker(observations, lbw=14):
+    #Calculate Kauman Efficiency Ratio
+    #Obtain net change over loopback window
+    net_change = np.abs(observations - np.roll(observations, lbw))
+
+    #Sum of absolute changes for each bar within the window
+    changes = np.abs(np.diff(observations, prepend=observations[0]))
+    absolute_changes = pd.Series(changes).rolling(window=lbw).sum().values
+
+    KER = np.divide(net_change, absolute_changes, out=np.zeros_like(net_change), where=absolute_changes != 0)
+
+    KER = np.clip(KER, 0.0, 1.0)
+
+    return KER
+
 
 class GUTILS:
 
