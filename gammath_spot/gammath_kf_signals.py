@@ -20,6 +20,10 @@ __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
 import pandas as pd
 import numpy as np
+try:
+    from gammath_spot import gammath_utils as gut
+except:
+    import gammath_utils as gut
 
 def kf_state_means(observed_vals, transition_covariance=1.0, observation_covariance=1.0,
                    initial_state_mean = 0.0, initial_state_covariance=1.0):
@@ -30,11 +34,14 @@ def kf_state_means(observed_vals, transition_covariance=1.0, observation_covaria
     n = z.size
 
     Q = float(transition_covariance)
-    R = float(observation_covariance)
+    R_initial = float(observation_covariance)
     state_means = np.empty(n, dtype=float)
 
     x_prediction = float(initial_state_mean)
     p_prediction = float(initial_state_covariance)
+
+    KER_factor = gut.get_curr_ker(z)
+    KER_factor[:14] = 0.0
 
     for t in range(n):
         if t > 0:
@@ -45,6 +52,9 @@ def kf_state_means(observed_vals, transition_covariance=1.0, observation_covaria
         if np.isnan(z[t]):
             x_est, p_est = x_prediction, p_prediction
         else:
+            #KER factor for observation noise (high KER means low noise and low KER means high noise)
+            R = R_initial * (1.0 / (KER_factor[t] + 0.05))
+
             #Update step
             residual_innovation = z[t] - x_prediction
             #residual variance = pred uncertainty + measurement noise
@@ -261,6 +271,7 @@ def get_kf_state_means(tsymbol, df):
 
     #Return KF state means in a dataframe for plotting charts
     kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
+    kf_df.to_csv('Price_KF.csv')
 
     kf_grec = f'kf_gscore:{kf_gscore}/{kf_max_score}'
 
