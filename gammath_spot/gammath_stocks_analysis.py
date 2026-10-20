@@ -182,15 +182,16 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from MACD data ', tsymbol, ': ', sys.exc_info()[0])
 
-        #Generate and get signals based on Kalman Filter state means
+        #Generate and get signals based on KER-adaptive Kalman Filter state means
         try:
             kf_df = pd.DataFrame()
             kf_gscore = 0
+            curr_ker = 0
             kf_max_score = 10
             kf_signals = ''
 
             #Kalman Filter signals
-            kf_df, kf_gscore, kf_max_score, kf_signals = gkf.get_kf_state_means(tsymbol, df)
+            kf_df, kf_gscore, kf_max_score, kf_signals, curr_ker = gkf.get_kf_state_means(tsymbol, df)
             kf_final_score = round((kf_gscore/kf_max_score), 3)
             overall_sh_gscore += kf_final_score
 
@@ -282,6 +283,7 @@ class GSA:
         sh_gScore_df.loc[0, "CRL"] = current_resistance_level_y
         sh_gScore_df.loc[0, "RLS"] = resistance_line_slope
         sh_gScore_df.loc[0, "PDRL"] = pdrl
+        sh_gScore_df.loc[0, "KER"] = curr_ker
 
         #No need to draw charts for backtesting
         if need_charts_n_signals_info:

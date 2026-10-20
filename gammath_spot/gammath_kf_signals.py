@@ -25,9 +25,10 @@ try:
 except:
     import gammath_utils as gut
 
+
 def kf_state_means(observed_vals, transition_covariance=1.0, observation_covariance=1.0,
                    initial_state_mean = 0.0, initial_state_covariance=1.0):
-    """Replace pykalman to use local single dimension Kalman filter that returns filtered state means
+    """Replace pykalman to use local single dimension KER-adaptive Kalman filter that returns filtered state means
     Just takes the 1-D Pandas series price inputs and returns 1-D np.ndarray of shape (n,)
     """
     z = np.asarray(observed_vals, dtype=float).ravel()
@@ -66,14 +67,14 @@ def kf_state_means(observed_vals, transition_covariance=1.0, observation_covaria
 
         state_means[t] = x_est
 
-    return state_means
+    return state_means, KER_factor[len(KER_factor)-1]
 
 def get_kf_state_means(tsymbol, df):
 
     kf_gscore = 0
     kf_max_score = 0
     kf_signals = ''
-
+    curr_ker = 0
     curr_count_quantile_str = ''
     curr_diff_quantile_str = ''
 
@@ -84,7 +85,7 @@ def get_kf_state_means(tsymbol, df):
     #Generate state means based on closing prices
     if (prices_len > 0):
         #Get the state mean and covariance
-        state_means = kf_state_means(df.Close)
+        state_means, curr_ker = kf_state_means(df.Close)
 
         #Extract state means into PD series
         ds_sm = pd.Series(state_means)
@@ -270,8 +271,7 @@ def get_kf_state_means(tsymbol, df):
         kf_max_score += 1
 
     #Return KF state means in a dataframe for plotting charts
-    kf_df = pd.DataFrame({tsymbol: df.Close, 'Kalman Filter': ds_sm})
-    kf_df.to_csv('Price_KF.csv')
+    kf_df = pd.DataFrame({tsymbol: df.Close, 'KER-Adaptive Kalman Filter': ds_sm})
 
     kf_grec = f'kf_gscore:{kf_gscore}/{kf_max_score}'
 
@@ -284,4 +284,4 @@ def get_kf_state_means(tsymbol, df):
     # Set date as index
     kf_df = kf_df.set_index(df.Date)
 
-    return kf_df, kf_gscore, kf_max_score, kf_signals
+    return kf_df, kf_gscore, kf_max_score, kf_signals, curr_ker
