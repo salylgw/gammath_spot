@@ -66,10 +66,19 @@ def get_price_dir_probability(df):
 
             last_falling_days_count += 1
 
+
+    #If loop exited then last update might be pending
+    if (last_falling_days_count and (last_falling_days_count < MAX_COUNTS_LEN)):
+        price_consec_down_dir_counts[last_falling_days_count] += 1
+
+    if (last_rising_days_count and (last_rising_days_count < MAX_COUNTS_LEN)):
+        price_consec_up_dir_counts[last_rising_days_count] += 1
+
     #Get overall up/down probability
     overall_up_probability = round(total_up_days/(prices_len-1), 3)
     overall_down_probability = round(total_down_days/(prices_len-1), 3)
 
+    #Update the exact up/down count array to cumulative up/down count array [intent is to get empirical data on streak continuation]
     price_consec_up_dir_counts[1:] = np.cumsum(price_consec_up_dir_counts[:0:-1])[::-1]
     price_consec_down_dir_counts[1:] = np.cumsum(price_consec_down_dir_counts[:0:-1])[::-1]
 
@@ -81,7 +90,7 @@ def get_price_dir_probability(df):
     else:
         curr_count, ref_consec_counts, falling = last_rising_days_count, price_consec_up_dir_counts, False
 
-    #Compute conditional probability (rather it is gauging how often this happened in past n days of data)
+    #Compute conditional probability (rather it is gauging how often streak continued in past n days of data)
     if curr_count and ((curr_count + 1) < MAX_COUNTS_LEN) and (ref_consec_counts[curr_count] > 0):
         p_streak_continues = ref_consec_counts[curr_count+1] / ref_consec_counts[curr_count]
         next_down_p = round((p_streak_continues if falling else (1 - p_streak_continues)), 3)
