@@ -226,14 +226,15 @@ class GUTILS:
         self.config.read('gw_config.ini')
 
     def get_fg(self):
-        fg_data = yf.download('^VIX', period='1d', auto_adjust=True)
-        if not fg_data.empty:
-            path = get_tickers_dir()
+        for fg in ('VIXCLS', 'VXDCLS', 'VXNCLS'):
+            fg_data = pdd.DataReader(fg, 'fred', start='1/1/2010')
+            if not fg_data.empty:
+                path = get_tickers_dir()
 
-            if not path.exists():
-                path.mkdir(parents=True, exist_ok=True)
+                if not path.exists():
+                    path.mkdir(parents=True, exist_ok=True)
 
-            fg_data.to_csv(path / f'fear_gauge.csv')
+                fg_data.dropna(how='all').to_csv(path / f'{fg}_fear_gauge.csv')
 
     def get_sp500_list(self):
 
