@@ -24,6 +24,10 @@ import multiprocessing as mp
 import time
 from datetime import date
 from pathlib import Path
+import warnings
+from pandas.errors import Pandas4Warning
+warnings.filterwarnings('ignore', category=Pandas4Warning)
+
 import pandas as pd
 import re
 import pandas_datareader.data as pdd

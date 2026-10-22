@@ -18,9 +18,10 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
-#Following warnings filter is not needed with yfinance v0.2.37
-#import warnings
-#warnings.simplefilter(action='ignore', category=FutureWarning)
+import warnings
+from pandas.errors import Pandas4Warning
+warnings.filterwarnings('ignore', category=Pandas4Warning)
+
 import yfinance as yf
 import pandas as pd
 from pathlib import Path

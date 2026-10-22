@@ -18,10 +18,15 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
+import warnings
+from pandas.errors import Pandas4Warning
+warnings.filterwarnings('ignore', category=Pandas4Warning)
+
 import yfinance as yf
 from pathlib import Path
 import pandas as pd
 import os
+
 
 try:
     from gammath_spot import gammath_utils as gut
