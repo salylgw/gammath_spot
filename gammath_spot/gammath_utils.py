@@ -218,6 +218,24 @@ def get_curr_ker(observations, lbw=14):
 
     return KER
 
+def compute_broad_fg_gscore():
+
+    path = get_tickers_dir()
+    #Get the SP500 fear gauge as broad market indication
+    if (( path / 'SP500_fear_gauge.csv').exists()):
+        broad_fg = pd.read_csv(path / 'SP500_fear_gauge.csv')
+        bp, mp, tp = broad_fg['Close'].quantile([0.25, 0.50, 0.75])
+        curr_fg = broad_fg.Close[len(broad_fg)-1]
+        if (curr_fg <= bp):
+            broad_fg_gscore = 1.0
+        elif (curr_fg <= mp):
+            broad_fg_gscore = 0.5
+        elif (curr_fg >= tp):
+            broad_fg_gscore = -1.0
+        else:
+            broad_fg_gscore = -0.5
+
+    return broad_fg_gscore
 
 class GUTILS:
 
@@ -226,15 +244,22 @@ class GUTILS:
         self.config.read('gw_config.ini')
 
     def get_fg(self):
+        path = get_tickers_dir()
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
+
         for fg in ('VIXCLS', 'VXDCLS', 'VXNCLS'):
             fg_data = pdd.DataReader(fg, 'fred', start='1/1/2010')
             if not fg_data.empty:
-                path = get_tickers_dir()
-
-                if not path.exists():
-                    path.mkdir(parents=True, exist_ok=True)
-
+                #Save for checking for accuracy
                 fg_data.dropna(how='all').to_csv(path / f'{fg}_fear_gauge.csv')
+
+        sp500_fg_ticker = yf.Ticker('^VIX')
+        sp500_fg = sp500_fg_ticker.history(period = 'max', interval='1d', actions=True, auto_adjust=True)
+        if (len(sp500_fg)):
+            sp500_fg.to_csv(path / 'SP500_fear_gauge.csv')
+        else:
+            print('ERROR getting S&P500 fear gauge')
 
     def get_sp500_list(self):
 
