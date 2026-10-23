@@ -6,6 +6,7 @@ scikit-learn
 yfinance
 textblob
 tensorflow
+tensorboard
 keras-tuner
 gymnasium
 
