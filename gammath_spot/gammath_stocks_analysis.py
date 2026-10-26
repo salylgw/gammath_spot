@@ -41,6 +41,7 @@ try:
     from gammath_spot import gammath_lgstic_signals as glgst
     from gammath_spot import gammath_probability_signals as gproba
     from gammath_spot import gammath_pdp as gpdp
+    from gammath_spot import gammath_cecs as gcecs
     from gammath_spot import gammath_mtpc as gmtpc
     from gammath_spot import gammath_si_charts as gsc
     from gammath_spot import gammath_tc as gtc
@@ -67,6 +68,7 @@ except:
     import gammath_lgstic_signals as glgst
     import gammath_pdp as gpdp
     import gammath_probability_signals as gproba
+    import gammath_cecs as gcecs
     import gammath_mtpc as gmtpc
     import gammath_si_charts as gsc
     import gammath_tc as gtc
@@ -229,6 +231,15 @@ class GSA:
         except ValueError:
             print('\nERROR: generating probability signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Current environment confidence score
+        try:
+            current_env_confidence_score = 0
+            cecs_string = ''
+
+            current_env_confidence_score, cecs_string = gcecs.get_current_env_confidence_score(df)
+        except ValueError:
+            print('\nERROR: generating current environment confidence score for ', tsymbol, ': ', sys.exc_info()[0])
+
         # Moving Technical 5Y Price Conjecture
         try:
             tpc5y = 0
@@ -276,6 +287,7 @@ class GSA:
         sh_gScore_df.loc[0, "SH_gScore"] = round((overall_sh_gscore/10), 3)
         sh_gScore_df.loc[0, "NUP"] = nup
         sh_gScore_df.loc[0, "A20DUP"] = a20dup
+        sh_gScore_df.loc[0, "CECS"] = current_env_confidence_score
         sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
         sh_gScore_df.loc[0, "CSL"] = current_support_level_y
         sh_gScore_df.loc[0, "SLS"] = support_line_slope
@@ -294,7 +306,7 @@ class GSA:
                 print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])
 
             #Aggregate stock history-specific signals
-            sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, probability_log, mtcp, support_resistance_string])
+            sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, probability_log, cecs_string, mtcp, support_resistance_string])
         else:
             sh_signals = ''
 
