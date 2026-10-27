@@ -430,8 +430,6 @@ class Gammath_SPOT_GUI:
         df.MFI[0] = self.screener_entry[6].get()
         df.Stoch[0] = self.screener_entry[7].get()
         df.Options[0] = self.screener_entry[8].get()
-        df.Reco[0] = self.screener_entry[9].get()
-        df.Senti[0] = self.screener_entry[10].get()
 
         #Only one screener file
         screener_info_file = os.getcwd() + '/' + 'screener.csv'
@@ -506,14 +504,6 @@ class Gammath_SPOT_GUI:
         self.screener_od_label = ttk.Label(self.screener_frame, text='Options', font=self.app_frame_label_font)
         self.screener_od_label.grid(row=curr_row_num, column=0)
 
-        curr_row_num += 1
-        self.screener_reco_label = ttk.Label(self.screener_frame, text='Reco', font=self.app_frame_label_font)
-        self.screener_reco_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_senti_label = ttk.Label(self.screener_frame, text='Senti', font=self.app_frame_label_font)
-        self.screener_senti_label.grid(row=curr_row_num, column=0)
-
         #Add widget to enter data
         self.add_screener_entry_widget(starting_row)
 
@@ -533,8 +523,6 @@ class Gammath_SPOT_GUI:
                 self.screener_entry[6].set(df.MFI[0])
                 self.screener_entry[7].set(df.Stoch[0])
                 self.screener_entry[8].set(df.Options[0])
-                self.screener_entry[9].set(df.Reco[0])
-                self.screener_entry[10].set(df.Senti[0])
             except:
                 df = []
 

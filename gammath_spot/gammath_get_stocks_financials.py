@@ -43,7 +43,6 @@ def get_ticker_financials(tsymbol, ticker, path):
     qcf_dont_need_fetch = True
     qe_dont_need_fetch = True
     qf_dont_need_fetch = True
-    reco_dont_need_fetch = True
 
     if not path.exists():
         path.mkdir(parents=True, exist_ok=True)
@@ -96,21 +95,7 @@ def get_ticker_financials(tsymbol, ticker, path):
     except:
         qf_dont_need_fetch = False
 
-    try:
-
-        file_exists = (path / f'{tsymbol}_reco.csv').exists()
-
-        #Check if file exists and is it from another day
-        if file_exists:
-            fstat = os.stat(path / f'{tsymbol}_reco.csv')
-            reco_dont_need_fetch = gut.check_if_same_day(fstat)
-        else:
-            reco_dont_need_fetch = False
-    except:
-        reco_dont_need_fetch = False
-
-
-    if (qbs_dont_need_fetch and qcf_dont_need_fetch and qe_dont_need_fetch and qf_dont_need_fetch and reco_dont_need_fetch):
+    if (qbs_dont_need_fetch and qcf_dont_need_fetch and qe_dont_need_fetch and qf_dont_need_fetch):
         return
     else:
 
@@ -150,14 +135,5 @@ def get_ticker_financials(tsymbol, ticker, path):
                     stock_financials.to_csv(path / f'{tsymbol}_qf.csv')
             except:
                 qf_dont_need_fetch = True
-
-        if not reco_dont_need_fetch:
-            try:
-                stock_recommendations = ticker.recommendations
-                if (len(stock_recommendations) > 0):
-                    #Save the data for reference and processing
-                    stock_recommendations.to_csv(path / f'{tsymbol}_reco.csv')
-            except:
-                reco_dont_need_fetch = True
 
     return

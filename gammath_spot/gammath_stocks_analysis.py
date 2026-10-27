@@ -36,7 +36,6 @@ try:
     from gammath_spot import gammath_inshp_signals as ginshp
     from gammath_spot import gammath_qbs_signals as gqbs
     from gammath_spot import gammath_pbr_signals as gpbrs
-    from gammath_spot import gammath_reco_signals as greco
     from gammath_spot import gammath_ols_signals as gols
     from gammath_spot import gammath_lgstic_signals as glgst
     from gammath_spot import gammath_probability_signals as gproba
@@ -63,7 +62,6 @@ except:
     import gammath_inshp_signals as ginshp
     import gammath_qbs_signals as gqbs
     import gammath_pbr_signals as gpbrs
-    import gammath_reco_signals as greco
     import gammath_ols_signals as gols
     import gammath_lgstic_signals as glgst
     import gammath_pdp as gpdp
@@ -316,25 +314,6 @@ class GSA:
         overall_sci_gscore = 0
         fast = 0
         sci_signals = ''
-        reco_signals_exist = False
-
-        #Generate and get signals based on analyst recommendation
-        try:
-            #Reco signals
-            reco_gscore = 0
-            reco_max_score = 0
-            reco_signals = ''
-            reco_final_score = 0
-
-            reco_gscore, reco_max_score, reco_signals = greco.get_reco_signals(tsymbol, path)
-
-            reco_signals_exist = ((reco_gscore != 0) and (reco_max_score != 0))
-            if (reco_max_score > 0):
-                reco_final_score = round((reco_gscore/reco_max_score), 3)
-                overall_sci_gscore += reco_final_score
-
-        except RuntimeError:
-            print('\nERROR: while getting reco signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             #Read Stock summary info into DataFrame.
@@ -357,7 +336,7 @@ class GSA:
         except:
             print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        #Generate and get signals based on fundamental analysis (PE, PEG, Beta, PBR, Quarterly balancesheet, Institutional holdings). Use it for scoring only of analyst recommendation don't exist for us
+        #Generate and get signals based on fundamental analysis (PE, PEG, Beta, PBR, Quarterly balancesheet, Institutional holdings).
         try:
             pe_gscore = 0
             pe_max_score = 2
@@ -369,8 +348,7 @@ class GSA:
             #Maintain proportion
             pe_final_score = round((pe_gscore/10), 3)
             fast += pe_gscore
-            if not reco_signals_exist:
-                overall_sci_gscore += pe_final_score
+            overall_sci_gscore += pe_final_score
 
         except ValueError:
             print('\nERROR: while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -387,8 +365,7 @@ class GSA:
             #Maintain proportion
             peg_final_score = round((peg_gscore/10), 3)
             fast += peg_gscore
-            if not reco_signals_exist:
-                overall_sci_gscore += peg_final_score
+            overall_sci_gscore += peg_final_score
 
         except ValueError:
             print('\nERROR: while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -405,8 +382,7 @@ class GSA:
             #Maintain proportion
             beta_final_score = round((beta_gscore/10), 3)
             fast += beta_gscore
-            if not reco_signals_exist:
-                overall_sci_gscore += beta_final_score
+            overall_sci_gscore += beta_final_score
 
         except ValueError:
             print('\nERROR: while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -422,8 +398,7 @@ class GSA:
 
             pbr_final_score = round((pbr_gscore/10), 3)
             fast += pbr_gscore
-            if not reco_signals_exist:
-                overall_sci_gscore += pbr_final_score
+            overall_sci_gscore += pbr_final_score
         except RuntimeError:
             print('\nERROR: while generating PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -441,8 +416,7 @@ class GSA:
             #Maintain proportion
             qbs_final_score = round((qbs_gscore/10), 3)
             fast += qbs_gscore
-            if not reco_signals_exist:
-                overall_sci_gscore += qbs_final_score
+            overall_sci_gscore += qbs_final_score
         except ValueError:
             print('\nERROR: while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -458,8 +432,7 @@ class GSA:
             #Maintain proportion
             ihp_final_score = round((ihp_gscore/10), 3)
             fast += ihp_gscore
-            if not reco_signals_exist:
-                overall_sci_gscore += ihp_final_score
+            overall_sci_gscore += ihp_final_score
         except ValueError:
             print('\nERROR: while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -492,7 +465,6 @@ class GSA:
         sci_gScore_df.loc[0, "PBR"] = pbr_final_score
         sci_gScore_df.loc[0, "QBS"] = qbs_final_score
         sci_gScore_df.loc[0, "IHP"] = ihp_final_score
-        sci_gScore_df.loc[0, "Reco"] = reco_final_score
         sci_gScore_df.loc[0, "SNS"] = stock_news_sentiment_score
         sci_gScore_df.loc[0, "SCI_gScore"] = round((overall_sci_gscore/10), 3)
         #Need to show total of fundamental analysis gscore component
@@ -500,7 +472,7 @@ class GSA:
 
         if need_charts_n_signals_info:
             #Aggregate stock current info-specific signals
-            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, stock_news_signals])
+            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, stock_news_signals])
         else:
             sci_signals = ''
 

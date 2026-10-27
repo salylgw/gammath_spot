@@ -48,8 +48,6 @@ def run_screener(sf_name, info_queue):
         min_mfi_micro_gscore = df_gscores_screening.MFI[0]
         min_stoch_micro_gscore = df_gscores_screening.Stoch[0]
         min_options_micro_gscore = df_gscores_screening.Options[0]
-        min_reco_micro_gscore = df_gscores_screening.Reco[0]
-        min_senti_micro_gscore = df_gscores_screening.Senti[0]
 
     except:
         print('INFO: No screening info provided. Using default values')
@@ -64,8 +62,6 @@ def run_screener(sf_name, info_queue):
         min_mfi_micro_gscore = -1
         min_stoch_micro_gscore = -1
         min_options_micro_gscore = -1
-        min_reco_micro_gscore = -1
-        min_senti_micro_gscore = -1
 
 
     #Get ticker dir path
@@ -93,9 +89,7 @@ def run_screener(sf_name, info_queue):
                     (df_gscores.OLS[0] >= min_ols_micro_gscore) and
                     (df_gscores.MFI[0] >= min_mfi_micro_gscore) and
                     (df_gscores.Stoch[0] >= min_stoch_micro_gscore) and
-                    (df_gscores.Options[0] >= min_options_micro_gscore) and
-                    (df_gscores.Reco[0] >= min_reco_micro_gscore) and
-                    (df_gscores.Senti[0] >= min_senti_micro_gscore)):
+                    (df_gscores.Options[0] >= min_options_micro_gscore)):
 
                     #Extract ticker, sh_gscore, sci_gscore and final_gscore for convenient reference
                     df_list.iloc[count] = {"Ticker": f'{subdir.name}', "sh_gscore": df_gscores.SH_gScore[0], "sci_gscore": df_gscores.SCI_gScore[0], "final_gscore": df_gscores.gScore[0]}

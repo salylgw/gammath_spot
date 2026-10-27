@@ -103,7 +103,7 @@ def get_sh_gscores_df_columns():
     return sh_gscores_columns
 
 def get_sci_gscores_df_columns():
-    sci_gscores_columns = ('Options', 'PE', 'PEG', 'Beta', 'PBR', 'QBS', 'IHP', 'Reco', 'SNS', 'SCI_gScore')
+    sci_gscores_columns = ('Options', 'PE', 'PEG', 'Beta', 'PBR', 'QBS', 'IHP', 'SNS', 'SCI_gScore')
 
     return sci_gscores_columns
 
@@ -121,7 +121,7 @@ def get_tickers_dir():
     return tickers_dir
 
 def get_gscores_screening_df_columns():
-    gscores_screening_columns = ('Price', 'RSI', 'BBANDS', 'MACD', 'KF', 'OLS', 'MFI', 'Stoch', 'Options', 'Reco', 'Senti')
+    gscores_screening_columns = ('Price', 'RSI', 'BBANDS', 'MACD', 'KF', 'OLS', 'MFI', 'Stoch', 'Options')
 
     return gscores_screening_columns
 
