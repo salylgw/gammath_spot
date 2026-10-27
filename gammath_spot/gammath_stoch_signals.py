@@ -55,24 +55,24 @@ def get_stochastics_slow_signals(tsymbol, df):
 
     if (stoch_d_curr_val < slowd_mean):
         stoch_lvl = 'below average'
-        stoch_gscore += 2
+        stoch_gscore += 4
     elif (stoch_d_curr_val > slowd_mean):
         stoch_lvl = 'above average'
-        stoch_gscore -= 2
+        stoch_gscore -= 4
     else:
         stoch_lvl = 'average'
 
-    stoch_max_score += 2
+    stoch_max_score += 4
 
     #Check for stochastic oversold/overbought levels
     if (stoch_d_curr_val <= STOCH_OVERSOLD_LEVEL):
         stoch_lvl = 'oversold'
-        stoch_gscore += 3
+        stoch_gscore += 6
     elif (stoch_d_curr_val >= STOCH_OVERBOUGHT_LEVEL):
         stoch_lvl = 'overbought'
-        stoch_gscore -= 3
+        stoch_gscore -= 6
 
-    stoch_max_score += 3
+    stoch_max_score += 6
 
     last_crossover_index = 0
 

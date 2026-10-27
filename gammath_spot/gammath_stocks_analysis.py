@@ -136,14 +136,13 @@ class GSA:
         try:
             stoch_df = pd.DataFrame()
             stoch_gscore = 0
-            stoch_max_score = 5
+            stoch_max_score = 10
             stoch_slow_signals = ''
             stoch_final_score = 0
 
             #Stochastic slow signals
             stoch_df, stoch_gscore, stoch_max_score, stoch_slow_signals = gss.get_stochastics_slow_signals(tsymbol, df)
-            #Adjust for proportion
-            stoch_final_score = round((stoch_gscore/(stoch_max_score<<1)), 3)
+            stoch_final_score = round((stoch_gscore/stoch_max_score), 3)
             overall_sh_gscore += stoch_final_score
         except RuntimeError:
             print('\nERROR: generating stochastics data for ', tsymbol, ': ', sys.exc_info()[0])
@@ -476,19 +475,6 @@ class GSA:
             print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
-            st_gscore = 0
-            st_max_score = 5
-            st_signals = ''
-            st_final_score = 0
-
-            #DISCONTINUED use of stocktwits. Placeholder
-            #Maintain proportion
-            st_final_score = round((st_gscore/10), 3)
-            overall_sci_gscore += st_final_score
-        except RuntimeError:
-            print('\nERROR: while getting stocktwits signals for ', tsymbol, ': ', sys.exc_info()[0])
-
-        try:
             stock_news_sentiment_score = gns.get_news_hl_sentiment_score(tsymbol, path)
             stock_news_signals = f'Stock news sentiment (mean): {stock_news_sentiment_score}'
         except:
@@ -507,7 +493,6 @@ class GSA:
         sci_gScore_df.loc[0, "QBS"] = qbs_final_score
         sci_gScore_df.loc[0, "IHP"] = ihp_final_score
         sci_gScore_df.loc[0, "Reco"] = reco_final_score
-        sci_gScore_df.loc[0, "Senti"] = st_final_score
         sci_gScore_df.loc[0, "SNS"] = stock_news_sentiment_score
         sci_gScore_df.loc[0, "SCI_gScore"] = round((overall_sci_gscore/10), 3)
         #Need to show total of fundamental analysis gscore component
@@ -515,7 +500,7 @@ class GSA:
 
         if need_charts_n_signals_info:
             #Aggregate stock current info-specific signals
-            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, st_signals, stock_news_signals])
+            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, reco_signals, stock_news_signals])
         else:
             sci_signals = ''
 
