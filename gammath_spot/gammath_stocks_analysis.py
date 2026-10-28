@@ -231,9 +231,12 @@ class GSA:
         #Current environment confidence score
         try:
             current_env_confidence_score = 0
+            cecs_max_score = 10
             cecs_string = ''
 
-            current_env_confidence_score, cecs_string = gcecs.get_current_env_confidence_score(df)
+            current_env_confidence_score, cecs_max_score, cecs_string = gcecs.get_current_env_confidence_score(df)
+            cecs_final_score = round((current_env_confidence_score/cecs_max_score), 3)
+            overall_sh_gscore += cecs_final_score
         except ValueError:
             print('\nERROR: generating current environment confidence score for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -284,7 +287,7 @@ class GSA:
         sh_gScore_df.loc[0, "SH_gScore"] = round((overall_sh_gscore/10), 3)
         sh_gScore_df.loc[0, "NUP"] = nup
         sh_gScore_df.loc[0, "A20DUP"] = a20dup
-        sh_gScore_df.loc[0, "CECS"] = current_env_confidence_score
+        sh_gScore_df.loc[0, "CECS"] = cecs_final_score
         sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
         sh_gScore_df.loc[0, "CSL"] = current_support_level_y
         sh_gScore_df.loc[0, "SLS"] = support_line_slope
@@ -292,7 +295,7 @@ class GSA:
         sh_gScore_df.loc[0, "CRL"] = current_resistance_level_y
         sh_gScore_df.loc[0, "RLS"] = resistance_line_slope
         sh_gScore_df.loc[0, "PDRL"] = pdrl
-        sh_gScore_df.loc[0, "KER"] = curr_ker
+        sh_gScore_df.loc[0, "KER"] = round(curr_ker, 3)
 
         #No need to draw charts for backtesting
         if need_charts_n_signals_info:
@@ -332,7 +335,6 @@ class GSA:
             #Options signals
             options_gscore, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
             options_final_score = round((options_gscore/options_max_score), 3)
-            overall_sci_gscore += options_final_score
         except:
             print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 

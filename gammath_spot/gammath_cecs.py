@@ -50,7 +50,8 @@ def get_current_env_confidence_score(df):
         else:
             current_env_confidence_score = 0.5
 
-    display_fraction = f'{round(current_env_confidence_score*10):d}/10'
-    cecs_string = f'Current Environment Confidence Score: {display_fraction}'
+    cecs_max_score = 10
+    current_env_confidence_score = round(current_env_confidence_score*10)
+    cecs_string = f'Current Environment Confidence Score: {current_env_confidence_score}/{cecs_max_score}'
 
-    return current_env_confidence_score, cecs_string
+    return current_env_confidence_score, cecs_max_score, cecs_string

@@ -77,14 +77,14 @@ def get_mfi_signals(tsymbol, df, path):
         #Get the current MFI level compared to the mean
         if (curr_mfi < mfi_mean):
             mfi_avg = 'below average'
-            mfi_gscore += 3
+            mfi_gscore += 4
         elif (curr_mfi > mfi_mean):
             mfi_avg = 'above average'
-            mfi_gscore -= 3
+            mfi_gscore -= 4
         else:
             mfi_avg = 'average'
 
-        mfi_max_score += 3
+        mfi_max_score += 4
 
         if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
             mfi_lvl = 'overbought'
@@ -103,18 +103,18 @@ def get_mfi_signals(tsymbol, df, path):
             if (curr_mfi >= MFI_OVERBOUGHT_LEVEL):
                 if (price_dir == 'rising'):
                     mfi_indicator = 'Price could start FALLING'
-                    mfi_gscore -= 3
+                    mfi_gscore -= 2
         elif (curr_mfi > lm1_mfi):
             mfi_dir = 'rising'
             #Look for reversal when overbought/oversold
             if (curr_mfi <= MFI_OVERSOLD_LEVEL):
                 if (price_dir == 'falling'):
                     mfi_indicator = 'Price could start RISING'
-                    mfi_gscore += 3
+                    mfi_gscore += 2
         else:
             mfi_dir = 'flat'
 
-        mfi_max_score += 3
+        mfi_max_score += 2
     else:
         raise ValueError('Invalid MFI data length ')
 
