@@ -215,7 +215,7 @@ class GSA:
         except ValueError:
             print('\nERROR: generating signals from OLS data ', tsymbol, ': ', sys.exc_info()[0])
 
-        # Proability signals
+        # Probability signals
         try:
             nup = 0
             a20dup = 0
@@ -252,13 +252,19 @@ class GSA:
 
         # Get support and resistance level
         try:
+            local_sr_score = 0
+            local_sr_max_score = 10
+            local_sr_string = ''
             current_support_level_y = 0
             support_line_slope = 0
             pdsl = 0
             current_resistance_level_y = 0
             resistance_line_slope = 0
             pdrl = 0
-            sr_df = gtc.compute_support_and_resistance_levels(tsymbol, path, df, need_charts_n_signals_info)
+            sr_df, local_sr_score, local_sr_max_score, local_sr_log = gtc.compute_support_and_resistance_levels(tsymbol, path, df, need_charts_n_signals_info)
+            local_sr_final_score = round((local_sr_score/local_sr_max_score), 3)
+            overall_sh_gscore += local_sr_final_score
+
             #Extract data
             current_support_level_y = sr_df['CS_Y'][0]
             support_line_slope = sr_df['SLS'][0]
@@ -267,7 +273,7 @@ class GSA:
             resistance_line_slope = sr_df['RLS'][0]
             pdrl = sr_df['PDRL'][0]
             #Log support and resistance level for convenient reference
-            support_resistance_string = f'Current Approx. Moving Support level: {current_support_level_y},support_line_slope:{support_line_slope},pct_diff: {pdsl}\nCurrent Approx. Moving Resistance level: {current_resistance_level_y},resistance_line_slope:{resistance_line_slope},pct_diff:{pdrl}'
+            support_resistance_string = f'{local_sr_log}\nCurrent Approx. Moving Support level: {current_support_level_y},support_line_slope:{support_line_slope},pct_diff: {pdsl}\nCurrent Approx. Moving Resistance level: {current_resistance_level_y},resistance_line_slope:{resistance_line_slope},pct_diff:{pdrl}'
         except:
             print('\nERROR: generating support and resistance level data ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -289,6 +295,7 @@ class GSA:
         sh_gScore_df.loc[0, "A20DUP"] = a20dup
         sh_gScore_df.loc[0, "CECS"] = cecs_final_score
         sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
+        sh_gScore_df.loc[0, "LSR"] = local_sr_final_score
         sh_gScore_df.loc[0, "CSL"] = current_support_level_y
         sh_gScore_df.loc[0, "SLS"] = support_line_slope
         sh_gScore_df.loc[0, "PDSL"] = pdsl
@@ -350,7 +357,6 @@ class GSA:
             #Maintain proportion
             pe_final_score = round((pe_gscore/10), 3)
             fast += pe_gscore
-            overall_sci_gscore += pe_final_score
 
         except ValueError:
             print('\nERROR: while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -367,7 +373,6 @@ class GSA:
             #Maintain proportion
             peg_final_score = round((peg_gscore/10), 3)
             fast += peg_gscore
-            overall_sci_gscore += peg_final_score
 
         except ValueError:
             print('\nERROR: while getting PEG signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -384,7 +389,6 @@ class GSA:
             #Maintain proportion
             beta_final_score = round((beta_gscore/10), 3)
             fast += beta_gscore
-            overall_sci_gscore += beta_final_score
 
         except ValueError:
             print('\nERROR: while getting beta signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -400,7 +404,6 @@ class GSA:
 
             pbr_final_score = round((pbr_gscore/10), 3)
             fast += pbr_gscore
-            overall_sci_gscore += pbr_final_score
         except RuntimeError:
             print('\nERROR: while generating PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -418,7 +421,6 @@ class GSA:
             #Maintain proportion
             qbs_final_score = round((qbs_gscore/10), 3)
             fast += qbs_gscore
-            overall_sci_gscore += qbs_final_score
         except ValueError:
             print('\nERROR: while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -434,7 +436,6 @@ class GSA:
             #Maintain proportion
             ihp_final_score = round((ihp_gscore/10), 3)
             fast += ihp_gscore
-            overall_sci_gscore += ihp_final_score
         except ValueError:
             print('\nERROR: while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 

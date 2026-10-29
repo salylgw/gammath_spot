@@ -647,6 +647,21 @@ def compute_support_and_resistance_levels(tsymbol, path, df, need_charts):
     current_resistance_level_y = y_resistance_series[df_len-1]
     current_resistance_level_x = (df_len-1)
 
+    if ((support_line_slope < 0) or (resistance_line_slope < 0)):
+        local_sr_score = -1.0
+    else:
+        local_curr_position = (lcp - current_support_level_y) / (current_resistance_level_y - current_support_level_y)
+        if (local_curr_position >= 0.5):
+            if (local_curr_position > 0.75):
+                local_sr_score = -1.0
+            else:
+                local_sr_score = -0.5
+        else:
+            if (local_curr_position < 0.25):
+                local_sr_score = 1.0
+            else:
+                local_sr_score = 0.5
+
     #Create a dataframe for support and resistance data for different uses
     sr_df = pd.DataFrame(columns=['CS_Y', 'PDSL', 'CSDD', 'SLS', 'CS_X', 'CR_Y', 'RLS', 'PDRL', 'CRDD', 'CR_X'], index=range(1))
     sr_df.loc[0, "CS_Y"] = round(current_support_level_y, 3)
@@ -661,4 +676,8 @@ def compute_support_and_resistance_levels(tsymbol, path, df, need_charts):
     if need_charts:
         draw_trend_charts(tsymbol, path, df, sr_df, y_support_series, y_resistance_series)
 
-    return sr_df
+    local_sr_max_score = 10
+    local_sr_score = round(local_sr_score*10)
+    local_sr_log = f'Local support and resistance ref score: {local_sr_score}/10'
+
+    return sr_df, local_sr_score, local_sr_max_score, local_sr_log

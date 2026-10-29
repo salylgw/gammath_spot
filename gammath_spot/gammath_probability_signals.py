@@ -28,7 +28,7 @@ except:
 def get_probabilty_signals(tsymbol, df, path):
     """
     Generate score based on empirical next day probability,
-    1-week trend probability and 1-month trend probability
+    and 1-month trend probability
     """
     next_up_p, pdp_log = get_price_dir_probability(df)
     after_month_p, lgstic_log = get_lgstic_signals(tsymbol, df, path)
