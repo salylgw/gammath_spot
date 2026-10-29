@@ -341,7 +341,7 @@ class GSA:
         #Generate and get signals based on fundamental analysis (PE, PEG, Beta, PBR, Quarterly balancesheet, Institutional holdings).
         try:
             pe_gscore = 0
-            pe_max_score = 2
+            pe_max_score = 4
             pe_signals = ''
             pe_final_score = 0
 
@@ -408,7 +408,7 @@ class GSA:
 
         try:
             qbs_gscore = 0
-            qbs_max_score = 4
+            qbs_max_score = 2
             qbs_signals = ''
             qbs_final_score = 0
 

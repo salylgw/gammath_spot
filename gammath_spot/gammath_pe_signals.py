@@ -26,7 +26,7 @@ import numpy as np
 def get_pe_signals(tsymbol, df_summ, path):
 
     pe_gscore = 0
-    pe_max_score = 2
+    pe_max_score = 4
 
     path = path / 'SP500'
     try:
@@ -63,9 +63,9 @@ def get_pe_signals(tsymbol, df_summ, path):
     # If forward PE is less than trailing PE then view this as a +ve sign
     if ((fpe > 0) and (tpe > 0)):
         if (fpe < tpe):
-            pe_gscore += 2
+            pe_gscore += 4
         else:
-            pe_gscore -= 2
+            pe_gscore -= 4
 
     avg_tpe = 0
     avg_fpe = 0
