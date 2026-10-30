@@ -678,6 +678,6 @@ def compute_support_and_resistance_levels(tsymbol, path, df, need_charts):
 
     local_sr_max_score = 10
     local_sr_score = round(local_sr_score*10)
-    local_sr_log = f'Local support and resistance ref score: {local_sr_score}/10'
+    local_sr_log = f'Local support and resistance ref score: {local_sr_score}/10\nCurrent Approx. Moving Support level: {sr_df.loc[0, "CS_Y"]},support_line_slope:{sr_df.loc[0, "SLS"]},pct_diff: {sr_df.loc[0, "PDSL"]}\nCurrent Approx. Moving Resistance level: {sr_df.loc[0, "CR_Y"]},resistance_line_slope:{sr_df.loc[0, "RLS"]},pct_diff:{sr_df.loc[0, "PDRL"]}'
 
-    return sr_df, local_sr_score, local_sr_max_score, local_sr_log
+    return local_sr_score, local_sr_max_score, local_sr_log

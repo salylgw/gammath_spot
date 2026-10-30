@@ -124,33 +124,6 @@ class GSH:
             else:
                 df_gscores = interim_df_gscores
 
-            #Use hardcoded values to avoid looking back to decide on levels
-            SH_GSCORE_MIN_DISCOUNT_LEVEL, SH_GSCORE_NEUTRAL_LEVEL, SH_GSCORE_MIN_PREMIUM_LEVEL = 0.375, 0, -0.375
-
-            discounted_zone = False
-            premium_zone = False
-
-            #Find the default (without any stock-specific fine tuning) buy/sell transition points
-            for i in range(len(df_gscores)):
-                #SH_gScore can have wild swings so need each of these comparisons
-                if (df_gscores.SH_gScore[i] >= SH_GSCORE_MIN_DISCOUNT_LEVEL):
-                    discounted_zone = True
-
-                if (discounted_zone):
-                    if (df_gscores.SH_gScore[i] < SH_GSCORE_MIN_DISCOUNT_LEVEL):
-                        discounted_zone = False
-                        #Mark default discount zone to buy zone transition
-                        df_gscores.loc[i, "DDBTP"] = '*'
-
-                if (df_gscores.SH_gScore[i] <= SH_GSCORE_MIN_PREMIUM_LEVEL):
-                    premium_zone = True
-
-                if (premium_zone):
-                    if (df_gscores.SH_gScore[i] > SH_GSCORE_MIN_PREMIUM_LEVEL):
-                        premium_zone = False
-                        #Mark default premium zone to sell zone transition
-                        df_gscores.loc[i, "DPSTP"] = '*'
-
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
@@ -184,9 +157,9 @@ class GSH:
             sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.SH_gScore[0:mtd5y]})
             sh_gscores_df = sh_gscores_df.set_index(df_gscores.Date)
             sh_gscores_df.plot(ax=axes[1],lw=1,title='Stock History based gScores')
-            axes[1].axhline(SH_GSCORE_MIN_DISCOUNT_LEVEL,lw=1,ls='-',c='r')
-            axes[1].axhline(SH_GSCORE_NEUTRAL_LEVEL,lw=1,ls='-',c='r')
-            axes[1].axhline(SH_GSCORE_MIN_PREMIUM_LEVEL,lw=1,ls='-',c='r')
+            axes[1].axhline(0.5,lw=1,ls='-',c='r')
+            axes[1].axhline(0,lw=1,ls='-',c='r')
+            axes[1].axhline(-0.5,lw=1,ls='-',c='r')
             price_gscores_df = pd.DataFrame({'Price-micro-gScores': df_gscores.Price[0:mtd5y]})
             price_gscores_df = price_gscores_df.set_index(df_gscores.Date)
             price_gscores_df.plot(ax=axes[2],lw=1,title='Price micro-gScores')

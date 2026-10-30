@@ -106,16 +106,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         prev_nup = df.NUP[i-1]
         prev_ndp = round(1- prev_nup, 3)
         curr_tpc5y = df.TPC5Y[i]
-        prev_support_line_slope = df.SLS[i-1]
-        curr_support_line_slope = df.SLS[i]
-        prev_resistance_line_slope = df.RLS[i-1]
-        curr_resistance_line_slope = df.RLS[i]
-        curr_pdsl = df.PDSL[i]
-        curr_pdrl = df.PDRL[i]
-        prev_support_level = df.CSL[i-1]
-        curr_support_level = df.CSL[i]
-        prev_resistance_level = df.CRL[i-1]
-        curr_resistance_level = df.CRL[i]
+        curr_local_sr = df.LSR[i]
         prev_ndup = df.A20DUP[i-1]
         curr_ndup = df.A20DUP[i]
 
@@ -152,7 +143,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                 #higher trading risk so relaxed condition for buy when in "buy zone"
                 if ((curr_sh_gscore < MIN_SH_DISCOUNT_LEVEL) and (consec_two_days_rising or rise_after_multi_day_drop)):
                     buy_now = True
-            elif ((curr_support_line_slope >= 0) and (curr_resistance_line_slope >= 0) and (curr_ols > 0)):
+            elif ((curr_local_sr >= 0.5) and (curr_ols > 0)):
                 if (rise_after_multi_day_drop):
                     buy_now = True
                 elif (consec_two_days_rising):
@@ -226,11 +217,11 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                             sell_now = True
                         else:
                             #For short-term: just sell if flat or -ve slope for support line or OLS shows downward trend
-                            if (((curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)) or (curr_ols < 0)):
+                            if ((curr_local_sr <= -0.5) or (curr_ols < 0)):
                                 sell_now = True
                     elif (term == 'long_term'):
                         #For long-term, we need more checks if risk_appetite is not high
-                        if (((curr_support_line_slope <= 0) and (curr_resistance_line_slope <= 0)) or (curr_ols < 0) or (risk_appetite == 'high')): #Check not too much room to rise
+                        if ((curr_local_sr <= -0.5) or (curr_ols < 0) or (risk_appetite == 'high')): #Check not too much room to rise
                             #If we already doubled then just sell irrespective of holding period
                             if (profit_pct > 100):
                                 sell_now = True

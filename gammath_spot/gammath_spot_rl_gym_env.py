@@ -136,7 +136,7 @@ class SPOT_environment(gym.Env):
             exit(-1)
 
         #Filter out parts not needed for RL
-        self.SPOT_vals = df.drop(['Date', 'Close', 'TPC5Y', 'CSL', 'CRL', 'PDSL', 'PDRL', 'DDBTP', 'DPSTP'], axis=1)
+        self.SPOT_vals = df.drop(['Date', 'Close', 'TPC5Y'], axis=1)
 
         #Price history corresponding to steps
         self.prices = df.Close

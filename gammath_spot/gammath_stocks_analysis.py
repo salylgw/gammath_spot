@@ -254,26 +254,10 @@ class GSA:
         try:
             local_sr_score = 0
             local_sr_max_score = 10
-            local_sr_string = ''
-            current_support_level_y = 0
-            support_line_slope = 0
-            pdsl = 0
-            current_resistance_level_y = 0
-            resistance_line_slope = 0
-            pdrl = 0
-            sr_df, local_sr_score, local_sr_max_score, local_sr_log = gtc.compute_support_and_resistance_levels(tsymbol, path, df, need_charts_n_signals_info)
+            local_sr_log = ''
+            local_sr_score, local_sr_max_score, local_sr_log = gtc.compute_support_and_resistance_levels(tsymbol, path, df, need_charts_n_signals_info)
             local_sr_final_score = round((local_sr_score/local_sr_max_score), 3)
             overall_sh_gscore += local_sr_final_score
-
-            #Extract data
-            current_support_level_y = sr_df['CS_Y'][0]
-            support_line_slope = sr_df['SLS'][0]
-            pdsl = sr_df['PDSL'][0]
-            current_resistance_level_y = sr_df['CR_Y'][0]
-            resistance_line_slope = sr_df['RLS'][0]
-            pdrl = sr_df['PDRL'][0]
-            #Log support and resistance level for convenient reference
-            support_resistance_string = f'{local_sr_log}\nCurrent Approx. Moving Support level: {current_support_level_y},support_line_slope:{support_line_slope},pct_diff: {pdsl}\nCurrent Approx. Moving Resistance level: {current_resistance_level_y},resistance_line_slope:{resistance_line_slope},pct_diff:{pdrl}'
         except:
             print('\nERROR: generating support and resistance level data ', tsymbol, ': ', sys.exc_info()[0])
 
@@ -296,12 +280,6 @@ class GSA:
         sh_gScore_df.loc[0, "CECS"] = cecs_final_score
         sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
         sh_gScore_df.loc[0, "LSR"] = local_sr_final_score
-        sh_gScore_df.loc[0, "CSL"] = current_support_level_y
-        sh_gScore_df.loc[0, "SLS"] = support_line_slope
-        sh_gScore_df.loc[0, "PDSL"] = pdsl
-        sh_gScore_df.loc[0, "CRL"] = current_resistance_level_y
-        sh_gScore_df.loc[0, "RLS"] = resistance_line_slope
-        sh_gScore_df.loc[0, "PDRL"] = pdrl
         sh_gScore_df.loc[0, "KER"] = round(curr_ker, 3)
 
         #No need to draw charts for backtesting
@@ -313,7 +291,7 @@ class GSA:
                 print('\nERROR: while drawing and saving charts for ', tsymbol, ': ', sys.exc_info()[0])
 
             #Aggregate stock history-specific signals
-            sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, probability_log, cecs_string, mtcp, support_resistance_string])
+            sh_signals = '\n'.join([price_signals, rsi_signals, bb_signals, macd_signals, kf_signals, ols_signals, mfi_signals, stoch_slow_signals, probability_log, cecs_string, mtcp, local_sr_log])
         else:
             sh_signals = ''
 
