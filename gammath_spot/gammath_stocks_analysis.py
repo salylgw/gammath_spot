@@ -450,6 +450,8 @@ class GSA:
         except ValueError:
             print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        fast_final_score = round((fast/10), 3)
+
         try:
             stock_news_sentiment_score = gns.get_news_hl_sentiment_score(tsymbol, path)
             stock_news_signals = f'Stock news sentiment (mean): {stock_news_sentiment_score}'
@@ -470,6 +472,7 @@ class GSA:
         sci_gScore_df.loc[0, "IHP"] = ihp_final_score
         sci_gScore_df.loc[0, "SNS"] = stock_news_sentiment_score
         sci_gScore_df.loc[0, "SCI_gScore"] = round((overall_sci_gscore/10), 3)
+        sci_gScore_df.loc[0, "FAST"] = fast_final_score
         #Need to show total of fundamental analysis gscore component
         fast_signals = f'Fundamental analysis gscore:{fast}/10'
 

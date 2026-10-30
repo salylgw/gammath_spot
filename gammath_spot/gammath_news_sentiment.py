@@ -38,7 +38,7 @@ def get_news_hl_sentiment_score(tsymbol, path):
 
     #Get the news headlines from existing file
     if ((path / f'{tsymbol}_news_headlines.csv').exists()):
-        #Get the latest options expiry date
+        #Get the latest news headlines
         news_headlines = pd.read_csv(path / f'{tsymbol}_news_headlines.csv', index_col='Unnamed: 0')
         num_of_headlines = len(news_headlines)
 

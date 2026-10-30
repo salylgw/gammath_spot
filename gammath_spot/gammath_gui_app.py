@@ -421,15 +421,8 @@ class Gammath_SPOT_GUI:
         df = pd.DataFrame(columns=gut.get_gscores_screening_df_columns(), index=range(1))
 
         #Fill the dataframe
-        df.Price[0] = self.screener_entry[0].get()
-        df.RSI[0] = self.screener_entry[1].get()
-        df.BBANDS[0] = self.screener_entry[2].get()
-        df.MACD[0] = self.screener_entry[3].get()
-        df.KF[0] = self.screener_entry[4].get()
-        df.OLS[0] = self.screener_entry[5].get()
-        df.MFI[0] = self.screener_entry[6].get()
-        df.Stoch[0] = self.screener_entry[7].get()
-        df.Options[0] = self.screener_entry[8].get()
+        df.loc[0, 'Options'] = self.screener_entry[0].get()
+        df.loc[0, 'FAST'] = self.screener_entry[1].get()
 
         #Only one screener file
         screener_info_file = os.getcwd() + '/' + 'screener.csv'
@@ -469,40 +462,12 @@ class Gammath_SPOT_GUI:
         starting_row = curr_row_num
 
         #Create labels for each micro-gScore
-        self.screener_price_label = ttk.Label(self.screener_frame, text='Price', font=self.app_frame_label_font)
-        self.screener_price_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_rsi_label = ttk.Label(self.screener_frame, text='RSI', font=self.app_frame_label_font)
-        self.screener_rsi_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_BB_label = ttk.Label(self.screener_frame, text='BB', font=self.app_frame_label_font)
-        self.screener_BB_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_macd_label = ttk.Label(self.screener_frame, text='MACD', font=self.app_frame_label_font)
-        self.screener_macd_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_kf_label = ttk.Label(self.screener_frame, text='KF', font=self.app_frame_label_font)
-        self.screener_kf_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_ols_label = ttk.Label(self.screener_frame, text='OLS', font=self.app_frame_label_font)
-        self.screener_ols_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_mfi_label = ttk.Label(self.screener_frame, text='MFI', font=self.app_frame_label_font)
-        self.screener_mfi_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
-        self.screener_stoch_label = ttk.Label(self.screener_frame, text='Stoch', font=self.app_frame_label_font)
-        self.screener_stoch_label.grid(row=curr_row_num, column=0)
-
-        curr_row_num += 1
         self.screener_od_label = ttk.Label(self.screener_frame, text='Options', font=self.app_frame_label_font)
         self.screener_od_label.grid(row=curr_row_num, column=0)
+
+        curr_row_num += 1
+        self.screener_fast_label = ttk.Label(self.screener_frame, text='FAST', font=self.app_frame_label_font)
+        self.screener_fast_label.grid(row=curr_row_num, column=0)
 
         #Add widget to enter data
         self.add_screener_entry_widget(starting_row)
@@ -514,15 +479,8 @@ class Gammath_SPOT_GUI:
             try:
                 df = pd.read_csv(self.curr_screener)
 
-                self.screener_entry[0].set(df.Price[0])
-                self.screener_entry[1].set(df.RSI[0])
-                self.screener_entry[2].set(df.BBANDS[0])
-                self.screener_entry[3].set(df.MACD[0])
-                self.screener_entry[4].set(df.KF[0])
-                self.screener_entry[5].set(df.OLS[0])
-                self.screener_entry[6].set(df.MFI[0])
-                self.screener_entry[7].set(df.Stoch[0])
-                self.screener_entry[8].set(df.Options[0])
+                self.screener_entry[0].set(df.Options[0])
+                self.screener_entry[1].set(df.FAST[0])
             except:
                 df = []
 

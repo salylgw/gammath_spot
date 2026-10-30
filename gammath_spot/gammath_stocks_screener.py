@@ -39,30 +39,15 @@ def run_screener(sf_name, info_queue):
 
         #extract values for screening
         #-1 means no filtering
-        min_price_micro_gscore = df_gscores_screening.Price[0]
-        min_rsi_micro_gscore = df_gscores_screening.RSI[0]
-        min_bbands_micro_gscore = df_gscores_screening.BBANDS[0]
-        min_macd_micro_gscore = df_gscores_screening.MACD[0]
-        min_kf_micro_gscore = df_gscores_screening.KF[0]
-        min_ols_micro_gscore = df_gscores_screening.OLS[0]
-        min_mfi_micro_gscore = df_gscores_screening.MFI[0]
-        min_stoch_micro_gscore = df_gscores_screening.Stoch[0]
         min_options_micro_gscore = df_gscores_screening.Options[0]
+        min_fast_micro_gscore = df_gscores_screening.FAST[0]
 
     except:
         print('INFO: No screening info provided. Using default values')
 
         #Get all; no filtering
-        min_price_micro_gscore = -1
-        min_rsi_micro_gscore = -1
-        min_bbands_micro_gscore = -1
-        min_macd_micro_gscore = -1
-        min_kf_micro_gscore = -1
-        min_ols_micro_gscore = -1
-        min_mfi_micro_gscore = -1
-        min_stoch_micro_gscore = -1
         min_options_micro_gscore = -1
-
+        min_fast_micro_gscore = -1
 
     #Get ticker dir path
     p = gut.get_tickers_dir()
@@ -71,8 +56,7 @@ def run_screener(sf_name, info_queue):
     subdirs = [x for x in p.iterdir() if x.is_dir()]
 
     #Create a data frame for screened watch list
-    df_list = pd.DataFrame(columns=gut.get_gscores_results_df_columns(), index=range(len(subdirs)))
-
+    df_list = pd.DataFrame(columns=['Symbol'], index=range(len(subdirs)))
     count = 0
     for subdir in subdirs:
         if subdir.exists():
@@ -81,18 +65,11 @@ def run_screener(sf_name, info_queue):
                 df_gscores = pd.read_csv(subdir / f'{subdir.name}_gscores.csv', index_col='Unnamed: 0')
 
                 #Extract symbols that match screening criteria
-                if ((df_gscores.Price[0] >= min_price_micro_gscore) and
-                    (df_gscores.RSI[0] >= min_rsi_micro_gscore) and
-                    (df_gscores.BBANDS[0] >= min_bbands_micro_gscore) and
-                    (df_gscores.MACD[0] >= min_macd_micro_gscore) and
-                    (df_gscores.KF[0] >= min_kf_micro_gscore) and
-                    (df_gscores.OLS[0] >= min_ols_micro_gscore) and
-                    (df_gscores.MFI[0] >= min_mfi_micro_gscore) and
-                    (df_gscores.Stoch[0] >= min_stoch_micro_gscore) and
-                    (df_gscores.Options[0] >= min_options_micro_gscore)):
+                if ((df_gscores.Options[0] >= min_options_micro_gscore) and
+                    (df_gscores.FAST[0] >= min_fast_micro_gscore)):
 
                     #Extract ticker, sh_gscore, sci_gscore and final_gscore for convenient reference
-                    df_list.iloc[count] = {"Ticker": f'{subdir.name}', "sh_gscore": df_gscores.SH_gScore[0], "sci_gscore": df_gscores.SCI_gScore[0], "final_gscore": df_gscores.gScore[0]}
+                    df_list.iloc[count] = {"Symbol": f'{subdir.name}'}
                     count += 1
             except:
                 #No action necessary
@@ -100,7 +77,7 @@ def run_screener(sf_name, info_queue):
 
     if (count):
         #Remove unused rows and sort by final_gscore
-        df_list = df_list.truncate(after=(count-1)).sort_values('final_gscore')
+        df_list = df_list.truncate(after=(count-1)).sort_values('Symbol')
 
     #Save screened watchlist without the index field
     df_list.to_csv(p / 'screened_watchlist.csv', index=False)
