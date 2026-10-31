@@ -48,5 +48,5 @@ def get_probabilty_signals(tsymbol, df, path):
     display_fraction = f'{round(probability_score*10):d}/10'
     probability_log = f'Probabilities score: {display_fraction}\n{pdp_log}\n{lgstic_log}'
 
-    return next_up_p, after_month_p, probability_score, probability_log
+    return probability_score, probability_log
 

@@ -217,12 +217,10 @@ class GSA:
 
         # Probability signals
         try:
-            nup = 0
-            a20dup = 0
             probability_score = 0
             probability_log = ''
 
-            nup, a20dup, probability_score, probability_log = gproba.get_probabilty_signals(tsymbol, df, path)
+            probability_score, probability_log = gproba.get_probabilty_signals(tsymbol, df, path)
         except RuntimeError:
             print('\nERROR: generating probability signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -275,8 +273,7 @@ class GSA:
         sh_gScore_df.loc[0, "MFI"] = mfi_final_score
         sh_gScore_df.loc[0, "Stoch"] = stoch_final_score
         sh_gScore_df.loc[0, "SH_gScore"] = round((overall_sh_gscore/10), 3)
-        sh_gScore_df.loc[0, "NUP"] = nup
-        sh_gScore_df.loc[0, "A20DUP"] = a20dup
+        sh_gScore_df.loc[0, "PS"] = probability_score
         sh_gScore_df.loc[0, "CECS"] = cecs_final_score
         sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
         sh_gScore_df.loc[0, "LSR"] = local_sr_final_score

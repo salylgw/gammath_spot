@@ -36,11 +36,9 @@ except:
 #Should be fine tuned for specific characteristics
 MAX_BREAKEVEN_ATTEMPTS = 10
 MAX_BUY_STEP = 10
-MIN_SH_PREMIUM_LEVEL = -0.4
-NEUTRAL_SH_LEVEL = -0.1
-MIN_SH_DISCOUNT_LEVEL = 0.2
-MIN_NEXT_DAY_UP_PROB = 0.94
-MIN_NEXT_DAY_DOWN_PROB = 0.94
+MIN_SH_PREMIUM_LEVEL = -0.6
+NEUTRAL_SH_LEVEL = 0.0
+MIN_SH_DISCOUNT_LEVEL = 0.6
 
 #Following is a basic example of writing your own strategy for backtesting
 #This is provided as an example to show one of the ways to do it
@@ -103,18 +101,8 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         curr_ols = df.OLS[i]
         prev_closing_price = df.Close[i-1]
         curr_closing_price = df.Close[i]
-        prev_nup = df.NUP[i-1]
-        prev_ndp = round(1- prev_nup, 3)
         curr_tpc5y = df.TPC5Y[i]
         curr_local_sr = df.LSR[i]
-        prev_ndup = df.A20DUP[i-1]
-        curr_ndup = df.A20DUP[i]
-
-        #Check if n-day up probability is rising or falling (approximately)
-        if (prev_ndup > curr_ndup):
-            rising_ndup = False
-        elif (prev_ndup < curr_ndup):
-            rising_ndup = True
 
         #Use this ratio to compare
         curr_5y_price_ratio = (curr_tpc5y/curr_closing_price)
@@ -133,22 +121,15 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
             #Check if rising for two concecutive days
             consec_two_days_rising = (single_day_rising and (prev_closing_price > df.Close[i-2]))
 
-            #Check if rising after multi-day drop
-            rise_after_multi_day_drop = ((prev_nup >= MIN_NEXT_DAY_UP_PROB) and (single_day_rising))
-
             # For brevity, we only want to buy when price is in the "buy zone" and  below our current average price
             if (total_shares and (curr_closing_price > avg_price)):
                 buy_now = False
-            elif (risk_appetite == 'high'):
-                #higher trading risk so relaxed condition for buy when in "buy zone"
-                if ((curr_sh_gscore < MIN_SH_DISCOUNT_LEVEL) and (consec_two_days_rising or rise_after_multi_day_drop)):
-                    buy_now = True
-            elif ((curr_local_sr >= 0.5) and (curr_ols > 0)):
-                if (rise_after_multi_day_drop):
+            elif (curr_sh_gscore < MIN_SH_DISCOUNT_LEVEL):
+                if (risk_appetite == 'high'):
+                    #higher trading risk so relaxed condition for buy when in "buy zone"
                     buy_now = True
                 elif (consec_two_days_rising):
-                    if (rising_ndup):
-                        buy_now = True
+                    buy_now = True
 
             if (buy_now):
                 if ((curr_first_micro_gscore_val > 0) and (curr_second_micro_gscore_val > 0)):
@@ -200,9 +181,6 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         #Check if price has fallen for two consecutive days
         consec_two_days_falling = (single_day_falling and (prev_closing_price < df.Close[i-2]))
 
-        #Check if price fell after multi-day rise
-        fall_after_multi_day_rise = ((prev_ndp >= MIN_NEXT_DAY_DOWN_PROB) and single_day_falling)
-
         #Check for premium level
         if (((curr_sh_gscore <= MIN_SH_PREMIUM_LEVEL) and total_shares) or marked_for_sell):
             marked_for_buy = False
@@ -211,13 +189,13 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
             #Check if in profit
             if (total_cost < total_cash):
                 #Check if falling after a multi-day run or fallen for two consecutive days
-                if (fall_after_multi_day_rise or consec_two_days_falling):
+                if (consec_two_days_falling):
                     if (term == 'short_term'):
                         if (risk_appetite == 'high'):
                             sell_now = True
                         else:
                             #For short-term: just sell if flat or -ve slope for support line or OLS shows downward trend
-                            if ((curr_local_sr <= -0.5) or (curr_ols < 0)):
+                            if (curr_local_sr <= -0.5):
                                 sell_now = True
                     elif (term == 'long_term'):
                         #For long-term, we need more checks if risk_appetite is not high
