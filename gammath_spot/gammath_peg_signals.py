@@ -35,14 +35,14 @@ def get_peg_signals(tsymbol, df_summ):
             peg_string = f'{peg}'
             if (peg > 0):
                 if (peg < 3):
-                    peg_gscore += 1
+                    peg_gscore += 4
             else:
-                peg_gscore -= 1
+                peg_gscore -= 4
     except:
         peg_string = 'No PEG data'
 
 
-    peg_max_score += 1
+    peg_max_score += 4
 
     peg_grec = f'peg_gscore:{peg_gscore}/{peg_max_score}'
 

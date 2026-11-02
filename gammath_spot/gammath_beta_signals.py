@@ -40,13 +40,13 @@ def get_beta_signals(tsymbol, df_summ):
             if (beta > 0):
                 #Closer to 1 is near market and is better
                 if (beta < 2):
-                    beta_gscore += 1
+                    beta_gscore += 2
                 else:
-                    beta_gscore -= 1
+                    beta_gscore -= 2
     except:
         beta_string = 'No beta data'
 
-    beta_max_score += 1
+    beta_max_score += 2
 
     beta_grec = f'beta_gscore:{beta_gscore}/{beta_max_score}'
 

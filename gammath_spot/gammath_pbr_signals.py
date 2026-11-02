@@ -41,9 +41,9 @@ def get_pbr_signals(tsymbol, df_summ):
 
                         #Lower PBR is better;
                         if (pbr < 20):
-                            pbr_gscore += 1
+                            pbr_gscore += 2
                         else:
-                            pbr_gscore -= 1
+                            pbr_gscore -= 2
             except:
                 PBR_string = 'No PBR data'
 
@@ -53,7 +53,7 @@ def get_pbr_signals(tsymbol, df_summ):
     except:
         PBR_string = 'No PBR data'
 
-    pbr_max_score += 1
+    pbr_max_score += 2
 
     pbr_grec = f'pbr_gscore:{pbr_gscore}/{pbr_max_score}'
 

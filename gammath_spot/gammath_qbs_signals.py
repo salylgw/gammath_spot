@@ -43,13 +43,13 @@ def get_qbs_signals(tsymbol, path, df_summ):
 
             #Check if current ratio is >= 1
             if (cr >= 1):
-                qbs_gscore += 1
+                qbs_gscore += 2
             else:
-                qbs_gscore -= 1
+                qbs_gscore -= 2
     except:
         cr_string = 'No current ratio data'
 
-    qbs_max_score += 1
+    qbs_max_score += 2
 
     #Check for quick ratio for debt obligation ease
     try:
@@ -61,13 +61,13 @@ def get_qbs_signals(tsymbol, path, df_summ):
             qr_string = f'{qr}'
             #Check if quick ratio >= 1
             if (qr >= 1):
-                qbs_gscore += 1
+                qbs_gscore += 2
             else:
-                qbs_gscore -= 1
+                qbs_gscore -= 2
     except:
         qr_string = 'No quick ratio data'
 
-    qbs_max_score += 1
+    qbs_max_score += 2
 
     qbs_grec = f'qbs_gscore:{qbs_gscore}/{qbs_max_score}'
 

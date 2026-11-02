@@ -93,11 +93,11 @@ class GSD:
         except RuntimeError:
             print(f'\nCould not get stock price history data for {tsymbol}')
 
-        try:
+#        try:
             #Get stocks news headlines
-            bgsn.get_stock_news_headlines(tsymbol, path)
-        except:
-            print(f'\nCould not get stock news headlines for {tsymbol}')
+#            bgsn.get_stock_news_headlines(tsymbol, path)
+#        except:
+#            print(f'\nCould not get stock news headlines for {tsymbol}')
 
         del ticker
         return

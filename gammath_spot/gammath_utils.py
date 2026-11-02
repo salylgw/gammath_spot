@@ -103,7 +103,7 @@ def get_sh_gscores_df_columns():
     return sh_gscores_columns
 
 def get_sci_gscores_df_columns():
-    sci_gscores_columns = ('Options', 'PE', 'PEG', 'Beta', 'PBR', 'QBS', 'IHP', 'SNS', 'FAST', 'SCI_gScore')
+    sci_gscores_columns = ('Options', 'PE', 'PEG', 'Beta', 'PBR', 'QBS', 'IHP', 'INSHP', 'FAST', 'SCI_gScore')
 
     return sci_gscores_columns
 
@@ -126,7 +126,7 @@ def get_gscores_screening_df_columns():
     return gscores_screening_columns
 
 def get_gscores_results_df_columns():
-    gscores_results_columns = ('Ticker', 'sh_gscore', 'sci_gscore', 'final_gscore', 'newshl_sams', 'Note')
+    gscores_results_columns = ('Ticker', 'sh_gscore', 'sci_gscore', 'Note')
 
     return gscores_results_columns
 
@@ -325,8 +325,6 @@ class GUTILS:
                 df_b.loc[i, "Ticker"] = symbol
                 df_b.loc[i, "sh_gscore"] = df_gscores.SH_gScore[0]
                 df_b.loc[i, "sci_gscore"] = df_gscores.SCI_gScore[0]
-                df_b.loc[i, "final_gscore"] = df_gscores.gScore[0]
-                df_b.loc[i, "newshl_sams"] = df_gscores.SNS[0]
 
                 f = open(path / f'{symbol}_signal.txt', 'r')
                 content = f.read()
@@ -343,7 +341,7 @@ class GUTILS:
             except:
                 print('\nERROR: Getting stock signals for ', symbol, ': ', sys.exc_info()[0])
 
-        df_b.sort_values('final_gscore').dropna(how='all').to_csv(p / f'{wl_name}_overall_gscores.csv', index=False)
+        df_b.sort_values('sh_gscore').dropna(how='all').to_csv(p / f'{wl_name}_overall_gscores.csv', index=False)
 
 
     def aggregate_pe_data(self):

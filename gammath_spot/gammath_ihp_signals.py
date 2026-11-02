@@ -35,16 +35,16 @@ def get_ihp_signals(tsymbol, df_summ):
         #We can do checks for different levels but for now this will suffice
         if (ihp > 0):
             if (ihp > 0.7):
-                ihp_gscore += 1
+                ihp_gscore += 2
             else:
-                ihp_gscore -= 1
+                ihp_gscore -= 2
 
         #Round it off to take less space when displaying
         ihp = round(ihp, 3)
     except:
         ihp_string += 'Institutional holdings data not found'
 
-    ihp_max_score += 1
+    ihp_max_score += 2
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 

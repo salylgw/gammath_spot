@@ -30,9 +30,9 @@ def get_inshp_signals(tsymbol, df_summ):
     try:
         inshp = df_summ['heldPercentInsiders'][0]
         if (inshp > 0):
-            inshp_gscore += 1
+            inshp_gscore += 2
         else:
-            inshp_gscore -= 1
+            inshp_gscore -= 2
 
 
         #Round it off to take less space displaying the value
@@ -41,7 +41,7 @@ def get_inshp_signals(tsymbol, df_summ):
     except:
         inshp_string += 'Insiders holdings information not found'
 
-    inshp_max_score += 1
+    inshp_max_score += 2
 
     #At some point, we can add percent change. Right now requires to be checked using local old val with new val; REVISIT
 

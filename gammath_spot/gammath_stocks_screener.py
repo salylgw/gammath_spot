@@ -68,7 +68,7 @@ def run_screener(sf_name, info_queue):
                 if ((df_gscores.Options[0] >= min_options_micro_gscore) and
                     (df_gscores.FAST[0] >= min_fast_micro_gscore)):
 
-                    #Extract ticker, sh_gscore, sci_gscore and final_gscore for convenient reference
+                    #Extract ticker, sh_gscore and sci_gscore for convenient reference
                     df_list.iloc[count] = {"Symbol": f'{subdir.name}'}
                     count += 1
             except:
@@ -76,7 +76,7 @@ def run_screener(sf_name, info_queue):
                 continue
 
     if (count):
-        #Remove unused rows and sort by final_gscore
+        #Remove unused rows and sort by ticker symbol
         df_list = df_list.truncate(after=(count-1)).sort_values('Symbol')
 
     #Save screened watchlist without the index field

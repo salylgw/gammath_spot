@@ -317,9 +317,11 @@ class GSA:
             #Options signals
             options_gscore, options_max_score, options_signals = gos.get_options_signals(tsymbol, path, df.Close[len(df)-1], df_summ)
             options_final_score = round((options_gscore/options_max_score), 3)
+            overall_sci_gscore += options_final_score
         except:
             print('\nERROR: while getting options signals for ', tsymbol, ': ', sys.exc_info()[0])
 
+        #Fundamental analysis has max score of 20
         #Generate and get signals based on fundamental analysis (PE, PEG, Beta, PBR, Quarterly balancesheet, Institutional holdings).
         try:
             pe_gscore = 0
@@ -330,15 +332,14 @@ class GSA:
             #PE signals
             pe_gscore, pe_max_score, pe_signals = gpes.get_pe_signals(tsymbol, df_summ, gut.get_tickers_dir())
             #Maintain proportion
-            pe_final_score = round((pe_gscore/10), 3)
+            pe_final_score = round((pe_gscore/20), 3)
             fast += pe_gscore
-
         except ValueError:
             print('\nERROR: while getting PE signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             peg_gscore = 0
-            peg_max_score = 1
+            peg_max_score = 4
             peg_signals = ''
             peg_final_score = 0
 
@@ -346,7 +347,7 @@ class GSA:
             peg_gscore, peg_max_score, peg_signals = gpeg.get_peg_signals(tsymbol, df_summ)
 
             #Maintain proportion
-            peg_final_score = round((peg_gscore/10), 3)
+            peg_final_score = round((peg_gscore/20), 3)
             fast += peg_gscore
 
         except ValueError:
@@ -354,7 +355,7 @@ class GSA:
 
         try:
             beta_gscore = 0
-            beta_max_score = 1
+            beta_max_score = 2
             beta_signals = ''
             beta_final_score = 0
 
@@ -362,7 +363,7 @@ class GSA:
             beta_gscore, beta_max_score, beta_signals = gbeta.get_beta_signals(tsymbol, df_summ)
 
             #Maintain proportion
-            beta_final_score = round((beta_gscore/10), 3)
+            beta_final_score = round((beta_gscore/20), 3)
             fast += beta_gscore
 
         except ValueError:
@@ -370,14 +371,14 @@ class GSA:
 
         try:
             pbr_gscore = 0
-            pbr_max_score = 1
+            pbr_max_score = 2
             pbr_signals = ''
             pbr_final_score = 0
 
             #PBR signals
             pbr_gscore, pbr_max_score, pbr_signals = gpbrs.get_pbr_signals(tsymbol, df_summ)
 
-            pbr_final_score = round((pbr_gscore/10), 3)
+            pbr_final_score = round((pbr_gscore/20), 3)
             fast += pbr_gscore
         except RuntimeError:
             print('\nERROR: while generating PBR signals for ', tsymbol, ': ', sys.exc_info()[0])
@@ -386,7 +387,7 @@ class GSA:
 
         try:
             qbs_gscore = 0
-            qbs_max_score = 2
+            qbs_max_score = 4
             qbs_signals = ''
             qbs_final_score = 0
 
@@ -394,14 +395,14 @@ class GSA:
             qbs_gscore, qbs_max_score, qbs_signals = gqbs.get_qbs_signals(tsymbol, path, df_summ)
 
             #Maintain proportion
-            qbs_final_score = round((qbs_gscore/10), 3)
+            qbs_final_score = round((qbs_gscore/20), 3)
             fast += qbs_gscore
         except ValueError:
             print('\nERROR: while getting QBS signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             ihp_gscore = 0
-            ihp_max_score = 1
+            ihp_max_score = 2
             ihp_signals = ''
             ihp_final_score = 0
 
@@ -409,31 +410,34 @@ class GSA:
             ihp_gscore, ihp_max_score, ihp_signals = gihp.get_ihp_signals(tsymbol, df_summ)
 
             #Maintain proportion
-            ihp_final_score = round((ihp_gscore/10), 3)
+            ihp_final_score = round((ihp_gscore/20), 3)
             fast += ihp_gscore
         except ValueError:
             print('\nERROR: while getting ihp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
         try:
             inshp_gscore = 0
-            inshp_max_score = 1
+            inshp_max_score = 2
             inshp_signals = ''
 
             #Insider Holders Percentage signals
             #Not included in overall sci score. For reference only
             inshp_gscore, inshp_max_score, inshp_signals = ginshp.get_inshp_signals(tsymbol, df_summ)
+            inshp_final_score = round((inshp_gscore/20), 3)
+            fast += inshp_gscore
         except ValueError:
             print('\nERROR: while getting inshp signals for ', tsymbol, ': ', sys.exc_info()[0])
 
-        fast_final_score = round((fast/10), 3)
+        fast_final_score = round((fast/20), 3)
+        overall_sci_gscore += fast_final_score
 
-        try:
-            stock_news_sentiment_score = gns.get_news_hl_sentiment_score(tsymbol, path)
-            stock_news_signals = f'Stock news sentiment (mean): {stock_news_sentiment_score}'
-        except:
-            stock_news_sentiment_score = 0
-            stock_news_signals = ''
-            print('\nERROR: while getting news sentiment score for ', tsymbol, ': ', sys.exc_info()[0])
+#        try:
+#            stock_news_sentiment_score = gns.get_news_hl_sentiment_score(tsymbol, path)
+#            stock_news_signals = f'Stock news sentiment (mean): {stock_news_sentiment_score}'
+#        except:
+#            stock_news_sentiment_score = 0
+#            stock_news_signals = ''
+#            print('\nERROR: while getting news sentiment score for ', tsymbol, ': ', sys.exc_info()[0])
 
 
         #Create a data frame for all stock's current info specific (micro)gScores
@@ -445,15 +449,16 @@ class GSA:
         sci_gScore_df.loc[0, "PBR"] = pbr_final_score
         sci_gScore_df.loc[0, "QBS"] = qbs_final_score
         sci_gScore_df.loc[0, "IHP"] = ihp_final_score
-        sci_gScore_df.loc[0, "SNS"] = stock_news_sentiment_score
-        sci_gScore_df.loc[0, "SCI_gScore"] = round((overall_sci_gscore/10), 3)
+        sci_gScore_df.loc[0, "INSHP"] = inshp_final_score
+#        sci_gScore_df.loc[0, "SNS"] = stock_news_sentiment_score
         sci_gScore_df.loc[0, "FAST"] = fast_final_score
         #Need to show total of fundamental analysis gscore component
-        fast_signals = f'Fundamental analysis gscore:{fast}/10'
+        fast_signals = f'Fundamental analysis gscore:{fast}/20'
+        sci_gScore_df.loc[0, "SCI_gScore"] = round((overall_sci_gscore/2), 3)
 
         if need_charts_n_signals_info:
             #Aggregate stock current info-specific signals
-            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals, stock_news_signals])
+            sci_signals = '\n'.join([options_signals, pe_signals, peg_signals, beta_signals, pbr_signals, qbs_signals, ihp_signals, inshp_signals, fast_signals])
         else:
             sci_signals = ''
 
@@ -520,19 +525,13 @@ class GSA:
             except:
                 print('\nERROR: while computing stock current info specific gscore for ', tsymbol, ': ', sys.exc_info()[0])
 
-            #Add up micro-gScores then save scores and signals
-            overall_gscore = round((sh_gScore_df.SH_gScore[0] + sci_gScore_df.SCI_gScore[0]), 3)
-
             component_gscore_string = f'SH_gScore:{sh_gScore_df.SH_gScore[0]},SCI_gScore:{sci_gScore_df.SCI_gScore[0]}'
-            final_gscore_string = f'final_gscore:{overall_gscore}'
-
 
             #Get all signals info for saving in a file for later reference
-            overall_signals = '\n'.join([sh_signals, sci_signals, note, component_gscore_string, final_gscore_string])
+            overall_signals = '\n'.join([sh_signals, sci_signals, note, component_gscore_string])
 
             #Create a data frame for all (micro)gScores
-            gScore_df = pd.DataFrame({'gScore': overall_gscore}, index=range(1))
-            gScore_df = gScore_df.join(pd.DataFrame.join(sh_gScore_df, sci_gScore_df))
+            gScore_df = pd.DataFrame.join(sh_gScore_df, sci_gScore_df)
 
             #Save the CSV file for later reference
             gScore_df.to_csv(path / f'{tsymbol}_gscores.csv')
