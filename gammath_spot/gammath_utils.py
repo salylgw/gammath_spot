@@ -175,6 +175,16 @@ def get_price_sigmoid(prices, n_days_interval):
 
     return (prices_sigmoid)
 
+#Could use memoization or cache if used frequently; Not expected to go beyond index 20
+def get_nth_fib(index):
+    if index <= 1:
+       return index
+
+    prev, curr = 0, 1
+    for _ in range(2, index+1):
+        prev, curr = curr, prev + curr
+
+    return curr
 
 def send_msg_to_gui_if_thread(info_queue, tool, data):
     if (info_queue != None):
