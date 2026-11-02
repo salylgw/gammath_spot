@@ -128,7 +128,7 @@ class GSH:
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
             #Draw the charts (along with dates) to get a general idea of correlations
-            figure, axes = plt.subplots(nrows=11, figsize=(28, 47))
+            figure, axes = plt.subplots(nrows=12, figsize=(28, 47))
 
             #Get DPI for the figure
             charts_dpi = figure.get_dpi()
@@ -184,6 +184,12 @@ class GSH:
             stoch_gscores_df = pd.DataFrame({'Stoch-micro-gScores': df_gscores.Stoch[0:mtd5y]})
             stoch_gscores_df = stoch_gscores_df.set_index(df_gscores.Date)
             stoch_gscores_df.plot(ax=axes[9],lw=1,title='Stoch micro-gScores')
+            lsr_gscores_df = pd.DataFrame({'Local-Support-Resistance-micro-gScores': df_gscores.LSR[0:mtd5y]})
+            lsr_gscores_df = lsr_gscores_df.set_index(df_gscores.Date)
+            lsr_gscores_df.plot(ax=axes[10],lw=1,title='LSR micro-gScores')
+            cecs_gscores_df = pd.DataFrame({'CECS-micro-gScores': df_gscores.Stoch[0:mtd5y]})
+            cecs_gscores_df = cecs_gscores_df.set_index(df_gscores.Date)
+            cecs_gscores_df.plot(ax=axes[11],lw=1,title='CECS micro-gScores')
 
             if (logo_file_found):
                 #Attach the logo to figure
