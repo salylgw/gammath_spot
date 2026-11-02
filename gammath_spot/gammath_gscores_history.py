@@ -184,9 +184,6 @@ class GSH:
             stoch_gscores_df = pd.DataFrame({'Stoch-micro-gScores': df_gscores.Stoch[0:mtd5y]})
             stoch_gscores_df = stoch_gscores_df.set_index(df_gscores.Date)
             stoch_gscores_df.plot(ax=axes[9],lw=1,title='Stoch micro-gScores')
-            nup_gscores_df = pd.DataFrame({'NU-Prob': df_gscores.NUP[0:mtd5y]})
-            nup_gscores_df = nup_gscores_df.set_index(df_gscores.Date)
-            nup_gscores_df.plot(ax=axes[10],lw=1,title='Next day UP Probability')
 
             if (logo_file_found):
                 #Attach the logo to figure
