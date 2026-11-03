@@ -43,7 +43,7 @@ def get_probabilty_signals(tsymbol, df, path):
         after_day_weight = 0.30
         after_month_weight = 0.70
 
-    probability_score = (after_month_weight*after_month_p_score + after_day_weight*after_day_up_p_score)
+    probability_score = round((after_month_weight*after_month_p_score + after_day_weight*after_day_up_p_score), 3)
 
     display_fraction = f'{round(probability_score*10):d}/10'
     probability_log = f'Probabilities score: {display_fraction}\n{pdp_log}\n{lgstic_log}'

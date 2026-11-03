@@ -35,10 +35,9 @@ except:
 #Default values to cover broadest variety of stocks.
 #Should be fine tuned for specific characteristics
 MAX_BREAKEVEN_ATTEMPTS = 10
-MAX_BUY_STEP = 10
-MIN_SH_PREMIUM_LEVEL = -0.6
+MIN_SH_PREMIUM_LEVEL = -0.5
 NEUTRAL_SH_LEVEL = 0.0
-MIN_SH_DISCOUNT_LEVEL = 0.6
+MIN_SH_DISCOUNT_LEVEL = 0.5
 
 #Following is a basic example of writing your own strategy for backtesting
 #This is provided as an example to show one of the ways to do it
@@ -69,6 +68,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
     marked_for_sell = False
     buy_now = False
     sell_now = False
+    buy_block_num = 0
     cycle = ''
     note = ''
     sp500_comp_string = ''
@@ -103,6 +103,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         curr_closing_price = df.Close[i]
         curr_tpc5y = df.TPC5Y[i]
         curr_local_sr = df.LSR[i]
+        curr_cecs = df.CECS[i]
 
         #Use this ratio to compare
         curr_5y_price_ratio = (curr_tpc5y/curr_closing_price)
@@ -124,7 +125,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
             # For brevity, we only want to buy when price is in the "buy zone" and  below our current average price
             if (total_shares and (curr_closing_price > avg_price)):
                 buy_now = False
-            elif (curr_sh_gscore < MIN_SH_DISCOUNT_LEVEL):
+            elif (single_day_rising):
                 if (risk_appetite == 'high'):
                     #higher trading risk so relaxed condition for buy when in "buy zone"
                     buy_now = True
@@ -132,14 +133,16 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                     buy_now = True
 
             if (buy_now):
-                if ((curr_first_micro_gscore_val > 0) and (curr_second_micro_gscore_val > 0)):
+                if (curr_cecs >= 0.5):
                     #Buy quantity is managed better when news analysis is done
                     #This is a conservative approach in the absence of that
                     if (remaining_cash >= curr_closing_price):
                         if (total_shares):
-                            buy_q = min(MAX_BUY_STEP, remaining_cash//curr_closing_price)
+                            buy_q = min(gut.get_nth_fib(buy_block_num), remaining_cash//curr_closing_price)
+                            buy_block_num += 1
                         else:
                             buy_q = 1
+                            buy_block_num = 1
 
                         #Update remaining cash
                         remaining_cash -= (buy_q*curr_closing_price)
@@ -167,6 +170,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         else:
             marked_for_buy = False
             buy_now = False
+            buy_block_num = 1
 
 
         if (total_shares):
@@ -199,7 +203,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                                 sell_now = True
                     elif (term == 'long_term'):
                         #For long-term, we need more checks if risk_appetite is not high
-                        if ((curr_local_sr <= -0.5) or (curr_ols < 0) or (risk_appetite == 'high')): #Check not too much room to rise
+                        if ((curr_local_sr <= -0.5) or (curr_cecs <= -0.5) or (risk_appetite == 'high')): #Check not too much room to rise
                             #If we already doubled then just sell irrespective of holding period
                             if (profit_pct > 100):
                                 sell_now = True
