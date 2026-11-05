@@ -38,6 +38,52 @@ except:
 
 class GPEP:
 
+    def do_gbm_price_estimation(self, prices):
+        #SGBM with Ito's Lemma
+        mtdpy, mtd5y = gut.get_min_trading_days()
+
+        #Get log returns [oldest to newest]
+        price_log_returns = np.log(prices / prices.shift(1)).dropna()
+        n = len(price_log_returns)
+
+        #Calculate weights [newest has highest and oldest has least weightage]
+        weights = np.arange(1, n+1, dtype=float)
+
+        #Normalize weights to sum to 1
+        weights = weights / np.sum(weights)
+        #mu is drift
+        #sigma is volatility
+
+        #Calculate drift
+        weighted_drift = np.sum(weights * price_log_returns.values)
+
+        #Calculate variance
+        weighted_variance = np.sum(weights * (price_log_returns.values - weighted_drift) ** 2)
+        weighted_volatility = np.sqrt(weighted_variance)
+
+        #GBM adjustment using Ito's lemma correction
+        daily_drift = weighted_drift - (0.5*weighted_variance)
+
+        last_price = prices.iloc[-1]
+
+        #Get local instance of RNG
+        rng = np.random.default_rng(42)
+
+        #Generate random shocks
+        z = rng.normal(0, 1, size=(mtd5y, 1000))
+
+        daily_returns_sim = np.exp((daily_drift - 0.5 * (weighted_volatility ** 2)) + (weighted_volatility * z))
+
+        #shape for price_paths is (days+1, 1000)
+        price_paths = np.vstack([np.ones(1000) * last_price, last_price * np.cumprod(daily_returns_sim, axis=0)])
+
+        #calculate 25, 50, 75 percentile across sims (axis=1)
+        projected_df = pd.DataFrame({'low_quantile': np.percentile(price_paths, 25, axis=1),
+                                     'middle_quantile': np.percentile(price_paths, 50, axis=1),
+                                     'top_quantile': np.percentile(price_paths, 75, axis=1)}, index=range(mtd5y+1))
+
+        return projected_df
+
     def do_sgd_regression(self, prices, single):
 
         mtdpy, mtd5y = gut.get_min_trading_days()
