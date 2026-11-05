@@ -259,6 +259,32 @@ class GPEP:
             f.write(projection_string)
             f.close()
 
+    def get_gbm_estimated_projection(self, tsymbol):
+        mtdpy, mtd5y = gut.get_min_trading_days()
+        tickers_dir = gut.get_tickers_dir()
+
+        path = tickers_dir / f'{tsymbol}'
+
+        try:
+            df = pd.read_csv(path / f'{tsymbol}_history.csv', usecols=['Close'])
+        except:
+            #Not a fatal error. Just log it and return
+            print(f'\nStock history file not found for {tsymbol}')
+            return
+
+        df_len = len(df)
+        if (df_len < mtd5y):
+            #Not a fatal error. Just log it and return
+            print(f'\nInsufficent stock history length for {tsymbol}')
+            return
+
+        prices = df.Close
+
+        pp_frame = self.do_gbm_price_estimation(prices)
+
+        pp_frame.to_csv(path / f'{tsymbol}_pp.csv', index=False)
+
+
     def sp500_pep(self):
         mtdpy, mtd5y = gut.get_min_trading_days()
 
@@ -318,3 +344,25 @@ class GPEP:
         plt.savefig(path / f'SP500_pep.pdf', format='pdf')
 
         plt.close(fig=None)
+
+    def sp500_gbm_pep(self):
+        mtdpy, mtd5y = gut.get_min_trading_days()
+
+        #SP500-specific files are in ticker dir
+        tickers_dir = gut.get_tickers_dir()
+
+        path = tickers_dir / 'SP500'
+        try:
+            #SP500 closing data
+            sp500_closing_data = pd.read_csv(path / 'SP500_history.csv')
+        except:
+            print('SP500 closing price data not found')
+            return 0
+        else:
+            #Drop nans
+            prices = sp500_closing_data.Close.dropna()
+
+        #Get the prediction and projection series
+        sp500_pep_frame = self.do_gbm_price_estimation(prices)
+
+        sp500_pep_frame.to_csv(path / f'SP500_pp.csv', index=False)

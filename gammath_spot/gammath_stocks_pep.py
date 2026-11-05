@@ -79,7 +79,7 @@ def run_projector(sf_name, info_queue):
                 tsymbol = f'{sym}'
                 symbols_list.append(tsymbol)
                 gpep_instances.append(glpep.GPEP())
-                proc_handles.append(mp.Process(target=gpep_instances[i].get_moving_price_estimated_projection, args=(f'{sym}',)))
+                proc_handles.append(mp.Process(target=gpep_instances[i].get_gbm_estimated_projection, args=(f'{sym}',)))
                 proc_handles[i].start()
 
                 max_tickers -= 1
@@ -112,7 +112,7 @@ def run_projector(sf_name, info_queue):
         gpep = glpep.GPEP()
 
         #Run S&P500 projection in its own process (for matplotlib main thread issue)
-        sp500_pep_handle = mp.Process(target=gpep.sp500_pep)
+        sp500_pep_handle = mp.Process(target=gpep.sp500_gbm_pep)
         sp500_pep_handle.start()
         sp500_pep_handle.join()
         sp500_pep_handle.close()

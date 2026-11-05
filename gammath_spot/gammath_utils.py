@@ -523,7 +523,7 @@ class GUTILS:
             raise ValueError('Not enough projection data')
 
         #Get last projection
-        m5ypep = round(df_pp.PP[pp_len-1], 3)
+        m5ypep = round(df_pp.middle_quantile[pp_len-1], 3)
 
         #Calculate the percentage return for easy comparison
         m5ypep_pct = round((((m5ypep - lp)*100)/lp), 3)
