@@ -87,18 +87,10 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
     #Instantiate GUTILS class
     gutils = gut.GUTILS()
 
-    #Generally, RSI and BBANDS correlates better with gScore
-    first_micro_gscore = 'RSI'
-    second_micro_gscore = 'BBANDS'
-
     last_buy_5y_price_ratio = 0
 
     for i in range(2, history_len):
         curr_sh_gscore = df.SH_gScore[i]
-        #Get the top correlated (with respect to gScore) micro-gScores
-        curr_first_micro_gscore_val = df[first_micro_gscore][i]
-        curr_second_micro_gscore_val = df[second_micro_gscore][i]
-        curr_ols = df.OLS[i]
         prev_closing_price = df.Close[i-1]
         curr_closing_price = df.Close[i]
         curr_tpc5y = df.TPC5Y[i]
