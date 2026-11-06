@@ -137,6 +137,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                     else:
                         buy_q = 0
                         ever_ran_out_of_cash = True
+                        result_note = failure_note
 
                 #Save this for comparison during sell-side check
                 last_buy_5y_price_ratio = curr_5y_price_ratio
@@ -238,7 +239,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                     profit = 0
                     total_cash = 0
                     remaining_cash = max_cash
-
+                    result_note = success_note
                     marked_for_sell = 0
                     sell_now = False
                     sp500_comp_string = ''
@@ -284,7 +285,6 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
 
 
     if (ever_ran_out_of_cash):
-        result_note = failure_note
         cash_mgmt_note = ',Ran out of cash sometime'
 
     strategy_note = result_note + cash_mgmt_note
