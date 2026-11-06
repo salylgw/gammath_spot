@@ -34,7 +34,6 @@ except:
 
 #Default values to cover broadest variety of stocks.
 #Should be fine tuned for specific characteristics
-MAX_BREAKEVEN_ATTEMPTS = 10
 MIN_SH_PREMIUM_LEVEL = -0.5
 NEUTRAL_SH_LEVEL = 0.0
 MIN_SH_DISCOUNT_LEVEL = 0.5
@@ -74,12 +73,9 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
     sp500_comp_string = ''
     sci_note = ''
     pp_note = ''
-    curr_breakeven_attempts = 0
-    curr_max_breakeven_count = 0
     ever_ran_out_of_cash = False
 
     cash_mgmt_note = ''
-    break_even_note = ''
     success_note = 'Strategy worked historically (approx. last 5 years)'
     failure_note = 'Strategy did NOT always work historically (approx. last 5 years)'
     result_note = success_note
@@ -157,7 +153,6 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                 avg_price = total_cost/total_shares
                 df_transactions.loc[transactions_count, "Avg_Price"] = round(avg_price, 3)
                 transactions_count += 1
-                curr_breakeven_attempts += 1
                 buy_q = 0
         else:
             marked_for_buy = False
@@ -244,10 +239,6 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                     total_cash = 0
                     remaining_cash = max_cash
 
-                    if (curr_max_breakeven_count < curr_breakeven_attempts):
-                        curr_max_breakeven_count = curr_breakeven_attempts
-
-                    curr_breakeven_attempts = 0
                     marked_for_sell = 0
                     sell_now = False
                     sp500_comp_string = ''
@@ -296,11 +287,7 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
         result_note = failure_note
         cash_mgmt_note = ',Ran out of cash sometime'
 
-    if (curr_max_breakeven_count > MAX_BREAKEVEN_ATTEMPTS):
-        result_note = failure_note
-        break_even_note = ',Exceeded break even attempts sometime'
-
-    strategy_note = result_note + cash_mgmt_note + break_even_note
+    strategy_note = result_note + cash_mgmt_note
 
     #Update notes that can be used for better decision making
     #i.e Current info, price projection summary and if this strategy has worked historically or not
