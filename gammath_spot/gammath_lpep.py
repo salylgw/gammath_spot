@@ -39,7 +39,7 @@ except:
 class GPEP:
 
     def do_gbm_price_estimation(self, prices):
-        #SGBM with Ito's Lemma
+        #Estimate future prices using GBM with Ito's Lemma
         mtdpy, mtd5y = gut.get_min_trading_days()
 
         #Get log returns [oldest to newest]
@@ -51,8 +51,8 @@ class GPEP:
 
         #Normalize weights to sum to 1
         weights = weights / np.sum(weights)
-        #mu is drift
-        #sigma is volatility
+        #µ is drift
+        #σ is volatility
 
         #Calculate drift
         weighted_drift = np.sum(weights * price_log_returns.values)
