@@ -29,19 +29,19 @@ try:
     from gammath_spot import gammath_get_stocks_financials as gsf
     from gammath_spot import gammath_get_stocks_history as gsh
     from gammath_spot import gammath_get_stocks_options_data as gso
-    from gammath_spot import gammath_get_stcktwts as ggstw
-    from gammath_spot import gammath_get_stocks_calendar as gsc
+#    from gammath_spot import gammath_get_stcktwts as ggstw
+#    from gammath_spot import gammath_get_stocks_calendar as gsc
     from gammath_spot import gammath_utils as gut
-    from gammath_spot import bardgen_stock_news as bgsn
+#    from gammath_spot import bardgen_stock_news as bgsn
 except:
     import gammath_get_stocks_summary as gss
     import gammath_get_stocks_financials as gsf
     import gammath_get_stocks_history as gsh
     import gammath_get_stocks_options_data as gso
-    import gammath_get_stcktwts as ggstw
-    import gammath_get_stocks_calendar as gsc
+#    import gammath_get_stcktwts as ggstw
+#    import gammath_get_stocks_calendar as gsc
     import gammath_utils as gut
-    import bardgen_stock_news as bgsn
+#    import bardgen_stock_news as bgsn
 
 class GSD:
     def get_stocks_data(self, tsymbol):
@@ -92,6 +92,7 @@ class GSD:
             print(f'\nError while getting ticker price history for {tsymbol}')
         except RuntimeError:
             print(f'\nCould not get stock price history data for {tsymbol}')
+
 
 #        try:
             #Get stocks news headlines

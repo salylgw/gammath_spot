@@ -4,7 +4,6 @@ pandas_datareader
 matplotlib
 scikit-learn
 yfinance
-textblob
 tensorflow
 tensorboard
 keras-tuner
