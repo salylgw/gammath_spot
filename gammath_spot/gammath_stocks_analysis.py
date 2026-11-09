@@ -45,7 +45,7 @@ try:
     from gammath_spot import gammath_si_charts as gsc
     from gammath_spot import gammath_tc as gtc
     from gammath_spot import gammath_utils as gut
-    from gammath_spot import gammath_news_sentiment as gns
+#    from gammath_spot import gammath_news_sentiment as gns
 except:
     import gammath_price_signals as gps
     import gammath_rsi_signals as grs
@@ -71,7 +71,7 @@ except:
     import gammath_si_charts as gsc
     import gammath_tc as gtc
     import gammath_utils as gut
-    import gammath_news_sentiment as gns
+#    import gammath_news_sentiment as gns
 
 import sys
 import time
