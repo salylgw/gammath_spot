@@ -39,7 +39,7 @@ except:
 class GPEP:
 
     def do_gbm_price_estimation(self, prices):
-        #Estimate future prices using GBM with Ito's Lemma
+        #Estimate future prices using discrete-time GBM equation
         mtdpy, mtd5y = gut.get_min_trading_days()
 
         #Get log returns [oldest to newest]
@@ -54,15 +54,12 @@ class GPEP:
         #µ is drift
         #σ is volatility
 
-        #Calculate drift
-        weighted_drift = np.sum(weights * price_log_returns.values)
+        #Calculate weighted mean log return
+        weighted_mean_log_return = np.sum(weights * price_log_returns.values)
 
         #Calculate variance
-        weighted_variance = np.sum(weights * (price_log_returns.values - weighted_drift) ** 2)
+        weighted_variance = np.sum(weights * (price_log_returns.values - weighted_mean_log_return) ** 2)
         weighted_volatility = np.sqrt(weighted_variance)
-
-        #GBM adjustment using Ito's lemma correction
-        daily_drift = weighted_drift - (0.5*weighted_variance)
 
         last_price = prices.iloc[-1]
 
@@ -72,7 +69,7 @@ class GPEP:
         #Generate random shocks
         z = rng.normal(0, 1, size=(mtd5y, 1000))
 
-        daily_returns_sim = np.exp((daily_drift - 0.5 * (weighted_volatility ** 2)) + (weighted_volatility * z))
+        daily_returns_sim = np.exp(weighted_mean_log_return + (weighted_volatility * z))
 
         #shape for price_paths is (days+1, 1000)
         price_paths = np.vstack([np.ones(1000) * last_price, last_price * np.cumprod(daily_returns_sim, axis=0)])
