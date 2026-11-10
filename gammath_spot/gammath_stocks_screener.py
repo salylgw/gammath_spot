@@ -79,8 +79,9 @@ def run_screener(sf_name, info_queue):
         #Remove unused rows and sort by ticker symbol
         df_list = df_list.truncate(after=(count-1)).sort_values('Symbol')
 
+    root_path = Path(f'{p}/..')
     #Save screened watchlist without the index field
-    df_list.to_csv(p / 'screened_watchlist.csv', index=False)
+    df_list.to_csv(root_path / 'screened_watchlist.csv', index=False)
 
     complete_pct = 100
 
