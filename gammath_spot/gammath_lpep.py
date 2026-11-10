@@ -279,7 +279,7 @@ class GPEP:
 
         pp_frame = self.do_gbm_price_estimation(prices)
 
-        pp_frame.to_csv(path / f'{tsymbol}_pp.csv', index=False)
+        pp_frame.to_csv(path / f'{tsymbol}_pp.csv')
 
 
     def sp500_pep(self):

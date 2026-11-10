@@ -841,6 +841,16 @@ class Gammath_SPOT_GUI:
         self.projector_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=(self.curr_watchlist_len+1), mode='indeterminate')
         self.projector_pb.grid(row=curr_row, column=0, padx=70)
 
+        #Add Screener tool button
+        curr_row += 1
+        self.screener_button = ttk.Button(self.app_frame, text="Screener", command=self.invoke_screener, width=10)
+        self.screener_button.grid(row=curr_row, column=0)
+
+        #Progress bar for Screener run
+        curr_row += 1
+        self.screener_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), mode='indeterminate')
+        self.screener_pb.grid(row=curr_row, column=0, padx=70)
+
         #Add Historian tool
         curr_row += 1
         self.historian_button = ttk.Button(self.app_frame, text="Historian", command=self.invoke_historian, width=10)
@@ -860,16 +870,6 @@ class Gammath_SPOT_GUI:
         curr_row += 1
         self.backtester_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), maximum=(self.curr_watchlist_len+1), mode='indeterminate')
         self.backtester_pb.grid(row=curr_row, column=0, padx=70)
-
-        #Add Screener tool button
-        curr_row += 1
-        self.screener_button = ttk.Button(self.app_frame, text="Screener", command=self.invoke_screener, width=10)
-        self.screener_button.grid(row=curr_row, column=0)
-
-        #Progress bar for Screener run
-        curr_row += 1
-        self.screener_pb = ttk.Progressbar(self.app_frame, orient=HORIZONTAL, length=self.get_progress_bar_len_in_pixels(), mode='indeterminate')
-        self.screener_pb.grid(row=curr_row, column=0, padx=70)
 
         #Update screen
         self.app_frame.update_idletasks()
