@@ -18,7 +18,9 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
-#Use Principal Component Analysis to derive weighted micro-gScores for overall gScore
+#This is a work-in-progress and has lot of TBDs (e.g. lookback window, invoked in historian v/s backtester, integrated into RL etc.).
+#Do not use yet
+#Use Principal Component Analysis to derive variance-ratio-weighted micro-gScores for overall gScore calculation
 
 from pathlib import Path
 import pandas as pd
@@ -45,7 +47,7 @@ def get_pca_derived_gscores(tsymbol):
 
     #Use all component to extact explained varience ratio for each component
     pca = PCA(n_components=len(df_micro_gscores_history.columns))
-    pca_data = pca.fit_transform(scaled_data)
+    pca.fit(scaled_data)
 
     #Use variance ration for each component variance weights
     component_variance_weights = pca.explained_variance_ratio_
@@ -57,5 +59,10 @@ def get_pca_derived_gscores(tsymbol):
     #Derive Overall gScore using PCA-derive micro-gScore weights
     pca_derived_overall_gscores = np.dot(scaled_data, micro_gscore_weights)
 
+    #Maintain original scale of -1 to +1
+    pca_derived_overall_gscores /= np.max(np.abs(pca_derived_overall_gscores))
+    pca_derived_overall_gscores = np.round(pca_derived_overall_gscores, decimals=3)
+
     pd.DataFrame({'PCA_derived_gScore': pca_derived_overall_gscores}).to_csv(path / f'{tsymbol}_pcadgs.csv')
+
     return pca_derived_overall_gscores
