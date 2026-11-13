@@ -345,7 +345,7 @@ class GBT:
             return
 
         #overall gScore using PCA
-        pca_derived_gscores = pd.read_csv(path / f'{tsymbol}_pcadgs.csv', index_col='Unnamed: 0')
+        pca_derived_gscores = pd.read_csv(path / f'{tsymbol}_vrw_gscores.csv', index_col='Unnamed: 0')
 
         #You can call your own backtesting function here. Following is one example
         run_basic_backtest(df_gscores_history, pca_derived_gscores, path, tsymbol, 'short_term', 'medium', 10000)
