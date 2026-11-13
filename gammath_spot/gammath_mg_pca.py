@@ -32,16 +32,8 @@ try:
 except:
     import gammath_utils as gut
 
-def get_pca_derived_gscores(tsymbol):
+def get_pca_derived_gscores(df_micro_gscores_history):
     mtdpy, _ = gut.get_min_trading_days()
-
-    tickers_dir = gut.get_tickers_dir()
-    path = tickers_dir / f'{tsymbol}'
-    try:
-        df_micro_gscores_history = pd.read_csv(path / f'{tsymbol}_micro_gscores.csv', usecols=('Price', 'RSI', 'BBANDS', 'MACD', 'KF', 'OLS', 'MFI', 'Stoch', 'CECS', 'LSR'))
-    except:
-        print('\nERROR: Failed to open micro-gScores history for symbol ', tsymbol)
-        return
 
     micro_gscore_data = df_micro_gscores_history.values
     time_steps, num_dimensions = micro_gscore_data.shape
@@ -91,6 +83,4 @@ def get_pca_derived_gscores(tsymbol):
     #Fill initial MTDPY with nan
     overall_gscores = np.full(time_steps, np.nan)
     overall_gscores[mtdpy:] = pca_derived_overall_gscores
-    pd.DataFrame({'PCA_derived_gScore': overall_gscores}, index=df_micro_gscores_history.index).to_csv(path / f'{tsymbol}_pcadgs.csv')
-
-    return overall_gscores
+    return pd.DataFrame({'Variance_ratio_weighted_gScores': overall_gscores}, index=range(len(overall_gscores)))

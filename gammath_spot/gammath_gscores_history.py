@@ -129,6 +129,9 @@ class GSH:
             #Save gscores history
             df_gscores.to_csv(path / f'{tsymbol}_micro_gscores.csv')
 
+            pca_gscores_df = gspca.get_pca_derived_gscores(df_gscores[['Price', 'RSI', 'BBANDS', 'MACD', 'KF', 'OLS', 'MFI', 'Stoch', 'CECS', 'LSR']])
+            pca_gscores_df.to_csv(path / f'{tsymbol}_vrw_gscores.csv')
+
             #Draw the charts (along with dates) to get a general idea of correlations
             figure, axes = plt.subplots(nrows=12, figsize=(28, 47))
 
@@ -156,7 +159,7 @@ class GSH:
             closing_prices_df = pd.DataFrame({tsymbol: df_gscores.Close[0:mtd5y]})
             closing_prices_df = closing_prices_df.set_index(df_gscores.Date[0:mtd5y])
             closing_prices_df.plot(ax=axes[0],lw=1,title='Stock history')
-            sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.SH_gScore[0:mtd5y]})
+            sh_gscores_df = pd.DataFrame({'SH_gscores': df_gscores.SH_gScore[0:mtd5y], 'Variance_weighted_gScore': pca_gscores_df.Variance_ratio_weighted_gScores[0:mtd5y]})
             sh_gscores_df = sh_gscores_df.set_index(df_gscores.Date)
             sh_gscores_df.plot(ax=axes[1],lw=1,title='Stock History based gScores')
             axes[1].axhline(0.5,lw=1,ls='-',c='r')
@@ -211,7 +214,4 @@ class GSH:
 
     def save_gscores_history(self, tsymbol):
         self.get_gscores_history(tsymbol)
-
-        #overall gScore using PCA
-        gspca.get_pca_derived_gscores(tsymbol)
 
