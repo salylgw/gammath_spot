@@ -33,6 +33,8 @@ except:
     import gammath_utils as gut
 
 def get_pca_derived_gscores(tsymbol):
+    mtdpy, _ = gut.get_min_trading_days()
+
     tickers_dir = gut.get_tickers_dir()
     path = tickers_dir / f'{tsymbol}'
     try:
@@ -41,28 +43,54 @@ def get_pca_derived_gscores(tsymbol):
         print('\nERROR: Failed to open micro-gScores history for symbol ', tsymbol)
         return
 
-    #Scale micro-gScores. Need to have mean at 0.0 for PCA
-    scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(df_micro_gscores_history)
+    micro_gscore_data = df_micro_gscores_history.values
+    time_steps, num_dimensions = micro_gscore_data.shape
 
-    #Use all component to extact explained varience ratio for each component
-    pca = PCA(n_components=len(df_micro_gscores_history.columns))
-    pca.fit(scaled_data)
+    pca_derived_overall_gscores = []
+    prev_components = None
 
-    #Use variance ration for each component variance weights
-    component_variance_weights = pca.explained_variance_ratio_
-    component_loadings = pca.components_
+    for time_step in range(mtdpy, time_steps):
+        #Obtain data upto time_step [must not lookahead]
+        micro_gscore_data_so_far = micro_gscore_data[:time_step]
 
-    #Derive weighage for each component micro-gScore
-    micro_gscore_weights = np.dot(component_variance_weights, component_loadings)
+        #Scale micro-gScores. Need to have mean at 0.0 for PCA
+        scaler = StandardScaler()
+        scaled_data = scaler.fit_transform(micro_gscore_data_so_far)
 
-    #Derive Overall gScore using PCA-derive micro-gScore weights
-    pca_derived_overall_gscores = np.dot(scaled_data, micro_gscore_weights)
+        #Use all component to extact explained varience ratio for each component
+        pca = PCA(n_components=num_dimensions)
+        #Data is already identical to Pearson correlation matrix of input data
+        pca.fit(scaled_data)
 
+        #Use variance ration for each component variance weights
+        component_variance_weights = pca.explained_variance_ratio_
+        component_loadings = pca.components_
+
+        #Intra-window sign consistency
+        if prev_components is not None:
+            for i in range(len(component_loadings)):
+                if np.dot(component_loadings[i], prev_components[i]) < 0:
+                    component_loadings[i] *= -1
+
+        prev_components = component_loadings.copy()
+
+        #Derive weighage for each component micro-gScore
+        micro_gscore_weights = np.dot(component_variance_weights, component_loadings)
+
+        #Current time_step score
+        current_scaled_data = scaler.transform(micro_gscore_data[time_step].reshape(1, -1))
+        current_pca_derived_overall_gscore = np.dot(current_scaled_data, micro_gscore_weights)[0]
+        pca_derived_overall_gscores.append(current_pca_derived_overall_gscore)
+
+
+    pca_derived_overall_gscores = np.array(pca_derived_overall_gscores)
     #Maintain original scale of -1 to +1
     pca_derived_overall_gscores /= np.max(np.abs(pca_derived_overall_gscores))
     pca_derived_overall_gscores = np.round(pca_derived_overall_gscores, decimals=3)
 
-    pd.DataFrame({'PCA_derived_gScore': pca_derived_overall_gscores}).to_csv(path / f'{tsymbol}_pcadgs.csv')
+    #Fill initial MTDPY with nan
+    overall_gscores = np.full(time_steps, np.nan)
+    overall_gscores[mtdpy:] = pca_derived_overall_gscores
+    pd.DataFrame({'PCA_derived_gScore': overall_gscores}, index=df_micro_gscores_history.index).to_csv(path / f'{tsymbol}_pcadgs.csv')
 
-    return pca_derived_overall_gscores
+    return overall_gscores

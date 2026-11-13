@@ -26,9 +26,11 @@ import os
 try:
     from gammath_spot import gammath_utils as gut
     from gammath_spot import gammath_stocks_analysis as gsa
+    from gammath_spot import gammath_mg_pca as gspca
 except:
     import gammath_utils as gut
     import gammath_stocks_analysis as gsa
+    import gammath_mg_pca as gspca
 
 def get_missing_gscores_count(df, gscores):
 
@@ -201,6 +203,7 @@ class GSH:
             #Use PDF instead of png to save space
             plt.savefig(path / f'{tsymbol}_gscores_charts.pdf', format='pdf')
             plt.close(fig=None)
+
             return df_gscores
         except:
             print('\nERROR: gScores history failed for symbol ', tsymbol)
@@ -208,4 +211,7 @@ class GSH:
 
     def save_gscores_history(self, tsymbol):
         self.get_gscores_history(tsymbol)
+
+        #overall gScore using PCA
+        gspca.get_pca_derived_gscores(tsymbol)
 
