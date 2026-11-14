@@ -41,6 +41,8 @@ def get_pca_derived_gscores(df_micro_gscores_history):
     pca_derived_overall_gscores = []
     prev_components = None
 
+    max_abs_pca_derived_gscore_so_far = 0.0
+
     for time_step in range(mtdpy, time_steps):
         #Obtain data upto time_step [must not lookahead]
         micro_gscore_data_so_far = micro_gscore_data[:time_step]
@@ -54,7 +56,7 @@ def get_pca_derived_gscores(df_micro_gscores_history):
         #Data is already identical to Pearson correlation matrix of input data
         pca.fit(scaled_data)
 
-        #Use variance ration for each component variance weights
+        #Use variance ratio for each component variance weights
         component_variance_weights = pca.explained_variance_ratio_
         component_loadings = pca.components_
 
@@ -66,21 +68,29 @@ def get_pca_derived_gscores(df_micro_gscores_history):
 
         prev_components = component_loadings.copy()
 
-        #Derive weighage for each component micro-gScore
+        #Derive weightage for each component micro-gScore
         micro_gscore_weights = np.dot(component_variance_weights, component_loadings)
 
         #Current time_step score
         current_scaled_data = scaler.transform(micro_gscore_data[time_step].reshape(1, -1))
         current_pca_derived_overall_gscore = np.dot(current_scaled_data, micro_gscore_weights)[0]
-        pca_derived_overall_gscores.append(current_pca_derived_overall_gscore)
+
+        max_abs_pca_derived_gscore_so_far = max(max_abs_pca_derived_gscore_so_far, abs(current_pca_derived_overall_gscore))
+        #Normalize PCA derived overall gscore (Maintain original scale of -1 to +1)
+        if (max_abs_pca_derived_gscore_so_far > 0):
+            normalized_pca_derived_overall_gscore = current_pca_derived_overall_gscore/max_abs_pca_derived_gscore_so_far
+        else:
+            normalized_pca_derived_overall_gscore = 0
+
+        pca_derived_overall_gscores.append(normalized_pca_derived_overall_gscore)
 
 
     pca_derived_overall_gscores = np.array(pca_derived_overall_gscores)
-    #Maintain original scale of -1 to +1
-    pca_derived_overall_gscores /= np.max(np.abs(pca_derived_overall_gscores))
     pca_derived_overall_gscores = np.round(pca_derived_overall_gscores, decimals=3)
 
     #Fill initial MTDPY with nan
     overall_gscores = np.full(time_steps, np.nan)
+
+    #Fill last 4 years (approx) PCA derived overall gscores
     overall_gscores[mtdpy:] = pca_derived_overall_gscores
     return pd.DataFrame({'Variance_ratio_weighted_gScores': overall_gscores}, index=range(len(overall_gscores)))
