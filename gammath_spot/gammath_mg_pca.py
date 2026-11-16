@@ -25,6 +25,7 @@ __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from scipy.optimize import linear_sum_assignment
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 try:
@@ -38,7 +39,7 @@ def get_pca_derived_gscores(df_micro_gscores_history):
     micro_gscore_data = df_micro_gscores_history.values
     time_steps, num_dimensions = micro_gscore_data.shape
 
-    pca_derived_overall_gscores = []
+    pca_derived_overall_gscores = np.full(time_steps, np.nan)
     prev_components = None
 
     max_abs_pca_derived_gscore_so_far = 0.0
@@ -53,44 +54,51 @@ def get_pca_derived_gscores(df_micro_gscores_history):
 
         #Use all component to extact explained varience ratio for each component
         pca = PCA(n_components=num_dimensions)
-        #Data is already identical to Pearson correlation matrix of input data
+        #PCA on standardized data is equivalent of eigenvalue decomposition of correlation matrix
         pca.fit(scaled_data)
 
         #Use variance ratio for each component variance weights
-        component_variance_weights = pca.explained_variance_ratio_
-        component_loadings = pca.components_
+        component_variance_weights = pca.explained_variance_ratio_.copy()
+        component_loadings = pca.components_.copy()
 
-        #Intra-window sign consistency
+        #Inter-window sign consistency
         if prev_components is not None:
-            for i in range(len(component_loadings)):
-                if np.dot(component_loadings[i], prev_components[i]) < 0:
-                    component_loadings[i] *= -1
+            #Need to match new component to previous most similar component
+            similarity = np.abs(component_loadings @ prev_components.T)
+            rows, columns = linear_sum_assignment(-similarity)
+            order = np.empty_like(rows)
+            order[columns] = rows
+
+            #Reorder variance weights together with loadings
+            component_loadings = component_loadings[order]
+            component_variance_weights = component_variance_weights[order]
+            #Need to align signs with matched previous components
+            signs = np.sign(np.sum(component_loadings * prev_components, axis=1))
+            signs[signs == 0] = 1
+            component_loadings = component_loadings * signs[:, None]
+
 
         prev_components = component_loadings.copy()
 
-        #Derive weightage for each component micro-gScore
+        #Derive weightage for each standardized component micro-gScore
         micro_gscore_weights = np.dot(component_variance_weights, component_loadings)
+        #convert to weights on uncentered micro-gScores
+        weights = micro_gscore_weights / scaler.scale_
+
+        #Make weight size comparable across steps
+        weight_size = np.abs(weights).sum()
+        if (weight_size > 0):
+            weights = weights / weight_size
 
         #Current time_step score
-        current_scaled_data = scaler.transform(micro_gscore_data[time_step].reshape(1, -1))
-        current_pca_derived_overall_gscore = np.dot(current_scaled_data, micro_gscore_weights)[0]
-
+        current_pca_derived_overall_gscore = (micro_gscore_data[time_step] - scaler.mean_) @ weights
         max_abs_pca_derived_gscore_so_far = max(max_abs_pca_derived_gscore_so_far, abs(current_pca_derived_overall_gscore))
+
         #Normalize PCA derived overall gscore (Maintain original scale of -1 to +1)
         if (max_abs_pca_derived_gscore_so_far > 0):
-            normalized_pca_derived_overall_gscore = current_pca_derived_overall_gscore/max_abs_pca_derived_gscore_so_far
+            pca_derived_overall_gscores[time_step] = current_pca_derived_overall_gscore/max_abs_pca_derived_gscore_so_far
         else:
-            normalized_pca_derived_overall_gscore = 0
-
-        pca_derived_overall_gscores.append(normalized_pca_derived_overall_gscore)
+            pca_derived_overall_gscores[time_step] = 0.0
 
 
-    pca_derived_overall_gscores = np.array(pca_derived_overall_gscores)
-    pca_derived_overall_gscores = np.round(pca_derived_overall_gscores, decimals=3)
-
-    #Fill initial MTDPY with nan
-    overall_gscores = np.full(time_steps, np.nan)
-
-    #Fill last 4 years (approx) PCA derived overall gscores
-    overall_gscores[mtdpy:] = pca_derived_overall_gscores
-    return pd.DataFrame({'Variance_ratio_weighted_gScores': overall_gscores}, index=range(len(overall_gscores)))
+    return pd.DataFrame({'Variance_ratio_weighted_gScores': pca_derived_overall_gscores}, index=range(len(pca_derived_overall_gscores)))
