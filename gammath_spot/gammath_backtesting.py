@@ -45,7 +45,7 @@ MIN_SH_DISCOUNT_LEVEL = 0.5
 #Remember, sell criteria is subjective. The methods shown here could be a way out of a position if one decides to get out; It is not meant to be mandatory sell decision. If one is confident of long-term prospects and if the stock does actually do well then perhaps buy and hold might turn out to be the best strategy
 #It is generally expected that in reality, execution of gScore-based strategy would be better than what is used in backtesting since backtesting strategy does not account for news analysis and current information that is used in decision-making. As described in the guidelines, one would check the news before making buy/sell decisions
 #This basic example is for short-/long-term and medium-/high-risk trades
-def run_basic_backtest(df, pca_derived_gscores, path, tsymbol, term, risk_appetite, max_cash):
+def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
 
     mtdpy, mtd5y = gut.get_min_trading_days()
 
@@ -344,12 +344,9 @@ class GBT:
             print('\nERROR: Backtesting data initialization failed for symbol ', tsymbol)
             return
 
-        #overall gScore using PCA
-        pca_derived_gscores = pd.read_csv(path / f'{tsymbol}_vrw_gscores.csv', index_col='Unnamed: 0')
-
         #You can call your own backtesting function here. Following is one example
-        run_basic_backtest(df_gscores_history, pca_derived_gscores, path, tsymbol, 'short_term', 'medium', 10000)
-        run_basic_backtest(df_gscores_history, pca_derived_gscores, path, tsymbol, 'long_term', 'medium', 10000)
-        run_basic_backtest(df_gscores_history, pca_derived_gscores, path, tsymbol, 'short_term', 'high', 10000)
-        run_basic_backtest(df_gscores_history, pca_derived_gscores, path, tsymbol, 'long_term', 'high', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term', 'medium', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term', 'medium', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'short_term', 'high', 10000)
+        run_basic_backtest(df_gscores_history, path, tsymbol, 'long_term', 'high', 10000)
 

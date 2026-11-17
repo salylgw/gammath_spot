@@ -135,6 +135,13 @@ class SPOT_environment(gym.Env):
             print(f'Micro gScores not found for {tsymbol}. Please run gScore historian tool before using this tool')
             exit(-1)
 
+        try:
+            #overall gScore using PCA
+            pca_derived_gscores = pd.read_csv(path / f'{tsymbol}_vrw_gscores.csv', index_col='Unnamed: 0')
+        except:
+            print(f'Overall PCA-derived gScores not found for {tsymbol}. Please run gScore historian tool before using this tool')
+            exit(-1)
+
         #Filter out parts not needed for RL
         self.SPOT_vals = df.drop(['Date', 'Close', 'TPC5Y'], axis=1)
 
