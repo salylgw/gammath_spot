@@ -18,14 +18,19 @@
 __author__ = 'Salyl Bhagwat'
 __copyright__ = 'Copyright (c) 2021-Present, Salyl Bhagwat, Gammath Works'
 
-#This is a work-in-progress and has lot of TBDs (e.g. lookback window, invoked in historian v/s backtester, integrated into RL etc.).
+#This is a work-in-progress and has some TBDs (e.g. integrate into RL).
 #Do not use yet
-#Use Principal Component Analysis to derive variance-ratio-weighted micro-gScores for overall gScore calculation
+
+#Use Principal Component Analysis to derive weights for micro-gScores and calculate overall gScore
+#The weight is derived based on how strongly each micro-gScore moves together with other micro-gScores
+#AND
+#The weight is derived based on how stable is a micro-gScore
+#Following code is simplified as weight is derived from summing, overall components so order doesn't matter
+#Variance ratios stay paired with own loadings as that is guaranteed by PCA
 
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from scipy.optimize import linear_sum_assignment
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 try:
@@ -40,9 +45,11 @@ def get_pca_derived_gscores(df_micro_gscores_history):
     time_steps, num_dimensions = micro_gscore_data.shape
 
     pca_derived_overall_gscores = np.full(time_steps, np.nan)
-    prev_components = None
 
     max_abs_pca_derived_gscore_so_far = 0.0
+
+    #Reference direction [based on micro-gScores where 1 means discounted and -1 means premium]
+    reference = np.ones(num_dimensions)
 
     for time_step in range(mtdpy, time_steps):
         #Obtain data upto time_step [must not lookahead]
@@ -58,30 +65,15 @@ def get_pca_derived_gscores(df_micro_gscores_history):
         pca.fit(scaled_data)
 
         #Use variance ratio for each component variance weights
-        component_variance_weights = pca.explained_variance_ratio_.copy()
-        component_loadings = pca.components_.copy()
+        component_variance_weights = pca.explained_variance_ratio_
+        component_loadings = pca.components_
 
-        #Inter-window sign consistency
-        if prev_components is not None:
-            #Need to match new component to previous most similar component
-            similarity = np.abs(component_loadings @ prev_components.T)
-            rows, columns = linear_sum_assignment(-similarity)
-            order = np.empty_like(rows)
-            order[columns] = rows
+        #How much each component points along the reference direction
+        #Cancel out orientation
+        alignment = component_loadings @ reference
 
-            #Reorder variance weights together with loadings
-            component_loadings = component_loadings[order]
-            component_variance_weights = component_variance_weights[order]
-            #Need to align signs with matched previous components
-            signs = np.sign(np.sum(component_loadings * prev_components, axis=1))
-            signs[signs == 0] = 1
-            component_loadings = component_loadings * signs[:, None]
-
-
-        prev_components = component_loadings.copy()
-
-        #Derive weightage for each standardized component micro-gScore
-        micro_gscore_weights = np.dot(component_variance_weights, component_loadings)
+        #Derive weightage for each standardized micro-gScore
+        micro_gscore_weights = ((component_variance_weights * alignment) @ component_loadings)
         #convert to weights on uncentered micro-gScores
         weights = micro_gscore_weights / scaler.scale_
 
@@ -90,8 +82,8 @@ def get_pca_derived_gscores(df_micro_gscores_history):
         if (weight_size > 0):
             weights = weights / weight_size
 
-        #Current time_step score
-        current_pca_derived_overall_gscore = (micro_gscore_data[time_step] - scaler.mean_) @ weights
+        #Current time_step score; 0 is not centered in micro gScores so no centering
+        current_pca_derived_overall_gscore = (micro_gscore_data[time_step] @ weights)
         max_abs_pca_derived_gscore_so_far = max(max_abs_pca_derived_gscore_so_far, abs(current_pca_derived_overall_gscore))
 
         #Normalize PCA derived overall gscore (Maintain original scale of -1 to +1)
@@ -101,4 +93,4 @@ def get_pca_derived_gscores(df_micro_gscores_history):
             pca_derived_overall_gscores[time_step] = 0.0
 
 
-    return pd.DataFrame({'Variance_ratio_weighted_gScores': pca_derived_overall_gscores}, index=range(len(pca_derived_overall_gscores)))
+    return pd.DataFrame({'Weighted_gScores': pca_derived_overall_gscores}, index=range(len(pca_derived_overall_gscores)))

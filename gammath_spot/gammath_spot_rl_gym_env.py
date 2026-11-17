@@ -137,9 +137,9 @@ class SPOT_environment(gym.Env):
 
         try:
             #overall gScore using PCA
-            pca_derived_gscores = pd.read_csv(path / f'{tsymbol}_vrw_gscores.csv', index_col='Unnamed: 0')
+            weighted_gscore = pd.read_csv(f'tickers/{tsymbol}/{tsymbol}_weighted_gscores.csv', index_col='Unnamed: 0')
         except:
-            print(f'Overall PCA-derived gScores not found for {tsymbol}. Please run gScore historian tool before using this tool')
+            print(f'Weighted gScores not found for {tsymbol}. Please run gScore historian tool before using this tool')
             exit(-1)
 
         #Filter out parts not needed for RL
