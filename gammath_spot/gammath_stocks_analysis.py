@@ -218,9 +218,11 @@ class GSA:
         # Probability signals
         try:
             probability_score = 0
+            prob_max_score = 10
             probability_log = ''
 
-            probability_score, probability_log = gproba.get_probabilty_signals(tsymbol, df, path)
+            probability_score, prob_max_score, probability_log = gproba.get_probabilty_signals(tsymbol, df, path)
+            prob_final_score = round((probability_score/prob_max_score), 3)
         except RuntimeError:
             print('\nERROR: generating probability signals for ', tsymbol, ': ', sys.exc_info()[0])
         except ValueError:
@@ -272,12 +274,10 @@ class GSA:
         sh_gScore_df.loc[0, "OLS"] = ols_final_score
         sh_gScore_df.loc[0, "MFI"] = mfi_final_score
         sh_gScore_df.loc[0, "Stoch"] = stoch_final_score
-        sh_gScore_df.loc[0, "SH_gScore"] = round((overall_sh_gscore/10), 3)
-        sh_gScore_df.loc[0, "PS"] = probability_score
         sh_gScore_df.loc[0, "CECS"] = cecs_final_score
-        sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
         sh_gScore_df.loc[0, "LSR"] = local_sr_final_score
-        sh_gScore_df.loc[0, "KER"] = round(curr_ker, 3)
+        sh_gScore_df.loc[0, "TPC5Y"] = tpc5y
+        sh_gScore_df.loc[0, "SH_gScore"] = round((overall_sh_gscore/10), 3)
 
         #No need to draw charts for backtesting
         if need_charts_n_signals_info:

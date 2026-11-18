@@ -30,23 +30,27 @@ def get_probabilty_signals(tsymbol, df, path):
     Generate score based on empirical next day probability,
     and 1-month trend probability
     """
-    next_up_p, pdp_log = get_price_dir_probability(df)
+    _, pdp_log = get_price_dir_probability(df)
     after_month_p, lgstic_log = get_lgstic_signals(tsymbol, df, path)
 
-    after_day_up_p_score = 2.0*next_up_p - 1.0
-    after_month_p_score = 2.0*after_month_p - 1.0
+    if (after_month_p < 0.4):
+        probability_score = -1.0
+    elif (after_month_p < 0.5):
+        probability_score = -0.5
+    elif (after_month_p > 0.7):
+        probability_score = 1.0
+    elif (after_month_p > 0.6):
+        probability_score = 0.5
+    elif (after_month_p > 0.5):
+        probability_score = 0.25
+    else:
+        probability_score = 0.0
 
-    if after_month_p > 0.6: #+ve long-term trend
-        after_day_weight = 0.70
-        after_month_weight = 0.30
-    else: #not a conclusive +ve trend or could be -ve trend
-        after_day_weight = 0.30
-        after_month_weight = 0.70
+    prob_max_score = 10
+    probability_score = round(probability_score*10)
+    prob_string = f'Probabilities score: {probability_score}/{prob_max_score}'
 
-    probability_score = round((after_month_weight*after_month_p_score + after_day_weight*after_day_up_p_score), 3)
+    probability_log = f'{prob_string}\n{pdp_log}\n{lgstic_log}'
 
-    display_fraction = f'{round(probability_score*10):d}/10'
-    probability_log = f'Probabilities score: {display_fraction}\n{pdp_log}\n{lgstic_log}'
-
-    return probability_score, probability_log
+    return probability_score, prob_max_score, probability_log
 
