@@ -50,6 +50,7 @@ NEUTRAL_LEVEL = 0.0
 MIN_DISCOUNT_LEVEL = 0.5
 
 def build_rules(prices, weighted_gscores):
+    mtdpy, _ = gut.get_min_trading_days()
     n = len(weighted_gscores)
     buy_zone = np.zeros(n, dtype=bool)
     sell_zone = np.zeros(n, dtype=bool)
@@ -59,7 +60,7 @@ def build_rules(prices, weighted_gscores):
     trading_at_discount = False
     trading_at_premium = False
 
-    for time_step in range(n):
+    for time_step in range(mtdpy, n):
         weighted_gscore = weighted_gscores[time_step]
         if (weighted_gscore >= MIN_DISCOUNT_LEVEL):
             trading_at_discount = True
@@ -71,7 +72,7 @@ def build_rules(prices, weighted_gscores):
         elif (weighted_gscore >= NEUTRAL_LEVEL):
             trading_at_premium = False
 
-        if time_step:
+        if (time_step > mtdpy):
             price_rising = (prices[time_step] >= prices[time_step-1])
             price_falling = (prices[time_step] < prices[time_step-1])
         else:
@@ -187,6 +188,9 @@ class SPOT_environment(gym.Env):
 
         #Filter out parts not needed for RL
         self.SPOT_vals = df.drop(['Date', 'Close', 'TPC5Y'], axis=1)
+
+        #Precompute rules
+        buy_zone, sell_zone, trading_at_discount_array, trading_at_premium_array = build_rules(df.Close, weighted_gscore.Weighted_gScores)
 
         #Price history corresponding to steps
         self.prices = df.Close
