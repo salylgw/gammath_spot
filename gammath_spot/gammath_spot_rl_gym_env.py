@@ -43,6 +43,49 @@ except:
     import gammath_utils as gut
 
 #This is a work-in-progress. A lot will change before it is usable
+#Default values to cover broadest variety of stocks.
+#Should be fine tuned for specific characteristics
+MIN_PREMIUM_LEVEL = -0.5
+NEUTRAL_LEVEL = 0.0
+MIN_DISCOUNT_LEVEL = 0.5
+
+def build_rules(prices, weighted_gscores):
+    n = len(weighted_gscores)
+    buy_zone = np.zeros(n, dtype=bool)
+    sell_zone = np.zeros(n, dtype=bool)
+    trading_at_discount_array = np.zeros(n, dtype=bool)
+    trading_at_premium_array = np.zeros(n, dtype=bool)
+
+    trading_at_discount = False
+    trading_at_premium = False
+
+    for time_step in range(n):
+        weighted_gscore = weighted_gscores[time_step]
+        if (weighted_gscore >= MIN_DISCOUNT_LEVEL):
+            trading_at_discount = True
+        elif (weighted_gscore <= NEUTRAL_LEVEL):
+            trading_at_discount = False
+
+        if (weighted_gscore <= MIN_PREMIUM_LEVEL):
+            trading_at_premium = True
+        elif (weighted_gscore >= NEUTRAL_LEVEL):
+            trading_at_premium = False
+
+        if time_step:
+            price_rising = (prices[time_step] >= prices[time_step-1])
+            price_falling = (prices[time_step] < prices[time_step-1])
+        else:
+            price_rising = False
+            price_falling = False
+
+        trading_at_discount_array[time_step] = trading_at_discount
+        trading_at_premium_array[time_step] = trading_at_premium
+
+        buy_zone[time_step] = (trading_at_discount and (weighted_gscore < MIN_DISCOUNT_LEVEL) and price_rising)
+        sell_zone[time_step] = (trading_at_premium and (weighted_gscore > MIN_PREMIUM_LEVEL) and price_falling)
+
+    return buy_zone, sell_zone, trading_at_discount_array, trading_at_premium_array
+
 #Environment that is compatible with Gymnasium
 class SPOT_environment(gym.Env):
     metadata = {'render_modes': []}
