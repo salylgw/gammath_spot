@@ -93,6 +93,7 @@ class SPOT_environment(gym.Env):
 
     def __init__(self, tsymbol, max_trading_days):
         self.ticker = tsymbol
+        self.min_start_index, _ = gut.get_min_trading_days()
         self.max_trading_days = max_trading_days
         self.steps = max_trading_days
         self.random_start_index = 0
@@ -107,7 +108,7 @@ class SPOT_environment(gym.Env):
         self.step = 0
         self.start_buy_index = -1
         #Use random starting point
-        self.random_start_index = np.random.randint(low=0, high=(len(self.SPOT_vals)-self.max_trading_days))
+        self.random_start_index = np.random.randint(low=self.min_start_index, high=(len(self.SPOT_vals)-self.max_trading_days))
 
         #Zero-init trade transaction info for all steps
         for i in range(self.total_transactions_so_far):
@@ -127,9 +128,21 @@ class SPOT_environment(gym.Env):
         done = (self.step > (self.steps - 1))
         return obs, done
 
+    def get_valid_actions(self):
+        idx = (self.random_start_index + self.step - 1)
+        buy_valid = bool(self.buy_zone[idx])
+        sell_valid = bool(self.sell_zone[idx] and (self.start_buy_index >= 0))
+        #Buy valid, Hold valid, Sell valid
+        return np.array([buy_valid, True, sell_valid], dtype=bool)
+
+
     def take_trade_action_step(self, action):
         reward = 0
         trade_step = (self.random_start_index + self.step - 1)
+
+        #Rule based action
+        if (not self.get_valid_actions()[action]):
+            action = self.action_types.index('Hold')
 
         #Save the action (exclude saving hold actions)
         #Calculate reward for the action
@@ -189,8 +202,12 @@ class SPOT_environment(gym.Env):
         #Filter out parts not needed for RL
         self.SPOT_vals = df.drop(['Date', 'Close', 'TPC5Y'], axis=1)
 
+        if ((len(self.SPOT_vals) - self.max_trading_days) <= self.min_start_index):
+            print(f'Insufficent history for {tsymbol} for {self.max_trading_days} since there are {self.min_start_index} warmup days')
+            exit(-1)
+
         #Precompute rules
-        buy_zone, sell_zone, trading_at_discount_array, trading_at_premium_array = build_rules(df.Close, weighted_gscore.Weighted_gScores)
+        self.buy_zone, self.sell_zone, self.trading_at_discount_array, self.trading_at_premium_array = build_rules(df.Close, weighted_gscore.Weighted_gScores)
 
         #Price history corresponding to steps
         self.prices = df.Close
@@ -212,8 +229,8 @@ class SPOT_environment(gym.Env):
 
     def get_rewards(self, trade_step):
         reward = 0
-        cost = self.trading_transactions.loc[self.start_buy_index:self.total_transactions_so_far, "Price"].sum()
-        quantity = self.trading_transactions.loc[self.start_buy_index:self.total_transactions_so_far, "Quantity"].sum()
+        cost = self.trading_transactions.loc[self.start_buy_index:(self.total_transactions_so_far-1), "Price"].astype(float).sum()
+        quantity = self.trading_transactions.loc[self.start_buy_index:(self.total_transactions_so_far-1), "Quantity"].astype(float).sum()
         sell_amount = quantity*self.prices[trade_step]
         if (cost > 0):
             #Profit percentage
@@ -259,8 +276,9 @@ class SPOT_agent():
     def update_qtn_weights_from_qln_weights(self):
         self.q_target_network.set_weights(self.q_learner_network.get_weights())
 
-    def save_state_transitions(self, curr_state, action, reward, next_state, done):
-        self.saved_experience.append((curr_state, action, reward, next_state, done))
+    def save_state_transitions(self, curr_state, action, reward, next_state, done, next_valid_actions):
+        #next_valid_actions is rule based mask for next state
+        self.saved_experience.append((curr_state, action, reward, next_state, done, next_valid_actions))
         return
 
     def replay_experience(self):
@@ -269,7 +287,9 @@ class SPOT_agent():
         if (saved_experience_len > self.batch_size):
             #Get iterator for corresponding iterables
             curr_batch = map(np.array, zip(*sample(self.saved_experience, self.batch_size)))
-            curr_state, action, reward, next_state, not_done = curr_batch
+            curr_state, action, reward, next_state, not_done, next_valid_actions = curr_batch
+            action = action.astype(int)
+            next_valid_actions = next_valid_actions.astype(bool)
 
             #Use double deep q-learning (DDQN) algorithm
             #We want to decouple the estimation of action values from selection of actions
@@ -277,21 +297,24 @@ class SPOT_agent():
             #Estimate next q values in learning network
             ln_next_q_values = self.q_learner_network.predict_on_batch(next_state)
 
-            #Select max values in learning network
-            ln_max_q_values = np.argmax(ln_next_q_values, axis=1).squeeze()
+            #Rule based actions
+            ln_next_q_values = np.where(next_valid_actions, ln_next_q_values, -np.inf)
+
+            #Select best valid action in learning network
+            ln_max_q_actions = np.argmax(ln_next_q_values, axis=1)
 
             #Estimate next q values in target network
             tn_next_q_values = self.q_target_network.predict_on_batch(next_state)
 
             indices = tf.range(self.batch_size)
 
-            #Select target network's predicted q values for learner network's max q values
-            temporal_diff_target_vals = tf.gather_nd(tn_next_q_values, tf.stack((indices, tf.cast(ln_max_q_values, tf.int32)), axis=1))
+            #Select target network's predicted q values for learner network's best valid actions
+            temporal_diff_target_vals = tn_next_q_values[indices, ln_max_q_actions]
 
             #gamma and temporal diff not relevant if it is done
             target_vals = (reward + (self.gamma*temporal_diff_target_vals*not_done))
 
-            ln_q_values = self.q_learner_network.predict_on_batch(curr_state)
+            ln_q_values = np.array(self.q_learner_network.predict_on_batch(curr_state))
             ln_q_values[indices, action] = target_vals
 
             #Check loss value for debugging
@@ -305,33 +328,23 @@ class SPOT_agent():
     def update_epsilon(self):
         self.epsilon -= self.epsilon_decay
 
-    def default_policy(self, state):
-        q = self.q_learner_network.predict(state)
+    def default_policy(self, state, valid_actions):
+        q = np.array(self.q_learner_network.predict(state, verbose=0))
+        #enforce rule based actions
+        q[:, ~valid_actions] = -np.inf
+
         #Get max q value index
-        action = np.argmax(q, axis=1).squeeze()
+        action = int(np.argmax(q, axis=1).squeeze())
         return action
 
-    def epsilon_greedy_policy(self, state):
+    def epsilon_greedy_policy(self, state, valid_actions):
         #This can be updated to use backtesting profiles
         if (self.epsilon > np.random.rand()):
-            #Pick a random action;
-            if self.bought:
-                max_actions = self.max_actions
-            else:
-                #Only buy or hold are valid actions
-                #If there is sell before buy then there won't be any reward
-                max_actions = (self.max_actions-1)
-
-            action = np.random.choice(max_actions)
+            #Pick a random action from valid actions only (rule based);
+            action = int(np.random.choice(np.flatnonzero(valid_actions)))
         else:
             #this will still be arbitrary initially
-            action = self.default_policy(state)
-
-        #Set the flag for choosing valid action
-        if (self.action_types[action] == 'Buy'):
-            self.bought = True
-        elif (self.action_types[action] == 'Sell'):
-            self.bought = False
+            action = self.default_policy(state, valid_actions)
 
         #Update steps completed
         self.steps += 1
@@ -380,20 +393,26 @@ def main():
     for episode_num in range(max_episodes):
         #Reset environment for new episodes and get initial state
         curr_state, done = spot_trading_env.env.unwrapped.reset()
+        #Valid actions from rules
+        curr_valid_actions = spot_trading_env.env.unwrapped.get_valid_actions()
+        episode_first_row = total_trade_transaction_count
         curr_episode_rewards = 0
 
         while not done:
             #Get action based on policy.
-            action = spot_trading_agent.epsilon_greedy_policy(curr_state.reshape(-1, obs_dim[0]))
+            action = spot_trading_agent.epsilon_greedy_policy(curr_state.reshape(-1, obs_dim[0]), curr_valid_actions)
 
             #Get reward and observation of next state
             next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
 
+            #Rule based acions for next state
+            next_valid_actions = spot_trading_env.env.unwrapped.get_valid_actions()
+ 
             #Accumulate rewards per step
             curr_episode_rewards += reward
 
             #Save transition
-            spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, (0.0 if done else 1.0))
+            spot_trading_agent.save_state_transitions(curr_state, action, reward, next_state, (0.0 if done else 1.0), next_valid_actions)
 
             if done:
                 #Get the trade transaction from this episode
@@ -412,9 +431,11 @@ def main():
             spot_trading_agent.replay_experience()
 
             curr_state = next_state
+            curr_valid_actions = next_valid_actions
 
         #Save rewards per episode for later reference (adjust back to show percentage gain/loss)
-        df_episodes_trade_transactions.loc[total_trade_transaction_count-1, "episode_reward"] = round((curr_episode_rewards*1000), 3) #round it off to take less display space in CSV file
+        if (total_trade_transaction_count > episode_first_row):
+            df_episodes_trade_transactions.loc[total_trade_transaction_count-1, "episode_reward"] = round((curr_episode_rewards*1000), 3) #round it off to take less display space in CSV file
 
         #Update epsilon for next episode
         spot_trading_agent.update_epsilon()
