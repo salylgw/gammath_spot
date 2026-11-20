@@ -105,7 +105,7 @@ class SPOT_environment(gym.Env):
 
     def reset(self, seed=None):
         #step 0
-        self.step = 0
+        self.curr_step = 0
         self.start_buy_index = -1
         #Use random starting point
         self.random_start_index = np.random.randint(low=self.min_start_index, high=(len(self.SPOT_vals)-self.max_trading_days))
@@ -123,13 +123,13 @@ class SPOT_environment(gym.Env):
 
     def take_obs_step(self):
         #New observation
-        obs = self.SPOT_vals.iloc[self.random_start_index + self.step].values
-        self.step += 1
-        done = (self.step > (self.steps - 1))
+        obs = self.SPOT_vals.iloc[self.random_start_index + self.curr_step].values
+        self.curr_step += 1
+        done = (self.curr_step > (self.steps - 1))
         return obs, done
 
     def get_valid_actions(self):
-        idx = (self.random_start_index + self.step - 1)
+        idx = (self.random_start_index + self.curr_step - 1)
         buy_valid = bool(self.buy_zone[idx])
         sell_valid = bool(self.sell_zone[idx] and (self.start_buy_index >= 0))
         #Buy valid, Hold valid, Sell valid
@@ -138,7 +138,7 @@ class SPOT_environment(gym.Env):
 
     def take_trade_action_step(self, action):
         reward = 0
-        trade_step = (self.random_start_index + self.step - 1)
+        trade_step = (self.random_start_index + self.curr_step - 1)
 
         #Rule based action
         if (not self.get_valid_actions()[action]):
@@ -173,7 +173,7 @@ class SPOT_environment(gym.Env):
         if (done and (reward == 0) and (self.start_buy_index >= 0)):
             #Did not have a corresponding sale for buy(s) at the end of the episode
             #Last observation step
-            trade_step = (self.random_start_index + self.step - 1)
+            trade_step = (self.random_start_index + self.curr_step - 1)
 
             #Get the incomplete reward
             quantity, reward = self.get_rewards(trade_step)
