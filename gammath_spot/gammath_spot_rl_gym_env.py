@@ -97,13 +97,14 @@ class SPOT_environment(gym.Env):
         self.max_trading_days = max_trading_days
         self.steps = max_trading_days
         self.random_start_index = 0
+        self.self_buy_index = -1
         self.init_SPOT_RL_env_data(tsymbol)
         self.action_space = spaces.Discrete(len(self.action_types))
-        self.observation_space = spaces.Box(self.SPOT_vals_mins, self.SPOT_vals_maxs)
+        self.observation_space = spaces.Box(self.SPOT_vals_mins, self.SPOT_vals_maxs, dtype=np.float32)
         self.total_transactions_so_far = 0
         self.reset()
 
-    def reset(self, seed=None):
+    def reset(self, seed=None, options=None):
         #step 0
         self.curr_step = 0
         self.start_buy_index = -1
@@ -118,12 +119,15 @@ class SPOT_environment(gym.Env):
             self.trading_transactions.loc[i, "Quantity"] = 0
 
         self.total_transactions_so_far = 0
-        obs, done = self.take_obs_step()
-        return obs, done
+        obs, _ = self.take_obs_step()
+        info = {'valid_actions': self.get_valid_actions()}
+        return obs, info
 
     def take_obs_step(self):
         #New observation
-        obs = self.SPOT_vals.iloc[self.random_start_index + self.curr_step].values
+        new_obs = self.SPOT_vals.iloc[self.random_start_index + self.curr_step].values
+        have_bought = 1.0 if (self.start_buy_index >= 0) else 0.0
+        obs = np.append(new_obs, have_bought).astype(np.float32)
         self.curr_step += 1
         done = (self.curr_step > (self.steps - 1))
         return obs, done
@@ -136,7 +140,7 @@ class SPOT_environment(gym.Env):
         return np.array([buy_valid, True, sell_valid], dtype=bool)
 
 
-    def take_trade_action_step(self, action):
+    def step(self, action):
         reward = 0
         trade_step = (self.random_start_index + self.curr_step - 1)
 
@@ -178,7 +182,8 @@ class SPOT_environment(gym.Env):
             #Get the incomplete reward
             quantity, reward = self.get_rewards(trade_step)
 
-        return obs, reward, done
+        info = {'valid_actions': self.get_valid_actions(), 'episode_trade_transactions': self.trading_transactions if done else []}
+        return obs, reward, done, False, info
 
     def render(self):
         #action not required
@@ -214,8 +219,8 @@ class SPOT_environment(gym.Env):
         #Get the dates for testing
         self.Dates = df.Date
         #Need min/max for gymnasium
-        self.SPOT_vals_mins = np.array(self.SPOT_vals.min())
-        self.SPOT_vals_maxs = np.array(self.SPOT_vals.max())
+        self.SPOT_vals_mins = np.append(np.array(self.SPOT_vals.min()), 0.0).astype(np.float32)
+        self.SPOT_vals_maxs = np.append(np.array(self.SPOT_vals.max()), 1.0).astype(np.float32)
 
         #Basic action types
         self.action_types = ('Buy', 'Hold', 'Sell')
@@ -388,21 +393,22 @@ def main():
     #Training loop
     for episode_num in range(max_episodes):
         #Reset environment for new episodes and get initial state
-        curr_state, done = spot_trading_env.env.unwrapped.reset()
+        curr_state, info = spot_trading_env.reset()
         #Valid actions from rules
-        curr_valid_actions = spot_trading_env.env.unwrapped.get_valid_actions()
+        curr_valid_actions = info['valid_actions']
         episode_first_row = total_trade_transaction_count
         curr_episode_rewards = 0
+        done = False
 
         while not done:
             #Get action based on policy.
             action = spot_trading_agent.epsilon_greedy_policy(curr_state.reshape(-1, obs_dim[0]), curr_valid_actions)
 
             #Get reward and observation of next state
-            next_state, reward, done = spot_trading_env.env.unwrapped.take_trade_action_step(action)
+            next_state, reward, done, _, info = spot_trading_env.step(action)
 
             #Rule based acions for next state
-            next_valid_actions = spot_trading_env.env.unwrapped.get_valid_actions()
+            next_valid_actions = info['valid_actions']
  
             #Accumulate rewards per step
             curr_episode_rewards += reward
