@@ -334,7 +334,7 @@ class SPOT_agent():
         self.epsilon -= self.epsilon_decay
 
     def default_policy(self, state, valid_actions):
-        q = np.array(self.q_learner_network.predict(state, verbose=0))
+        q = np.array(self.q_learner_network(state, training=False))
         #enforce rule based actions
         q[:, ~valid_actions] = -np.inf
 
