@@ -42,15 +42,19 @@ try:
 except:
     import gammath_utils as gut
 
+
 #This is a work-in-progress. A lot will change before it is usable
 #Default values to cover broadest variety of stocks.
 #Should be fine tuned for specific characteristics
+mtdpy, _ = gut.get_min_trading_days()
 MIN_PREMIUM_LEVEL = -0.5
 NEUTRAL_LEVEL = 0.0
 MIN_DISCOUNT_LEVEL = 0.5
+MAX_TRADING_DAYS = (mtdpy << 1)
+#Trading profiles (similar to backtesting except the term)
+trading_profiles = ('medium_risk', 'high_risk')
 
 def build_rules(prices, weighted_gscores):
-    mtdpy, _ = gut.get_min_trading_days()
     n = len(weighted_gscores)
     buy_zone = np.zeros(n, dtype=bool)
     sell_zone = np.zeros(n, dtype=bool)
@@ -91,11 +95,15 @@ def build_rules(prices, weighted_gscores):
 class SPOT_environment(gym.Env):
     metadata = {'render_modes': []}
 
-    def __init__(self, tsymbol, max_trading_days):
+    def __init__(self, tsymbol, risk_appetite):
+        if (risk_appetite not in trading_profiles):
+            raise ValueError(f'Unsupported trading profile: {risk_appetite}')
+
+        self.risk_appetite = risk_appetite
         self.ticker = tsymbol
         self.min_start_index, _ = gut.get_min_trading_days()
-        self.max_trading_days = max_trading_days
-        self.steps = max_trading_days
+        self.max_trading_days = MAX_TRADING_DAYS #2 years to give room for gScore cycles
+        self.steps = self.max_trading_days
         self.random_start_index = 0
         self.self_buy_index = -1
         self.init_SPOT_RL_env_data(tsymbol)
@@ -343,27 +351,9 @@ class SPOT_agent():
 
         return action
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("ticker", help="A ticker symbol e.g. AAPL")
-    parser.add_argument("number_of_trading_days", help="Number of trading days to estimate e.g. 10")
-    args = parser.parse_args()
-    tsymbol = args.ticker
-    mtdpy, mtd5y = gut.get_min_trading_days()
+def spot_agent_training(tsymbol, path, risk_appetite):
 
-    try:
-        max_trading_days = int(args.number_of_trading_days)
-        if ((max_trading_days <= 0) or (max_trading_days >= mtd5y)):
-            print(f'Max trading days must be between 1 and {mtd5y-1}. Exiting')
-            return
-    except:
-        print(f'Max trading days not specified. Setting it to approximately 4 years')
-        max_trading_days = (mtd5y - mtdpy)
-
-    path = gut.get_tickers_dir()
-    register(id='SPOT_trading', entry_point=f'{__name__}:SPOT_environment', max_episode_steps=None)
-
-    spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, max_trading_days=max_trading_days)
+    spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, risk_appetite=risk_appetite)
 
     max_episodes = 1000
     obs_dim = spot_trading_env.env.unwrapped.observation_space.shape
@@ -374,7 +364,7 @@ def main():
     columns = list(gut.get_trading_bt_columns())
     columns.append('episode_num')
     columns.append('episode_reward')
-    df_episodes_trade_transactions = pd.DataFrame(columns=columns, index=range(max_episodes*max_trading_days))
+    df_episodes_trade_transactions = pd.DataFrame(columns=columns, index=range(max_episodes*MAX_TRADING_DAYS))
     episodes_trade_transactions = []
 
     #Training loop
@@ -423,7 +413,22 @@ def main():
 
     #Save episodes trade transactions and reward information for later reference, testing and debugging
     df_episodes_trade_transactions = pd.DataFrame(episodes_trade_transactions, columns=columns)
-    df_episodes_trade_transactions.to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_info.csv')
+    df_episodes_trade_transactions.to_csv(path / f'{tsymbol}/{tsymbol}_rl_episodes_info_{risk_appetite}_profile.csv')
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("ticker", help="A ticker symbol e.g. AAPL")
+    args = parser.parse_args()
+    tsymbol = args.ticker
+
+    path = gut.get_tickers_dir()
+    register(id='SPOT_trading', entry_point=f'{__name__}:SPOT_environment', max_episode_steps=None)
+
+    #Do training for each trading profile
+    for risk_appetite in trading_profiles:
+        print(f'{tsymbol}: SPOT RL agent training for {risk_appetite} profile')
+        spot_agent_training(tsymbol, path, risk_appetite)
 
 if __name__ == '__main__':
     main()
