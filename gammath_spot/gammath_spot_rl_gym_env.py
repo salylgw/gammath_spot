@@ -51,55 +51,62 @@ MIN_PREMIUM_LEVEL = -0.5
 NEUTRAL_LEVEL = 0.0
 MIN_DISCOUNT_LEVEL = 0.5
 MAX_TRADING_DAYS = (mtdpy << 1)
+MAX_DOLLARS_PER_STOCK = 10000
+
 #Trading profiles (similar to backtesting except the term)
 trading_profiles = ('medium_risk', 'high_risk')
 
-def build_rules(prices, weighted_gscores):
+def build_rules(df, weighted_gscores, risk_appetite):
+    prices = np.asarray(df.Close, dtype=float)
+    lsr = np.asarray(df.LSR, dtype=float)
+    cecs = np.asarray(df.CECS, dtype=float)
+    w_gscores = np.asarray(weighted_gscores, dtype=float)
     n = len(weighted_gscores)
-    buy_zone = np.zeros(n, dtype=bool)
-    sell_zone = np.zeros(n, dtype=bool)
-    trading_at_discount_array = np.zeros(n, dtype=bool)
-    trading_at_premium_array = np.zeros(n, dtype=bool)
+    buy_signal = np.zeros(n, dtype=bool)
+    sell_signal = np.zeros(n, dtype=bool)
+    buy_cycle = np.zeros(n, dtype=bool)
+    sell_cycle = np.zeros(n, dtype=bool)
 
-    trading_at_discount = False
-    trading_at_premium = False
+    high_risk = (risk_appetite == 'high_risk')
 
-    for time_step in range(mtdpy, n):
-        weighted_gscore = weighted_gscores[time_step]
-        if (weighted_gscore >= MIN_DISCOUNT_LEVEL):
-            trading_at_discount = True
-        elif (weighted_gscore <= NEUTRAL_LEVEL):
-            trading_at_discount = False
+    marked_for_buy = False
+    marked_for_sell = False
+
+    for time_step in range(mtdpy+2, n):
+        weighted_gscore = w_gscores[time_step]
+        if (weighted_gscore >= MIN_DISCOUNT_LEVEL) or (marked_for_buy and (weighted_gscore >= NEUTRAL_LEVEL)):
+            marked_for_buy = True
+            marked_for_sell = False
+        else:
+            marked_for_buy = False
 
         if (weighted_gscore <= MIN_PREMIUM_LEVEL):
-            trading_at_premium = True
-        elif (weighted_gscore >= NEUTRAL_LEVEL):
-            trading_at_premium = False
+            marked_for_sell = True
 
-        if (time_step > mtdpy):
-            price_rising = (prices[time_step] >= prices[time_step-1])
-            price_falling = (prices[time_step] < prices[time_step-1])
-        else:
-            price_rising = False
-            price_falling = False
+        buy_cycle[time_step] = marked_for_buy
+        sell_cycle[time_step] = marked_for_sell
 
-        trading_at_discount_array[time_step] = trading_at_discount
-        trading_at_premium_array[time_step] = trading_at_premium
+        single_day_rising = (prices[time_step] > prices[time_step-1])
+        consec_two_days_rising = (single_day_rising and (prices[time_step-1] > prices[time_step-2]))
+        single_day_falling = (prices[time_step] < prices[time_step-1])
+        consec_two_days_falling = (single_day_falling and (prices[time_step-1] < prices[time_step-2]))
 
-        buy_zone[time_step] = (trading_at_discount and (weighted_gscore < MIN_DISCOUNT_LEVEL) and price_rising)
-        sell_zone[time_step] = (trading_at_premium and (weighted_gscore > MIN_PREMIUM_LEVEL) and price_falling)
+        buy_signal[time_step] = (marked_for_buy and ((single_day_rising and high_risk) or (consec_two_days_rising and (not high_risk))) and (cecs[time_step] >= 0.5))
+        sell_signal[time_step] = (marked_for_sell and ((lsr[time_step] <= -0.5) or (cecs[time_step] <= -0.5)) and ((single_day_falling and (not high_risk)) or (consec_two_days_falling and high_risk)))
 
-    return buy_zone, sell_zone, trading_at_discount_array, trading_at_premium_array
+    return buy_signal, sell_signal, buy_cycle, sell_cycle
 
 #Environment that is compatible with Gymnasium
 class SPOT_environment(gym.Env):
     metadata = {'render_modes': []}
 
-    def __init__(self, tsymbol, risk_appetite):
+    def __init__(self, tsymbol, risk_appetite, max_cash=MAX_DOLLARS_PER_STOCK):
         if (risk_appetite not in trading_profiles):
             raise ValueError(f'Unsupported trading profile: {risk_appetite}')
 
         self.risk_appetite = risk_appetite
+        self.max_cash = max_cash
+        self.remaining_cash = max_cash
         self.ticker = tsymbol
         self.min_start_index, _ = gut.get_min_trading_days()
         self.max_trading_days = MAX_TRADING_DAYS #2 years to give room for gScore cycles
@@ -135,10 +142,39 @@ class SPOT_environment(gym.Env):
         done = (self.curr_step > (self.steps - 1))
         return obs, done
 
+    def reset_position(self):
+        self.start_buy_index = -1
+        self.first_buy_step = -1
+        self.buy_block_num = 1
+        self.remaining_cash = self.max_cash
+
+    def get_position(self):
+        current_trades = self.trading_transactions[self.start_buy_index:]
+        cost = sum(float(t['Price'])*float(t['Quantity']) for t in current_trades)
+        quantity = sum(float(t['Quantity']) for t in current_trades)
+        return cost, quantity
+
+    def position_allows_sell(self, idx, cost, quantity):
+        price = self.prices[idx]
+        total_cash = (quantity*price)
+
+        if (cost >= total_cash):
+            return False
+        else:
+            return True
+
     def get_valid_actions(self):
         idx = (self.random_start_index + self.curr_step - 1)
-        buy_valid = bool(self.buy_zone[idx])
-        sell_valid = bool(self.sell_zone[idx] and (self.start_buy_index >= 0))
+        buy_valid = bool(self.buy_signal[idx] and (self.remaining_cash >= self.prices[idx]))
+        sell_valid = False
+
+        if (self.start_buy_index >= 0):
+            cost, quantity = self.get_position()
+            if (self.prices[idx] > (cost/quantity)):
+                buy_valid = False
+
+            sell_valid = bool(self.sell_signal[idx] and (self.position_allows_sell(idx, cost, quantity)))
+
         #Buy valid, Hold valid, Sell valid
         return np.array([buy_valid, True, sell_valid], dtype=bool)
 
@@ -151,20 +187,32 @@ class SPOT_environment(gym.Env):
         if (not self.get_valid_actions()[action]):
             action = self.action_types.index('Hold')
 
+        if (not self.buy_cycle[trade_step]):
+            self.buy_block_num = 1
+
         #Save the action (exclude saving hold actions)
         #Calculate reward for the action
         if (self.action_types[action] == 'Sell'): #Only check reward when selling
             if (self.start_buy_index >= 0):
                 quantity, reward = self.get_rewards(trade_step)
                 self.trading_transactions.append({'Date': self.Dates[trade_step], 'Action': self.action_types[action], 'Price': round(self.prices[trade_step], 3), 'Quantity': quantity})
-                self.start_buy_index = -1
+                self.reset_position()
         else:
             if (self.action_types[action] == 'Buy'):
                 #Buy side bookkeeping
                 if (self.start_buy_index < 0):
-                    self.start_buy_index = self.total_transactions_so_far
+                    self.start_buy_index = len(self.trading_transactions)
+                    self.first_buy_step = trade_step
+                    buy_q = 1
+                    self.buy_block_num = 1
+                else:
+                    buy_q = min(gut.get_nth_fib(self.buy_block_num), (self.remaining_cash//self.prices[trade_step]))
+                    self.buy_block_num += 1
+
+                self.remaining_cash -= (buy_q*self.prices[trade_step])
 
                 self.trading_transactions.append({'Action': self.action_types[action], 'Date': self.Dates[trade_step], 'Price': round(self.prices[trade_step], 3), 'Quantity': 1})
+
         #Get new observation
         obs, done = self.take_obs_step()
 
@@ -206,10 +254,10 @@ class SPOT_environment(gym.Env):
             exit(-1)
 
         #Precompute rules
-        self.buy_zone, self.sell_zone, self.trading_at_discount_array, self.trading_at_premium_array = build_rules(df.Close, weighted_gscore.Weighted_gScores)
+        self.buy_signal, self.sell_signal, self.buy_cycle, self.sell_cycle = build_rules(df, weighted_gscore.Weighted_gScores, self.risk_appetite)
 
         #Price history corresponding to steps
-        self.prices = df.Close
+        self.prices = np.asarray(df.Close, dtype=float)
         #Get the dates for testing
         self.Dates = df.Date
         #Need min/max for gymnasium
@@ -228,9 +276,7 @@ class SPOT_environment(gym.Env):
 
     def get_rewards(self, trade_step):
         reward = 0
-        current_trades = self.trading_transactions[self.start_buy_index:]
-        cost = sum(float(t['Price']) for t in current_trades)
-        quantity = sum(float(t['Quantity']) for t in current_trades)
+        cost, quantity = self.get_position()
         sell_amount = quantity*self.prices[trade_step]
         if (cost > 0):
             #Profit percentage
