@@ -131,8 +131,9 @@ def run_basic_backtest(df, path, tsymbol, term, risk_appetite, max_cash):
                             buy_q = min(gut.get_nth_fib(buy_block_num), remaining_cash//curr_closing_price)
                             buy_block_num += 1
                         else:
+                            #First buy is fib(1), so next buy uses fib(2)
                             buy_q = 1
-                            buy_block_num = 1
+                            buy_block_num = 2
 
                         #Update remaining cash
                         remaining_cash -= (buy_q*curr_closing_price)

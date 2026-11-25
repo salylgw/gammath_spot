@@ -112,19 +112,21 @@ class SPOT_environment(gym.Env):
         self.max_trading_days = MAX_TRADING_DAYS #2 years to give room for gScore cycles
         self.steps = self.max_trading_days
         self.random_start_index = 0
-        self.self_buy_index = -1
         self.init_SPOT_RL_env_data(tsymbol)
         self.action_space = spaces.Discrete(len(self.action_types))
         self.observation_space = spaces.Box(self.SPOT_vals_mins, self.SPOT_vals_maxs, dtype=np.float32)
-        self.total_transactions_so_far = 0
-        self.reset()
+        self.reset_position()
 
     def reset(self, seed=None, options=None):
+        #Seed gymnasium's RNG (self.np_random) for reproducibility
+        super().reset(seed=seed)
+
         #step 0
         self.curr_step = 0
-        self.start_buy_index = -1
+        #Reset position, cash and buy block for new episode
+        self.reset_position()
         #Use random starting point
-        self.random_start_index = np.random.randint(low=self.min_start_index, high=(len(self.SPOT_vals)-self.max_trading_days))
+        self.random_start_index = int(self.np_random.integers(low=self.min_start_index, high=(len(self.SPOT_vals)-self.max_trading_days)))
 
         #reset trade transactions for episode
         self.trading_transactions = []
@@ -203,26 +205,27 @@ class SPOT_environment(gym.Env):
                 if (self.start_buy_index < 0):
                     self.start_buy_index = len(self.trading_transactions)
                     self.first_buy_step = trade_step
+                    #First buy is fib(1), so next buy uses fib(2)
                     buy_q = 1
-                    self.buy_block_num = 1
+                    self.buy_block_num = 2
                 else:
                     buy_q = min(gut.get_nth_fib(self.buy_block_num), (self.remaining_cash//self.prices[trade_step]))
                     self.buy_block_num += 1
 
                 self.remaining_cash -= (buy_q*self.prices[trade_step])
 
-                self.trading_transactions.append({'Action': self.action_types[action], 'Date': self.Dates[trade_step], 'Price': round(self.prices[trade_step], 3), 'Quantity': 1})
+                self.trading_transactions.append({'Action': self.action_types[action], 'Date': self.Dates[trade_step], 'Price': round(self.prices[trade_step], 3), 'Quantity': buy_q})
 
         #Get new observation
         obs, done = self.take_obs_step()
 
-        if (done and (reward == 0) and (self.start_buy_index >= 0)):
+        if (done and (self.start_buy_index >= 0)):
             #Did not have a corresponding sale for buy(s) at the end of the episode
             #Last observation step
             trade_step = (self.random_start_index + self.curr_step - 1)
 
-            #Get the incomplete reward
-            quantity, reward = self.get_rewards(trade_step)
+            #Get the incomplete (unrealized) reward
+            _, reward = self.get_rewards(trade_step)
 
         info = {'valid_actions': self.get_valid_actions(), 'episode_trade_transactions': self.trading_transactions if done else []}
         return obs, reward, done, False, info
@@ -232,26 +235,31 @@ class SPOT_environment(gym.Env):
         pass
 
     def init_SPOT_RL_env_data(self, tsymbol):
+        path = gut.get_tickers_dir()
         try:
             #Get gscores history
-            df = pd.read_csv(f'tickers/{tsymbol}/{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
-        except:
+            df = pd.read_csv(path / f'{tsymbol}/{tsymbol}_micro_gscores.csv', index_col='Unnamed: 0')
+        except FileNotFoundError:
             print(f'Micro gScores not found for {tsymbol}. Please run gScore historian tool before using this tool')
-            exit(-1)
+            sys.exit(-1)
 
         try:
             #overall gScore using PCA
-            weighted_gscore = pd.read_csv(f'tickers/{tsymbol}/{tsymbol}_weighted_gscores.csv', index_col='Unnamed: 0')
-        except:
+            weighted_gscore = pd.read_csv(path / f'{tsymbol}/{tsymbol}_weighted_gscores.csv', index_col='Unnamed: 0')
+        except FileNotFoundError:
             print(f'Weighted gScores not found for {tsymbol}. Please run gScore historian tool before using this tool')
-            exit(-1)
+            sys.exit(-1)
+
+        if (len(weighted_gscore) != len(df)):
+            print(f'Micro and weighted gScores history lengths differ for {tsymbol}. Please rerun gScore historian tool')
+            sys.exit(-1)
 
         #Filter out parts not needed for RL
         self.SPOT_vals = df.drop(['Date', 'Close', 'TPC5Y'], axis=1)
 
         if ((len(self.SPOT_vals) - self.max_trading_days) <= self.min_start_index):
-            print(f'Insufficent history for {tsymbol} for {self.max_trading_days} since there are {self.min_start_index} warmup days')
-            exit(-1)
+            print(f'Insufficient history for {tsymbol} for {self.max_trading_days} trading days since there are {self.min_start_index} warmup days')
+            sys.exit(-1)
 
         #Precompute rules
         self.buy_signal, self.sell_signal, self.buy_cycle, self.sell_cycle = build_rules(df, weighted_gscore.Weighted_gScores, self.risk_appetite)
@@ -259,7 +267,7 @@ class SPOT_environment(gym.Env):
         #Price history corresponding to steps
         self.prices = np.asarray(df.Close, dtype=float)
         #Get the dates for testing
-        self.Dates = df.Date
+        self.Dates = np.asarray(df.Date)
         #Need min/max for gymnasium
         self.SPOT_vals_mins = np.append(np.array(self.SPOT_vals.min()), 0.0).astype(np.float32)
         self.SPOT_vals_maxs = np.append(np.array(self.SPOT_vals.max()), 1.0).astype(np.float32)
@@ -286,9 +294,6 @@ class SPOT_environment(gym.Env):
             reward = profit_pct/1000
 
         return quantity, reward
-
-    def get_episode_trade_transactions(self):
-        return self.trading_transactions[:self.total_transactions_so_far]
 
 #SPOT RL trading agent that interacts with SPOT trading
 class SPOT_agent():
@@ -352,7 +357,7 @@ class SPOT_agent():
             #Estimate next q values in target network
             tn_next_q_values = self.q_target_network.predict_on_batch(next_state)
 
-            indices = tf.range(self.batch_size)
+            indices = np.arange(self.batch_size)
 
             #Select target network's predicted q values for learner network's best valid actions
             temporal_diff_target_vals = tn_next_q_values[indices, ln_max_q_actions]
@@ -402,15 +407,14 @@ def spot_agent_training(tsymbol, path, risk_appetite):
     spot_trading_env = gym.make('SPOT_trading', tsymbol=tsymbol, risk_appetite=risk_appetite)
 
     max_episodes = 1000
-    obs_dim = spot_trading_env.env.unwrapped.observation_space.shape
-    action_types = spot_trading_env.env.unwrapped.get_action_types()
+    obs_dim = spot_trading_env.unwrapped.observation_space.shape
+    action_types = spot_trading_env.unwrapped.get_action_types()
     spot_trading_agent = SPOT_agent(max_episodes=max_episodes, obs_dim=obs_dim, actions=action_types)
 
     #Create dataframe to save trade transactions across all episodes
     columns = list(gut.get_trading_bt_columns())
     columns.append('episode_num')
     columns.append('episode_reward')
-    df_episodes_trade_transactions = pd.DataFrame(columns=columns, index=range(max_episodes*MAX_TRADING_DAYS))
     episodes_trade_transactions = []
 
     #Training loop
