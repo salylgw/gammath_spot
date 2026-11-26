@@ -44,10 +44,9 @@ try:
 except:
     import gammath_utils as gut
 
-
-#This is a work-in-progress. A lot will change before it is usable
+#This is experimental and not for use yet. A larger history is needed to make it at par with backtesting
+#Also, lot more testing is required
 #Default values to cover broadest variety of stocks.
-#Should be fine tuned for specific characteristics
 mtdpy, _ = gut.get_min_trading_days()
 MIN_PREMIUM_LEVEL = -0.5
 NEUTRAL_LEVEL = 0.0
@@ -57,14 +56,16 @@ MAX_DOLLARS_PER_STOCK = 10000
 #Most recent ~1 year is held out for testing (out-of-sample); everything before it is used for training
 TEST_TRADING_DAYS = mtdpy
 MAX_TRAINING_EPISODES = 1000
+
 #Discount horizon in trading days (~3 months); effective horizon is 1/(1-GAMMA)
 #Longer horizons (e.g. ~1 year) make DQN training less stable without additional stabilizers
 GAMMA_HORIZON_DAYS = 63
 GAMMA = 1 - (1/GAMMA_HORIZON_DAYS)   #~0.984
+
 #Bump this when observation features, rules or network architecture change so saved models get retrained
 RL_MODEL_VERSION = 1
 
-#Trading profiles (similar to backtesting except the term)
+#Trading profiles (similar to backtesting except the term because there isn't enough data to manage long term)
 trading_profiles = ('medium_risk', 'high_risk')
 
 #Selling is allowed only at a profit, so a position may still be open at the end of a run
@@ -363,12 +364,11 @@ class SPOT_environment(gym.Env):
         if (cost <= 0):
             return 0.0
 
-        #Percentage change of position value relative to cost basis
-        change_pct = ((quantity*(self.prices[next_idx] - self.prices[curr_idx])*100)/cost)
+        #Percentage change of position value relative to max cash (to allow agent to learn when to scale position)
+        change_pct = ((quantity*(self.prices[next_idx] - self.prices[curr_idx])*100)/self.max_cash)
 
-        #Same scale as profit_pct/1000 so that rewards over a buy->sell cycle add up to ~cycle profit_pct/1000
-        #and stay under +/- 1 with ample room to grow in either direction
-        return change_pct/1000
+        #Scaled down by 10 so that rewards over a buy->sell cycle add up to ~cycle profit (as % of max cash)/10
+        return change_pct/10
 
 #SPOT RL trading agent that interacts with SPOT trading
 class SPOT_agent():
@@ -391,6 +391,9 @@ class SPOT_agent():
         self.update_qtn_weights_from_qln_weights()
         self.steps = 0
         self.target_networks_update_interval_steps = 128
+        self.train_interval_steps = 4
+        self.optimizer = Adam(learning_rate=0.001)
+        self.loss_fn = tf.keras.losses.Huber()
 
     def build_model(self):
         self.model = Sequential([Input(shape=self.obs_dim), Dense(units=32, activation='tanh', name='Dense_input'), Dense(units=32, activation='tanh', name='Dense_intermediate'), Dense(units=self.max_actions, name='Output')])
@@ -407,44 +410,55 @@ class SPOT_agent():
         self.saved_experience.append((curr_state, action, reward, next_state, done, next_valid_actions))
         return
 
+    @tf.function
+    def _train_step(self, curr_state, action, reward, next_state, not_done, next_valid_actions):
+        #Use double deep q-learning (DDQN) algorithm
+        #We want to decouple the estimation of action values from selection of actions
+
+        #Estimate next q values in learning network
+        ln_next_q_values = self.q_learner_network(next_state, training=False)
+
+        #Rule based actions
+        neg_inf = tf.fill(tf.shape(ln_next_q_values), tf.constant(-np.inf, dtype=ln_next_q_values.dtype))
+        ln_next_q_values = tf.where(next_valid_actions, ln_next_q_values, neg_inf)
+
+        #Select best valid action in learning network
+        ln_max_q_actions = tf.argmax(ln_next_q_values, axis=1, output_type=tf.int32)
+
+        #Estimate next q values in target network
+        tn_next_q_values = self.q_target_network(next_state, training=False)
+
+        indices = tf.range(tf.shape(curr_state)[0], dtype=tf.int32)
+
+        #Select target network's predicted q values for learner network's best valid actions
+        temporal_diff_target_vals = tf.gather_nd(tn_next_q_values, tf.stack([indices, ln_max_q_actions], axis=1))
+
+        #gamma and temporal diff not relevant if it is done
+        target_vals = (reward + (self.gamma*temporal_diff_target_vals*not_done))
+
+        with tf.GradientTape() as tape:
+            q_values = self.q_learner_network(curr_state, training=True)
+            chosen_q_values = tf.gather_nd(q_values, tf.stack([indices, action], axis=1))
+            loss = self.loss_fn(target_vals, chosen_q_values)
+
+        grads = tape.gradient(loss, self.q_learner_network.trainable_variables)
+        self.optimizer.apply_gradients(zip(grads, self.q_learner_network.trainable_variables))
+        return loss
+
     def replay_experience(self):
-        #Barely tested
         saved_experience_len = len(self.saved_experience)
-        if (saved_experience_len > self.batch_size):
+        if ((saved_experience_len > self.batch_size) and (not (self.steps % self.train_interval_steps))):
             #Get iterator for corresponding iterables
             curr_batch = map(np.array, zip(*sample(self.saved_experience, self.batch_size)))
             curr_state, action, reward, next_state, not_done, next_valid_actions = curr_batch
-            action = action.astype(int)
-            next_valid_actions = next_valid_actions.astype(bool)
-
-            #Use double deep q-learning (DDQN) algorithm
-            #We want to decouple the estimation of action values from selection of actions
-
-            #Estimate next q values in learning network
-            ln_next_q_values = self.q_learner_network.predict_on_batch(next_state)
-
-            #Rule based actions
-            ln_next_q_values = np.where(next_valid_actions, ln_next_q_values, -np.inf)
-
-            #Select best valid action in learning network
-            ln_max_q_actions = np.argmax(ln_next_q_values, axis=1)
-
-            #Estimate next q values in target network
-            tn_next_q_values = self.q_target_network.predict_on_batch(next_state)
-
-            indices = np.arange(self.batch_size)
-
-            #Select target network's predicted q values for learner network's best valid actions
-            temporal_diff_target_vals = tn_next_q_values[indices, ln_max_q_actions]
-
-            #gamma and temporal diff not relevant if it is done
-            target_vals = (reward + (self.gamma*temporal_diff_target_vals*not_done))
-
-            ln_q_values = np.array(self.q_learner_network.predict_on_batch(curr_state))
-            ln_q_values[indices, action] = target_vals
-
-            #Check loss value for debugging
-            loss = self.q_learner_network.train_on_batch(x=curr_state, y=ln_q_values)
+            self._train_step(
+                tf.convert_to_tensor(curr_state, dtype=tf.float32),
+                tf.convert_to_tensor(action, dtype=tf.int32),
+                tf.convert_to_tensor(reward, dtype=tf.float32),
+                tf.convert_to_tensor(next_state, dtype=tf.float32),
+                tf.convert_to_tensor(not_done, dtype=tf.float32),
+                tf.convert_to_tensor(next_valid_actions, dtype=tf.bool),
+            )
 
         #Update target network weights at regular intervals
         if (not (self.steps % self.target_networks_update_interval_steps)):
@@ -524,6 +538,8 @@ def load_saved_agent(tsymbol, path, risk_appetite, max_episodes=MAX_TRAINING_EPI
     return agent, meta
 
 def spot_agent_training(tsymbol, path, risk_appetite, max_episodes=MAX_TRAINING_EPISODES, test_days=TEST_TRADING_DAYS):
+    #Clear Keras session to avoid ballooning system RAM usage
+    tf.keras.backend.clear_session()
 
     spot_trading_env = make_env(tsymbol, risk_appetite, test_days=test_days)
     env = spot_trading_env.unwrapped
@@ -583,9 +599,9 @@ def spot_agent_training(tsymbol, path, risk_appetite, max_episodes=MAX_TRAINING_
             curr_state = next_state
             curr_valid_actions = next_valid_actions
 
-        #Save rewards per episode for later reference (adjust back to show approx. percentage gain/loss including unrealized)
+        #Save rewards per episode for later reference (adjust back to show approx. gain/loss as percentage of max cash including unrealized)
         if (len(episodes_trade_transactions) > episode_first_row):
-            episodes_trade_transactions[-1]['episode_reward'] = round((curr_episode_rewards*1000), 3) #round it off to take less display space in CSV file
+            episodes_trade_transactions[-1]['episode_reward'] = round((curr_episode_rewards*10), 3) #round it off to take less display space in CSV file
 
         #Update epsilon for next episode
         spot_trading_agent.update_epsilon()
