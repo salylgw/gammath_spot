@@ -1,129 +1,268 @@
 
-![Alt text](https://raw.githubusercontent.com/salylgw/gammath_spot/main/gammath_spot/data/logo.png)
+![Gammath SPOT logo](https://raw.githubusercontent.com/salylgw/gammath_spot/main/gammath_spot/data/logo.png)
 
 # Gammath SPOT
-**S**tock **P**rice-**O**pining **T**oolset is a DIY stock technical analysis software with a Graphical User Interface (GUI) and a Command Line Interface (CLI). It is used to analyze stocks and compute a stock analysis score --- I'm calling it gScore (pronounced as "*ga Score*") --- to represent Gammath Works' stock analysis score. It indicates the degree to which a stock is trading at a perceived discount or at a perceived premium. SPOT also provides tools to generate price projection, gScore-history, backtesting and stock screening. Together, these can help in making your own stock-specific buy, sell, hold decisions.
 
-*Please note that gScore is NOT G-Score/GScore/G Score/g-score. It differs in its usage, appearance, spelling, pronunciation, meaning and sits on top of its own, totally different stock analysis and scoring system).*
+**S**tock **P**rice-**O**pining **T**oolset (SPOT) is a do-it-yourself stock technical analysis toolkit with both a Graphical User Interface (GUI) and a Command Line Interface (CLI). It analyzes stocks and computes a proprietary analysis score called the **gScore** (pronounced "*ga Score*"), short for Gammath Works' stock analysis score. The gScore indicates the degree to which a stock is trading at a perceived discount or a perceived premium.
 
+SPOT also provides tools for price projection, gScore history generation, backtesting, stock screening and trade simulation. Together, these tools can help you make your own stock-specific buy, hold and sell decisions.
 
-# How does it do that? It does this in six parts:
-1. It provides a `gammath_stocks_data_scraper.py` app that scrapes the web to obtain stock information necessary for algorithmic analysis and scoring.
-2. It provides a `gammath_stocks_analyzer_and_scorer.py` app that analyzes the stock data saved on the local storage from step 1 and computes analysis scores using its algorithm to indicate a degree to which the stock is trading at a perceived discount or perceived premium. The Gammath Scores (gScores) range between -1 and +1. gScores closer to -1 indicate that the software perceives the stock to be trading at a premium while gScore closer to +1 indicates that the software preceives the stock to be trading at a discount.
-3. It provides a `gammath_stocks_pep.py` app that estimates and projects price for an approximately five (5) years time frame.
-4. It provides a `gammath_stocks_gscores_historian.py` app that generates gScore and micro-gScores history for correlation and backtesting.
-5. It provides a `gammath_stocks_backtesting.py` app that tests an implemented strategy and generates data to see how respective strategy did. It also generates "today's actions" summary for default strategy. This way the entire stock analysis and decision-making process can be automated.
-6. All the above apps take a watchlist as an input. A sample watch list is provided in [sample_watchlist.csv](https://github.com/salylgw/gammath_spot/blob/main/gammath_spot/sample_watchlist.csv) that can be used and updated for your watchlist.
-7. It provides a `gammath_stocks_screener.py` app that helps screen stocks based on available current fundamentals and options data.
-8. In addition to all the above tools, it also provides a `gammath_gui_app.py` -- an "all-in-one" application -- that provides a graphical user interface to the toolset.
+> **Note:** gScore is **not** G-Score, GScore, G Score or g-score. It differs in usage, appearance, spelling, pronunciation and meaning, and is built on its own distinct stock analysis and scoring system.
 
+---
 
-# External dependencies
-This project uses following free tools that need to be installed (you can use pip install) to be able to use this tool:
+## Table of Contents
 
-1. numpy
-1. pandas
-1. pandas_datareader
-1. yfinance
-1. scikit-learn
-1. matplotlib
-1. tensorflow
-1. keras-tuner
-1. gymnasium
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Using Docker](#using-docker)
+- [Usage](#usage)
+  - [Graphical User Interface](#graphical-user-interface)
+  - [Command Line Interface](#command-line-interface)
+- [Troubleshooting](#troubleshooting)
+- [Resources](#resources)
+- [Contact and Contributing](#contact-and-contributing)
 
+---
 
-# HOWTO to get source code without installing
-Get source code from GIT repo. (`git clone https://github.com/salylgw/gammath_spot.git`).
+## Features
 
+| Tool | Description |
+|------|-------------|
+| **Data Scraper** | Collects the stock data required for algorithmic analysis and scoring. |
+| **Analyzer and Scorer** | Analyzes the locally saved stock data and computes gScores. gScores range from **-1** to **+1**: values closer to -1 indicate that the stock is perceived to be trading at a premium, while values closer to +1 indicate that it is perceived to be trading at a discount. |
+| **Price Projector** | Estimates and projects prices over an approximately five-year time frame. |
+| **Screener** | Screens stocks based on current-information micro-gScores (fundamental analysis and options analysis). |
+| **gScores Historian** | Generates gScore and micro-gScore history for correlation analysis and backtesting. |
+| **Backtester** | Tests a trading strategy against historical data and reports how it performed. It also generates a "Today's Actions" summary for the default strategy, so the entire analysis and decision-making process can be automated. |
+| **GUI** | An all-in-one graphical interface to the entire toolset. |
+| **Trading Simulator** | A reinforcement learning (RL) trading agent that trains on gScore history and recommends actions *(work in progress)*. |
 
-# HOWTO install
-Install Python version **3.12** and then use following command in your shell for installing gammath-spot:
+All tools take a watchlist as input. A sample is provided in [sample_watchlist.csv](https://github.com/salylgw/gammath_spot/blob/main/gammath_spot/sample_watchlist.csv), which you can modify to create your own watchlist.
 
- 1. `pip install gammath-spot --prefer-binary`
+---
 
-*Note: If you are a new user or want to use prebuilt Gammath SPOT without dealing with installation then it is recommended to first try out existing docker container and familiarize yourself with the command line interface. This way you can quickly give it a dry run and see how it works without having to worry about any local environment issues. For using prebuilt docker image, please see the instruction videos [here](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4) and following steps*.
+## Requirements
 
+- **Python 3.12**
+- The following packages (installed automatically with `pip install gammath-spot`):
+  - numpy
+  - pandas
+  - pandas_datareader
+  - yfinance
+  - scikit-learn
+  - matplotlib
+  - tensorflow
+  - tensorboard
+  - keras-tuner
+  - gymnasium
 
-# HOWTO get prebuilt Gammath SPOT docker image to use CLI
- 1. Get Docker desktop (for MAC or Windows) or Docker Engine (for Linux) from [here](https://docs.docker.com/get-docker)
- 2. Run it
- 3. Open terminal (MAC/Linux) or Power Shell (Windows)
- 4. Run `docker pull gammathworks/gammath_spot` command on your command prompt
+---
 
+## Installation
 
-# HOWTO to run containerized Gammath SPOT with CLI
- 1. Run docker desktop/engine that you installed
- 2. Open terminal or command prompt
- 3. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash`
- 4. Note: You can replace the value for TZ to match your timezone.
- 5. This should bring you to the command prompt. Run `pwd` on the command prompt. This should show you "/gammath_spot/gammath_spot". You can run `ls` command on the command prompt and it should show you all the files with `.py` extension. If you see this then it means you are ready to run the Gammath SPOT commands as described below.
+### Install from PyPI
 
+After installing Python 3.12, run:
 
-# HOWTO run these apps
-1. If you want to use the GUI (Graphical User Interface) then please note that it is **not supported in  docker container**. If you installed the software on your machine then run: `gammath_spot_gui > log_gui.txt`. If not installed but just obtained the source code then go to the directory gammath_spot/gammath_spot where all the source files are and run: `python gammath_gui_app.py > log_gui.txt`. `log_gui.txt` should contain the GUI app's log. The GUI is self-explanatory to run the tools, watchlists operations, screeners, get results etc. When using the GUI, the user need not use the commands in following instructions. However, the information about path where data and results are saved can still be used to directly browse and view the data and results using native apps on the machine such as file explorer, spreadsheet viewer, PDF viewer etc.
-1. Following instructions are for using the command line interface (i.e. CLI and not the GUI) on your **machine and within the docker container**. <u>P*lease note that if you are using the prebuilt docker container then both "installed version of the commands" and "source code version of the commands" described below should work.*</u>
-1. If you installed this software then run: `gammath_scraper sample_watchlist.csv > log_scraper.txt`. See  [sample_watchlist.csv](https://github.com/salylgw/gammath_spot/blob/main/gammath_spot/sample_watchlist.csv). If not installed but just obtained the source code then go to the directory gammath_spot/gammath_spot where all the source files are and run: `python gammath_stocks_data_scraper.py sample_watchlist.csv > log_scraper.txt`.
-1. Above step will save the scraper log in `log_scraper.txt` and save the scraped, formatted data, a reference `SP500_watchlist.csv` based on S&P500 in `tickers` sub-directory. Running the data scraper is essential to be able to use rest of the tools.
-1. If you installed this software then run: `gammath_scorer sample_watchlist.csv > log_scorer.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_analyzer_and_scorer.py sample_watchlist.csv > log_scorer.txt`.
-1. Above step will save the scorer log in `log_scorer.txt` and all of the Gammath SPOT's analysis and scoring data in `tickers` and `tickers/<ticker-symbol>` sub-directories. Go to `tickers/` sub-directory and open `<watchlist_name>_overall_gscores.csv` (e.g.: `sample_watchlist_overall_gscores.csv`) in your favorite spreadsheet program or a text editor. In `<watchlist_name>_overall_gscores.csv`, you should see stocks from your watchlist arranged in ascending order of gScores. In this file, you'll also see sh_gscore (stock history based gscore) and sci_gscore (current info based gacore) that make up the overall/final gscore. If you are not interested in backtesting or sub-component score then you can ignore it. In addition, the stock-specific news headlines sentiment mean score is also computed and included in the `<watchlist_name>_overall_gscores.csv`. There is a lot of useful information stored in `tickers/<ticker-symbol>` dir that can be checked for details. `<ticker-symbol>_signal.txt` shows details of the analysis results and `<ticker-symbol>_charts.pdf` shows the plotted charts. This tool also generates current moving estimated support and resistance lines for the stock and saves `<ticker-symbol>_tc.pdf` in `tickers/<ticker-symbol>` dir.
-1. If you want to generate estimated price projection and have installed this software then run: `gammath_projector sample_watchlist.csv > log_projector.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_pep.py sample_watchlist.csv > log_projector.txt`.
-1. Price projections are saved in `tickers/<ticker-symbol>` dir. Projections for S&P500 are saved in `tickers` dir. `<ticker-symbol>_pp.csv` shows the projected values. A sorted list of moving estimated projected 5Y returns are saved in `tickers/MPEP.csv`.
-1. If you want to generate historical gscores (for correlation, past performance, backtesting etc.) then you can do so by using the gScores historian tool. Please note that this tool takes a long time for first run so limit the watchlist for this tool to few selected stocks that you want to zoom into. If you installed this software then run: `gammath_historian sample_watchlist.csv > log_historian.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_gscores_historian.py sample_watchlist.csv > log_historian.txt`.
-1. You can check the `tickers/<ticker-symbol>/<ticker-symbol>_micro_gscores.csv` (for stock history based micro-gScores and corresponding total gScore) and `tickers/<ticker-symbol>/<ticker-symbol>_gscores_charts.pdf` that shows the plotted charts of price, overall stock history based gScore and micro-gScores.
-1. You can do backtesting on provided watchlist. If you installed this software then run: `gammath_backtester sample_watchlist.csv > log_backtester.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_backtesting.py sample_watchlist.csv > log_backtester.txt`. You can update the function locally for implementing your own strategy.
-1. For each stock, backtester processes (based on a strategy you implement/use) the data collected by scraper app and processes the stock history based gScore/micro-gScores for approximately last 5 years (that were saved from the gscore historian) and saves the backtesting stats in `tickers/<ticker_symbol>/<ticker_symbol>_gtrades_stats_<term>_<risk>_risk_appetite.csv` (term is either short_term or long_term and risk is medium or high). You can check the backtesting stats to understand if the strategy you use worked historically and then decide whether to use that strategy or not. A sorted list of "Today's Actions" summary associated with default backtested strategy is saved in `tickers/Todays_Actions.csv`.
-1. If you want to screen stocks based on micro-gScores and have installed this software then run: `gammath_screener screener.csv > log_screener.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_stocks_screener.py screener.csv > log_screener.txt`. Note that the filtering criteria (micro-gScores values) is specified in `screener.csv` and the results can be found in `tickers/screened_watchlist.csv`.
-1. If you want to use the SPOT trade simulator (please note that this is work-in-progress with limited testing) and have installed this software then run: `gammath_trading_simulator log_trader.csv > log_screener.txt`. If not installed but just obtained the source code then go to the directory `gammath_spot/gammath_spot/` where all the source files are and run: `python gammath_spot_rl_gym_env <ticker> <number of trading days> > log_trader.txt`.
+```bash
+pip install gammath-spot --prefer-binary
+```
 
-# HOWTO to resolve uncommon issue of *command not found* error when running gammath_scraper, scorer etc. after installation
-Typically, path environment variable is automatically updated during installation to include location of console scripts gammath_scraper, gammath_scorer, gammath_projector, gammath_historian, gammath_backtester, gammath_screener, gammath_estimator, gammath_trading_simulator and gammath_spot_gui. However, in certain setups, installation script may not update the path environment variable so then one has to update it manually with path to these console scripts.
+### Get the source code (without installing)
 
+```bash
+git clone https://github.com/salylgw/gammath_spot.git
+```
 
-# HOWTO to get Gammath SPOT data from Docker desktop to your PC/MAC
-*Note: Depending on the Docker desktop version and your environment, there might be some variations to following steps. These should give you enough ideas to navigate through the difference(s) (if any)*.
-1. Run docker desktop
-1. Click on "Volumes"
-1. Click on the Volume name
-1. Click on Data
-1. Scroll down to see tickers directory
-1. Move the cursor to tickers. Notice the three dots on the right. Click on it
-1. Click on "Save as"
-1. Click on Save
-1. Unzip the tickers.zip file
-1. You should be able to view files using your favorite programs (e.g. Excel, Acrobat etc)
+> **Tip:** If you are a new user, or would like to try Gammath SPOT without setting up a local environment, we recommend starting with the prebuilt Docker image and the CLI. This lets you get familiar with the tools quickly without worrying about local environment issues. See the [instructional videos](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4) and the [Using Docker](#using-docker) section below.
 
+---
 
-# HOWTO build your own docker image to use CLI
- 1. Get Docker desktop (for MAC or Windows) or Docker Engine (for Linux) from [here](https://docs.docker.com/get-docker)
- 2. Run it
- 3. Open terminal (MAC/Linux) or Power Shell (Windows)
- 4. Use this [Dockerfile](https://github.com/salylgw/gammath_spot/blob/main/Dockerfile) in the directory where you want to build the image
- 5. Run `docker build --no-cache=true --tag=gammathworks/gammath_spot .` (Please note that '.' is part of the command)
- 6. Run `docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash`
- 7. Note: You can replace the value for TZ to match your timezone.
- 8. This should bring you to the command prompt. Run `pwd` on the command prompt. This should show you "/gammath_spot/gammath_spot". You can run `ls` command on the command prompt and it should show you all the files with `.py` extension. If you see this then it means you are ready to run the Gammath SPOT commands as described in "HOWTO run these apps" section above.
+## Using Docker
 
+### Get the prebuilt image
 
-# HOWTO resolve typical environment issues when using docker
- 1. If running out of space, one could see related error message when pulling docker image. Try running `docker image prune -f` to free up space by removing unused images.
- 2. If signature mismatch error is seen for a component image when building your own docker image then try using `docker builder prune -f` to remove build cache.
- 3. Generally speaking, it is a good idea to use latest version of docker desktop and gammath-spot.
+1. Install [Docker Desktop](https://docs.docker.com/get-docker) (macOS or Windows) or Docker Engine (Linux).
+2. Start Docker.
+3. Open a terminal (macOS/Linux) or PowerShell (Windows).
+4. Pull the image:
 
-# HOWTO fix scraper tool failure on iOS due to certificate issue
- 1. Go->Applications->Python 3.12.
- 2. Run "Install Certificates.command" as Administrator.
- 3. Get out of administrator role.
+   ```bash
+   docker pull gammathworks/gammath_spot
+   ```
 
-# Investment blog
-If you want to see a free example of how gScore is being used in manual decision-making then checkout [DIY Investment blog](https://www.gammathworks.com/diy-investment-blog).
+### Run the container (CLI)
 
+1. Start Docker Desktop or Docker Engine.
+2. Open a terminal or command prompt.
+3. Run:
 
-# Questions
-If you have any questions, then please contact me using this [form](https://www.gammathworks.com/contact).
+   ```bash
+   docker run -i -t -e TZ="America/Los_Angeles" --mount type=volume,source=gammath_spot_vol,target=/gammath_spot/gammath_spot gammathworks/gammath_spot /bin/bash
+   ```
 
+   Replace the `TZ` value to match your time zone.
+4. At the container prompt, run `pwd`. It should print `/gammath_spot/gammath_spot`. Running `ls` should list all the `.py` files. You are now ready to run the Gammath SPOT commands described in [Usage](#usage).
 
-# Happy SPOTing!
-*Note: This version of Gammath SPOT is free and open source. If you would like to contribute to this project through your expertise in Python and/or world of finance/investing then please contact me using this [form](https://www.gammathworks.com/contact) indicating your area of interest and expertise</u><u></u>*
+### Build your own image
 
+1. Install and start Docker, then open a terminal as described above.
+2. Place this [Dockerfile](https://github.com/salylgw/gammath_spot/blob/main/Dockerfile) in the directory where you want to build the image.
+3. Build the image (note the trailing `.`):
 
-*Gammath, SPOT and logo showing stylized g(m) are registered trade/service marks*.
+   ```bash
+   docker build --no-cache=true --tag=gammathworks/gammath_spot .
+   ```
+
+4. Run the container as described in [Run the container (CLI)](#run-the-container-cli).
+
+### Copy data from Docker Desktop to your computer
+
+*The exact steps may vary slightly depending on your Docker Desktop version and environment.*
+
+1. Open Docker Desktop and click **Volumes**.
+2. Click the volume name, then click **Data**.
+3. Scroll down to the `tickers` directory.
+4. Hover over `tickers`, click the three-dot menu on the right, and select **Save as**.
+5. Click **Save**, then unzip the downloaded `tickers.zip` file.
+6. Open the files with your preferred applications (e.g., Excel, Acrobat).
+
+---
+
+## Usage
+
+All commands below write their log to a text file via `>` redirection. If you **installed** the package, use the console command (e.g., `gammath_scraper`). If you are running from **source**, change to the `gammath_spot/gammath_spot/` directory and use the corresponding `python` command. Both forms work inside the prebuilt Docker container.
+
+### Graphical User Interface
+
+> **Note:** The GUI is **not supported** in the Docker container.
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_spot_gui > log_gui.txt` | `python gammath_gui_app.py > log_gui.txt` |
+
+The GUI is self-explanatory: it lets you run the tools, manage watchlists, run screeners, view results and more, without using any of the CLI commands below. The output locations described in the CLI section still apply, so you can also browse the data and results directly with native applications such as a file explorer, spreadsheet program or PDF viewer.
+
+### Command Line Interface
+
+#### 1. Scrape stock data
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_scraper sample_watchlist.csv > log_scraper.txt` | `python gammath_stocks_data_scraper.py sample_watchlist.csv > log_scraper.txt` |
+
+The scraped and formatted data, along with a reference `SP500_watchlist.csv` based on the S&P 500, is saved in the `tickers` subdirectory. **Running the scraper is required before using any of the other tools.**
+
+#### 2. Analyze and score
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_scorer sample_watchlist.csv > log_scorer.txt` | `python gammath_stocks_analyzer_and_scorer.py sample_watchlist.csv > log_scorer.txt` |
+
+Analysis and scoring results are saved in the `tickers` and `tickers/<ticker-symbol>` subdirectories.
+
+- **`tickers/<watchlist_name>_overall_gscores.csv`** (e.g., `sample_watchlist_overall_gscores.csv`): Stocks from your watchlist sorted in ascending order of gScore. This file also includes:
+  - `sh_gscore`: the stock-history-based gScore
+  - `sci_gscore`: the current-information-based gScore
+
+  Together, `sh_gscore` and `sci_gscore` make up the overall gScore. If you are not interested in backtesting or sub-component scores, you can ignore them.
+- **`tickers/<ticker-symbol>/<ticker-symbol>_signal.txt`**: Detailed analysis results.
+- **`tickers/<ticker-symbol>/<ticker-symbol>_charts.pdf`**: Plotted charts.
+- **`tickers/<ticker-symbol>/<ticker-symbol>_tc.pdf`**: Current moving estimated support and resistance lines.
+
+#### 3. Project prices
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_projector sample_watchlist.csv > log_projector.txt` | `python gammath_stocks_pep.py sample_watchlist.csv > log_projector.txt` |
+
+- **`tickers/<ticker-symbol>/<ticker-symbol>_pp.csv`**: Projected price values. S&P 500 projections are saved in the `tickers` directory.
+- **`tickers/MPEP.csv`**: A sorted list of moving estimated projected five-year returns.
+
+#### 4. Screen stocks
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_screener screener.csv > log_screener.txt` | `python gammath_stocks_screener.py screener.csv > log_screener.txt` |
+
+Screens stocks based on the current-information micro-gScores computed by the scorer: the **fundamental analysis** (`FAST`) and **options analysis** (`Options`) micro-gScores. The minimum value for each micro-gScore is specified in `screener.csv`, and every stock in the `tickers` directory that meets both minimums is included in the results. Run the scraper and scorer first.
+
+- **`tickers/screened_watchlist.csv`**: The screened list of stocks, which can also be used as a watchlist for the other tools.
+
+#### 5. Generate gScore history
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_historian sample_watchlist.csv > log_historian.txt` | `python gammath_stocks_gscores_historian.py sample_watchlist.csv > log_historian.txt` |
+
+Use this tool to generate historical gScores for correlation analysis, past-performance review and backtesting. **The first run takes a long time**, so limit the watchlist to a few stocks you want to study closely.
+
+- **`tickers/<ticker-symbol>/<ticker-symbol>_micro_gscores.csv`**: Stock-history-based micro-gScores and the corresponding total gScore.
+- **`tickers/<ticker-symbol>/<ticker-symbol>_gscores_charts.pdf`**: Charts of price, overall stock-history-based gScore and micro-gScores.
+
+#### 6. Backtest a strategy
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_backtester sample_watchlist.csv > log_backtester.txt` | `python gammath_stocks_backtesting.py sample_watchlist.csv > log_backtester.txt` |
+
+For each stock, the backtester applies a strategy to the scraped data and the stock-history-based gScores/micro-gScores (generated by the historian) for approximately the last five years. You can modify the strategy function locally to implement your own.
+
+- **`tickers/<ticker-symbol>/<ticker-symbol>_gtrades_stats_<term>_<risk>_risk_appetite.csv`**: Backtesting statistics, where `<term>` is `short_term` or `long_term` and `<risk>` is `medium` or `high`. Use these statistics to judge whether a strategy has worked historically before deciding to use it.
+- **`tickers/Todays_Actions.csv`**: A sorted "Today's Actions" summary based on the default backtested strategy.
+
+#### 7. Run the trading simulator *(work in progress)*
+
+> **Note:** The SPOT RL trading simulator is experimental and has had limited testing.
+
+| Installed | From source |
+|-----------|-------------|
+| `gammath_trading_simulator sample_watchlist.csv > log_trader.txt` | `python gammath_spot_rl_gym_env.py sample_watchlist.csv > log_trader.txt` |
+
+Optional arguments: `--retrain` (force retraining even if a saved model exists), `--episodes <n>` and `--test_days <n>`. Run with `--help` for details.
+
+- **`tickers/<ticker-symbol>/<ticker-symbol>_rl_signals.csv`**: Per-stock RL signals.
+- **`tickers/<watchlist_name>_rl_signals.csv`**: Watchlist-level summary for daily review.
+
+---
+
+## Troubleshooting
+
+### "Command not found" after installation
+
+The installer normally adds the console scripts (`gammath_scraper`, `gammath_scorer`, `gammath_projector`, `gammath_historian`, `gammath_backtester`, `gammath_screener`, `gammath_trading_simulator` and `gammath_spot_gui`) to your `PATH`. In some setups this does not happen, and you will need to add the scripts' install location to your `PATH` manually.
+
+### Scraper fails on macOS due to a certificate error
+
+1. Open **Applications → Python 3.12**.
+2. Run **Install Certificates.command** as an administrator.
+3. Exit the administrator session.
+
+### Docker environment issues
+
+- **Out of disk space when pulling the image:** Run `docker image prune -f` to remove unused images.
+- **Signature mismatch error for a component image when building your own image:** Run `docker builder prune -f` to clear the build cache.
+- In general, use the latest versions of Docker Desktop and gammath-spot.
+
+---
+
+## Resources
+
+- **[DIY Investment Blog](https://www.gammathworks.com/diy-investment-blog):** Free examples of how gScores are used in manual investment decision-making.
+- **[Instructional videos](https://youtube.com/playlist?list=PLck0jfgap9AT3Qd1mcNgr5KguIXrW9BD4):** Getting started with the prebuilt Docker image.
+
+---
+
+## Contact and Contributing
+
+If you have questions, please reach out using this [contact form](https://www.gammathworks.com/contact).
+
+This version of Gammath SPOT is free and open source. If you would like to contribute your expertise in Python and/or finance and investing, please get in touch through the [contact form](https://www.gammathworks.com/contact) and describe your areas of interest and expertise. See also [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+---
+
+**Happy SPOTing!**
+
+<p align="center"><sub><em>Gammath, SPOT and the stylized <img src="https://raw.githubusercontent.com/salylgw/gammath_spot/main/gammath_spot/data/logo.png" alt="g(m)" height="14"> logo are registered trademarks/service marks.</em></sub></p>
