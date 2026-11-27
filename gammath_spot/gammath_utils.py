@@ -137,20 +137,8 @@ def get_news_scraper_df_columns():
 
 def check_if_same_day(fstat):
 
-    fct_time = time.ctime(fstat.st_ctime).split(' ')
-    dt = time.strftime('%x').split('/')
-    if (fct_time[2] == ''):
-        fct_date_index = 3
-    else:
-        fct_date_index = 2
-
-    fct_date = int(fct_time[fct_date_index])
-    dt_date = int(dt[1])
-
-    if (fct_date == dt_date):
-        return True
-    else:
-        return False
+    #Compare full date (not just day of month) of last modification with today
+    return (date.fromtimestamp(fstat.st_mtime) == date.today())
 
 #Common function to generate price sigmoid
 #Specify 'n' days interval for checking the diff
@@ -279,44 +267,56 @@ class GUTILS:
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
 
+        sp500_list_file = path / 'SP500_list.csv'
         sp500_etag_file = path / 'SP500_list.etag'
 
+        file_exists = False
         try:
             #Get existing file
-            file_exists = (path / f'SP500_list.csv').exists()
+            file_exists = sp500_list_file.exists()
 
-            #Check if file exists and is it from another day
-            if file_exists:
-                fstat = os.stat(path / f'SP500_list.csv')
-                if (check_if_same_day(fstat)):
-                    return
+            #Fetch only once a day
+            if file_exists and check_if_same_day(os.stat(sp500_list_file)):
+                return
         except:
             pass
 
-        #Get S&P500 list from the internet
-        headers = {}
-        if file_exists and sp500_etag_file.exists():
-            #Check if file unchanged by using etag file
-            headers['If-None-Match'] = sp500_etag_file.read_text().strip()
+        try:
+            #Get S&P500 list from the internet
+            headers = {}
+            if file_exists and sp500_etag_file.exists():
+                #Check if file unchanged by using etag file
+                headers['If-None-Match'] = sp500_etag_file.read_text().strip()
 
-        response = requests.get(sp500_list_url, headers=headers)
-        if response.status_code == 304:
-            return
+            response = requests.get(sp500_list_url, headers=headers, timeout=30)
+            if response.status_code == 304:
+                #Unchanged; update timestamp so same-day check skips fetch for rest of the day
+                sp500_list_file.touch()
+                return
 
-        response.raise_for_status()
+            response.raise_for_status()
 
-        #File most likely changed; parse and save CSV, etag files
-        sp500 = pd.read_csv(StringIO(response.text))
+            #File most likely changed; parse and sanity check before overwriting existing list
+            sp500 = pd.read_csv(StringIO(response.text))
+            if not ({'Symbol', 'GICS Sector'} <= set(sp500.columns)) or (len(sp500) < 450):
+                raise ValueError(f'Unexpected S&P500 list format (columns: {list(sp500.columns)}, rows: {len(sp500)})')
 
-        #Save the history for reference and processing
-        sp500.to_csv(path / f'SP500_list.csv', index=False)
+            #Save the history for reference and processing
+            sp500.to_csv(sp500_list_file, index=False)
 
-        #Save S&P500 as a watchlist
-        root_path = Path(f'{path}/../..')
-        sp500.Symbol.to_csv(root_path / f'SP500_watchlist.csv', index=False)
+            #Save S&P500 as a watchlist
+            root_path = Path(f'{path}/../..')
+            sp500.Symbol.to_csv(root_path / f'SP500_watchlist.csv', index=False)
 
-        if 'ETag' in response.headers:
-            sp500_etag_file.write_text(response.headers['ETag'])
+            if 'ETag' in response.headers:
+                sp500_etag_file.write_text(response.headers['ETag'])
+        except Exception as e:
+            if file_exists:
+                #Don't abort data scraping; continue with existing list
+                print(f'WARNING: Failed to fetch S&P500 list ({e}); using existing list')
+            else:
+                raise
+
         return
 
     def aggregate_scores(self, symbols_list, wl_name):
