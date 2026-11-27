@@ -273,14 +273,13 @@ class GUTILS:
 
     def get_sp500_list(self):
 
-        sp500_list_url = f'https://en.wikipedia.org/wiki/List_of_S&P_500_companies'
+        sp500_list_url = 'https://raw.githubusercontent.com/datasets/s-and-p-500-companies/main/data/constituents.csv'
         path = get_tickers_dir() / 'SP500'
 
         if not path.exists():
             path.mkdir(parents=True, exist_ok=True)
 
-        #Fetch the file only once a day
-        dont_need_fetch = True
+        sp500_etag_file = path / 'SP500_list.etag'
 
         try:
             #Get existing file
@@ -289,30 +288,35 @@ class GUTILS:
             #Check if file exists and is it from another day
             if file_exists:
                 fstat = os.stat(path / f'SP500_list.csv')
-                dont_need_fetch = check_if_same_day(fstat)
-            else:
-                #File doesn't exist/
-                dont_need_fetch = False
+                if (check_if_same_day(fstat)):
+                    return
         except:
-            dont_need_fetch = False
+            pass
 
-        if (not dont_need_fetch):
-            #Get S&P500 list from the internet as if from web browser
-            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
-            response = requests.get(sp500_list_url, headers=headers)
-            html_text_buffer = StringIO(response.text)
+        #Get S&P500 list from the internet
+        headers = {}
+        if file_exists and sp500_etag_file.exists():
+            #Check if file unchanged by using etag file
+            headers['If-None-Match'] = sp500_etag_file.read_text().strip()
 
-            #Specify header (row to use to make column headers)
-            #No need to get entire list of dataframes. We only need first dataframe
-            sp500 = pd.read_html(html_text_buffer, attrs={'id': 'constituents'})[0]
+        response = requests.get(sp500_list_url, headers=headers)
+        if response.status_code == 304:
+            return
 
-            #Save the history for reference and processing
-            sp500.to_csv(path / f'SP500_list.csv')
+        response.raise_for_status()
 
-            #Save S&P500 as a watchlist
-            root_path = Path(f'{path}/../..')
-            sp500.Symbol.to_csv(root_path / f'SP500_watchlist.csv', index=False)
+        #File most likely changed; parse and save CSV, etag files
+        sp500 = pd.read_csv(StringIO(response.text))
 
+        #Save the history for reference and processing
+        sp500.to_csv(path / f'SP500_list.csv', index=False)
+
+        #Save S&P500 as a watchlist
+        root_path = Path(f'{path}/../..')
+        sp500.Symbol.to_csv(root_path / f'SP500_watchlist.csv', index=False)
+
+        if 'ETag' in response.headers:
+            sp500_etag_file.write_text(response.headers['ETag'])
         return
 
     def aggregate_scores(self, symbols_list, wl_name):
