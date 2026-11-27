@@ -667,9 +667,19 @@ def run_policy(spot_trading_env, start_index, end_index, policy, prefix):
     curr_state, info = spot_trading_env.reset(options={'start_index': start_index, 'end_index': end_index})
     curr_valid_actions = info['valid_actions']
     done = False
+    hold_action = env.get_action_types().index('Hold')
+    #Days where the rules allowed a buy/sell but the policy held instead (rules-only policy never skips)
+    skips = []
 
     while not done:
         action = policy(curr_state, curr_valid_actions)
+        if (action == hold_action):
+            idx = (env.random_start_index + env.curr_step - 1)
+            #Buy and sell can't both be valid on the same day (buy needs price <= avg cost, sell needs profit)
+            if curr_valid_actions[0]:
+                skips.append((idx, 'Buy'))
+            elif curr_valid_actions[2]:
+                skips.append((idx, 'Sell'))
         curr_state, _, terminated, truncated, info = spot_trading_env.step(action)
         done = (terminated or truncated)
         curr_valid_actions = info['valid_actions']
@@ -697,7 +707,34 @@ def run_policy(spot_trading_env, start_index, end_index, policy, prefix):
              f'{prefix}_Position_Days': (incomplete[0]['Days_Held'] if incomplete else np.nan),
              f'{prefix}_Profit': round(total_profit, 3)}
 
-    return stats, [dict(t, Policy=prefix) for t in transactions]
+    return stats, [dict(t, Policy=prefix) for t in transactions], skips
+
+def score_skips(env, skips, end_index, horizon=GAMMA_HORIZON_DAYS):
+    #Score each skipped rule action by the price move over the next horizon trading days.
+    #Edge is relative to following the rule: a skipped buy is good if price fell, a skipped sell is good if price rose.
+    price_col = f'Price_{horizon}d'
+    return_col = f'Return_{horizon}d_Pct'
+    rows = []
+    for idx, skipped in skips:
+        price = env.prices[idx]
+        row = {'Date': str(env.Dates[idx]), 'Skipped': skipped, 'Price': round(price, 3), price_col: np.nan, return_col: np.nan, 'Edge_Pct': np.nan, 'Outcome': 'Pending'}
+        future_idx = (idx + horizon)
+        if (future_idx < end_index):
+            future_price = env.prices[future_idx]
+            return_pct = ((future_price - price)*100/price)
+            edge_pct = (-return_pct if (skipped == 'Buy') else return_pct)
+            row.update({price_col: round(future_price, 3), return_col: round(return_pct, 3), 'Edge_Pct': round(edge_pct, 3), 'Outcome': ('Good' if (edge_pct > 0) else 'Bad')})
+        rows.append(row)
+
+    scored = [r for r in rows if (r['Outcome'] != 'Pending')]
+    good = [r for r in scored if (r['Outcome'] == 'Good')]
+    stats = {'Skipped_Buys': sum(1 for r in rows if (r['Skipped'] == 'Buy')),
+             'Skipped_Sells': sum(1 for r in rows if (r['Skipped'] == 'Sell')),
+             'Skips_Scored': len(scored),
+             'Skip_Good_Pct': (round((len(good)*100)/len(scored), 1) if scored else np.nan),
+             'Skip_Edge_Avg_Pct': (round(np.mean([r['Edge_Pct'] for r in scored]), 3) if scored else np.nan)}
+
+    return stats, pd.DataFrame(rows, columns=['Date', 'Skipped', 'Price', price_col, return_col, 'Edge_Pct', 'Outcome'])
 
 def spot_agent_run(tsymbol, path, risk_appetite, agent, meta):
     #Out-of-sample test over all data after the training period for both the trained agent (greedy, no learning)
@@ -710,14 +747,20 @@ def spot_agent_run(tsymbol, path, risk_appetite, agent, meta):
     last_index = (end_index - 1)
 
     agent_policy = lambda state, valid_actions: agent.default_policy(state.reshape(-1, obs_dim[0]), valid_actions)
-    agent_stats, agent_transactions = run_policy(spot_trading_env, start_index, end_index, agent_policy, 'Agent')
-    rules_stats, rules_transactions = run_policy(spot_trading_env, start_index, end_index, rules_only_policy, 'Rules')
+    agent_stats, agent_transactions, agent_skips = run_policy(spot_trading_env, start_index, end_index, agent_policy, 'Agent')
+    rules_stats, rules_transactions, _ = run_policy(spot_trading_env, start_index, end_index, rules_only_policy, 'Rules')
+    skip_stats, df_skips = score_skips(env, agent_skips, end_index)
 
     profit_diff = (agent_stats['Agent_Profit'] - rules_stats['Rules_Profit'])
     if (abs(profit_diff) < 0.01):
         agent_vs_rules = 'Same'
     else:
         agent_vs_rules = 'Better' if (profit_diff > 0) else 'Worse'
+
+    #Use the learned policy for the daily decision only if it beats the static rules out-of-sample
+    #and its skipped rule actions have helped on average (if none are scored yet, profit comparison decides)
+    skip_edge_ok = ((skip_stats['Skips_Scored'] == 0) or (skip_stats['Skip_Edge_Avg_Pct'] > 0))
+    decision_source = 'Agent' if ((agent_vs_rules == 'Better') and skip_edge_ok) else 'Rules'
 
     last_price = env.prices[last_index]
     buy_and_hold_pct = ((last_price - env.prices[start_index])*100/env.prices[start_index])
@@ -728,7 +771,10 @@ def spot_agent_run(tsymbol, path, risk_appetite, agent, meta):
     summary = {'Ticker': tsymbol, 'Profile': risk_appetite, 'Date': str(env.Dates[last_index]), 'Price': round(last_price, 3),
                'Agent_Action': agent_stats['Agent_Action'], 'Agent_Quantity': agent_stats['Agent_Quantity'],
                'Rules_Action': rules_stats['Rules_Action'], 'Rules_Quantity': rules_stats['Rules_Quantity'],
-               'Agent_vs_Rules': agent_vs_rules}
+               'Agent_vs_Rules': agent_vs_rules, 'Decision_Source': decision_source,
+               'Final_Action': (agent_stats if (decision_source == 'Agent') else rules_stats)[f'{decision_source}_Action'],
+               'Final_Quantity': (agent_stats if (decision_source == 'Agent') else rules_stats)[f'{decision_source}_Quantity']}
+    summary.update(skip_stats)
     summary.update({k: v for k, v in agent_stats.items() if k not in summary})
     summary.update({k: v for k, v in rules_stats.items() if k not in summary})
     summary.update({'Buy_Hold_Pct': round(buy_and_hold_pct, 3)})
@@ -736,6 +782,7 @@ def spot_agent_run(tsymbol, path, risk_appetite, agent, meta):
     summary.update({'Test_Start': str(env.Dates[start_index]), 'Test_Days': (end_index - start_index), 'Train_End': meta['train_end_date']})
 
     pd.DataFrame(agent_transactions + rules_transactions, columns=['Policy', 'Date', 'Action', 'Price', 'Quantity', 'Avg_Price', 'Return_Pct', 'Profit', 'Days_Held', 'Notes']).to_csv(path / f'{tsymbol}/{tsymbol}_rl_test_transactions_{risk_appetite}_profile.csv')
+    df_skips.to_csv(path / f'{tsymbol}/{tsymbol}_rl_skips_{risk_appetite}_profile.csv', index=False)
     return summary
 
 def format_policy_line(summary, prefix):
@@ -765,10 +812,14 @@ def print_summary(summary, print_swings):
             line += f", swing in progress for {s['Current_Swing_Days']} days"
         print(line)
 
-    print(f"{s['Ticker']} [{s['Profile']}] {s['Date']} @ {s['Price']}: agent {format_action(s, 'Agent')} | rules {format_action(s, 'Rules')}")
+    print(f"{s['Ticker']} [{s['Profile']}] {s['Date']} @ {s['Price']}: {format_action(s, 'Final')} (using {s['Decision_Source'].lower()}) | agent {format_action(s, 'Agent')} | rules {format_action(s, 'Rules')}")
     print(f"  Test {s['Test_Start']}..{s['Date']} ({s['Test_Days']} days), agent vs rules: {s['Agent_vs_Rules']}, buy & hold {s['Buy_Hold_Pct']}%")
     print('  ' + format_policy_line(s, 'Agent'))
     print('  ' + format_policy_line(s, 'Rules'))
+    line = f"  Agent skips: {s['Skipped_Buys']} buys, {s['Skipped_Sells']} sells, {s['Skips_Scored']} scored ({GAMMA_HORIZON_DAYS}d)"
+    if s['Skips_Scored']:
+        line += f", good {s['Skip_Good_Pct']}%, avg edge {s['Skip_Edge_Avg_Pct']}%"
+    print(line)
 
 def main():
     parser = argparse.ArgumentParser(description='Gammath SPOT RL trading agent. For each stock in the watchlist, trains (once) on older gScores history, tests on the most recent held-out period and recommends an action for the latest trading day.')
